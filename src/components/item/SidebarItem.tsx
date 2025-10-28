@@ -2,12 +2,7 @@
 
 import React from 'react'
 import Link from 'next/link'
-
-interface SidebarItemProps {
-  icon: React.ReactNode
-  title: string
-  href: string
-}
+import { SidebarItemProps } from '@/types/item'
 
 /**
  * SidebarItem component

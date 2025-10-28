@@ -13,3 +13,13 @@ export interface PostCardItemProps {
   commentCount: number
   image: string
 }
+
+/**
+ * SidebarItemProps interface
+ * @description 사이드바에서 표시되는 아이템 타입
+ */
+export interface SidebarItemProps {
+  icon: React.ReactNode
+  title: string
+  href: string
+}
