@@ -1,7 +1,10 @@
 // frontend/src/components/layout/SidebarFooter.tsx
 
 import React from 'react'
-
+import SidebarItem from '../item/SidebarItem'
+import UserCircle from '../icon/UserCircle'
+import Cog9Tooth from '../icon/Cog9Tooth'
+import ArrowRightStartOnRectangle from '../icon/ArrowRightStartOnRectangle'
 
 /**
  * SidebarFooter component
@@ -11,7 +14,21 @@ import React from 'react'
 export default function SidebarFooter() {
   return (
     <div>
-      <h1>SidebarFooter</h1>
+      <SidebarItem 
+        icon={<UserCircle />}
+        title="마이 페이지"
+        href="/my-page"
+      />
+      <SidebarItem 
+        icon={<Cog9Tooth />}
+        title="설정"
+        href="/settings"
+      />
+      <SidebarItem 
+        icon={<ArrowRightStartOnRectangle />}
+        title="로그아웃"
+        href="/logout"
+      />
     </div>
   )
 }
