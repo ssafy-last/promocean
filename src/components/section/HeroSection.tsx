@@ -1,5 +1,10 @@
 // frontend/src/components/section/HeroSection.tsx
 
+/**
+ * HeroSection component
+ * @description HeroSection component is a hero section component that displays the hero section content
+ * @returns {React.ReactNode}
+ */
 export default function HeroSection() {
   return (
     <div className="h-[515px] bg-gradient-to-br from-primary/10 via-background to-secondary/10 flex items-center justify-center relative overflow-hidden">
