@@ -2,69 +2,28 @@
 
 import React from 'react'
 import SidebarList from '../list/SidebarList'
-import MagnifyingGlass from '@/components/icon/MagnifyingGlass'
-import QuestionMarkCircle from '@/components/icon/QuestionMarkCircle'
-import Trophy from '@/components/icon/Trophy'
-import Megaphone from '@/components/icon/Megaphone'
-import User from '@/components/icon/User'
-import UserGroup from '@/components/icon/UserGroup'
+import { SidebarItemProps } from '@/types/item'
+
+interface SidebarSectionProps {
+  title: string
+  items: SidebarItemProps[]
+}
 
 /**
  * SidebarSection component
  * @description SidebarSection component is a sidebar section component that displays the sidebar section content
+ * @param {SidebarSectionProps} props - The props for the SidebarSection component
  * @returns {React.ReactNode}
  */
-export default function SidebarSection() {
-  // 커뮤니티 섹션
-  const communityItems = [{
-    'icon': <MagnifyingGlass />,
-    'title': '프롬프트 검색',
-    'href': '/community',
-  },
-  {
-    'icon': <QuestionMarkCircle />,
-    'title': '프롬프트 질문',
-    'href': '/community',
-  },
-  {
-    'icon': <Trophy />,
-    'title': '프롬프트 대회',
-    'href': '/contest',
-  },
-  {
-    'icon': <Megaphone />,
-    'title': '공지사항',
-    'href': '/community',
-  },
-]
-
-  // 스페이스 섹션
-  const spaceItems = [{
-    'icon': <User />,
-    'title': '마이 스페이스',
-    'href': '/my-space',
-  },
-  {
-    'icon': <UserGroup />,
-    'title': '팀 스페이스',
-    'href': '/team-space',
-  },
-]
+export default function SidebarSection({title, items}: SidebarSectionProps) {
 
   return (
     <div>
       <div className="mb-6">
         <h2 className="text-lg font-semibold uppercase tracking-wider mb-3">
-          커뮤니티
+          {title}
         </h2>
-        <SidebarList items={communityItems} />
-      </div>
-      
-      <div className="mb-6">
-        <h2 className="text-lg font-semibold uppercase tracking-wider mb-3">
-          스페이스
-        </h2>
-        <SidebarList items={spaceItems} />
+        <SidebarList items={items} />
       </div>
     </div>
   )

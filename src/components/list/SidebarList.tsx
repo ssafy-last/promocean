@@ -2,15 +2,10 @@
 
 import React from 'react'
 import SidebarItem from '../item/SidebarItem'
-
-interface SidebarItemType {
-  icon: React.ReactNode
-  title: string
-  href: string
-}
+import { SidebarItemProps } from '@/types/item'
 
 interface SidebarListProps {
-  items: SidebarItemType[]
+  items: SidebarItemProps[]
 }
 
 
