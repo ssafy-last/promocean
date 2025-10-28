@@ -4,7 +4,7 @@ import React from 'react'
 import Link from 'next/link'
 
 interface SidebarItemProps {
-  icon: string
+  icon: React.ReactNode
   title: string
   href: string
 }
@@ -17,15 +17,15 @@ interface SidebarItemProps {
  */
 export default function SidebarItem({ icon, title, href }: SidebarItemProps) {
   return (
-    <li>
+    <ul>
       <Link 
         href={href}
-        className="flex items-center px-3 py-2 text-sm font-medium rounded-md hover:bg-primary hover:text-white transition-colors"
+        className="flex items-center px-4 pr-8 py-2 text-sm font-medium rounded-md hover:bg-primary hover:text-white transition-colors"
         style={{color: '#343434'}}
       >
-        <span className="mr-3">{icon}</span>
+        <span className="mr-2">{icon}</span>
         {title}
       </Link>
-    </li>
+    </ul>
   )
 }

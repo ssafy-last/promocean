@@ -4,7 +4,7 @@ import React from 'react'
 import SidebarItem from '../item/SidebarItem'
 
 interface SidebarItemType {
-  icon: string
+  icon: React.ReactNode
   title: string
   href: string
 }
@@ -22,7 +22,7 @@ interface SidebarListProps {
  */
 export default function SidebarList({ items }: SidebarListProps) {
   return (
-    <ul className="space-y-1">
+    <ul>
       {items.map((item, index) => (
         <SidebarItem 
           key={index}
