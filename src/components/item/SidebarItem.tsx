@@ -17,15 +17,12 @@ interface SidebarItemProps {
  */
 export default function SidebarItem({ icon, title, href }: SidebarItemProps) {
   return (
-    <ul>
-      <Link 
-        href={href}
-        className="flex items-center px-4 pr-8 py-2 text-sm font-medium rounded-md hover:bg-primary hover:text-white transition-colors"
-        style={{color: '#343434'}}
-      >
-        <span className="mr-2">{icon}</span>
-        {title}
-      </Link>
-    </ul>
+    <Link 
+      href={href}
+      className="flex items-center px-4 pr-8 py-2 text-sm font-medium rounded-md hover:bg-[#5c94f7] hover:text-white transition-colors text-[#343434]"
+    >
+      <span className="mr-2">{icon}</span>
+      {title}
+    </Link>
   )
 }
