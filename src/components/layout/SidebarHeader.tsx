@@ -1,6 +1,7 @@
 // frontend/src/components/layout/SidebarHeader.tsx
 
 import React from 'react'
+import Link from 'next/link'
 
 /**
  * SidebarHeader component
@@ -9,8 +10,10 @@ import React from 'react'
  */
 export default function SidebarHeader() {
   return (
-    <div className="mb-8">
-      <h1 className="text-xl font-bold">PromOcean</h1>
-    </div>
+    <Link href="/">
+      <div className="mb-8">
+        <h1 className="text-xl font-bold">PromOcean</h1>
+      </div>
+    </Link>
   )
 }
