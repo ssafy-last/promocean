@@ -1,9 +1,7 @@
 // frontend/src/app/page.tsx
 
+import HeroSection from "@/components/section/HeroSection";
+
 export default function Home() {
-  return (
-    <div className="p-8">
-        메인화면
-    </div>
-  );
+  return <HeroSection />;
 }
