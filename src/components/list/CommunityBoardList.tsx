@@ -9,7 +9,7 @@ interface CommunityBoardListProps {
 
 export default function CommunityBoardList({ communityBoardList }: CommunityBoardListProps) {
   return (
-    <div className="flex flex-col divide-y divide-gray-100">
+    <div className="flex flex-col divide-y divide-gray-100 space-y-4">
       {communityBoardList.map((item) => (
         <CommunityBoardItem
           key={item.id}
