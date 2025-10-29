@@ -7,7 +7,6 @@ import SidebarHeader from '@/components/layout/SidebarHeader'
 import SidebarSection from '@/components/section/SidebarSection'
 import SidebarFooter from '@/components/layout/SidebarFooter'
 import MagnifyingGlass from '@/components/icon/MagnifyingGlass'
-import QuestionMarkCircle from '@/components/icon/QuestionMarkCircle'
 import Trophy from '@/components/icon/Trophy'
 import Megaphone from '@/components/icon/Megaphone'
 import User from '@/components/icon/User'
@@ -26,12 +25,7 @@ export default function Sidebar() {
   // 커뮤니티 섹션
   const communityItems: SidebarItemProps[] = [{
     'icon': <MagnifyingGlass />,
-    'title': '프롬프트 검색',
-    'href': '/community',
-  },
-  {
-    'icon': <QuestionMarkCircle />,
-    'title': '프롬프트 질문',
+    'title': '커뮤니티',
     'href': '/community',
   },
   {
@@ -64,7 +58,7 @@ export default function Sidebar() {
       <div className="flex-1">
         <SidebarHeader />
         
-        <SidebarSection title="커뮤니티" items={communityItems} />
+        <SidebarSection title="게시판" items={communityItems} />
         <SidebarSection title="스페이스" items={spaceItems} />
       </div>
 
