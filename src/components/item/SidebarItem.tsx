@@ -1,8 +1,11 @@
+'use client';
+
 // frontend/src/components/item/SidebarItem.tsx
 
 import React from 'react'
 import Link from 'next/link'
 import { SidebarItemProps } from '@/types/item'
+import { useSidebar } from '@/contexts/SidebarContext'
 
 /**
  * SidebarItem component
@@ -11,13 +14,18 @@ import { SidebarItemProps } from '@/types/item'
  * @returns {React.ReactNode}
  */
 export default function SidebarItem({ icon, title, href }: SidebarItemProps) {
+  const { isCollapsed } = useSidebar();
+
   return (
     <Link 
       href={href}
-      className="flex items-center px-4 pr-8 py-2 text-sm font-medium rounded-md hover:bg-[#5c94f7] hover:text-white transition-colors text-[#343434]"
+      className={`flex items-center py-2 text-sm font-medium rounded-md hover:bg-[#5c94f7] hover:text-white transition-colors text-[#343434] ${
+        isCollapsed ? 'px-2 justify-center' : 'px-4 pr-8'
+      }`}
+      title={isCollapsed ? title : undefined}
     >
-      <span className="mr-2">{icon}</span>
-      {title}
+      <span className={isCollapsed ? '' : 'mr-2'}>{icon}</span>
+      {!isCollapsed && title}
     </Link>
   )
 }

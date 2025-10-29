@@ -3,6 +3,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Sidebar from "@/components/layout/Sidebar";
+import { SidebarProvider } from "@/contexts/SidebarContext";
 
 export const metadata: Metadata = {
   title: "PromOcean",
@@ -24,10 +25,12 @@ export default function RootLayout({
         />
       </head>
       <body className="font-[Pretendard] bg-background text-text">
-        <div className="flex min-h-screen">
-          <Sidebar />
-          <main className="flex-1 bg-background">{children}</main>
-        </div>
+        <SidebarProvider>
+          <div className="min-h-screen">
+            <Sidebar />
+            <main className="bg-background min-h-screen transition-all duration-300" style={{ marginLeft: 'var(--sidebar-width, 16rem)' }} id="main-content">{children}</main>
+          </div>
+        </SidebarProvider>
       </body>
     </html>
   );
