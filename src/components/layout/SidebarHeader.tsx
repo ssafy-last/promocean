@@ -1,9 +1,12 @@
+'use client';
+
 // frontend/src/components/layout/SidebarHeader.tsx
 
 import React from 'react'
 import Link from 'next/link'
 import Promocean from '../icon/Promocean'
 import ChevronLeft from '../icon/ChevronLeft'
+import { useSidebar } from '@/contexts/SidebarContext'
 
 /**
  * SidebarHeader component
@@ -11,19 +14,43 @@ import ChevronLeft from '../icon/ChevronLeft'
  * @returns {React.ReactNode}
  */
 export default function SidebarHeader() {
-  return (
-    <Link href="/" className="block mb-8">
-      <div className="flex items-center justify-between">
-        
-        {/* 왼쪽: 아이콘 + 텍스트 */}
-        <div className="flex items-center gap-2">
-          <Promocean />
-          <h1 className="text-xl font-bold">PromOcean</h1>
-        </div>
+  const { isCollapsed, toggleSidebar } = useSidebar();
 
-        {/* 오른쪽: 토글 버튼 */}
-        <ChevronLeft />
+  const handleLogoClick = (e: React.MouseEvent) => {
+    if (isCollapsed) {
+      e.preventDefault();
+      toggleSidebar();
+    }
+  };
+
+  return (
+    <div className="mb-8">
+      <div className="flex items-center justify-between">
+        <Link 
+          href={isCollapsed ? "#" : "/"} 
+          className="block"
+          onClick={handleLogoClick}
+        >
+          <div className="flex items-center gap-2">
+            
+            {/* 메인 로고 */}
+            <Promocean />
+            {!isCollapsed && <h1 className="text-xl font-bold">PromOcean</h1>}
+          </div>
+        </Link>
+        
+        {/* 토글 버튼 - 토글 상태일 때만 숨김 */}
+        {!isCollapsed && (
+          <button 
+            onClick={toggleSidebar}
+            className="p-1 hover:bg-gray-100 rounded transition-colors"
+            aria-label="사이드바 토글"
+          >
+            <ChevronLeft />
+          </button>
+        )}
       </div>
-    </Link>
+      
+    </div>
   )
 }

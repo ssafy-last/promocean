@@ -1,8 +1,11 @@
+'use client';
+
 // frontend/src/components/section/SidebarSection.tsx
 
 import React from 'react'
 import SidebarList from '../list/SidebarList'
 import { SidebarItemProps } from '@/types/item'
+import { useSidebar } from '@/contexts/SidebarContext'
 
 interface SidebarSectionProps {
   title: string
@@ -16,15 +19,16 @@ interface SidebarSectionProps {
  * @returns {React.ReactNode}
  */
 export default function SidebarSection({title, items}: SidebarSectionProps) {
+  const { isCollapsed } = useSidebar();
 
   return (
-    <div>
-      <div className="mb-6">
+    <div className="mb-6">
+      {!isCollapsed && (
         <h2 className="text-lg font-semibold uppercase tracking-wider mb-3">
           {title}
         </h2>
-        <SidebarList items={items} />
-      </div>
+      )}
+      <SidebarList items={items} />
     </div>
   )
 }

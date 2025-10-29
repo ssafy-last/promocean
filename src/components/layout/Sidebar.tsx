@@ -1,3 +1,5 @@
+'use client';
+
 // frontend/src/components/layout/Sidebar.tsx
 
 import React from 'react'
@@ -11,6 +13,7 @@ import Megaphone from '@/components/icon/Megaphone'
 import User from '@/components/icon/User'
 import UserGroup from '@/components/icon/UserGroup'
 import { SidebarItemProps } from '@/types/item'
+import { useSidebar } from '@/contexts/SidebarContext'
 
 /** 
  * Sidebar component
@@ -18,45 +21,46 @@ import { SidebarItemProps } from '@/types/item'
  * @returns {React.ReactNode}
  */
 export default function Sidebar() {
+  const { isCollapsed } = useSidebar();
 
-    // 커뮤니티 섹션
-    const communityItems: SidebarItemProps[] = [{
-      'icon': <MagnifyingGlass />,
-      'title': '프롬프트 검색',
-      'href': '/community',
-    },
-    {
-      'icon': <QuestionMarkCircle />,
-      'title': '프롬프트 질문',
-      'href': '/community',
-    },
-    {
-      'icon': <Trophy />,
-      'title': '프롬프트 대회',
-      'href': '/contest',
-    },
-    {
-      'icon': <Megaphone />,
-      'title': '공지사항',
-      'href': '/community',
-    },
-  ]
-  
-    // 스페이스 섹션
-    const spaceItems: SidebarItemProps[] = [{
-      'icon': <User />,
-      'title': '마이 스페이스',
-      'href': '/my-space',
-    },
-    {
-      'icon': <UserGroup />,
-      'title': '팀 스페이스',
-      'href': '/team-space',
-    },
-  ]
+  // 커뮤니티 섹션
+  const communityItems: SidebarItemProps[] = [{
+    'icon': <MagnifyingGlass />,
+    'title': '프롬프트 검색',
+    'href': '/community',
+  },
+  {
+    'icon': <QuestionMarkCircle />,
+    'title': '프롬프트 질문',
+    'href': '/community',
+  },
+  {
+    'icon': <Trophy />,
+    'title': '프롬프트 대회',
+    'href': '/contest',
+  },
+  {
+    'icon': <Megaphone />,
+    'title': '공지사항',
+    'href': '/community',
+  },
+]
+
+  // 스페이스 섹션
+  const spaceItems: SidebarItemProps[] = [{
+    'icon': <User />,
+    'title': '마이 스페이스',
+    'href': '/my-space',
+  },
+  {
+    'icon': <UserGroup />,
+    'title': '팀 스페이스',
+    'href': '/team-space',
+  },
+]
 
   return (
-    <div className="w-64 min-h-screen p-4 border-r border-gray-200 flex flex-col" style={{backgroundColor: '#fdfdfc', color: '#343434'}}>
+    <div className={`fixed left-0 top-0 ${isCollapsed ? 'w-16' : 'w-64'} h-screen p-4 border-r border-gray-200 flex flex-col transition-all duration-300`} style={{backgroundColor: '#fdfdfc', color: '#343434'}}>
       <div className="flex-1">
         <SidebarHeader />
         
