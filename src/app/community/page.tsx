@@ -33,6 +33,7 @@ export default async function CommunityPage() {
         {/* 왼쪽: 필터 + 게시글 */}
         <div className="flex-1 flex flex-col gap-6">
           <CommunityBoardSection communityBoardList={communityBoardList} />
+          <CommunityFooter />
         </div>
 
         {/* 오른쪽: 플로팅 섹션 */}
@@ -40,7 +41,6 @@ export default async function CommunityPage() {
           <CommunityFloatingSection popularPosts={popularPosts} />
         </div>
       </div>
-        <CommunityFooter />
     </div>
   );
 }
