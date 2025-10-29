@@ -9,7 +9,7 @@ interface CommunityFloatingListProps {
 
 export default function CommunityFloatingList({ popularPosts }: CommunityFloatingListProps) {
   return (
-    <div className="space-y-0">
+    <div className="space-y-3">
       {popularPosts.map((item) => (
         <CommunityFloatingItem
           key={item.id}

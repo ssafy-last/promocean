@@ -10,7 +10,7 @@ import ChatBubbleBottomCenterText from '../icon/ChatBubbleBottomCenterText'
 export default function CommunityFloatingItem({ id, title, hashtags, image, likeCount, commentCount }: CommunityFloatingItemProps) {
   return (
     <Link href={`/community/${id}`} className="block group">
-      <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-gray-100 group-hover:border-primary/20 mb-3">
+      <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-gray-100 group-hover:border-primary/20">
         {/* Image Section */}
         <div className="relative w-full h-32 overflow-hidden">
           <Image
