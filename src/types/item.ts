@@ -23,3 +23,32 @@ export interface SidebarItemProps {
   title: string
   href: string
 }
+
+/**
+ * CommunityBoardItemProps interface
+ * @description 커뮤니티 게시판 아이템 타입
+ */
+export interface CommunityBoardItemProps {
+  id: string
+  title: string
+  hashtags: string[]
+  category: string
+  likeCount: number
+  commentCount: number
+  image: string
+  userImage?: string;    // 작성자 프로필 이미지
+  userName: string;          // 작성자 이름
+}
+
+/**
+ * CommunityFloatingItemProps interface
+ * @description 커뮤니티 플로팅 아이템 타입 (인기글)
+ */
+export interface CommunityFloatingItemProps {
+  id: string
+  title: string
+  hashtags: string[]
+  image: string
+  likeCount: number
+  commentCount: number
+}
