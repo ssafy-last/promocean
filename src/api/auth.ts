@@ -17,7 +17,6 @@ export const authAPI = {
 
     const response = await fetch('/mock/AuthResponse.json', { cache: 'no-store' });
     const data = await response.json();
-    console.log(data);
     return data;
     
     // Todo : 목데이터에서 실제 데이터로 변경 필요.
