@@ -2,7 +2,7 @@
 
 import HeroSection from "@/components/section/HeroSection";
 import PostCardSection from "@/components/section/PostCardSection";
-import { PostCardItemProps } from "@/types/item";
+import { PostCardItemProps } from "@/types/itemType";
 
 /**
  * Home component

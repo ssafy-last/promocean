@@ -2,12 +2,18 @@
 
 import CommunityBoardFilterSection from "@/components/section/CommunityBoardFilterSection";
 import CommunityBoardList from '@/components/list/CommunityBoardList'
-import { CommunityBoardItemProps } from '@/types/item'
+import { CommunityBoardItemProps } from '@/types/itemType'
 
 interface CommunityBoardSectionProps {
   communityBoardList: CommunityBoardItemProps[]
 }
 
+/**
+ * CommunityBoardSection component
+ * @description CommunityBoardSection component is a community board section component that displays the community board section content
+ * @param {CommunityBoardSectionProps} props - The props for the CommunityBoardSection component
+ * @returns {React.ReactNode}
+ */
 export default function CommunityBoardSection({ communityBoardList }: CommunityBoardSectionProps) {
   return (
   <div className="py-8">
@@ -19,7 +25,7 @@ export default function CommunityBoardSection({ communityBoardList }: CommunityB
             <p className="text-gray-800">다양한 주제의 프롬프트를 확인해보세요</p>
           </div>
 
-          {/* 🔥 오른쪽 필터 영역 최소 크기 조정 */}
+          {/* 오른쪽 필터 영역 최소 크기 조정 */}
           <div className="flex-shrink-0 min-w-[380px]">
             <CommunityBoardFilterSection />
           </div>

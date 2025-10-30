@@ -24,7 +24,7 @@ export default function RootLayout({
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"
         />
       </head>
-      <body className="font-[Pretendard] bg-background text-text">
+      <body className="font-[Pretendard] bg-background text-text" suppressHydrationWarning>
         <SidebarProvider>
           <div className="min-h-screen">
             <Sidebar />

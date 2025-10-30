@@ -1,12 +1,18 @@
 // frontend/src/components/section/CommunityFloatingSection.tsx
 
 import CommunityFloatingList from '@/components/list/CommunityFloatingList'
-import { CommunityFloatingItemProps } from '@/types/item'
+import { CommunityFloatingItemProps } from '@/types/itemType'
 
 interface CommunityFloatingSectionProps {
   popularPosts: CommunityFloatingItemProps[]
 }
 
+/**
+ * CommunityFloatingSection component
+ * @description CommunityFloatingSection component is a community floating section component that displays the community floating section content
+ * @returns {React.ReactNode}
+ * @param {CommunityFloatingSectionProps} props - The props for the CommunityFloatingSection component
+ */
 export default function CommunityFloatingSection({ popularPosts }: CommunityFloatingSectionProps) {
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
