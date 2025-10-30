@@ -1,7 +1,7 @@
 // frontend/src/components/list/CommunityBoardList.tsx
 
 import CommunityBoardItem from '@/components/item/CommunityBoardItem'
-import { CommunityBoardItemProps } from '@/types/item'
+import { CommunityBoardItemProps } from '@/types/itemType'
 
 interface CommunityBoardListProps {
   communityBoardList: CommunityBoardItemProps[]

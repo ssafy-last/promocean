@@ -1,0 +1,45 @@
+// frontend/src/types/auth.ts
+
+
+// Request & Response
+
+/**
+ * 인증 응답 인터페이스
+ * @property message - 메시지
+ * @property data - 데이터
+ * @property data.nickname - 닉네임
+ * @property data.email - 이메일
+ * @property data.profileUrl - 프로필 이미지 URL
+ */
+export interface AuthResponse {
+  message: string | null;
+  data: {
+    nickname: string;
+    email: string;
+    profileUrl: string;
+  } | null;
+}
+
+
+/**
+ * 로그인 요청 인터페이스
+ * @property email - 이메일
+ * @property password - 비밀번호
+ */
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+
+/**
+ * 회원가입 요청 인터페이스
+ * @property email - 이메일
+ * @property password - 비밀번호
+ * @property nickname - 닉네임
+ */
+export interface SignUpRequest {
+  email: string;
+  password: string;
+  nickname: string;
+}

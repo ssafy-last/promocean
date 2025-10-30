@@ -29,6 +29,24 @@
       ],
       "@types/*": [
         "./src/types/*"
+      ],
+      "@components/*": [
+        "./src/components/*"
+      ],
+      "@api/*": [
+        "./src/api/*"
+      ],
+      "@store/*": [
+        "./src/store/*"
+      ],
+      "@contexts/*": [
+        "./src/contexts/*"
+      ],
+      "@app/*": [
+        "./src/app/*"
+      ],
+      "@assets/*": [
+        "./src/assets/*"
       ]
     }
   },

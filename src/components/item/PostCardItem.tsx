@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { PostCardItemProps } from '@/types/item'
+import { PostCardItemProps } from '@/types/itemType'
 import Heart from '../icon/Heart'
 import ChatBubbleBottomCenterText from '../icon/ChatBubbleBottomCenterText'
 

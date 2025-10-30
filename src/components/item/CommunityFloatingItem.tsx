@@ -3,7 +3,7 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { CommunityFloatingItemProps } from '@/types/item'
+import { CommunityFloatingItemProps } from '@/types/itemType'
 import Heart from '../icon/Heart'
 import ChatBubbleBottomCenterText from '../icon/ChatBubbleBottomCenterText'
 

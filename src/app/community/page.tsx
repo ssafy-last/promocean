@@ -5,7 +5,7 @@ import CommunityTabs from "@/components/filter/CommunityTabs";
 import CommunityBoardSection from "@/components/section/CommunityBoardSection";
 import CommunityFloatingSection from "@/components/section/CommunityFloatingSection";
 import CommunityFooter from "@/components/layout/CommunityFooter";
-import { CommunityBoardItemProps, CommunityFloatingItemProps } from "@/types/item";
+import { CommunityBoardItemProps, CommunityFloatingItemProps } from "@/types/itemType";
 
 export default async function CommunityPage() {
   // 커뮤니티 게시판 데이터 fetch

@@ -11,8 +11,9 @@ import Trophy from '@/components/icon/Trophy'
 import Megaphone from '@/components/icon/Megaphone'
 import User from '@/components/icon/User'
 import UserGroup from '@/components/icon/UserGroup'
-import { SidebarItemProps } from '@/types/item'
+import { SidebarItemProps } from '@/types/itemType'
 import { useSidebar } from '@/contexts/SidebarContext'
+import { useAuthStore } from '@/store/authStore'
 
 /** 
  * Sidebar component
@@ -21,7 +22,7 @@ import { useSidebar } from '@/contexts/SidebarContext'
  */
 export default function Sidebar() {
   const { isCollapsed } = useSidebar();
-
+  const { isLoggedIn } = useAuthStore();
   // 커뮤니티 섹션
   const communityItems: SidebarItemProps[] = [{
     'icon': <MagnifyingGlass />,
@@ -59,7 +60,10 @@ export default function Sidebar() {
         <SidebarHeader />
         
         <SidebarSection title="게시판" items={communityItems} />
-        <SidebarSection title="스페이스" items={spaceItems} />
+
+        {isLoggedIn && (
+          <SidebarSection title="스페이스" items={spaceItems} />
+        )}
       </div>
 
       <div className="mt-auto">

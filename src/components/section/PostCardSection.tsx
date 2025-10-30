@@ -1,7 +1,7 @@
 // frontend/src/components/section/PostCardSection.tsx
 
 import PostCardList from '@/components/list/PostCardList'
-import { PostCardItemProps } from '@/types/item'
+import { PostCardItemProps } from '@/types/itemType'
 
 interface PostSectionType {
   postSectionTitle : string
