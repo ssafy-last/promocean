@@ -3,17 +3,18 @@
 import PostCardList from '@/components/list/PostCardList'
 import { PostCardItemProps } from '@/types/itemType'
 
-interface PostSectionType {
+interface PostCardSectionProps {
   postSectionTitle : string
   postCardList : PostCardItemProps[]
 }
+
 /**
  * PostCardSection component
  * @description PostCardSection component is a post card section component that displays the post card section content
  * @returns {React.ReactNode}
+ * @param {PostCardSectionProps} props - The props for the PostCardSection component
  */
-export default function PostCardSection({postSectionTitle, postCardList }: PostSectionType) {
-
+export default function PostCardSection({postSectionTitle, postCardList }: PostCardSectionProps) {
   return (
     <div className="py-8 px-6">
       <div className="max-w-7xl mx-auto">

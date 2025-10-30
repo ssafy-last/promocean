@@ -7,23 +7,18 @@ import { CommunityBoardItemProps } from "@/types/itemType";
 import Heart from "@/components/icon/Heart";
 import ChatBubbleBottomCenterText from "@/components/icon/ChatBubbleBottomCenterText";
 
-export default function CommunityBoardItem({
-  id,
-  title,
-  hashtags,
-  category,
-  likeCount,
-  commentCount,
-  image,
-  userImage,
-  userName,
-}: CommunityBoardItemProps) {
+/**
+ * CommunityBoardItem component
+ * @description CommunityBoardItem component is a community board item component that displays the community board item content
+ * @returns {React.ReactNode}
+ */
+export default function CommunityBoardItem({ id, title, hashtags, category, likeCount, commentCount, image, userImage, userName }: CommunityBoardItemProps) {
   return (
     <Link
       href={`/community/${id}`}
       className="flex items-center justify-between w-full bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 p-4"
     >
-      {/* ✅ LEFT : 이미지 + 텍스트 */}
+      {/* LEFT : 이미지 + 텍스트 */}
       <div className="flex items-start gap-4 min-w-0">
         {/* 썸네일 */}
         <div className="relative flex-shrink-0 w-16 h-16 rounded-md overflow-hidden bg-gray-100">
@@ -41,6 +36,7 @@ export default function CommunityBoardItem({
 
         {/* 텍스트 영역 */}
         <div className="flex flex-col min-w-0">
+
           {/* 제목 */}
           <h3 className="font-bold text-text text-base mb-1 line-clamp-1 group-hover:text-primary transition-colors">
             {title}
@@ -65,8 +61,9 @@ export default function CommunityBoardItem({
         </div>
       </div>
 
-      {/* ✅ RIGHT : 좋아요, 댓글, 유저정보 */}
+      {/* RIGHT : 좋아요, 댓글, 유저정보 */}
       <div className="flex flex-col items-end justify-between h-full text-gray-600">
+        
         {/* 좋아요/댓글 */}
         <div className="flex items-center gap-4 mb-2">
           <div className="flex items-center gap-1 hover:text-red-500 transition-colors">
