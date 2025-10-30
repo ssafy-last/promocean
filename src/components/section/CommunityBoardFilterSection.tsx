@@ -1,7 +1,10 @@
+'use client';
+
 // frontend/src/components/section/CommunityBoardFilterSection.tsx
 
 import ComboBox from "@/components/filter/ComboBox";
 import SearchBar from "@/components/filter/SearchBar";
+import { useRouter } from "next/navigation";
 
 /**
  * CommunityBoardFilterSection component
@@ -9,10 +12,25 @@ import SearchBar from "@/components/filter/SearchBar";
  * @returns {React.ReactNode}
  */
 export default function CommunityBoardFilterSection() {
+
+  const router = useRouter();
+  const handleWritePost = () => {
+    router.push("/post?type=community");
+  }
+
   return (
     <div className="flex flex-row items-center justify-end gap-3 w-full px-4 py-4 bg-gray-50 border-gray-200">
       <ComboBox />
       <SearchBar />
+
+      {/* Todo: 게시글 작성 컴포넌트 분리 */}
+      <button
+        type="button"
+        className="px-4 py-2 rounded-md bg-primary text-white font-medium hover:brightness-110 active:brightness-95 transition-colors"
+        onClick={handleWritePost}
+      >
+        게시글 작성
+      </button>
     </div>
   );
 }
