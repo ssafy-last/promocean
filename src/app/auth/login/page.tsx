@@ -1,17 +1,45 @@
+'use client';
+
 // frontend/src/app/auth/login/page.tsx
 
+import { useSearchParams, useRouter } from 'next/navigation';
+import { useMemo } from 'react';
 import LoginTabs from "@/components/filter/LoginTabs";
 import SignInForm from "@/components/form/SignInForm";
 import SignUpForm from "@/components/form/SignUpForm";
 
 export default function LoginPage() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  // URL 쿼리 파라미터에서 탭 상태 읽기
+  const activeTab = useMemo(() => {
+    const tab = searchParams.get('tab');
+    return tab === 'signup' ? 'signup' : 'login';
+  }, [searchParams]);
+
+  // 탭 변경 시 URL 업데이트
+  const handleTabChange = (tab: 'login' | 'signup') => {
+    const params = new URLSearchParams(searchParams);
+    params.set('tab', tab);
+    router.push(`?${params.toString()}`);
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full space-y-8">
-        <LoginTabs />
+    <div className="min-h-screen flex items-center justify-center relative" >
+      {/* 배경 오버레이 */}
+      <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+      
+      {/* 로그인 폼 컨테이너 */}
+      <div className="relative z-10 w-full max-w-md mx-4">
+        <div className="bg-gray-800 bg-opacity-90 backdrop-blur-sm rounded-2xl p-8 shadow-2xl">
+          {/* 탭 */}
+          <LoginTabs activeTab={activeTab} onTabChange={handleTabChange} />
+          
+          {/* 폼 내용 */}
+          {activeTab === 'login' ? <SignInForm /> : <SignUpForm />}
+        </div>
       </div>
-      <SignInForm />
-      <SignUpForm />
     </div>
   );
 }
