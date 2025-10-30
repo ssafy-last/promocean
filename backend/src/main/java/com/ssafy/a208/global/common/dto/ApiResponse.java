@@ -11,6 +11,10 @@ public record ApiResponse<T>(
         T data
 ) {
 
+    public static <T> ApiResponse<T> of(String message) {
+        return ApiResponse.<T>builder().message(message).build();
+    }
+
     public static <T> ResponseEntity<ApiResponse<T>> of(HttpStatus status) {
         return ResponseEntity.status(status)
                 .body(ApiResponse.<T>builder().build());
@@ -26,9 +30,20 @@ public record ApiResponse<T>(
                 .body(ApiResponse.<T>builder().data(data).build());
     }
 
+    public static <T> ResponseEntity<ApiResponse<T>> ofToken(T data, String token) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .header("Authorization", token)
+                .body(ApiResponse.<T>builder().data(data).build());
+    }
+
     public static <T> ResponseEntity<ApiResponse<T>> of(HttpStatus status, String message, T data) {
         return ResponseEntity.status(status)
                 .body(ApiResponse.<T>builder().message(message).data(data).build());
+    }
+
+    public static <T> ResponseEntity<ApiResponse<T>> failedOf(HttpStatus status, String message) {
+        return ResponseEntity.status(status)
+                .body(ApiResponse.<T>builder().message(message).build());
     }
 
     public static <T> ResponseEntity<ApiResponse<T>> failedOf(ApiException e) {
@@ -49,4 +64,3 @@ public record ApiResponse<T>(
     }
 
 }
-
