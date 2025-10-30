@@ -2,7 +2,7 @@
 
 import React from 'react'
 import SidebarItem from '../item/SidebarItem'
-import { SidebarItemProps } from '@/types/item'
+import { SidebarItemProps } from '@/types/itemType'
 
 interface SidebarListProps {
   items: SidebarItemProps[]

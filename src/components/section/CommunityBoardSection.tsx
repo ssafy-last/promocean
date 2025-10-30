@@ -2,7 +2,7 @@
 
 import CommunityBoardFilterSection from "@/components/section/CommunityBoardFilterSection";
 import CommunityBoardList from '@/components/list/CommunityBoardList'
-import { CommunityBoardItemProps } from '@/types/item'
+import { CommunityBoardItemProps } from '@/types/itemType'
 
 interface CommunityBoardSectionProps {
   communityBoardList: CommunityBoardItemProps[]

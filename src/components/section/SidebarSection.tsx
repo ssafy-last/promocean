@@ -4,7 +4,7 @@
 
 import React from 'react'
 import SidebarList from '../list/SidebarList'
-import { SidebarItemProps } from '@/types/item'
+import { SidebarItemProps } from '@/types/itemType'
 import { useSidebar } from '@/contexts/SidebarContext'
 
 interface SidebarSectionProps {

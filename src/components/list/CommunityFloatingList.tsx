@@ -1,7 +1,7 @@
 // frontend/src/components/list/CommunityFloatingList.tsx
 
 import CommunityFloatingItem from '@/components/item/CommunityFloatingItem'
-import { CommunityFloatingItemProps } from '@/types/item'
+import { CommunityFloatingItemProps } from '@/types/itemType'
 
 interface CommunityFloatingListProps {
   popularPosts: CommunityFloatingItemProps[]
