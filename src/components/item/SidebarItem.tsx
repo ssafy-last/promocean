@@ -36,7 +36,7 @@ export default function SidebarItem({ icon, title, href, onClick }: SidebarItemP
 
   return (
     <Link 
-      href={href}
+      href={href ?? ''}
       className={className}
       title={isCollapsed ? title : undefined}
     >

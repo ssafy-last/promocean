@@ -7,6 +7,11 @@ interface CommunityFloatingListProps {
   popularPosts: CommunityFloatingItemProps[]
 }
 
+/**
+ * CommunityFloatingList component
+ * @description CommunityFloatingList component is a community floating list component that displays the community floating list content
+ * @returns {React.ReactNode}
+ */
 export default function CommunityFloatingList({ popularPosts }: CommunityFloatingListProps) {
   return (
     <div className="space-y-3">

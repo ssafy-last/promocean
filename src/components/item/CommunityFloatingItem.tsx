@@ -7,10 +7,16 @@ import { CommunityFloatingItemProps } from '@/types/itemType'
 import Heart from '../icon/Heart'
 import ChatBubbleBottomCenterText from '../icon/ChatBubbleBottomCenterText'
 
+/**
+ * CommunityFloatingItem component
+ * @description CommunityFloatingItem component is a community floating item component that displays the community floating item content
+ * @returns {React.ReactNode}
+ */
 export default function CommunityFloatingItem({ id, title, hashtags, image, likeCount, commentCount }: CommunityFloatingItemProps) {
   return (
     <Link href={`/community/${id}`} className="block group">
       <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-gray-100 group-hover:border-primary/20">
+
         {/* Image Section */}
         <div className="relative w-full h-32 overflow-hidden">
           <Image
@@ -23,6 +29,7 @@ export default function CommunityFloatingItem({ id, title, hashtags, image, like
 
         {/* Content Section */}
         <div className="p-3">
+          
           {/* Title */}
           <h3 className="font-semibold text-text text-sm mb-2 line-clamp-2 transition-colors group-hover:text-primary">
             {title}

@@ -4,6 +4,11 @@
 
 import React from "react";
 
+/**
+ * CommunityHeader component
+ * @description CommunityHeader component is a community header component that displays the community header content
+ * @returns {React.ReactNode}
+ */
 export default function CommunityHeader() {
   return (
     <header className="w-full">
@@ -12,7 +17,7 @@ export default function CommunityHeader() {
         <div className="w-20 h-20 bg-white/90 rounded-full mr-6"></div>
         <div>
           <h1 className="text-3xl font-semibold">커뮤니티</h1>
-          <p className="text-white/80 text-sm">PromOcean 커뮤니티 공간</p>
+          <p className="text-white/80 text-sm">Promocean 커뮤니티 공간</p>
         </div>
       </div>
     </header>

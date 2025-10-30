@@ -5,9 +5,8 @@ import SidebarItem from '../item/SidebarItem'
 import { SidebarItemProps } from '@/types/itemType'
 
 interface SidebarListProps {
-  items: SidebarItemProps[]
+  sidebarList: SidebarItemProps[]
 }
-
 
 /**
  * SidebarList component
@@ -15,15 +14,15 @@ interface SidebarListProps {
  * @param {SidebarListProps} props - The props for the SidebarList component
  * @returns {React.ReactNode}
  */
-export default function SidebarList({ items }: SidebarListProps) {
+export default function SidebarList({ sidebarList }: SidebarListProps) {
   return (
     <ul>
-      {items.map((item, index) => (
+      {sidebarList.map((sidebarItem, index) => (
         <SidebarItem 
           key={index}
-          icon={item.icon}
-          title={item.title}
-          href={item.href}
+          icon={sidebarItem.icon}
+          title={sidebarItem.title}
+          href={sidebarItem.href}
         />
       ))}
     </ul>

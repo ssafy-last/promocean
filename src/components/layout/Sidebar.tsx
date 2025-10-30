@@ -23,6 +23,7 @@ import { useAuthStore } from '@/store/authStore'
 export default function Sidebar() {
   const { isCollapsed } = useSidebar();
   const { isLoggedIn } = useAuthStore();
+  
   // 커뮤니티 섹션
   const communityItems: SidebarItemProps[] = [{
     'icon': <MagnifyingGlass />,
@@ -59,10 +60,10 @@ export default function Sidebar() {
       <div className="flex-1">
         <SidebarHeader />
         
-        <SidebarSection title="게시판" items={communityItems} />
+        <SidebarSection title="게시판" sidebarList={communityItems} />
 
         {isLoggedIn && (
-          <SidebarSection title="스페이스" items={spaceItems} />
+          <SidebarSection title="스페이스" sidebarList={spaceItems} />
         )}
       </div>
 
