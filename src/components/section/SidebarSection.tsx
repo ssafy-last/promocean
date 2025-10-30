@@ -3,13 +3,13 @@
 // frontend/src/components/section/SidebarSection.tsx
 
 import React from 'react'
-import SidebarList from '../list/SidebarList'
-import { SidebarItemProps } from '@/types/item'
+import SidebarList from '@/components/list/SidebarList'
+import { SidebarItemProps } from '@/types/itemType'
 import { useSidebar } from '@/contexts/SidebarContext'
 
 interface SidebarSectionProps {
   title: string
-  items: SidebarItemProps[]
+  sidebarList: SidebarItemProps[]
 }
 
 /**
@@ -18,7 +18,7 @@ interface SidebarSectionProps {
  * @param {SidebarSectionProps} props - The props for the SidebarSection component
  * @returns {React.ReactNode}
  */
-export default function SidebarSection({title, items}: SidebarSectionProps) {
+export default function SidebarSection({title, sidebarList}: SidebarSectionProps) {
   const { isCollapsed } = useSidebar();
 
   return (
@@ -28,7 +28,7 @@ export default function SidebarSection({title, items}: SidebarSectionProps) {
           {title}
         </h2>
       )}
-      <SidebarList items={items} />
+      <SidebarList sidebarList={sidebarList} />
     </div>
   )
 }

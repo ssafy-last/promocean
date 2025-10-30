@@ -21,7 +21,8 @@ export interface PostCardItemProps {
 export interface SidebarItemProps {
   icon: React.ReactNode
   title: string
-  href: string
+  href?: string
+  onClick?: () => void
 }
 
 /**

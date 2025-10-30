@@ -1,7 +1,7 @@
 // frontend/src/components/list/PostCardList.tsx
 
 import PostCardItem from '@/components/item/PostCardItem'
-import { PostCardItemProps } from '@/types/item'
+import { PostCardItemProps } from '@/types/itemType'
 
 interface PostCardListProps {
   posts: PostCardItemProps[]
