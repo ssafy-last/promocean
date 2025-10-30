@@ -27,7 +27,8 @@ public class Profile extends FileEntity {
     private Member member;
 
     @Builder
-    public Profile(String originalName, String filePath, String extension, Long size, Member member) {
+    public Profile(String originalName, String filePath, String extension, Long size,
+            Member member) {
         super(originalName, filePath, extension, size);
         this.member = member;
     }
