@@ -16,7 +16,7 @@ import { useSidebar } from '@/contexts/SidebarContext'
 export default function SidebarItem({ icon, title, href, onClick }: SidebarItemProps) {
   const { isCollapsed } = useSidebar();
 
-  const className = `flex items-center py-2 text-sm font-medium rounded-md hover:bg-[#5c94f7] hover:text-white transition-colors text-[#343434] ${
+  const className = `flex items-center py-2 text-sm font-medium rounded-md hover:bg-primary hover:text-white transition-colors text-[#343434] ${
     isCollapsed ? 'px-2 justify-center' : 'px-4 pr-8'
   }`;
 

@@ -16,7 +16,7 @@ export default function SearchBar() {
   return (
     <form
       onSubmit={handleSearch}
-      className="flex items-center border border-gray-300 rounded-full px-3 py-2 w-72 bg-white focus-within:ring-2 focus-within:ring-[#5c94f7]"
+      className="flex items-center border border-gray-300 rounded-full px-3 py-2 w-72 bg-white focus-within:ring-2 focus-within:ring-primary"
     >
       <MagnifyingGlass />
       <input

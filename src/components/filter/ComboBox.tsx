@@ -33,7 +33,7 @@ export default function ComboBox() {
                 setIsOpen(false);
               }}
               className={`px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 ${
-                opt === selected ? "text-[#5c94f7]" : "text-gray-700"
+                opt === selected ? "text-primary" : "text-gray-700"
               }`}
             >
               {opt}

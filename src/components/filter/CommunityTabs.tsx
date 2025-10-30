@@ -34,8 +34,8 @@ export default function CommunityTabs() {
                 href={href}
                 className={`inline-block py-3 text-sm font-medium transition-colors ${
                   isActive
-                    ? "text-[#5c94f7] border-b-2 border-[#5c94f7]"
-                    : "text-gray-600 hover:text-[#5c94f7]"
+                    ? "text-primary border-b-2 border-primary"
+                    : "text-gray-600 hover:text-primary"
                 }`}
               >
                 {cat.name}
