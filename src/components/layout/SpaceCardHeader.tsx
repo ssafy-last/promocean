@@ -23,8 +23,8 @@ export interface SpaceCardHeaderProps {
 export default function SpaceCardHeader({ title }: SpaceCardHeaderProps){
     return(
           <div className="
-            text-black 
-            text-5xl 
+            text-4xl
+            text-(-text-color)
             font-medium 
             leading-[58px]
             border-b-2
