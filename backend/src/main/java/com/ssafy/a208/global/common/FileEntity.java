@@ -20,17 +20,17 @@ public class FileEntity extends BaseEntity {
     private String filePath;
 
     @Comment("확장자")
-    @Column(nullable = false, length = 4)
-    private String extension;
+    @Column(nullable = false, length = 10)
+    private String contentType;
 
     @Comment("파일 크기")
     @Column(nullable = false)
     private Long size;
 
-    protected FileEntity(String originalName, String filePath, String extension, Long size) {
+    protected FileEntity(String originalName, String filePath, String contentType, Long size) {
         this.originalName = originalName;
         this.filePath = filePath;
-        this.extension = extension;
+        this.contentType = contentType;
         this.size = size;
     }
 }
