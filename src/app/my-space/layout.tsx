@@ -11,14 +11,9 @@ export default function MyLayout({
 }: Readonly<{children: React.ReactNode}>){
  
         return(
-            <html lang="ko">
-
-             <body className="font-[Pretendard] bg-background text-text" suppressHydrationWarning>
+            <div>
              <MySpaceHeader nickname="홍길동둥"/>
              {children}
-           </body>
-    
-        </html>
-
+            </div>
         )
 }
