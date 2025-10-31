@@ -32,9 +32,9 @@ public class SubmissionFile extends FileEntity {
     private Contest contest;
 
     @Builder
-    public SubmissionFile(String originalName, String filePath, String extension, Long size,
+    public SubmissionFile(String originalName, String filePath, String contentType, Long size,
             Submission submission, Contest contest) {
-        super(originalName, filePath, extension, size);
+        super(originalName, filePath, contentType, size);
         this.submission = submission;
         this.contest = contest;
     }

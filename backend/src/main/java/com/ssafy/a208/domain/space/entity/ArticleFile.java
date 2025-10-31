@@ -27,9 +27,9 @@ public class ArticleFile extends FileEntity {
     private Article article;
 
     @Builder
-    public ArticleFile(String originalName, String filePath, String extension, Long size,
+    public ArticleFile(String originalName, String filePath, String contentType, Long size,
             Article article) {
-        super(originalName, filePath, extension, size);
+        super(originalName, filePath, contentType, size);
         this.article = article;
     }
 }

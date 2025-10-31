@@ -27,8 +27,9 @@ public class PostFile extends FileEntity {
     private Post post;
 
     @Builder
-    public PostFile(String originalName, String filePath, String extension, Long size, Post post) {
-        super(originalName, filePath, extension, size);
+    public PostFile(String originalName, String filePath, String contentType, Long size,
+            Post post) {
+        super(originalName, filePath, contentType, size);
         this.post = post;
     }
 }
