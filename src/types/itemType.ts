@@ -53,3 +53,15 @@ export interface CommunityFloatingItemProps {
   likeCount: number
   commentCount: number
 }
+
+/**
+ * PostingFloatingItemProps interface
+ * @description 게시글 작성 플로팅 아이템 타입 (카테고리 등)
+ */
+export interface PostingFloatingItemProps {
+  id: string
+  icon: React.ReactNode
+  label: string
+  value: string
+  checked?: boolean
+}
