@@ -29,7 +29,7 @@ export default async function MySpaceArchiveFolderPage({ params }: MySpaceArchiv
 
     <div className="min-h-screen bg-gray-50">
 
-      <div className="max-w-6xl mx-auto px-4 py-3">
+      <div className="flex justify-start max-w-6xl px-4 py-3 text-[40px] font-bold text-gray-900">
         <h1 className="text-[40px] font-bold text-gray-900">{folderName}</h1>
       </div>
 
