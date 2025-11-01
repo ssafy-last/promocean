@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 /**
  * SpaceArchiveItem의 props 타입 정의입니다.
  *
@@ -33,8 +35,16 @@ export interface SpaceArchiveItemProps {
  */
 export default function SpaceArchiveItem({ title, bgColor }: SpaceArchiveItemProps) {
 
+    const router = useRouter();
+
     const click = () => {
         console.log(`${title} 아카이브 아이템 클릭됨`);
+
+        //아니 NEXT.JS 라우팅 편하네 react-native expo랑 라우팅 방식이 동일함
+        router.push('/my-space/archive/' + encodeURIComponent(title));
+        
+        //encodeURIComponent : 특수문자나 공백이 포함된 문자열을 URL에 안전하게 포함시키기 위해 인코딩하는 함수
+        // 예를 들어, "AI 챗봇"이라는 제목은 "AI%20챗봇"으로 인코딩됩니다.
     }
 
   return (
