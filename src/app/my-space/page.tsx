@@ -29,7 +29,6 @@ export default function MySpacePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <MySpaceTabs/>
       <div className="flex justify-end-safe">
         <div className="shrink-0 min-w-[380px]">
           <MySpaceArchiveFilterSection/>
