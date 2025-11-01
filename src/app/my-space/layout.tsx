@@ -4,15 +4,16 @@ import type { Metadata } from "next";
 import Sidebar from "@/components/layout/Sidebar";
 import { SidebarProvider } from "@/contexts/SidebarContext";
 import MySpaceHeader from "@/components/layout/MySpaceHeader";
+import MySpaceTabs from "@/components/filter/MySpaceTabs";
 
 
 export default function MyLayout({
     children
 }: Readonly<{children: React.ReactNode}>){
- 
         return(
             <div>
-             <MySpaceHeader nickname="홍길동둥"/>
+             <MySpaceHeader nickname="홍길동"/>
+             <MySpaceTabs/>
              {children}
             </div>
         )
