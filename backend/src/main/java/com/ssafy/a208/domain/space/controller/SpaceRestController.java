@@ -50,23 +50,42 @@ public class SpaceRestController {
     }
 
     @GetMapping("/{spaceId}")
-    @Operation(summary = "스페이스 상세조회", description = "스페이스의 내용을 상세 조회할 수 있습니다.")
-    public ResponseEntity<ApiResponse<SpaceDetailRes>> getSpace(
+    @Operation(summary = "팀스페이스 상세조회", description = "팀스페이스의 내용을 상세 조회할 수 있습니다.")
+    public ResponseEntity<ApiResponse<SpaceDetailRes>> getTeamSpace(
             @PathVariable Long spaceId,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        SpaceDetailRes space = spaceService.getSpace(spaceId, userDetails);
+        SpaceDetailRes space = spaceService.getTeamSpace(spaceId, userDetails);
+        return ApiResponse.of(HttpStatus.OK, space);
+    }
+
+    @GetMapping("/me")
+    @Operation(summary = "개인스페이스 상세조회", description = "개인스페이스의 내용을 상세 조회할 수 있습니다.")
+    public ResponseEntity<ApiResponse<SpaceDetailRes>> getMySpace(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        SpaceDetailRes space = spaceService.getMySpace(userDetails);
         return ApiResponse.of(HttpStatus.OK, space);
     }
 
     @PatchMapping("/{spaceId}")
-    @Operation(summary = "스페이스 수정", description = "스페이스의 제목을 수정할 수 있습니다.")
+    @Operation(summary = "팀스페이스 수정", description = "팀스페이스의 제목을 수정할 수 있습니다.")
     public ResponseEntity<ApiResponse<SpaceDetailRes>> updateSpace(
             @PathVariable Long spaceId,
             @RequestBody @Valid SpaceReq spaceReq,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        spaceService.updateSpace(spaceId, spaceReq, userDetails);
+        spaceService.updateTeamSpace(spaceId, spaceReq, userDetails);
+        return ApiResponse.of(HttpStatus.OK);
+    }
+
+    @PatchMapping("/me")
+    @Operation(summary = "개인스페이스 수정", description = "개인스페이스의 제목을 수정할 수 있습니다.")
+    public ResponseEntity<ApiResponse<SpaceDetailRes>> updateMySpace(
+            @RequestBody @Valid SpaceReq spaceReq,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        spaceService.updateMySpace(spaceReq, userDetails);
         return ApiResponse.of(HttpStatus.OK);
     }
 

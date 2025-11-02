@@ -69,7 +69,7 @@ public class SpaceService {
     }
 
     @Transactional(readOnly = true)
-    public SpaceDetailRes getSpace(Long spaceId, CustomUserDetails userDetails) {
+    public SpaceDetailRes getTeamSpace(Long spaceId, CustomUserDetails userDetails) {
         participantService.validateAccess(spaceId, userDetails.memberId());
         List<FolderInfo> folderInfos = folderService.getFoldersBySpaceId(spaceId);
         return SpaceDetailRes.builder()
@@ -77,10 +77,38 @@ public class SpaceService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
+    public SpaceDetailRes getMySpace(CustomUserDetails userDetails) {
+        List<Participant> participants = participantService.getParticipantsByMemberId(
+                userDetails.memberId());
+        List<Long> spaceIds = participants.stream()
+                .map(participant -> participant.getSpace().getId())
+                .toList();
+        Space mySpace = spaceRepository.findAllByIdInAndTypeAndDeletedAtIsNull(spaceIds,
+                SpaceType.PERSONAL).get(0);
+        List<FolderInfo> folderInfos = folderService.getFoldersBySpaceId(mySpace.getId());
+        return SpaceDetailRes.builder()
+                .folders(folderInfos)
+                .build();
+    }
+
     @Transactional
-    public void updateSpace(Long spaceId, SpaceReq spaceReq, CustomUserDetails userDetails) {
+    public void updateTeamSpace(Long spaceId, SpaceReq spaceReq, CustomUserDetails userDetails) {
         participantService.validateEditPermission(spaceId, userDetails.memberId());
         Space space = spaceRepository.findByIdAndDeletedAtIsNull(spaceId);
+        space.updateName(spaceReq.name());
+    }
+
+    @Transactional
+    public void updateMySpace(SpaceReq spaceReq, CustomUserDetails userDetails) {
+        List<Participant> participants = participantService.getParticipantsByMemberId(
+                userDetails.memberId());
+        List<Long> spaceIds = participants.stream()
+                .map(participant -> participant.getSpace().getId())
+                .toList();
+        Space mySpace = spaceRepository.findAllByIdInAndTypeAndDeletedAtIsNull(spaceIds,
+                SpaceType.PERSONAL).get(0);
+        Space space = spaceRepository.findByIdAndDeletedAtIsNull(mySpace.getId());
         space.updateName(spaceReq.name());
     }
 
