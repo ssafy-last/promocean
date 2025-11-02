@@ -35,7 +35,7 @@ export default async function MySpaceArchiveFolderPage({ params }: MySpaceArchiv
 
       <div className="flex justify-end-safe">
         <div className="shrink-0 min-w-[380px]">
-          <MySpaceArchiveFilterSection/>
+          <MySpaceArchiveFilterSection buttonMode="write"/>
         </div>
       </div>
 

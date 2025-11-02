@@ -34,7 +34,7 @@ export default async function MySpacePage() {
     <div className="min-h-screen bg-gray-50">
       <div className="flex justify-end-safe">
         <div className="shrink-0 min-w-[380px]">
-          <MySpaceArchiveFilterSection/>
+          <MySpaceArchiveFilterSection buttonMode="search"/>
         </div>
       </div>
 
