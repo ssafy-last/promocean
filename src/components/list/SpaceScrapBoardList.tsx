@@ -9,7 +9,7 @@ export interface  SpaceScrapBoardListProps{
 export default function SpaceScrapBoardList({itemList} : SpaceScrapBoardListProps){
 
     return (
-        <div>
+        <div className="flex flex-col px-4 gap-2">
           {
 
             itemList?.map((item, index) => (

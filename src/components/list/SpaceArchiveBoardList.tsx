@@ -11,7 +11,7 @@ export interface SpaceArchiveBoardListProps{
 export default function SpaceArchiveBoardList({mySpaceBoardList} : SpaceArchiveBoardListProps){
 
         return(
-        <div>
+        <div className="flex flex-col px-4 gap-2">
         {
             mySpaceBoardList?.map((item, index) => (
                 <SpaceArchiveBoardItem
