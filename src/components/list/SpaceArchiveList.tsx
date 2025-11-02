@@ -1,3 +1,6 @@
+'use client'
+
+import { useEffect, useRef, useState } from "react";
 import SpaceArchiveItem from "../item/SpaceArchiveItem";
 
 interface SpaceArchiveListProps {
@@ -14,7 +17,18 @@ const interactiveBtnClasses = `
 `;
 
 export default function SpaceArchiveList({ isPinnedList, archiveItemList }: SpaceArchiveListProps) {
-  return (
+    const [isModalOpenState, setIsModalOpenState] = useState(false);
+    const modalRef = useRef<HTMLDivElement | null> (null);
+    
+    const onOpenModal = () => {
+        setIsModalOpenState(true);
+    }
+
+    useEffect(()=>{
+        console.log("open state : ", isModalOpenState)
+    },[isModalOpenState])
+
+    return (
     <div className="flex flex-row p-7 gap-4">
       {isPinnedList ? (
         <button
@@ -31,6 +45,7 @@ export default function SpaceArchiveList({ isPinnedList, archiveItemList }: Spac
         <button
           className={`${interactiveBtnClasses} bg-white outline-2 outline-dodger-blue-11`}
           aria-label="새 항목 추가"
+        onClick={onOpenModal}
         >
           <div className="w-full h-full flex items-center justify-center">
             <div className="text-center text-black text-5xl font-medium leading-9">+</div>
@@ -41,6 +56,18 @@ export default function SpaceArchiveList({ isPinnedList, archiveItemList }: Spac
       {archiveItemList?.map((item, index) => (
         <SpaceArchiveItem key={index} title={item.title} bgColor={item.bgColor} />
       ))}
+
+
+      {isModalOpenState && (
+        <div className="fixed flex inset-0 z-10 w-full h-full bg-black/40  backdrop-blur-xs justify-center items-center">
+            <div className ="bg-white w-[300px] h-[450px] rounded-2xl p-5">
+                <h1 className="text-3xl font-medium">모달창</h1>
+            </div>
+        </div>
+        )
+      }
+
+ 
     </div>
   );
 }
