@@ -37,4 +37,14 @@ public class Space extends BaseEntity {
         this.name = name;
         this.type = type;
     }
+
+    public void updateName(String name) {
+        this.name = name;
+    }
+
+    public void deleteTeamSpace() {
+        this.name = this.id + "_" + this.name;
+//        this.delete();
+    }
+
 }
