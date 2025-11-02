@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react"
+import { HexColorPicker } from "react-colorful";
+import ColorPickerModal from "./ColorPickerModal";
 
 
 export interface SpaceArchiveAddModalProps{
@@ -8,6 +10,18 @@ export interface SpaceArchiveAddModalProps{
 }
 
 export default function SpaceArchiveAddModal({ isOpen, onCloseAddModal }: SpaceArchiveAddModalProps) {
+    
+    const [selectedColorState, setSelectedColorState] = useState("#000000")
+    const [showColorPickerState, setShowColorPickerState] = useState(false);
+
+    const onToggleColorPicker = () => {
+        setShowColorPickerState(!showColorPickerState);
+    }
+
+    const onCloseColorPicker = () =>[
+        setShowColorPickerState(false)
+    ]
+
     return (
         <div
             className={`fixed flex inset-0 z-10 w-full h-full bg-black/40 backdrop-blur-xs justify-center items-center
@@ -25,8 +39,11 @@ export default function SpaceArchiveAddModal({ isOpen, onCloseAddModal }: SpaceA
 
                 {/* 배경색 영역 */}
                 <div className="flex flex-row w-full h-[146px] p-2.5 bg-white justify-between rounded-xl shadow-inner">
-                    <div className="flex w-[304px] bg-blue-300 rounded-lg justify-center items-center text-2xl font-medium">
-                        배경색
+                    <div 
+                        className="flex w-[304px] rounded-lg justify-center items-center text-2xl font-medium"
+                        style={{backgroundColor:selectedColorState}}
+                    >
+                        {selectedColorState}
                     </div>
 
                     <div className="flex flex-col w-[136px] px-2 py-2.5 justify-center gap-y-2.5">
@@ -45,14 +62,29 @@ export default function SpaceArchiveAddModal({ isOpen, onCloseAddModal }: SpaceA
                         <button
                             className="flex flex-row w-full px-3 py-2.5 rounded-4xl border-2 border-primary gap-1 
                               transition-all duration-200 hover:bg-primary-content/10 active:scale-95 active:brightness-95"
+                            onClick={onToggleColorPicker}
                         >
-                            <div className="w-8 h-8 bg-primary-content rounded-lg"></div>
+                            <div 
+                                className={`w-8 h-8 rounded-lg`}
+                                style = {{backgroundColor : selectedColorState}}
+                            ></div>
                             <div className="flex flex-1 text-[0.75rem] font-semibold justify-center items-center">
                                 컬러 팔레트
                             </div>
                         </button>
                     </div>
                 </div>
+
+
+                {/* 컬러 피커 팝업 */}
+                {showColorPickerState && (
+                   <ColorPickerModal 
+                   onCloseColorPicker={onCloseColorPicker} 
+                   parentSelectedColorState={selectedColorState}
+                    parentSetSelectedColorState={setSelectedColorState}
+                   />
+                )}
+        
 
                 {/* 입력창 */}
                 <input
