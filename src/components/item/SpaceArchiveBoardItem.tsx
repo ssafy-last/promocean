@@ -1,11 +1,6 @@
 // frontend/src/components/layout/CommunityBoardItem.tsx
-
-import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { CommunityBoardItemProps } from "@/types/itemType";
-import Heart from "@/components/icon/Heart";
-import ChatBubbleBottomCenterText from "@/components/icon/ChatBubbleBottomCenterText";
 
 
 export interface SpaceArchiveBoardItemProps{
