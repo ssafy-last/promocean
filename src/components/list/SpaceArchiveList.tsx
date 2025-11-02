@@ -19,55 +19,60 @@ const interactiveBtnClasses = `
 
 export default function SpaceArchiveList({ isPinnedList, archiveItemList }: SpaceArchiveListProps) {
     const [isModalOpenState, setIsModalOpenState] = useState(false);
-    const modalRef = useRef<HTMLDivElement | null> (null);
+    const [shouldRenderModalState, setShouldRenderModalState] = useState(false);
     
     const onOpenAddModal = () => {
-        setIsModalOpenState(true);
-    }
+        setShouldRenderModalState(true);
+        // DOM에 마운트된 후 애니메이션 시작을 위해 약간의 지연
+        setTimeout(() => {
+            setIsModalOpenState(true);
+        }, 10);
+    };
 
-    const onCloseAddModal = ()=>{
-      setIsModalOpenState(false);
-    }
+    const onCloseAddModal = () => {
+        setIsModalOpenState(false);
+        // 애니메이션이 끝난 후 DOM에서 제거
+        setTimeout(() => {
+            setShouldRenderModalState(false);
+        }, 300); // transition duration과 동일하게 설정
+    };
 
-    useEffect(()=>{
-        console.log("open state : ", isModalOpenState)
-    },[isModalOpenState])
+    useEffect(() => {
+        console.log("open state : ", isModalOpenState);
+    }, [isModalOpenState]);
 
     return (
-    <div className="flex flex-row p-7 gap-4">
-      {isPinnedList ? (
-        <button
-          className={`${interactiveBtnClasses} bg-white outline-2 outline-dodger-blue-11`}
-          aria-label="모든 프롬프트 보기"
-        >
-          <div className="w-full h-full flex items-center justify-center">
-            <div className="text-center text-black text-3xl font-medium leading-9">
-              모든<br />프롬프트
-            </div>
-          </div>
-        </button>
-      ) : (
-        <button
-          className={`${interactiveBtnClasses} bg-white outline-2 outline-dodger-blue-11`}
-          aria-label="새 항목 추가"
-        onClick={onOpenAddModal}
-        >
-          <div className="w-full h-full flex items-center justify-center">
-            <div className="text-center text-black text-5xl font-medium leading-9">+</div>
-          </div>
-        </button>
-      )}
+        <div className="flex flex-row p-7 gap-4">
+            {isPinnedList ? (
+                <button
+                    className={`${interactiveBtnClasses} bg-white outline-2 outline-dodger-blue-11`}
+                    aria-label="모든 프롬프트 보기"
+                >
+                    <div className="w-full h-full flex items-center justify-center">
+                        <div className="text-center text-black text-3xl font-medium leading-9">
+                            모든<br />프롬프트
+                        </div>
+                    </div>
+                </button>
+            ) : (
+                <button
+                    className={`${interactiveBtnClasses} bg-white outline-2 outline-dodger-blue-11`}
+                    aria-label="새 항목 추가"
+                    onClick={onOpenAddModal}
+                >
+                    <div className="w-full h-full flex items-center justify-center">
+                        <div className="text-center text-black text-5xl font-medium leading-9">+</div>
+                    </div>
+                </button>
+            )}
 
-      {archiveItemList?.map((item, index) => (
-        <SpaceArchiveItem key={index} title={item.title} bgColor={item.bgColor} />
-      ))}
+            {archiveItemList?.map((item, index) => (
+                <SpaceArchiveItem key={index} title={item.title} bgColor={item.bgColor} />
+            ))}
 
-
-      {isModalOpenState && (
-          <SpaceArchiveAddModal isOpen = {isModalOpenState} onCloseAddModal={onCloseAddModal}/>
-        )
-      }
-
-    </div>
-  );
+            {shouldRenderModalState && (
+                <SpaceArchiveAddModal isOpen={isModalOpenState} onCloseAddModal={onCloseAddModal} />
+            )}
+        </div>
+    );
 }
