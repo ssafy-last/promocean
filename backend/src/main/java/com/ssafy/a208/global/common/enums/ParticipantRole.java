@@ -8,4 +8,13 @@ public enum ParticipantRole {
     ParticipantRole(int value) {
         this.value = value;
     }
+
+    public boolean canManage() {
+        return this == OWNER;
+    }
+
+    public boolean canEdit() {
+        return this == OWNER || this == EDITOR;
+    }
+
 }
