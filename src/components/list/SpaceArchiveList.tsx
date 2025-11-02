@@ -3,10 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import SpaceArchiveItem from "../item/SpaceArchiveItem";
 import SpaceArchiveAddModal from "../modal/SpaceArchiveAddModal";
+import { SpaceArchiveData } from "@/app/my-space/page";
 
-interface SpaceArchiveListProps {
+export interface SpaceArchiveListProps {
   isPinnedList?: boolean;
-  archiveItemList?: { title: string; bgColor: string }[];
+  archiveItemList?: SpaceArchiveData[]
 }
 
 const interactiveBtnClasses = `
