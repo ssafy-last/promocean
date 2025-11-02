@@ -1,5 +1,5 @@
 {
-  "pinnedSpaceArchiveItems": [
+  "pinned": [
     {
       "title": "AI 챗봇",
       "bgColor": "bg-blue-200"
@@ -22,7 +22,7 @@
     }
   ],
   
-  "folderSpaceArchiveItems": [
+  "normal": [
     {
       "title": "문서 작성",
       "bgColor": "bg-yellow-200"
