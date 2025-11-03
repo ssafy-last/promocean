@@ -13,8 +13,9 @@ import ChatBubbleBottomCenterText from '../icon/ChatBubbleBottomCenterText'
  */
 export default function PostCardItem({ id, title, hashtags, category, likeCount, commentCount, image }: PostCardItemProps) {
   return (
-    <Link href={`/post/${id}`} className="block group">
+    <Link href={`community/post/${id}`} className="block group">
       <div className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 group-hover:border-primary/20">
+
         {/* Image Section */}
         <div className="relative w-full h-48 overflow-hidden">
           <Image
@@ -27,6 +28,7 @@ export default function PostCardItem({ id, title, hashtags, category, likeCount,
 
         {/* Content Section */}
         <div className="p-4">
+
           {/* Title */}
           <h3 className="font-bold text-text text-lg mb-2 line-clamp-2 transition-colors">
             {title}
@@ -46,6 +48,7 @@ export default function PostCardItem({ id, title, hashtags, category, likeCount,
 
           {/* etc */}
           <div className="flex items-center justify-between pt-2 border-gray-100">
+
             {/* Category */}
             <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-medium">
               {category}
@@ -53,6 +56,7 @@ export default function PostCardItem({ id, title, hashtags, category, likeCount,
 
             {/* Stats */}
             <div className="flex items-center gap-4">
+              
               {/* Likes */}
               <div className="flex items-center gap-1 text-gray-500 hover:text-red-500 transition-colors">
                 <Heart />
