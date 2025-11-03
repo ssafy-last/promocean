@@ -6,7 +6,7 @@ interface TeamDetailLayoutProps {
     
 }
 
-export default function TeamDetailLayout({
+export default function TeamSpaceArchiveLayout({
     params,
     children
 }: Readonly<TeamDetailLayoutProps>){
