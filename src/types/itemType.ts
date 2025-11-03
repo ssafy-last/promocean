@@ -1,5 +1,7 @@
 // frontend/src/types/Item.ts
 
+import React from 'react'
+
 /**
  * PostCardItemProps interface
  * @description 메인 페이지에서 표시되는 포스트 카드 아이템 타입
@@ -79,4 +81,12 @@ export interface ContestCardItemProps {
   status: 'SCHEDULED' | 'ONGOING' | 'VOTING' | 'FINISHED' // 백엔드 ENUM과 동일하게
   tags: string[]
   startDate: string
+}
+
+/**
+ * ContestInfoItemProps interface
+ * @description 대회 정보 아이템 타입 - 내용만 받음 (title은 Section에서 props로 전달)
+ */
+export interface ContestInfoItemProps {
+  content: string | React.ReactNode
 }
