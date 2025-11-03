@@ -4,10 +4,10 @@ import com.ssafy.a208.domain.member.entity.Member;
 import com.ssafy.a208.domain.member.exception.MemberNotFoundException;
 import com.ssafy.a208.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class MemberReader {
     private final MemberRepository memberRepository;
