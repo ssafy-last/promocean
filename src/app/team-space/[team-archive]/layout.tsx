@@ -1,7 +1,7 @@
 import SpaceHeader from "@/components/layout/SpaceHeader";
 
 interface TeamDetailLayoutProps {
-    params : { 'team-name' : string },
+    params : { 'team-archive' : string },
     children : React.ReactNode
     
 }
@@ -11,7 +11,7 @@ export default function TeamDetailLayout({
     children
 }: Readonly<TeamDetailLayoutProps>){
 
-    const teamName = decodeURIComponent(params['team-name']);
+    const teamName = decodeURIComponent(params['team-archive']);
 
         return(
             <div>
