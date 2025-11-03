@@ -11,4 +11,13 @@ public enum ParticipantRole {
     ParticipantRole(int value) {
         this.value = value;
     }
+
+    public boolean canManage() {
+        return this.value >= 30;
+    }
+
+    public boolean canEdit() {
+        return this.value >= 20;
+    }
+
 }
