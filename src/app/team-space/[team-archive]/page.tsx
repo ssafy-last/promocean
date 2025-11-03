@@ -2,7 +2,7 @@ import SpaceCardHeader from "@/components/layout/SpaceCardHeader";
 import SpaceArchiveList from "@/components/list/SpaceArchiveList";
 import MySpaceArchiveFilterSection from "@/components/section/MySpaceArchiveFilterSection";
 
-export default async function TeamSpaceDetailPage() {
+export default async function TeamSpaceArchivePage() {
 
   
 
