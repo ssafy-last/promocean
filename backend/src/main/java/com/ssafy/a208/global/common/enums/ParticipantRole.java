@@ -13,11 +13,11 @@ public enum ParticipantRole {
     }
 
     public boolean canManage() {
-        return this == OWNER;
+        return this.value >= 30;
     }
 
     public boolean canEdit() {
-        return this == OWNER || this == EDITOR;
+        return this.value >= 20;
     }
 
 }
