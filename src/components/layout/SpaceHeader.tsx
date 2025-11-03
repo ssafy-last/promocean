@@ -10,11 +10,11 @@ import React from "react";
  * @returns {React.ReactNode}
  */
 
-export interface MySpaceHeaderProps {
+export interface SpaceHeaderProps {
     nickname: string;
 }
 
-export default function MySpaceHeader({nickname}: MySpaceHeaderProps) {
+export default function SpaceHeader({nickname}: SpaceHeaderProps) {
   return (
     <header className="w-full">
       {/* 상단 영역 - 전체 너비 */}

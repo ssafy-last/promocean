@@ -1,0 +1,44 @@
+import SpaceCardHeader from "@/components/layout/SpaceCardHeader";
+import SpaceArchiveList from "@/components/list/SpaceArchiveList";
+import MySpaceArchiveFilterSection from "@/components/section/MySpaceArchiveFilterSection";
+
+export default async function TeamSpaceArchivePage() {
+
+  
+
+  const mySpaceArchiveRes = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/mock/MySpaceArchiveData.json`,
+    { cache: "no-store" }
+  );
+
+  const mySpaceData = await mySpaceArchiveRes.json();
+  console.log("data ",mySpaceData)
+
+  const MockPinnedSpaceArchiveItemList = mySpaceData.pinned;
+  const MockFolderSpaceArchiveItemList = mySpaceData.normal;
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <div className="flex justify-end-safe">
+        <div className="shrink-0 min-w-[380px]">
+          <MySpaceArchiveFilterSection buttonMode="search"/>
+        </div>
+      </div>
+
+      <div className="flex justify-start p-4 w-full">
+        <div className="w-full">
+          <SpaceCardHeader title="Pinned"/>
+          <SpaceArchiveList isPinnedList={true} archiveItemList={MockPinnedSpaceArchiveItemList}/>
+        </div>
+      </div>
+
+      <div className="flex justify-start p-4 w-full">
+        <div className="w-full">
+          <SpaceCardHeader title="Folder"/>
+          <SpaceArchiveList isPinnedList={false} archiveItemList={MockFolderSpaceArchiveItemList}/>
+        </div>
+      </div>
+    </div>
+  );
+
+}
