@@ -3,7 +3,7 @@
 import type { Metadata } from "next";
 import Sidebar from "@/components/layout/Sidebar";
 import { SidebarProvider } from "@/contexts/SidebarContext";
-import MySpaceHeader from "@/components/layout/MySpaceHeader";
+import MySpaceHeader from "@/components/layout/SpaceHeader";
 import MySpaceTabs from "@/components/filter/MySpaceTabs";
 
 
