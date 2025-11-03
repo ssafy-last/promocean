@@ -31,12 +31,10 @@ export default function ContestPostSection() {
   const { title, content } = sectionContent[currentTab as keyof typeof sectionContent] || sectionContent.detail;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      <div className="bg-white p-8 rounded-lg shadow-md">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">{title}</h1>
-        <div className="prose max-w-none">
-          <p className="text-gray-600">{content}</p>
-        </div>
+    <div className="bg-white p-8 rounded-lg shadow-md">
+      <h1 className="text-3xl font-bold text-gray-900 mb-6">{title}</h1>
+      <div className="prose max-w-none">
+        <p className="text-gray-600">{content}</p>
       </div>
     </div>
   );
