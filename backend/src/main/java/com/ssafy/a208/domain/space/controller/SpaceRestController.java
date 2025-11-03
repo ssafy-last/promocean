@@ -33,10 +33,11 @@ public class SpaceRestController {
     @PostMapping
     @Operation(summary = "팀스페이스 생성", description = "팀스페이스를 생성할 수 있습니다.")
     public ResponseEntity<ApiResponse<SpaceInfoRes>> createTeamSpace(
-            @RequestBody @Valid SpaceReq spaceReq,
-            @AuthenticationPrincipal CustomUserDetails userDetails
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestBody @Valid SpaceReq spaceReq
+
     ) {
-        SpaceInfoRes spaceInfoRes = spaceService.saveSpace(spaceReq, userDetails);
+        SpaceInfoRes spaceInfoRes = spaceService.saveSpace(userDetails, spaceReq);
         return ApiResponse.of(HttpStatus.CREATED, spaceInfoRes);
     }
 
@@ -52,10 +53,10 @@ public class SpaceRestController {
     @GetMapping("/{spaceId}")
     @Operation(summary = "팀스페이스 상세조회", description = "팀스페이스의 내용을 상세 조회할 수 있습니다.")
     public ResponseEntity<ApiResponse<SpaceDetailRes>> getTeamSpace(
-            @PathVariable Long spaceId,
-            @AuthenticationPrincipal CustomUserDetails userDetails
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable Long spaceId
     ) {
-        SpaceDetailRes space = spaceService.getTeamSpace(spaceId, userDetails);
+        SpaceDetailRes space = spaceService.getTeamSpace(userDetails, spaceId);
         return ApiResponse.of(HttpStatus.OK, space);
     }
 
@@ -71,31 +72,31 @@ public class SpaceRestController {
     @PatchMapping("/{spaceId}")
     @Operation(summary = "팀스페이스 수정", description = "팀스페이스의 제목을 수정할 수 있습니다.")
     public ResponseEntity<ApiResponse<SpaceDetailRes>> updateSpace(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable Long spaceId,
-            @RequestBody @Valid SpaceReq spaceReq,
-            @AuthenticationPrincipal CustomUserDetails userDetails
+            @RequestBody @Valid SpaceReq spaceReq
     ) {
-        spaceService.updateTeamSpace(spaceId, spaceReq, userDetails);
+        spaceService.updateTeamSpace(userDetails, spaceId, spaceReq);
         return ApiResponse.of(HttpStatus.OK);
     }
 
     @PatchMapping("/me")
     @Operation(summary = "개인스페이스 수정", description = "개인스페이스의 제목을 수정할 수 있습니다.")
     public ResponseEntity<ApiResponse<SpaceDetailRes>> updatePersonalSpace(
-            @RequestBody @Valid SpaceReq spaceReq,
-            @AuthenticationPrincipal CustomUserDetails userDetails
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestBody @Valid SpaceReq spaceReq
     ) {
-        spaceService.updatePersonalSpace(spaceReq, userDetails);
+        spaceService.updatePersonalSpace(userDetails, spaceReq);
         return ApiResponse.of(HttpStatus.OK);
     }
 
     @DeleteMapping("/{spaceId}")
     @Operation(summary = "팀스페이스 삭제", description = "팀스페이스를 삭제할 수 있습니다.")
     public ResponseEntity<ApiResponse<SpaceDetailRes>> deleteTeamSpace(
-            @PathVariable Long spaceId,
-            @AuthenticationPrincipal CustomUserDetails userDetails
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable Long spaceId
     ) {
-        spaceService.deleteTeamSpace(spaceId, userDetails);
+        spaceService.deleteTeamSpace(userDetails, spaceId);
         return ApiResponse.of(HttpStatus.OK);
     }
 
