@@ -1,9 +1,44 @@
 import SearchBar from "@/components/filter/SearchBar";
 import PlusCircle from "@/components/icon/PlusCircle";
+import TeamSpaceTeamChoiceItem, { TeamSpaceTeamChoiceItemProps } from "@/components/item/TeamSpaceTeamChoiceItem";
+import TeamSpaceTeamChoiceList from "@/components/list/TeamSpaceTeamChoiceLlist";
 
 // frontend/src/app/team-space/page.tsx
 export default function TeamSpacePage() {
-
+  const teamSpcaeTeamChoiceList : TeamSpaceTeamChoiceItemProps[] =[
+    //임시 데이터
+    {
+      image: "/images/team-space/team1.png",
+      title: "팀 스페이스 1",
+      description: "팀 스페이스 1 설명입니다."
+    },
+    {
+      image: "/images/team-space/team2.png",
+      title: "팀 스페이스 2",
+      description: "팀 스페이스 2 설명입니다."
+    },
+    {
+      image: "/images/team-space/team3.png",
+      title: "팀 스페이스 3",
+      description: "팀 스페이스 3 설명입니다."
+    },
+    {
+      image: "/images/team-space/team4.png",
+      title: "팀 스페이스 4",
+      description: "팀 스페이스 4 설명입니다."
+    },
+    {
+      image: "/images/team-space/team1.png",
+      title: "팀 스페이스 5",
+      description: "팀 스페이스 5 설명입니다."
+    },
+    {
+      image: "/images/team-space/team2.png",
+      title: "팀 스페이스 6",
+      description: "팀 스페이스 6 설명입니다."
+    },
+    ];
+  
 
   return (
     <div className="min-h-screen bg-gray-50 py-5 px-4 flex flex-col">
@@ -15,32 +50,10 @@ export default function TeamSpacePage() {
     <SearchBar/>
   </div>
 
-  <div className="flex-1 px-5 grid grid-cols-4 auto-rows-max gap-x-7 gap-y-10">
-    <button className="group flex flex-col h-60 rounded-2xl bg-primary hover:bg-primary/90 overflow-hidden transition-all duration-300 ease-out 
-    hover:shadow-2xs
-    hover:-translate-y-1 
-    active:translate-y-0 
-    active:shadow-md">
-      {/* 이미지 영역 */}
-      <image 
-      className="shrink-0 h-32 flex justify-center items-center bg-accent text-white transition-all duration-300 
-      group-hover:h-40">
-        imageas
-      </image>
 
-      {/* 텍스트 영역 */}
-      <div className="flex flex-col text-left items-start px-5 py-3 gap-1 flex-1 min-w-0 overflow-hidden">
-        <div className="font-semibold text-2xl line-clamp-1 w-full wrap-break-words transition-colors group-hover:text-primary-foreground">
-          제목
-        </div>
-        
-        <div className="text-xs leading-tight line-clamp-2 w-full wrap-break-words transition-opacity 
-        group-hover:opacity-0">
-          텍스트텍스트텍스asdasdasdasdasdasdasdasdasdasdasdasdaasdasdasdd
-        </div>
-      </div>
-    </button>
-  </div>
+    {/* 팀 스페이스 아이템들 */}
+  <TeamSpaceTeamChoiceList teamSpaceTeamChoiceList={teamSpcaeTeamChoiceList} />
+
 </div>
   );
 }
