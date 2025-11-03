@@ -1,5 +1,8 @@
 package com.ssafy.a208.global.common.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum ParticipantRole {
     OWNER(30), READER(10), EDITOR(20);
 
