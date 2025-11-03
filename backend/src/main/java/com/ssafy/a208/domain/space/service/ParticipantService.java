@@ -3,8 +3,7 @@ package com.ssafy.a208.domain.space.service;
 import com.ssafy.a208.domain.member.entity.Member;
 import com.ssafy.a208.domain.space.entity.Participant;
 import com.ssafy.a208.domain.space.entity.Space;
-import com.ssafy.a208.domain.space.exception.space.SpaceEditAccessDeniedException;
-import com.ssafy.a208.domain.space.exception.space.SpaceManageAccessDeniedException;
+import com.ssafy.a208.domain.space.exception.space.SpaceAccessDeniedException;
 import com.ssafy.a208.domain.space.exception.space.SpaceNotFoundException;
 import com.ssafy.a208.domain.space.repository.ParticipantRepository;
 import com.ssafy.a208.global.common.enums.ParticipantRole;
@@ -50,7 +49,7 @@ public class ParticipantService {
     public void validateEditPermission(Long spaceId, Long memberId) {
         Participant participant = getParticipantBySpaceIdAndMemberId(spaceId, memberId);
         if (!participant.getRole().canEdit()) {
-            throw new SpaceEditAccessDeniedException();
+            throw new SpaceAccessDeniedException("스페이스 수정 권한이 없는 회원입니다.");
         }
     }
 
@@ -58,7 +57,7 @@ public class ParticipantService {
     public void validateManagePermission(Long spaceId, Long memberId) {
         Participant participant = getParticipantBySpaceIdAndMemberId(spaceId, memberId);
         if (!participant.getRole().canManage()) {
-            throw new SpaceManageAccessDeniedException();
+            throw new SpaceAccessDeniedException("스페이스 관리 권한이 없는 회원입니다.");
         }
     }
 
