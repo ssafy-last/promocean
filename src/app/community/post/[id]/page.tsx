@@ -1,4 +1,5 @@
 // frontend/src/app/community/post/[id]/page.tsx
+
 export default function CommunityPostPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
