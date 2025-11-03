@@ -90,3 +90,23 @@ export interface ContestCardItemProps {
 export interface ContestInfoItemProps {
   content: string | React.ReactNode
 }
+
+/**
+ * ContestPostItemProps interface
+ * @description 대회 게시글 아이템 타입
+ */
+export interface ContestPostItemProps {
+  title: string
+  content: string
+}
+
+/**
+ * LeaderboardItemProps interface
+ * @description 리더보드 아이템 타입
+ */
+export interface LeaderboardItemProps {
+  rank: number
+  nickName: string
+  voteCount: number
+  lastSubmit: string
+}

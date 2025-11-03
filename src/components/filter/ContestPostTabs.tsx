@@ -17,7 +17,6 @@ export default function ContestPostTabs() {
 
   const tabs = [
     { name: "대회상세", tab: "detail" },
-    { name: "참여목록", tab: "participants" },
     { name: "리더보드", tab: "leaderboard" },
   ];
 
