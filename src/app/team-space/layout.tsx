@@ -1,6 +1,6 @@
 // frontend/src/app/layout.tsx
 
-import MySpaceHeader from "@/components/layout/MySpaceHeader";
+import MySpaceHeader from "@/components/layout/SpaceHeader";
 
 
 export default function TeamLayout({
