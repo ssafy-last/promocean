@@ -1,5 +1,6 @@
 package com.ssafy.a208.domain.member.entity;
 
+import com.ssafy.a208.domain.member.exception.UsableCountExceededException;
 import com.ssafy.a208.domain.space.entity.Space;
 import com.ssafy.a208.global.common.BaseEntity;
 import com.ssafy.a208.global.common.enums.MemberRole;
@@ -77,5 +78,12 @@ public class Member extends BaseEntity {
         this.email = this.id + "_" + this.email;
         this.nickname = this.id + "_" + this.nickname;
         this.delete();
+    }
+
+    public void decreaseUsableCnt() {
+        if (this.usableCnt <= 0) {
+            throw new UsableCountExceededException();
+        }
+        this.usableCnt -= 1;
     }
 }
