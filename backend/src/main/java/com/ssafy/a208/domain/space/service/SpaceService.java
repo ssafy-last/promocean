@@ -1,7 +1,7 @@
 package com.ssafy.a208.domain.space.service;
 
 import com.ssafy.a208.domain.member.entity.Member;
-import com.ssafy.a208.domain.member.repository.MemberRepository;
+import com.ssafy.a208.domain.member.reader.MemberReader;
 import com.ssafy.a208.domain.space.dto.request.SpaceReq;
 import com.ssafy.a208.domain.space.dto.response.folder.FolderInfo;
 import com.ssafy.a208.domain.space.dto.response.space.SpaceDetailRes;
@@ -25,14 +25,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class SpaceService {
 
     private final SpaceRepository spaceRepository;
-    private final MemberRepository memberRepository;
+    private final MemberReader memberReader;
     private final ParticipantService participantService;
     private final FolderService folderService;
 
     @Transactional
     public SpaceInfoRes saveSpace(SpaceReq spaceReq, CustomUserDetails userDetails) {
-        // TODO: memberService로 변경
-        Member member = memberRepository.findByEmail(userDetails.email()).get();
+        Member member = memberReader.getMemberById(userDetails.memberId());
         Space space = Space.builder()
                 .name(spaceReq.name())
                 .type(SpaceType.TEAM)
@@ -78,15 +77,10 @@ public class SpaceService {
     }
 
     @Transactional(readOnly = true)
-    public SpaceDetailRes getMySpace(CustomUserDetails userDetails) {
-        List<Participant> participants = participantService.getParticipantsByMemberId(
-                userDetails.memberId());
-        List<Long> spaceIds = participants.stream()
-                .map(participant -> participant.getSpace().getId())
-                .toList();
-        Space mySpace = spaceRepository.findAllByIdInAndTypeAndDeletedAtIsNull(spaceIds,
-                SpaceType.PERSONAL).get(0);
-        List<FolderInfo> folderInfos = folderService.getFoldersBySpaceId(mySpace.getId());
+    public SpaceDetailRes getPersonalSpace(CustomUserDetails userDetails) {
+        Member member = memberReader.getMemberById(userDetails.memberId());
+        Space personalSpace = member.getPersonalSpace();
+        List<FolderInfo> folderInfos = folderService.getFoldersBySpaceId(personalSpace.getId());
         return SpaceDetailRes.builder()
                 .folders(folderInfos)
                 .build();
@@ -100,16 +94,10 @@ public class SpaceService {
     }
 
     @Transactional
-    public void updateMySpace(SpaceReq spaceReq, CustomUserDetails userDetails) {
-        List<Participant> participants = participantService.getParticipantsByMemberId(
-                userDetails.memberId());
-        List<Long> spaceIds = participants.stream()
-                .map(participant -> participant.getSpace().getId())
-                .toList();
-        Space mySpace = spaceRepository.findAllByIdInAndTypeAndDeletedAtIsNull(spaceIds,
-                SpaceType.PERSONAL).get(0);
-        Space space = spaceRepository.findByIdAndDeletedAtIsNull(mySpace.getId());
-        space.updateName(spaceReq.name());
+    public void updatePersonalSpace(SpaceReq spaceReq, CustomUserDetails userDetails) {
+        Member member = memberReader.getMemberById(userDetails.memberId());
+        Space personalSpace = member.getPersonalSpace();
+        personalSpace.updateName(spaceReq.name());
     }
 
     @Transactional
