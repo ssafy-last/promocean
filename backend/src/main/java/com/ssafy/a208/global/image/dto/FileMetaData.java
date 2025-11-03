@@ -6,7 +6,7 @@ import lombok.Builder;
 public record FileMetaData(
         String filePath,
         String originalName,
-        String extension,
+        String contentType,
         Long size
 ) {
 
