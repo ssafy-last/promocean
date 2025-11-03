@@ -2,11 +2,7 @@ import SpaceCardHeader from "@/components/layout/SpaceCardHeader";
 import SpaceArchiveList from "@/components/list/SpaceArchiveList";
 import MySpaceArchiveFilterSection from "@/components/section/MySpaceArchiveFilterSection";
 
-interface TeamSpaceDetailPageProps {
-    params : { 'team-archive' : string }
-}
-
-export default async function TeamSpaceDetailPage( { params }: TeamSpaceDetailPageProps) {
+export default async function TeamSpaceDetailPage() {
 
   
 
@@ -20,7 +16,6 @@ export default async function TeamSpaceDetailPage( { params }: TeamSpaceDetailPa
 
   const MockPinnedSpaceArchiveItemList = mySpaceData.pinned;
   const MockFolderSpaceArchiveItemList = mySpaceData.normal;
-  const teamName = decodeURIComponent(params['team-archive']);
 
   return (
     <div className="min-h-screen bg-gray-50">
