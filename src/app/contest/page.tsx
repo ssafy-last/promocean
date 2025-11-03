@@ -1,13 +1,22 @@
 // frontend/src/app/contest/page.tsx
-export default function ContestPage() {
+
+import ContestHeroSection from "@/components/section/ContestHeroSection";
+import ContestCardSection from "@/components/section/ContestCardSection";
+import { ContestCardItemProps } from "@/types/itemType";
+
+export default async function ContestPage() {
+  // TODO: 실제 API와 연동하기
+  const contestRes = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/mock/ContestCard.json`,
+    { cache: "no-store" }
+  );
+
+  const contestCardList: ContestCardItemProps[] = await contestRes.json().catch(() => []);
+
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-6xl mx-auto px-4">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">대회</h1>
-        <div className="bg-white p-8 rounded-lg shadow-md">
-          <p className="text-gray-600">대회 페이지</p>
-        </div>
-      </div>
+    <div className="min-h-screen bg-gray-50">
+      <ContestHeroSection />
+      <ContestCardSection contestCardList={contestCardList} />
     </div>
   );
 }

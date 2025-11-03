@@ -1,0 +1,60 @@
+[
+  {
+    "id": "contest-1",
+    "title": "창의적인 스토리텔링 프롬프트 대회",
+    "image": "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=800&h=400&fit=crop",
+    "participantCount": 125,
+    "deadline": "7",
+    "status": "ONGOING",
+    "tags": ["스토리텔링", "창의성", "문학"],
+    "startDate": "2024-01-15"
+  },
+  {
+    "id": "contest-2",
+    "title": "비즈니스 프롬프트 최적화 대회",
+    "image": "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&h=400&fit=crop",
+    "participantCount": 89,
+    "deadline": "14",
+    "status": "ONGOING",
+    "tags": ["비즈니스", "프로덕티비티", "최적화"],
+    "startDate": "2024-01-20"
+  },
+  {
+    "id": "contest-3",
+    "title": "AI 이미지 생성 프롬프트 대회",
+    "image": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&h=400&fit=crop",
+    "participantCount": 203,
+    "status": "VOTING",
+    "tags": ["이미지", "AI", "디자인"],
+    "startDate": "2024-01-10"
+  },
+  {
+    "id": "contest-4",
+    "title": "코딩 어시스턴트 프롬프트 대회",
+    "image": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&h=400&fit=crop",
+    "participantCount": 156,
+    "status": "SCHEDULED",
+    "tags": ["프로그래밍", "개발", "코딩"],
+    "startDate": "2024-02-01"
+  },
+  {
+    "id": "contest-5",
+    "title": "번역 품질 향상 프롬프트 대회",
+    "image": "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=800&h=400&fit=crop",
+    "participantCount": 67,
+    "status": "FINISHED",
+    "tags": ["번역", "언어", "정확성"],
+    "startDate": "2023-12-01"
+  },
+  {
+    "id": "contest-6",
+    "title": "마케팅 캠페인 프롬프트 대회",
+    "image": "https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&h=400&fit=crop",
+    "participantCount": 142,
+    "deadline": "3",
+    "status": "ONGOING",
+    "tags": ["마케팅", "광고", "캠페인"],
+    "startDate": "2024-01-18"
+  }
+]
+
