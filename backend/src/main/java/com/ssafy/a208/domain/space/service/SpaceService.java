@@ -34,7 +34,7 @@ public class SpaceService {
     private final FolderService folderService;
 
     @Transactional
-    public SpaceInfoRes saveSpace(SpaceReq spaceReq, CustomUserDetails userDetails) {
+    public SpaceInfoRes saveSpace(CustomUserDetails userDetails, SpaceReq spaceReq) {
         Member member = memberReader.getMemberById(userDetails.memberId());
         Space space = Space.builder()
                 .name(spaceReq.name())
@@ -72,7 +72,7 @@ public class SpaceService {
     }
 
     @Transactional(readOnly = true)
-    public SpaceDetailRes getTeamSpace(Long spaceId, CustomUserDetails userDetails) {
+    public SpaceDetailRes getTeamSpace(CustomUserDetails userDetails, Long spaceId) {
         participantReader.validateAccess(spaceId, userDetails.memberId());
         List<FolderInfo> folderInfos = folderService.getFoldersBySpaceId(spaceId);
         return SpaceDetailRes.builder()
@@ -91,14 +91,14 @@ public class SpaceService {
     }
 
     @Transactional
-    public void updateTeamSpace(Long spaceId, SpaceReq spaceReq, CustomUserDetails userDetails) {
+    public void updateTeamSpace(CustomUserDetails userDetails, Long spaceId, SpaceReq spaceReq) {
         participantReader.validateEditPermission(spaceId, userDetails.memberId());
         Space space = spaceRepository.findByIdAndDeletedAtIsNull(spaceId);
         space.updateName(spaceReq.name());
     }
 
     @Transactional
-    public void updatePersonalSpace(SpaceReq spaceReq, CustomUserDetails userDetails) {
+    public void updatePersonalSpace(CustomUserDetails userDetails, SpaceReq spaceReq) {
         Member member = memberReader.getMemberById(userDetails.memberId());
         Space personalSpace = member.getPersonalSpace();
         personalSpace.updateName(spaceReq.name());
@@ -106,7 +106,7 @@ public class SpaceService {
 
 
     @Transactional
-    public void deleteTeamSpace(Long spaceId, CustomUserDetails userDetails) {
+    public void deleteTeamSpace(CustomUserDetails userDetails, Long spaceId) {
         participantReader.validateManagePermission(spaceId, userDetails.memberId());
         Space space = spaceRepository.findByIdAndDeletedAtIsNull(spaceId);
         validateSpaceIsDeletable(space);
