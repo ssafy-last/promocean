@@ -13,6 +13,8 @@ import com.ssafy.a208.domain.space.entity.Space;
 import com.ssafy.a208.domain.space.exception.space.CannotDeletePersonalSpaceException;
 import com.ssafy.a208.domain.space.repository.SpaceRepository;
 import com.ssafy.a208.global.common.enums.ParticipantRole;
+import com.ssafy.a208.domain.space.reader.ParticipantReader;
+import com.ssafy.a208.domain.space.reader.SpaceReader;
 import com.ssafy.a208.global.common.enums.SpaceType;
 import com.ssafy.a208.global.security.dto.CustomUserDetails;
 import java.util.List;
@@ -25,7 +27,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class SpaceService {
 
     private final SpaceRepository spaceRepository;
+    private final SpaceReader spaceReader;
     private final MemberReader memberReader;
+    private final ParticipantReader participantReader;
     private final ParticipantService participantService;
     private final FolderService folderService;
 
@@ -48,7 +52,7 @@ public class SpaceService {
 
     @Transactional(readOnly = true)
     public SpaceSummariesRes getTeamSpaces(CustomUserDetails userDetails) {
-        List<Participant> participants = participantService.getParticipantsByMemberId(
+        List<Participant> participants = participantReader.getParticipantsByMemberId(
                 userDetails.memberId());
         List<Long> spaceIds = participants.stream()
                 .map(participant -> participant.getSpace().getId())
@@ -69,7 +73,7 @@ public class SpaceService {
 
     @Transactional(readOnly = true)
     public SpaceDetailRes getTeamSpace(Long spaceId, CustomUserDetails userDetails) {
-        participantService.validateAccess(spaceId, userDetails.memberId());
+        participantReader.validateAccess(spaceId, userDetails.memberId());
         List<FolderInfo> folderInfos = folderService.getFoldersBySpaceId(spaceId);
         return SpaceDetailRes.builder()
                 .folders(folderInfos)
@@ -88,7 +92,7 @@ public class SpaceService {
 
     @Transactional
     public void updateTeamSpace(Long spaceId, SpaceReq spaceReq, CustomUserDetails userDetails) {
-        participantService.validateEditPermission(spaceId, userDetails.memberId());
+        participantReader.validateEditPermission(spaceId, userDetails.memberId());
         Space space = spaceRepository.findByIdAndDeletedAtIsNull(spaceId);
         space.updateName(spaceReq.name());
     }
@@ -100,9 +104,10 @@ public class SpaceService {
         personalSpace.updateName(spaceReq.name());
     }
 
+
     @Transactional
     public void deleteTeamSpace(Long spaceId, CustomUserDetails userDetails) {
-        participantService.validateManagePermission(spaceId, userDetails.memberId());
+        participantReader.validateManagePermission(spaceId, userDetails.memberId());
         Space space = spaceRepository.findByIdAndDeletedAtIsNull(spaceId);
         validateSpaceIsDeletable(space);
         space.deleteTeamSpace();
@@ -112,6 +117,15 @@ public class SpaceService {
         if (space.getType() == SpaceType.PERSONAL) {
             throw new CannotDeletePersonalSpaceException();
         }
+    }
+
+    public Space validateAccessToSpace(Long spaceId, Member member) {
+        Space space = spaceReader.getSpaceById(spaceId);
+        if (space.getType() == SpaceType.TEAM) {
+            Participant participant = participantReader.getParticipant(space, member);
+            participantReader.checkParticipantRole(participant);
+        }
+        return space;
     }
 
 }
