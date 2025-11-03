@@ -1,5 +1,7 @@
 'use client';
 
+import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export interface TeamSpaceTeamChoiceItemProps {
@@ -32,12 +34,16 @@ export default function TeamSpaceTeamChoiceItem({
             
             onClick={handleClick}
             >
+
             {/* 이미지 영역 */}
-            <image 
-            className="shrink-0 h-32 flex justify-center items-center bg-accent text-white transition-all duration-300 
-            group-hover:h-40">
-                {image}
-            </image>
+            <Image
+                className="shrink-0 h-32 flex justify-center items-center bg-accent text-white transition-all duration-300 
+                group-hover:h-40"
+                src={image!}
+                alt={title!}
+                width={160}
+                height={160}  
+            ></Image>
 
             {/* 텍스트 영역 */}
             <div className="flex flex-col text-left items-start px-5 py-3 gap-1 flex-1 min-w-0 overflow-hidden">
