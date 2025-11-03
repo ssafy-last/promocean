@@ -13,7 +13,6 @@ import com.ssafy.a208.domain.space.entity.Space;
 import com.ssafy.a208.domain.space.exception.space.CannotDeletePersonalSpaceException;
 import com.ssafy.a208.domain.space.repository.SpaceRepository;
 import com.ssafy.a208.global.common.enums.ParticipantRole;
-import com.ssafy.a208.domain.space.reader.ParticipantReader;
 import com.ssafy.a208.domain.space.reader.SpaceReader;
 import com.ssafy.a208.global.common.enums.SpaceType;
 import com.ssafy.a208.global.security.dto.CustomUserDetails;
@@ -29,7 +28,6 @@ public class SpaceService {
     private final SpaceRepository spaceRepository;
     private final SpaceReader spaceReader;
     private final MemberReader memberReader;
-    private final ParticipantReader participantReader;
     private final ParticipantService participantService;
     private final FolderService folderService;
 
@@ -52,7 +50,7 @@ public class SpaceService {
 
     @Transactional(readOnly = true)
     public SpaceSummariesRes getTeamSpaces(CustomUserDetails userDetails) {
-        List<Participant> participants = participantReader.getParticipantsByMemberId(
+        List<Participant> participants = participantService.getParticipants(
                 userDetails.memberId());
         List<Long> spaceIds = participants.stream()
                 .map(participant -> participant.getSpace().getId())
@@ -73,8 +71,8 @@ public class SpaceService {
 
     @Transactional(readOnly = true)
     public SpaceDetailRes getTeamSpace(CustomUserDetails userDetails, Long spaceId) {
-        participantReader.validateAccess(spaceId, userDetails.memberId());
-        List<FolderInfo> folderInfos = folderService.getFoldersBySpaceId(spaceId);
+        participantService.validateReadableParticipant(spaceId, userDetails.memberId());
+        List<FolderInfo> folderInfos = folderService.getFolders(spaceId);
         return SpaceDetailRes.builder()
                 .folders(folderInfos)
                 .build();
@@ -84,7 +82,7 @@ public class SpaceService {
     public SpaceDetailRes getPersonalSpace(CustomUserDetails userDetails) {
         Member member = memberReader.getMemberById(userDetails.memberId());
         Space personalSpace = member.getPersonalSpace();
-        List<FolderInfo> folderInfos = folderService.getFoldersBySpaceId(personalSpace.getId());
+        List<FolderInfo> folderInfos = folderService.getFolders(personalSpace.getId());
         return SpaceDetailRes.builder()
                 .folders(folderInfos)
                 .build();
@@ -92,7 +90,7 @@ public class SpaceService {
 
     @Transactional
     public void updateTeamSpace(CustomUserDetails userDetails, Long spaceId, SpaceReq spaceReq) {
-        participantReader.validateEditPermission(spaceId, userDetails.memberId());
+        participantService.validateEditableParticipant(spaceId, userDetails.memberId());
         Space space = spaceRepository.findByIdAndDeletedAtIsNull(spaceId);
         space.updateName(spaceReq.name());
     }
@@ -104,28 +102,30 @@ public class SpaceService {
         personalSpace.updateName(spaceReq.name());
     }
 
-
     @Transactional
     public void deleteTeamSpace(CustomUserDetails userDetails, Long spaceId) {
-        participantReader.validateManagePermission(spaceId, userDetails.memberId());
+        participantService.validateManageableParticipant(spaceId, userDetails.memberId());
         Space space = spaceRepository.findByIdAndDeletedAtIsNull(spaceId);
         validateSpaceIsDeletable(space);
         space.deleteTeamSpace();
+    }
+
+    public Space getEditableSpace(Long spaceId, Long memberId) {
+        Space space = spaceReader.getSpaceById(spaceId);
+        if (space.getType() == SpaceType.TEAM) {
+            participantService.validateEditableParticipant(spaceId, memberId);
+        }
+        return space;
+    }
+
+    public void validateEditableSpace(Long spaceId, Long memberId) {
+        getEditableSpace(spaceId, memberId);
     }
 
     private void validateSpaceIsDeletable(Space space) {
         if (space.getType() == SpaceType.PERSONAL) {
             throw new CannotDeletePersonalSpaceException();
         }
-    }
-
-    public Space validateAccessToSpace(Long spaceId, Member member) {
-        Space space = spaceReader.getSpaceById(spaceId);
-        if (space.getType() == SpaceType.TEAM) {
-            Participant participant = participantReader.getParticipant(space, member);
-            participantReader.checkParticipantRole(participant);
-        }
-        return space;
     }
 
 }

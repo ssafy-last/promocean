@@ -29,7 +29,7 @@ public class FolderService {
     public FolderRes createFolder(CustomUserDetails userDetails, Long spaceId,
             FolderReq folderReq) {
         Member member = memberReader.getMemberById(userDetails.memberId());
-        Space space = spaceService.validateAccessToSpace(spaceId, member);
+        Space space = spaceService.getEditableSpace(spaceId, member.getId());
         folderReader.checkDuplicatedName(space, folderReq.name());
 
         Folder folder = Folder.builder()
@@ -48,7 +48,7 @@ public class FolderService {
     }
 
     @Transactional(readOnly = true)
-    public List<FolderInfo> getFoldersBySpaceId(Long spaceId) {
+    public List<FolderInfo> getFolders(Long spaceId) {
         List<Folder> folders = folderRepository.findBySpaceIdAndDeletedAtIsNull(spaceId);
         return folders.stream()
                 .map(folder -> FolderInfo.builder()
@@ -63,7 +63,7 @@ public class FolderService {
     public void updateFolder(CustomUserDetails userDetails, Long spaceId, Long folderId,
             FolderReq folderReq) {
         Member member = memberReader.getMemberById(userDetails.memberId());
-        Space space = spaceService.validateAccessToSpace(spaceId, member);
+        Space space = spaceService.getEditableSpace(spaceId, member.getId());
         Folder folder = folderReader.getFolderById(folderId);
         folderReader.checkDuplicatedName(space, folderReq.name());
 
@@ -73,7 +73,7 @@ public class FolderService {
     @Transactional
     public void deleteFolder(CustomUserDetails userDetails, Long spaceId, Long folderId) {
         Member member = memberReader.getMemberById(userDetails.memberId());
-        spaceService.validateAccessToSpace(spaceId, member);
+        spaceService.validateEditableSpace(spaceId, member.getId());
         Folder folder = folderReader.getFolderById(folderId);
 
         folder.deleteFolder();
@@ -82,7 +82,7 @@ public class FolderService {
     @Transactional
     public FolderRes pinFolder(CustomUserDetails userDetails, Long spaceId, Long folderId) {
         Member member = memberReader.getMemberById(userDetails.memberId());
-        spaceService.validateAccessToSpace(spaceId, member);
+        spaceService.validateEditableSpace(spaceId, member.getId());
         Folder folder = folderReader.getFolderById(folderId);
 
         folder.updatePin();
