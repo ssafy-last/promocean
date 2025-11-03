@@ -1,14 +1,19 @@
 package com.ssafy.a208.domain.member.entity;
 
+import com.ssafy.a208.domain.space.entity.Space;
 import com.ssafy.a208.global.common.BaseEntity;
 import com.ssafy.a208.global.common.enums.MemberRole;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,7 +30,7 @@ public class Member extends BaseEntity {
     private Long id;
 
     @Comment("닉네임")
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false, unique = true, length = 10)
     private String nickname;
 
     @Comment("이메일")
@@ -36,22 +41,41 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
-    @Comment("토큰량")
+    @Comment("하루 사용 가능한 잔여 횟수")
     @Column(nullable = false)
-    private int tokenAmount;
+    private int usableCnt;
 
     @Comment("권한")
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private MemberRole role;
 
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "personal_space_id", nullable = false)
+    private Space personalSpace;
+
     @Builder
-    public Member(String nickname, String email, String password, int tokenAmount,
-            MemberRole role) {
+    public Member(String nickname, String email, String password, int usableCnt,
+            Space personalSpace) {
         this.nickname = nickname;
         this.email = email;
         this.password = password;
-        this.tokenAmount = tokenAmount;
-        this.role = role;
+        this.usableCnt = usableCnt;
+        this.role = MemberRole.USER;
+        this.personalSpace = personalSpace;
+    }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void updatePassword(String password) {
+        this.password = password;
+    }
+
+    public void deleteMember() {
+        this.email = this.id + "_" + this.email;
+        this.nickname = this.id + "_" + this.nickname;
+        this.delete();
     }
 }

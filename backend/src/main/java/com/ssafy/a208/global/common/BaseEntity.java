@@ -40,9 +40,9 @@ public abstract class BaseEntity {
         }
     }
 
-    protected void delete(LocalDateTime currentTime) {
+    protected void delete() {
         if (Objects.isNull(deletedAt)) {
-            deletedAt = currentTime;
+            deletedAt = LocalDateTime.now();
         }
     }
 
