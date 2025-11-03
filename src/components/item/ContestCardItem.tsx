@@ -18,7 +18,7 @@ export default function ContestCardItem({ id, title, image, participantCount, de
   }
   
   return (
-    <Link href={`/contest/post/${id}`} className="block group">
+    <Link href={`/contest/post/${id}?tab=detail`} className="block group">
       <div className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 group-hover:border-primary/20">
         {/* Image Section */}
         <div className="relative w-full h-48 overflow-hidden">
