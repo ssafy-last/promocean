@@ -30,6 +30,9 @@ public class SecurityConfig {
             "/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**"
     };
     private static final String LOGIN_URL = "/api/v1/auth/login";
+    private static final String SIGNUP_URL = "/api/v1/members/join";
+    private static final String MEMBER_DUPLICATE_CHECK_URL = "/api/v1/members";
+    private static final String IMAGE_URL = "/api/v1/images";
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -59,6 +62,9 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers(SWAGGER_URLS).permitAll()
                 .requestMatchers(LOGIN_URL).permitAll()
+                .requestMatchers(IMAGE_URL).permitAll()
+                .requestMatchers(HttpMethod.POST, SIGNUP_URL).permitAll()
+                .requestMatchers(HttpMethod.GET, MEMBER_DUPLICATE_CHECK_URL).permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/error").permitAll()
                 .anyRequest().authenticated());
