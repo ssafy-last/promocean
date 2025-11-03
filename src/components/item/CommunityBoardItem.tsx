@@ -15,7 +15,7 @@ import ChatBubbleBottomCenterText from "@/components/icon/ChatBubbleBottomCenter
 export default function CommunityBoardItem({ id, title, hashtags, category, likeCount, commentCount, image, userImage, userName }: CommunityBoardItemProps) {
   return (
     <Link
-      href={`/community/${id}`}
+      href={`/community/post/${id}`}
       className="flex items-center justify-between w-full bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 p-4"
     >
       {/* LEFT : 이미지 + 텍스트 */}
