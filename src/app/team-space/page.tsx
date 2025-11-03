@@ -1,6 +1,6 @@
 import SearchBar from "@/components/filter/SearchBar";
 import PlusCircle from "@/components/icon/PlusCircle";
-import TeamSpaceTeamChoiceItem, { TeamSpaceTeamChoiceItemProps } from "@/components/item/TeamSpaceTeamChoiceItem";
+import { TeamSpaceTeamChoiceItemProps } from "@/components/item/TeamSpaceTeamChoiceItem";
 import TeamSpaceTeamChoiceList from "@/components/list/TeamSpaceTeamChoiceLlist";
 
 // frontend/src/app/team-space/page.tsx
