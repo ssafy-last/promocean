@@ -61,10 +61,10 @@ public class SpaceRestController {
 
     @GetMapping("/me")
     @Operation(summary = "개인스페이스 상세조회", description = "개인스페이스의 내용을 상세 조회할 수 있습니다.")
-    public ResponseEntity<ApiResponse<SpaceDetailRes>> getMySpace(
+    public ResponseEntity<ApiResponse<SpaceDetailRes>> getPersonalSpace(
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        SpaceDetailRes space = spaceService.getMySpace(userDetails);
+        SpaceDetailRes space = spaceService.getPersonalSpace(userDetails);
         return ApiResponse.of(HttpStatus.OK, space);
     }
 
@@ -81,11 +81,11 @@ public class SpaceRestController {
 
     @PatchMapping("/me")
     @Operation(summary = "개인스페이스 수정", description = "개인스페이스의 제목을 수정할 수 있습니다.")
-    public ResponseEntity<ApiResponse<SpaceDetailRes>> updateMySpace(
+    public ResponseEntity<ApiResponse<SpaceDetailRes>> updatePersonalSpace(
             @RequestBody @Valid SpaceReq spaceReq,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        spaceService.updateMySpace(spaceReq, userDetails);
+        spaceService.updatePersonalSpace(spaceReq, userDetails);
         return ApiResponse.of(HttpStatus.OK);
     }
 
