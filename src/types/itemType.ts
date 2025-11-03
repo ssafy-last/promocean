@@ -1,5 +1,7 @@
 // frontend/src/types/Item.ts
 
+import React from 'react'
+
 /**
  * PostCardItemProps interface
  * @description 메인 페이지에서 표시되는 포스트 카드 아이템 타입
@@ -64,4 +66,47 @@ export interface PostingFloatingItemProps {
   label: string
   value: string
   checked?: boolean
+}
+
+/**
+ * ContestCardItemProps interface
+ * @description 대회 카드 아이템 타입
+ */
+export interface ContestCardItemProps {
+  id: string
+  title: string
+  image: string
+  participantCount: number
+  deadline?: string
+  status: 'SCHEDULED' | 'ONGOING' | 'VOTING' | 'FINISHED' // 백엔드 ENUM과 동일하게
+  tags: string[]
+  startDate: string
+}
+
+/**
+ * ContestInfoItemProps interface
+ * @description 대회 정보 아이템 타입 - 내용만 받음 (title은 Section에서 props로 전달)
+ */
+export interface ContestInfoItemProps {
+  content: string | React.ReactNode
+}
+
+/**
+ * ContestPostItemProps interface
+ * @description 대회 게시글 아이템 타입
+ */
+export interface ContestPostItemProps {
+  title: string
+  content: string
+}
+
+/**
+ * LeaderboardItemProps interface
+ * @description 리더보드 아이템 타입
+ */
+export interface LeaderboardItemProps {
+  rank: number
+  nickName: string
+  voteCount: number
+  lastSubmit: string
 }
