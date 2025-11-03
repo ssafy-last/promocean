@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
-import SpaceArchiveAddModal from './SpaceArchiveAddModal';
+import SpaceArchiveAddModal from '../SpaceArchiveAddModal';
 
 // Wrapper 컴포넌트 - 모달 상태 관리를 위한 컨트롤러
 function InteractiveWrapper() {

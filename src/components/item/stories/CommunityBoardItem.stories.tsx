@@ -276,6 +276,7 @@ export const ListView: Story = {
         category="AI/ML"
         likeCount={156}
         commentCount={67}
+         image="https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=800&h=600&fit=crop"
         userImage="https://i.pravatar.cc/150?img=12"
         userName="최파이썬"
       />
