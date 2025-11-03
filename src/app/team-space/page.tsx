@@ -1,6 +1,7 @@
 import SearchBar from "@/components/filter/SearchBar";
 import PlusCircle from "@/components/icon/PlusCircle";
 import { TeamSpaceTeamChoiceItemProps } from "@/components/item/TeamSpaceTeamChoiceItem";
+import SpaceHeader from "@/components/layout/SpaceHeader";
 import TeamSpaceTeamChoiceList from "@/components/list/TeamSpaceTeamChoiceLlist";
 
 // frontend/src/app/team-space/page.tsx
@@ -41,18 +42,20 @@ export default function TeamSpacePage() {
   
 
   return (
-    <div className="min-h-screen bg-gray-50 py-5 px-4 flex flex-col">
-  <div className="flex flex-row justify-between items-center mb-5">
-    <button className="flex flex-row gap-1 font-medium text-2xl hover:text-primary transition-colors">
-      <PlusCircle/>
-      팀 생성
-    </button>
-    <SearchBar/>
-  </div>
-
-
+    <div>
+        <SpaceHeader nickname="홍길동"/>
+        
+        <div className="min-h-screen bg-gray-50 py-5 px-4 flex flex-col">
+        <div className="flex flex-row justify-between items-center mb-5">
+        <button className="flex flex-row gap-1 font-medium text-2xl hover:text-primary transition-colors">
+          <PlusCircle/>
+          팀 생성
+        </button>
+        <SearchBar/>
+        </div>
     {/* 팀 스페이스 아이템들 */}
-  <TeamSpaceTeamChoiceList teamSpaceTeamChoiceList={teamSpcaeTeamChoiceList} />
+      <TeamSpaceTeamChoiceList teamSpaceTeamChoiceList={teamSpcaeTeamChoiceList} />
+      </div>
 
 </div>
   );
