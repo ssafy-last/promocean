@@ -20,4 +20,8 @@ public enum ParticipantRole {
         return this.value >= 20;
     }
 
+    public boolean canRead() {
+        return this.value >= 10;
+    }
+
 }
