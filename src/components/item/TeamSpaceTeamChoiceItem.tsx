@@ -24,8 +24,9 @@ export default function TeamSpaceTeamChoiceItem({
         router.push('/team-space/'+title);
     }
     return(
-           <button className="group flex flex-col h-60 rounded-2xl bg-primary hover:bg-primary/90 overflow-hidden transition-all duration-300 ease-out
-           border-gray-400 
+           <button className="group flex flex-col h-60 rounded-2xl bg-white/50 hover:bg-primary/90 overflow-hidden transition-all duration-300 ease-out
+           border-gray-400
+            backdrop-blur-md
             hover:shadow-2xs
             hover:border-3
             hover:-translate-y-1 
@@ -35,16 +36,20 @@ export default function TeamSpaceTeamChoiceItem({
             onClick={handleClick}
             >
 
+            <div className="relative shrink-0 h-32 w-full overflow-hidden transition-all duration-300 
+            group-hover:h-40
+            ">
             {/* 이미지 영역 */}
-            <Image
-                className="shrink-0 h-32 flex justify-center items-center bg-accent text-white transition-all duration-300 
-                group-hover:h-40"
+                <Image
+                className="w-full h-full object-cover"
                 src={image!}
                 alt={title!}
                 width={160}
                 height={160}  
-            ></Image>
-
+                >
+                </Image>
+                    <div className="absolute inset-0 backdrop-blur-xs group-hover:backdrop-blur-none"></div>
+            </div>
             {/* 텍스트 영역 */}
             <div className="flex flex-col text-left items-start px-5 py-3 gap-1 flex-1 min-w-0 overflow-hidden">
                 <div className="font-semibold text-2xl line-clamp-1 w-full wrap-break-words transition-colors group-hover:text-primary-foreground">
