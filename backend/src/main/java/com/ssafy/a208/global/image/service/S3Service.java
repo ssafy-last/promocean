@@ -9,7 +9,6 @@ import com.ssafy.a208.global.image.utils.S3UrlGenerator;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import software.amazon.awssdk.services.s3.model.HeadObjectResponse;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
 
@@ -32,7 +31,7 @@ public class S3Service {
                 .build();
     }
 
-    public String getGetS3Url(String filePath) {
+    public String getCloudFrontUrl(String filePath) {
         return s3UrlGenerator.generateCloudFrontGetUrl(filePath);
     }
 
@@ -48,9 +47,13 @@ public class S3Service {
         return FileMetaData.builder()
                 .originalName(fileMetadataUtil.getFileName(key))
                 .filePath(key)
-                .extension(response.contentType())
+                .contentType(response.contentType())
                 .size(response.contentLength())
                 .build();
+    }
+
+    public void deleteFile(String filePath) {
+        s3Uploader.deleteObject(filePath);
     }
 
 }

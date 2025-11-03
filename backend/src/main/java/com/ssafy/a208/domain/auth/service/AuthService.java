@@ -6,11 +6,11 @@ import com.ssafy.a208.domain.auth.exception.InvalidPasswordException;
 import com.ssafy.a208.domain.member.entity.Member;
 import com.ssafy.a208.domain.member.entity.Profile;
 import com.ssafy.a208.domain.member.exception.MemberNotFoundException;
+import com.ssafy.a208.domain.member.exception.ProfileNotFoundException;
 import com.ssafy.a208.domain.member.repository.MemberRepository;
 import com.ssafy.a208.domain.member.repository.ProfileRepository;
-import com.ssafy.a208.global.common.FileEntity;
+import com.ssafy.a208.global.image.service.S3Service;
 import com.ssafy.a208.global.security.util.JwtProvider;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthService {
 
+    private final S3Service s3Service;
     private final JwtProvider provider;
     private final PasswordEncoder encoder;
     private final MemberRepository memberRepository;
@@ -30,14 +31,14 @@ public class AuthService {
 
         if (encoder.matches(loginReq.password(), member.getPassword())) {
             String aT = provider.generateToken(member);
-            Optional<Profile> profile = profileRepository.findByMember(member);
+            Profile profile = profileRepository.findByMemberIdAndDeletedAtIsNull(member.getId())
+                    .orElseThrow(ProfileNotFoundException::new);
 
-            // TODO 프로필 이미지 url에 Presigned url 적용 필요
             return LoginRes.builder()
                     .accessToken("Bearer " + aT)
                     .email(member.getEmail())
                     .nickname(member.getNickname())
-                    .profileUrl(profile.map(FileEntity::getFilePath).orElse(null))
+                    .profileUrl(s3Service.getCloudFrontUrl(profile.getFilePath()))
                     .build();
         }
 

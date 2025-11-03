@@ -1,6 +1,7 @@
 package com.ssafy.a208.global.common;
 
 
+import com.ssafy.a208.global.image.dto.FileMetaData;
 import jakarta.persistence.Column;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -32,5 +33,12 @@ public class FileEntity extends BaseEntity {
         this.filePath = filePath;
         this.contentType = contentType;
         this.size = size;
+    }
+
+    public void updateFile(FileMetaData fileMetaData) {
+        this.originalName = fileMetaData.originalName();
+        this.filePath = fileMetaData.filePath();
+        this.contentType = fileMetaData.contentType();
+        this.size = fileMetaData.size();
     }
 }
