@@ -65,3 +65,18 @@ export interface PostingFloatingItemProps {
   value: string
   checked?: boolean
 }
+
+/**
+ * ContestCardItemProps interface
+ * @description 대회 카드 아이템 타입
+ */
+export interface ContestCardItemProps {
+  id: string
+  title: string
+  image: string
+  participantCount: number
+  deadline?: string
+  status: 'SCHEDULED' | 'ONGOING' | 'VOTING' | 'FINISHED' // 백엔드 ENUM과 동일하게
+  tags: string[]
+  startDate: string
+}
