@@ -3,7 +3,7 @@ import SpaceArchiveList from "@/components/list/SpaceArchiveList";
 import MySpaceArchiveFilterSection from "@/components/section/MySpaceArchiveFilterSection";
 
 interface TeamSpaceDetailPageProps {
-    params : { 'team-name' : string }
+    params : { 'team-archive' : string }
 }
 
 export default async function TeamSpaceDetailPage( { params }: TeamSpaceDetailPageProps) {
@@ -20,11 +20,10 @@ export default async function TeamSpaceDetailPage( { params }: TeamSpaceDetailPa
 
   const MockPinnedSpaceArchiveItemList = mySpaceData.pinned;
   const MockFolderSpaceArchiveItemList = mySpaceData.normal;
-  const teamName = decodeURIComponent(params['team-name']);
+  const teamName = decodeURIComponent(params['team-archive']);
 
   return (
     <div className="min-h-screen bg-gray-50">
-        {teamName}
       <div className="flex justify-end-safe">
         <div className="shrink-0 min-w-[380px]">
           <MySpaceArchiveFilterSection buttonMode="search"/>
