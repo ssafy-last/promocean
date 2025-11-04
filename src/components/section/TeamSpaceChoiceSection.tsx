@@ -6,6 +6,7 @@ import { TeamSpaceTeamChoiceItemProps } from "../item/TeamSpaceTeamChoiceItem"
 import TeamSpaceTeamChoiceList, { TeamSpaceTeamChoiceListProps } from "../list/TeamSpaceTeamChoiceLlist"
 import SpaceAddMemberItem, { SpaceAddMemberItemProps } from "../item/SpaceAddMemberItem";
 import TeamSpaceTeamChoiceLabelItem from "../item/TeamSpaceTeamChoiceLabelItem";
+import TeamSpaceAddModal from "../modal/TeamSpaceAddModal";
 
 export interface TeamSpaceChoiceSectionProps {
     teamSpaceTeamChoiceList : TeamSpaceTeamChoiceItemProps[];
@@ -15,42 +16,9 @@ export interface TeamSpaceChoiceSectionProps {
 export default function TeamSpaceChoiceSection({teamSpaceTeamChoiceList}: TeamSpaceChoiceSectionProps){
 
     const [isModalState, setIsModalState] = useState(false);
-    const [searchSpaceMemberListState, setSearchSpaceMemberListState] = useState<SpaceAddMemberItemProps[]>([])
-    const [isMemberExistState, setIsMemberExistState] = useState(searchSpaceMemberListState.length > 0);
+
 
     
-    //참고로 배열의 경우 객체의 포인터가 달라져야 useEffect가 인지함, 
-    //배열 안 원소를 바꾸는 것만으로는 인지 못함
-
-    const mockMemberList : SpaceAddMemberItemProps[] =[
-        {name : "홍길동", email : "hong@example.com"},
-        {name : "김철수", email : "kim@example.com"},
-        {name : "이영희", email : "lee@example.com"},
-        {name : "박영수", email : "park@example.com"},
-        {name : "정민수", email : "choi@example.com"},
-        {name : "장미란", email : "jang@example.com"},
-        {name : "오세훈", email : "oh@example.com"},
-        {name : "한지민", email : "han@example.com"},
-        {name : "서강준", email : "seo@example.com"},
-        {name : "정우성", email : "jung@example.com"},
-    ]
-
-    const handleMemberSearch = (query : string) => {
-        if(query.trim() === ""){
-            setSearchSpaceMemberListState([]);
-            setIsMemberExistState(false);
-            return;
-        }
-        const filteredMembers = mockMemberList.filter((member) =>
-            member.name.includes(query) || member.email.includes(query)
-        );
-        console.log("filteredMembers ",filteredMembers, " query : ", query);
-
-        if(filteredMembers.length > 0) setIsMemberExistState(true);
-        else setIsMemberExistState(false);
-    
-        setSearchSpaceMemberListState([...filteredMembers]);
-    }   
 
     return(
         <div className="min-h-screen bg-gray-50 py-5 px-4 flex flex-col">
@@ -63,58 +31,8 @@ export default function TeamSpaceChoiceSection({teamSpaceTeamChoiceList}: TeamSp
         
             {
                 isModalState && (
-                    <div
-                    className={`fixed flex inset-0 z-10 w-full h-full bg-black/40 backdrop-blur-xs justify-center items-center
-                    transition-opacity duration-300 ease-out
-                    ${isModalState ? 'opacity-100' : 'opacity-0'}`}
-                 >
-                        <div className="flex flex-col bg-white p-10 rounded-lg w-fit justify-between h-[680px]">
-                            
-                            <div className="flex flex-col gap-3">
-                                <h2 className="text-4xl font-semibold mb-4">팀 스페이스 생성</h2>
-                                {/* 팀 스페이스 생성 폼 내용 */}
-                            
-                                <input type="text" placeholder="팀 스페이스 이름을 입력하세요" className = "w-[600px] border border-gray-300 rounded-[10px] p-3"/>
-                                <div>
-                                    <div className ="flex flex-row gap-2 justify-end-safe py-1 px-2 overflow-hidden">
-                                       <TeamSpaceTeamChoiceLabelItem labelName="바보"/>
-                                    </div>
-
-
-                                    <input type="text" 
-                                        placeholder="팀원 닉네임 또는 이메일을 입력하세요" 
-                                        className = "w-[600px] border border-gray-300 rounded-[10px] p-3"
-                                        onChange={(e) => handleMemberSearch(e.target.value)}
-                                    />
-                                    
-                                    {isMemberExistState &&
-                                        <div className ="overflow-y-scroll w-[600px] h-[300px] border border-t-0 border-gray-300 rounded-[10px] p-2.5 gap-2.5">
-                                            {searchSpaceMemberListState.map((member) => (
-                                                <SpaceAddMemberItem key={member.email} name={member.name} email={member.email} />
-                                            ))}
-                                        </div>
-                                    }
-                                </div>
-                            </div>
-
-                            { !isMemberExistState &&
-                                    <div>
-                                        <label className="text-3xl text-gray-300 block mb-2 font-medium text-center">아직 검색한 팀원이 없어요</label>
-                                    </div>
-                            }
-                            
-                            <div className="flex flex-row gap-8 justify-center-safe w-full">
-                                <button className="px-5 py-3 items-center justify-center bg-gray-200 rounded-4xl w-40
-                                hover:bg-gray-300 active:bg-gray-400"
-                                onClick={() => setIsModalState(false)
-                                }
-                                >등록 취소</button>
-                                <input type="submit" value={"생성하기"}
-                                className="px-5 py-3 items-center justify-center bg-primary text-white rounded-4xl w-40
-                                hover:bg-primary/90 active:bg-primary/80 cursor-pointer"
-                                />
-                            </div>
-                        </div>
+                    <div>
+                        <TeamSpaceAddModal isModalState={isModalState} setIsModalState={setIsModalState}/>
                     </div>
                 )
             }
