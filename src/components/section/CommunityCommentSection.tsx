@@ -11,18 +11,18 @@ import CommentForm from "@/components/form/CommentForm";
  */
 export default function CommunityCommentSection( { communityCommentList }: { communityCommentList: CommunityCommentItemProps[] } ) {
   return (
-    <div className="p-8">
-      <div>
-        <h3 className="text-xl font-semibold text-gray-900 mb-6">
-          댓글 작성
-        </h3>
-        <CommentForm />
-      </div>
+    <div className="p-8 flex flex-col gap-6">
       <div>
         <h3 className="text-xl font-semibold text-gray-900 mb-6">
           댓글 {communityCommentList.length}개
         </h3>
         <CommunityCommentList communityCommentList={communityCommentList} />
+      </div>
+      <div>
+        <h3 className="text-xl font-semibold text-gray-900 mb-6">
+          댓글 작성
+        </h3>
+        <CommentForm />
       </div>
     </div>
   )
