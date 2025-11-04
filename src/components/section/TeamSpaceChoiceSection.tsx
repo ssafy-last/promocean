@@ -5,6 +5,7 @@ import SearchBar from "../filter/SearchBar";
 import { TeamSpaceTeamChoiceItemProps } from "../item/TeamSpaceTeamChoiceItem"
 import TeamSpaceTeamChoiceList, { TeamSpaceTeamChoiceListProps } from "../list/TeamSpaceTeamChoiceLlist"
 import SpaceAddMemberItem, { SpaceAddMemberItemProps } from "../item/SpaceAddMemberItem";
+import TeamSpaceTeamChoiceLabelItem from "../item/TeamSpaceTeamChoiceLabelItem";
 
 export interface TeamSpaceChoiceSectionProps {
     teamSpaceTeamChoiceList : TeamSpaceTeamChoiceItemProps[];
@@ -77,9 +78,11 @@ export default function TeamSpaceChoiceSection({teamSpaceTeamChoiceList}: TeamSp
                             
                                 <input type="text" placeholder="팀 스페이스 이름을 입력하세요" className = "w-[600px] border border-gray-300 rounded-[10px] p-3"/>
                                 <div>
-                                    <div className ="flex flex-row gap-2 justify-end-safe py-1 px-2">
-                                        
+                                    <div className ="flex flex-row gap-2 justify-end-safe py-1 px-2 overflow-hidden">
+                                       <TeamSpaceTeamChoiceLabelItem labelName="바보"/>
                                     </div>
+
+
                                     <input type="text" 
                                         placeholder="팀원 닉네임 또는 이메일을 입력하세요" 
                                         className = "w-[600px] border border-gray-300 rounded-[10px] p-3"
