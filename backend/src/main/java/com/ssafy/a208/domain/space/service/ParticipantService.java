@@ -36,39 +36,21 @@ public class ParticipantService {
     }
 
     @Transactional(readOnly = true)
-    public Participant getManageableParticipant(Long spaceId, Long memberId) {
+    public void validateManageableParticipant(Long spaceId, Long memberId) {
         Participant participant = participantReader.getParticipant(spaceId, memberId);
         validateManagePermission(participant);
-        return participant;
-    }
-
-    @Transactional(readOnly = true)
-    public Participant getEditableParticipant(Long spaceId, Long memberId) {
-        Participant participant = participantReader.getParticipant(spaceId, memberId);
-        validateEditPermission(participant);
-        return participant;
-    }
-
-    @Transactional(readOnly = true)
-    public Participant getReadableParticipant(Long spaceId, Long memberId) {
-        Participant participant = participantReader.getParticipant(spaceId, memberId);
-        validateReadPermission(participant);
-        return participant;
-    }
-
-    @Transactional(readOnly = true)
-    public void validateManageableParticipant(Long spaceId, Long memberId) {
-        getManageableParticipant(spaceId, memberId);
     }
 
     @Transactional(readOnly = true)
     public void validateEditableParticipant(Long spaceId, Long memberId) {
-        getEditableParticipant(spaceId, memberId);
+        Participant participant = participantReader.getParticipant(spaceId, memberId);
+        validateEditPermission(participant);
     }
 
     @Transactional(readOnly = true)
     public void validateReadableParticipant(Long spaceId, Long memberId) {
-        getReadableParticipant(spaceId, memberId);
+        Participant participant = participantReader.getParticipant(spaceId, memberId);
+        validateReadPermission(participant);
     }
 
     private void validateManagePermission(Participant participant) {
