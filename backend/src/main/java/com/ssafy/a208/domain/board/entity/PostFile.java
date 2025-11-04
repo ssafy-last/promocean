@@ -32,4 +32,8 @@ public class PostFile extends FileEntity {
         super(originalName, filePath, contentType, size);
         this.post = post;
     }
+
+    public void deletePostFile() {
+        this.delete();
+    }
 }

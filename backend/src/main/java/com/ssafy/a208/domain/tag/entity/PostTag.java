@@ -45,4 +45,12 @@ public class PostTag extends BaseEntity {
         this.tag = tag;
         this.post = post;
     }
+
+    public void deletePostTag() {
+        this.delete();
+    }
+
+    public void restorePostTag() {
+        this.restore();
+    }
 }
