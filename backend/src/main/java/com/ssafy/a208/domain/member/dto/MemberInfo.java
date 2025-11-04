@@ -6,7 +6,8 @@ import lombok.Builder;
 public record MemberInfo(
         String nickname,
         String email,
-        String profileUrl
+        String profileUrl,
+        Long personalSpaceId
 ) {
 
 }

@@ -28,6 +28,14 @@ public class SpaceService {
     private final MemberReader memberReader;
     private final ParticipantService participantService;
 
+    public Space savePersonalSpace(String userNickname) {
+        Space space = Space.builder()
+                .name(String.format("%s의 개인 스페이스", userNickname))
+                .type(SpaceType.PERSONAL)
+                .build();
+        return spaceRepository.save(space);
+    }
+
     @Transactional
     public SpaceInfoRes saveTeamSpace(CustomUserDetails userDetails, SpaceReq spaceReq) {
         Member member = memberReader.getMemberById(userDetails.memberId());

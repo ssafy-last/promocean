@@ -10,9 +10,8 @@ import com.ssafy.a208.domain.member.exception.MemberNotFoundException;
 import com.ssafy.a208.domain.member.repository.MemberRepository;
 import com.ssafy.a208.domain.member.repository.ProfileRepository;
 import com.ssafy.a208.domain.space.entity.Space;
-import com.ssafy.a208.domain.space.repository.SpaceRepository;
+import com.ssafy.a208.domain.space.service.SpaceService;
 import com.ssafy.a208.global.common.enums.ImageDirectory;
-import com.ssafy.a208.global.common.enums.SpaceType;
 import com.ssafy.a208.global.image.dto.FileMetaData;
 import com.ssafy.a208.global.image.service.S3Service;
 import com.ssafy.a208.global.security.dto.CustomUserDetails;
@@ -33,7 +32,7 @@ public class MemberService {
 
     private final S3Service s3Service;
     private final PasswordEncoder encoder;
-    private final SpaceRepository spaceRepository;
+    private final SpaceService spaceService;
     private final MemberRepository memberRepository;
     private final ProfileRepository profileRepository;
 
@@ -42,11 +41,7 @@ public class MemberService {
 
     @Transactional
     public void signup(SignupReq signupReq) {
-        Space space = Space.builder()
-                .name(String.format("%s의 개인 스페이스", signupReq.nickname()))
-                .type(SpaceType.PERSONAL)
-                .build();
-
+        Space space = spaceService.savePersonalSpace(signupReq.nickname());
         String encodedPassword = encoder.encode(signupReq.password());
         Member member = Member.builder()
                 .email(signupReq.email())
@@ -55,7 +50,6 @@ public class MemberService {
                 .usableCnt(TOKEN_AMOUNT)
                 .personalSpace(space)
                 .build();
-
         String filePath = resolveProfileKey(signupReq.filePath());
         FileMetaData fileMetaData = s3Service.getFileMetadata(filePath);
         Profile profile = Profile.builder()
@@ -65,7 +59,6 @@ public class MemberService {
                 .filePath(fileMetaData.filePath())
                 .originalName(fileMetaData.originalName())
                 .build();
-
         memberRepository.save(member);
         profileRepository.save(profile);
     }
