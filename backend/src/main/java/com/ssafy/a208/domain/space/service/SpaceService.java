@@ -8,11 +8,15 @@ import com.ssafy.a208.domain.space.dto.response.space.SpaceSummariesRes;
 import com.ssafy.a208.domain.space.dto.response.space.SpaceSummaryRes;
 import com.ssafy.a208.domain.space.entity.Participant;
 import com.ssafy.a208.domain.space.entity.Space;
+import com.ssafy.a208.domain.space.entity.SpaceCover;
 import com.ssafy.a208.domain.space.exception.space.CannotDeletePersonalSpaceException;
 import com.ssafy.a208.domain.space.reader.SpaceReader;
+import com.ssafy.a208.domain.space.repository.SpaceCoverRepository;
 import com.ssafy.a208.domain.space.repository.SpaceRepository;
 import com.ssafy.a208.global.common.enums.ParticipantRole;
 import com.ssafy.a208.global.common.enums.SpaceType;
+import com.ssafy.a208.global.image.dto.FileMetaData;
+import com.ssafy.a208.global.image.service.S3Service;
 import com.ssafy.a208.global.security.dto.CustomUserDetails;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +31,9 @@ public class SpaceService {
     private final SpaceReader spaceReader;
     private final MemberReader memberReader;
     private final ParticipantService participantService;
+    private static final String DEFAULT_SPACE_KEY = "spaces/default-space.png";
+    private final S3Service s3Service;
+    private final SpaceCoverRepository spaceCoverRepository;
 
     @Transactional
     public Space savePersonalSpace(String userNickname) {
@@ -44,12 +51,22 @@ public class SpaceService {
                 .name(spaceReq.name())
                 .type(SpaceType.TEAM)
                 .build();
+        FileMetaData fileMetaData = s3Service.getFileMetadata(DEFAULT_SPACE_KEY);
+        SpaceCover spaceCover = SpaceCover.builder()
+                .space(space)
+                .contentType(fileMetaData.contentType())
+                .size(fileMetaData.size())
+                .filePath(fileMetaData.filePath())
+                .originalName(fileMetaData.originalName())
+                .build();
         spaceRepository.save(space);
+        spaceCoverRepository.save(spaceCover);
         participantService.saveParticipant(ParticipantRole.OWNER, member, space);
+        participantService.saveParticipants(spaceReq.participants(), space);
         return SpaceInfoRes.builder()
                 .spaceId(space.getId())
                 .name(space.getName())
-                .participants(List.of(member.getEmail()))
+                .spaceCoverUrl(s3Service.getCloudFrontUrl(DEFAULT_SPACE_KEY))
                 .build();
     }
 

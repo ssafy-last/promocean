@@ -1,5 +1,6 @@
 package com.ssafy.a208.global.common.enums;
 
+import com.ssafy.a208.global.common.exception.DoNotSupportEnumException;
 import lombok.Getter;
 
 @Getter
@@ -10,6 +11,16 @@ public enum ParticipantRole {
 
     ParticipantRole(int value) {
         this.value = value;
+    }
+
+    public static ParticipantRole valueOf(int value) {
+        for (ParticipantRole type : values()) {
+            if (type.value == value) {
+                return type;
+            }
+        }
+
+        throw new DoNotSupportEnumException();
     }
 
     public boolean canManage() {
