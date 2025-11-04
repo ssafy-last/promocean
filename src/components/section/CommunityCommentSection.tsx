@@ -11,7 +11,7 @@ import CommentForm from "@/components/form/CommentForm";
  */
 export default function CommunityCommentSection( { communityCommentList }: { communityCommentList: CommunityCommentItemProps[] } ) {
   return (
-    <div className="bg-white p-8 rounded-lg shadow-md">
+    <div className="p-8">
       <div>
         <h3 className="text-xl font-semibold text-gray-900 mb-6">
           댓글 작성

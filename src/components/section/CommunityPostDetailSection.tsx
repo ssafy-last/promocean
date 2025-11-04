@@ -1,65 +1,70 @@
 // frontend/src/components/section/CommunityPostDetailSection.tsx
 
 import Image from "next/image";
-import { CommunityPostItemProps } from "@/types/itemType";
+import { CommunityPostItemProps, HashtagItemProps } from "@/types/itemType";
+import CommunityHashtagList from "@/components/list/CommunityHashtagList";
 
 /**
  * CommunityPostDetailSection component
  * @description CommunityPostDetailSection component is a community post detail section component that displays the community post detail section content
  * @returns {React.ReactNode}
  */
-export default function CommunityPostDetailSection( { communityPostData }: { communityPostData: CommunityPostItemProps } ) {
+export default function CommunityPostDetailSection( { communityPostData, hashtagList }: { communityPostData: CommunityPostItemProps, hashtagList: HashtagItemProps[] } ) {
 
-  console.log(communityPostData.fileUrl);
   return (
-    <div className="bg-white p-8 rounded-lg shadow-md">
+    <div className="p-8">
 
-      {/* TODO : 레이아웃 변경 예정 */}
       <div className="flex flex-col gap-4">
         {/* 제목 */}
-        <h1 className="text-3xl font-bold text-gray-900">
-          {communityPostData.title}
-        </h1>
-
-        {/* 메타 정보: 카테고리, 타입, 작성일시 */}
-        <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600">
-          <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-medium">
-            {communityPostData.category}
-          </span>
-          <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs font-medium">
-            {communityPostData.type}
-          </span>
-          <span className="text-gray-500">
-            {new Date(communityPostData.createdAt).toLocaleDateString('ko-KR', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric'
-            })}
-          </span>
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">
+            {communityPostData.title}
+          </h1>
+        </div>
+        
+        {/* 해시태그 */}
+        <div className="flex flex-row items-center gap-2">
+          <CommunityHashtagList hashtagList={hashtagList} />
         </div>
 
+        {/* 나머지 정보 */}
+        <div className="flex items-center justify-between">
+          {/* 카테고리/타입 */}
+          <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600">
+            <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-medium">
+              {communityPostData.category}
+            </span>
+            <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs font-medium">
+              {communityPostData.type}
+            </span>
+          </div>
 
-        {/* 사용자 정보 */}
-        <div className="flex items-center gap-2">
-          {communityPostData.profileUrl ? (
-            <div className="relative w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
-              <Image
-                src={communityPostData.profileUrl}
-                alt={communityPostData.author}
-                fill
-                className="object-cover"
-              />
-            </div>
-          ) : (
-            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs flex-shrink-0">
-              🐥
-            </div>
-          )}
-          <span className="text-sm font-medium text-gray-700">{communityPostData.author}</span>
+          {/* 사용자 정보 및 날짜 */}
+          <div className="flex flex-row items-center gap-2">
+            {communityPostData.profileUrl ? (
+              <div className="relative w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
+                <Image
+                  src={communityPostData.profileUrl}
+                  alt={communityPostData.author}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            ) : (
+              <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs flex-shrink-0">
+                🐥
+              </div>
+            )}
+            <span className="text-sm font-medium text-gray-700">{communityPostData.author}</span>
+            <span className="text-gray-500">
+              {new Date(communityPostData.createdAt).toLocaleDateString('ko-KR', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })}
+            </span>
+          </div>
         </div>
-
-        {/* 구분선 */}
-        <hr className="border-gray-200" />
       </div>
 
       
