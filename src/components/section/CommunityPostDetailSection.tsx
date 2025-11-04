@@ -26,18 +26,18 @@ export default function CommunityPostDetailSection( { communityPostData, hashtag
           </h1>
         </div>
         
-        {/* 해시태그 */}
-        <CommunityHashtagSection hashtagList={hashtagList} />
+        {/* 해시태그, 카테고리/타입 및 사용자 정보 */}
+        <div className="flex items-end justify-between">
+          {/* 왼쪽: 해시태그, 카테고리/타입 */}
+          <div className="flex flex-col gap-4">
+            <CommunityHashtagSection hashtagList={hashtagList} />
+            <CommunityPostCategoryTypeBadges
+              category={communityPostData.category}
+              type={communityPostData.type}
+            />
+          </div>
 
-        {/* 나머지 정보 */}
-        <div className="flex items-center justify-between">
-          {/* 카테고리/타입 */}
-          <CommunityPostCategoryTypeBadges
-            category={communityPostData.category}
-            type={communityPostData.type}
-          />
-
-          {/* 사용자 정보 및 날짜 */}
+          {/* 오른쪽: 사용자 정보 및 날짜 */}
           <CommunityPostUserProfileItem
             profileUrl={communityPostData.profileUrl}
             author={communityPostData.author}
