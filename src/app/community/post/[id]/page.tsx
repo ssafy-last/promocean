@@ -48,17 +48,17 @@ export default async function CommunityPostPage() {
       <div className="max-w-7xl pl-8 pr-4 py-8 flex flex-row gap-6 relative">
         
         {/* 왼쪽: 글 및 댓글 섹션 */}
-        <div className="flex-1 flex flex-col gap-6">
+        <div className="flex-1 flex flex-col gap-6 bg-white rounded-lg shadow-md">
 
           {/* 글 섹션 */}
-          <CommunityPostDetailSection communityPostData={communityPostData} />
-
-          {/* 해시태그 섹션 */}
-          <CommunityHashtagSection hashtagList={hashtagList} />
+          <CommunityPostDetailSection communityPostData={communityPostData} hashtagList={hashtagList} />
 
           {/* 좋아요 및 스크랩 섹션 */}
           <CommunityLikeShareSection likeCount={communityPostResponse.likeCnt} commentCount={communityCommentList.length} />
 
+          {/* 구분선 */}
+          <hr className="border-gray-200" />
+          
           {/* 댓글 섹션 */}
           <CommunityCommentSection communityCommentList={communityCommentList} />
         </div>
