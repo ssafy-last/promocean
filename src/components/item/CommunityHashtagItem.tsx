@@ -7,7 +7,7 @@
  */
 export default function CommunityHashtagItem( { tag }: { tag: string } ) {
   return (
-    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm text-gray-700 bg-gray-100 hover:bg-primary hover:text-white transition-colors cursor-pointer">
+    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs text-gray-500 bg-gray-100 hover:bg-primary hover:text-white transition-colors cursor-pointer">
       #{tag}
     </span>
   )

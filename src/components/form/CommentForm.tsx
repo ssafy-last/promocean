@@ -19,7 +19,7 @@ export default function CommentForm() {
   };
 
   return (
-    <div className="mb-6 pb-6 border-b border-gray-200">
+    <div className="mb-6 pb-6 border-gray-200">
       <form onSubmit={handleSubmit} className="space-y-3">
         <textarea
           value={comment}
