@@ -34,6 +34,24 @@ export default function TeamSpaceChoiceSection({teamSpaceTeamChoiceList}: TeamSp
         {name : "정우성", email : "jung@example.com"},
     ]
 
+    const handleMemberSearch = (query : string) => {
+        if(query.trim() === ""){
+            setSearchSpaceMemberListState([]);
+            return;
+        }
+        const filteredMembers = mockMemberList.filter((member) =>
+            member.name.includes(query) || member.email.includes(query)
+        );
+        console.log("filteredMembers ",filteredMembers);
+
+        if(filteredMembers.length > 0) setIsMemberExistState(true);
+        else setIsMemberExistState(false);
+    
+        setSearchSpaceMemberListState([...filteredMembers]);
+    }   
+
+
+
 
     return(
         <div className="min-h-screen bg-gray-50 py-5 px-4 flex flex-col">
@@ -62,7 +80,11 @@ export default function TeamSpaceChoiceSection({teamSpaceTeamChoiceList}: TeamSp
                                     <div className ="flex flex-row gap-2 justify-end-safe py-1 px-2">
                                         
                                     </div>
-                                    <input type="text" placeholder="팀원 닉네임 또는 이메일을 입력하세요" className = "w-[600px] border border-gray-300 rounded-[10px] p-3"/>
+                                    <input type="text" 
+                                        placeholder="팀원 닉네임 또는 이메일을 입력하세요" 
+                                        className = "w-[600px] border border-gray-300 rounded-[10px] p-3"
+                                        onChange={(e) => handleMemberSearch(e.target.value)}
+                                    />
                                     
                                     {isMemberExistState &&
                                         <div className ="overflow-y-scroll w-[600px] h-[300px] border border-t-0 border-gray-300 rounded-[10px] p-2.5 gap-2.5">
