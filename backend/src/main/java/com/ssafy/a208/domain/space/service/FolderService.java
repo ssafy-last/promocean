@@ -6,6 +6,7 @@ import com.ssafy.a208.domain.member.entity.Member;
 import com.ssafy.a208.domain.member.reader.MemberReader;
 import com.ssafy.a208.domain.space.dto.request.FolderReq;
 import com.ssafy.a208.domain.space.dto.response.FolderRes;
+import com.ssafy.a208.domain.space.dto.response.folder.FolderInfosRes;
 import com.ssafy.a208.domain.space.entity.Folder;
 import com.ssafy.a208.domain.space.entity.Space;
 import com.ssafy.a208.domain.space.reader.FolderReader;
@@ -31,14 +32,12 @@ public class FolderService {
         Member member = memberReader.getMemberById(userDetails.memberId());
         Space space = spaceService.getEditableSpace(spaceId, member.getId());
         folderReader.checkDuplicatedName(space, folderReq.name());
-
         Folder folder = Folder.builder()
                 .name(folderReq.name())
                 .color(folderReq.color())
                 .space(space)
                 .build();
         folderRepository.save(folder);
-
         return FolderRes.builder()
                 .folderId(folder.getId())
                 .name(folder.getName())
@@ -48,15 +47,19 @@ public class FolderService {
     }
 
     @Transactional(readOnly = true)
-    public List<FolderInfo> getFolders(Long spaceId) {
+    public FolderInfosRes getFolders(CustomUserDetails userDetails, Long spaceId) {
+        spaceService.validateReadableSpace(spaceId, userDetails.memberId());
         List<Folder> folders = folderRepository.findBySpaceIdAndDeletedAtIsNull(spaceId);
-        return folders.stream()
+        List<FolderInfo> folderInfos = folders.stream()
                 .map(folder -> FolderInfo.builder()
                         .folderId(folder.getId())
                         .name(folder.getName())
                         .color(folder.getColor())
                         .build())
                 .toList();
+        return FolderInfosRes.builder()
+                .folderInfos(folderInfos)
+                .build();
     }
 
     @Transactional
@@ -66,7 +69,6 @@ public class FolderService {
         Space space = spaceService.getEditableSpace(spaceId, member.getId());
         Folder folder = folderReader.getFolderById(folderId);
         folderReader.checkDuplicatedName(space, folderReq.name());
-
         folder.updateFolder(folderReq);
     }
 
@@ -75,7 +77,6 @@ public class FolderService {
         Member member = memberReader.getMemberById(userDetails.memberId());
         spaceService.validateEditableSpace(spaceId, member.getId());
         Folder folder = folderReader.getFolderById(folderId);
-
         folder.deleteFolder();
     }
 
@@ -84,7 +85,6 @@ public class FolderService {
         Member member = memberReader.getMemberById(userDetails.memberId());
         spaceService.validateEditableSpace(spaceId, member.getId());
         Folder folder = folderReader.getFolderById(folderId);
-
         folder.updatePin();
         return FolderRes.builder()
                 .folderId(folder.getId())

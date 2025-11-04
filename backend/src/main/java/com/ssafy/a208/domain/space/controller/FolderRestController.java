@@ -2,7 +2,7 @@ package com.ssafy.a208.domain.space.controller;
 
 import com.ssafy.a208.domain.space.dto.request.FolderReq;
 import com.ssafy.a208.domain.space.dto.response.FolderRes;
-import com.ssafy.a208.domain.space.entity.Folder;
+import com.ssafy.a208.domain.space.dto.response.folder.FolderInfosRes;
 import com.ssafy.a208.domain.space.service.FolderService;
 import com.ssafy.a208.global.common.dto.ApiResponse;
 import com.ssafy.a208.global.security.dto.CustomUserDetails;
@@ -10,9 +10,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,6 +39,16 @@ public class FolderRestController {
     ) {
         FolderRes res = folderService.createFolder(userDetails, spaceId, folderReq);
         return ApiResponse.ok(res);
+    }
+
+    @GetMapping
+    @Operation(summary = "폴더 목록 조회 API", description = " 폴더 목록을 조회하는 API입니다.")
+    public ResponseEntity<ApiResponse<FolderInfosRes>> getTeamSpace(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable Long spaceId
+    ) {
+        FolderInfosRes folders = folderService.getFolders(userDetails, spaceId);
+        return ApiResponse.of(HttpStatus.OK, folders);
     }
 
     @PatchMapping("/{folderId}")
