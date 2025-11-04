@@ -135,7 +135,7 @@ export interface CommunityPostItemResponse {
     profileUrl: string
     content: string
     createdAt: string
-  }
+  }[]
 }
 
 /**
@@ -178,4 +178,19 @@ export interface CommunityPostItemProps {
  */
 export interface HashtagItemProps {
   tag: string
+}
+
+/**
+ * CommunityCommentItemProps interface
+ * @description 커뮤니티 댓글 아이템 타입
+ * @param author: 작성자
+ * @param profileUrl: 작성자 프로필 이미지
+ * @param content: 댓글 내용
+ * @param createdAt: 댓글 작성일시
+ */
+export interface CommunityCommentItemProps {
+  author: string
+  profileUrl: string
+  content: string
+  createdAt: string
 }

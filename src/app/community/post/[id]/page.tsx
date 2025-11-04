@@ -6,7 +6,7 @@ import CommunityPostDetailSection from "@/components/section/CommunityPostDetail
 import CommunityHashtagSection from "@/components/section/CommunityHashtagSection";
 import CommunityLikeShareSection from "@/components/section/CommunityLikeShareSection";
 import CommunityCommentSection from "@/components/section/CommunityCommentSection";
-import { CommunityFloatingItemProps, CommunityPostItemResponse, CommunityPostItemProps, HashtagItemProps } from "@/types/itemType";
+import { CommunityFloatingItemProps, CommunityPostItemResponse, CommunityPostItemProps, HashtagItemProps, CommunityCommentItemProps } from "@/types/itemType";
 
 /**
  * CommunityPostPage component
@@ -33,20 +33,14 @@ export default async function CommunityPostPage() {
   const hashtagList: HashtagItemProps[] = communityPostResponse.tags.map(tag => ({ tag }));
 
   // 글 상세보기 데이터
-  const communityPostData: CommunityPostItemProps = {
-    postId: communityPostResponse.postId,
-    author: communityPostResponse.author,
-    profileUrl: communityPostResponse.profileUrl,
-    title: communityPostResponse.title,
-    description: communityPostResponse.description,
-    category: communityPostResponse.category,
-    prompt: communityPostResponse.prompt,
-    type: communityPostResponse.type,
-    sampleQuestion: communityPostResponse.sampleQuestion,
-    sampleAnswer: communityPostResponse.sampleAnswer,
-    fileUrl: communityPostResponse.fileUrl,
-    createdAt: communityPostResponse.createdAt,
-  };
+  const communityPostData: CommunityPostItemProps = communityPostResponse;
+
+  const communityCommentList: CommunityCommentItemProps[] = communityPostResponse.replies.map(item => ({
+    author: item.author,
+    profileUrl: item.profileUrl,
+    content: item.content,
+    createdAt: item.createdAt,
+  }));
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -63,10 +57,10 @@ export default async function CommunityPostPage() {
           <CommunityHashtagSection hashtagList={hashtagList} />
 
           {/* 좋아요 및 스크랩 섹션 */}
-          <CommunityLikeShareSection likeCount={communityPostResponse.likeCnt} />
+          <CommunityLikeShareSection likeCount={communityPostResponse.likeCnt} commentCount={communityCommentList.length} />
 
           {/* 댓글 섹션 */}
-          <CommunityCommentSection />
+          <CommunityCommentSection communityCommentList={communityCommentList} />
         </div>
 
         {/* 오른쪽: 플로팅 섹션 */}
