@@ -31,9 +31,9 @@ export default function CommunityFloatingItem({ id, title, hashtags, image, like
         <div className="p-3">
           
           {/* Title */}
-          <h3 className="font-semibold text-text text-sm mb-2 line-clamp-2 transition-colors group-hover:text-primary">
+          <h2 className="font-bold text-text text-base mb-2 line-clamp-1 transition-colors group-hover:text-primary">
             {title}
-          </h3>
+          </h2>
 
           {/* Hashtags */}
           <div className="flex flex-wrap gap-1 mb-2">
@@ -47,16 +47,17 @@ export default function CommunityFloatingItem({ id, title, hashtags, image, like
             ))}
           </div>
 
-          {/* Stats */}
+          {/* 아이콘들 (좋아요/댓글) */}
           <div className="flex items-center gap-3">
-            {/* Likes */}
-            <div className="flex items-center gap-1 text-gray-500 hover:text-red-500 transition-colors">
+
+            {/* 좋아요 */}
+            <div className="flex items-center gap-1 text-gray-500 transition-colors">
               <Heart />
               <span className="text-xs font-medium">{likeCount}</span>
             </div>
 
-            {/* Comments */}
-            <div className="flex items-center gap-1 text-gray-500 hover:text-primary transition-colors">
+            {/* 댓글 */}
+            <div className="flex items-center gap-1 text-gray-500 transition-colors">
               <ChatBubbleBottomCenterText />
               <span className="text-xs font-medium">{commentCount}</span>
             </div>
