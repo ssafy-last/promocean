@@ -1,0 +1,24 @@
+{
+  "postId": 2,
+  "author": "정태숭이",
+  "profileUrl": "https://ss",
+  "title": "AI 예술 프롬프트 생성기",
+  "description": "AI 그림 생성을 위한 프롬프트를 자동으로 만들어주는 도구입니다.",
+  "category": "취업",
+  "prompt": "공중에 떠 있는 섬과 빛나는 나무가 있는 초현실적인 풍경을 만들어줘.",
+  "type": "텍스트",
+  "sampleQuestion": "판타지 숲 장면을 만들어줄 수 있나요?",
+  "sampleAnswer": "안개와 생물 발광 식물이 가득한 환상적인 숲을 생성합니다.",
+  "fileUrl": null,
+  "tags": ["고독한", "예술가"],
+  "likeCnt": 234,
+  "createdAt": "2025-10-28T11:41:12",
+  "replies": [
+    {
+      "author": "이준희",
+      "profileUrl": "https://dddd",
+      "content": "우 진짜 최악",
+      "createdAt": "2025-10-28T11:41:12"
+    }
+  ]
+}
