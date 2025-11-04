@@ -3,6 +3,7 @@
 import { CommunityCommentItemProps } from "@/types/itemType";
 import CommunityCommentList from "@/components/list/CommunityCommentList";
 import CommentForm from "@/components/form/CommentForm";
+import ChatBubbleBottomCenterText from "@/components/icon/ChatBubbleBottomCenterText";
 
 /**
  * CommunityCommentSection component
@@ -12,17 +13,26 @@ import CommentForm from "@/components/form/CommentForm";
 export default function CommunityCommentSection( { communityCommentList }: { communityCommentList: CommunityCommentItemProps[] } ) {
   return (
     <div className="p-8 flex flex-col gap-6">
+      {/* 댓글 작성 섹션 */}
       <div>
-        <h3 className="text-xl font-semibold text-gray-900 mb-6">
-          댓글 {communityCommentList.length}개
-        </h3>
-        <CommunityCommentList communityCommentList={communityCommentList} />
-      </div>
-      <div>
-        <h3 className="text-xl font-semibold text-gray-900 mb-6">
-          댓글 작성
-        </h3>
+        <div className="flex flex-row items-center gap-2 mb-6">
+          <ChatBubbleBottomCenterText />
+          <h3 className="text-xl font-semibold text-gray-900">
+            댓글 작성
+          </h3>
+        </div>
         <CommentForm />
+      </div>
+
+      {/* 댓글 목록 섹션 */}
+      <div>
+        <div className="flex flex-row items-center gap-2 mb-6">
+          <ChatBubbleBottomCenterText />
+          <h3 className="text-xl font-semibold text-gray-900">
+            댓글 {communityCommentList.length}개
+          </h3>
+        </div>
+        <CommunityCommentList communityCommentList={communityCommentList} />
       </div>
     </div>
   )
