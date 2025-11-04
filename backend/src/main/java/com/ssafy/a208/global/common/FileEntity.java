@@ -3,12 +3,14 @@ package com.ssafy.a208.global.common;
 
 import com.ssafy.a208.global.image.dto.FileMetaData;
 import jakarta.persistence.Column;
+import jakarta.persistence.MappedSuperclass;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
 @Getter
+@MappedSuperclass
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FileEntity extends BaseEntity {
 

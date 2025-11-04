@@ -45,4 +45,8 @@ public class PostLike extends BaseEntity {
         this.post = post;
         this.member = member;
     }
+
+    public void deletePostLike() {
+        this.delete(); // BaseEntity의 protected delete() 호출
+    }
 }
