@@ -51,7 +51,7 @@ export default function CommunityPostDetailSection( { communityPostData, hashtag
         {/* 설명 */}
         {communityPostData.description && (
           <div>
-            <h2 className="text-lg font-semibold text-gray-900 mb-2">설명</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">설명</h2>
             <p className="text-gray-700 whitespace-pre-wrap">{communityPostData.description}</p>
           </div>
         )}
@@ -59,7 +59,7 @@ export default function CommunityPostDetailSection( { communityPostData, hashtag
         {/* 프롬프트 */}
         {communityPostData.prompt && (
           <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-900 mb-2">프롬프트</h2>
+            <h3 className="text-sm font-medium text-gray-900 mb-1">프롬프트</h3>
             <p className="text-gray-700 whitespace-pre-wrap">{communityPostData.prompt}</p>
           </div>
         )}
@@ -67,7 +67,7 @@ export default function CommunityPostDetailSection( { communityPostData, hashtag
         {/* 샘플 질문/답변 */}
         {(communityPostData.sampleQuestion || communityPostData.sampleAnswer) && (
           <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-gray-900">예시</h2>
+            <h2 className="text-xl font-semibold text-gray-900">예시</h2>
             {communityPostData.sampleQuestion && (
               <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                 <h3 className="text-sm font-medium text-blue-900 mb-1">질문</h3>
@@ -85,8 +85,8 @@ export default function CommunityPostDetailSection( { communityPostData, hashtag
 
         {/* 이미지 */}
         {communityPostData.fileUrl && (
-          <div className="border-t border-gray-200 pt-6">
-            <div className="relative w-full max-w-2xl aspect-video rounded-lg overflow-hidden border border-gray-200">
+          <div className="flex flex-row items-center justify-center">
+            <div className="relative w-full max-w-2xl aspect-video overflow-hidden">
               <Image
                 src={communityPostData.fileUrl}
                 alt="첨부 이미지"
