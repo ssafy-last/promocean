@@ -2,6 +2,7 @@
 
 import CommunityHashtagList from "@/components/list/CommunityHashtagList";
 import { HashtagItemProps } from "@/types/itemType";
+import Tag from "@/components/icon/Tag";
 
 /**
  * CommunityHashtagSection component
@@ -11,7 +12,11 @@ import { HashtagItemProps } from "@/types/itemType";
 export default function CommunityHashtagSection( { hashtagList }: { hashtagList: HashtagItemProps[] } ) {
   
   return (
-    <div>
+    <div className="flex flex-row items-center gap-4">
+      <div className="flex flex-row items-center gap-1">
+        <Tag />
+        <span className="text-gray-500">해시태그</span>
+      </div>
       <CommunityHashtagList hashtagList={hashtagList} />
     </div>
   )

@@ -2,8 +2,9 @@
 
 import Image from "next/image";
 import { CommunityPostItemProps, HashtagItemProps } from "@/types/itemType";
-import CommunityHashtagList from "@/components/list/CommunityHashtagList";
-import Tag from "@/components/icon/Tag";
+import CommunityHashtagSection from "@/components/section/CommunityHashtagSection";
+import CommunityPostUserProfileItem from "@/components/item/CommunityPostUserProfileItem";
+import CommunityPostCategoryTypeBadges from "@/components/item/CommunityPostCategoryTypeBadges";
 
 /**
  * CommunityPostDetailSection component
@@ -14,8 +15,10 @@ export default function CommunityPostDetailSection( { communityPostData, hashtag
 
   return (
     <div className="p-8">
+      
+      {/* 메타 데이터 섹션 */}
+      <div className="flex flex-col gap-3 border-b border-gray-200 pb-5">
 
-      <div className="flex flex-col gap-4 border-b border-gray-200 pb-6">
         {/* 제목 */}
         <div className="mb-3">
           <h1 className="text-3xl font-bold text-gray-900">
@@ -24,66 +27,24 @@ export default function CommunityPostDetailSection( { communityPostData, hashtag
         </div>
         
         {/* 해시태그 */}
-        <div className="flex flex-row items-center gap-4">
-          <div className="flex flex-row items-center gap-1">
-            <Tag />
-            <span className="text-gray-500">해시태그</span>
-          </div>
-          <CommunityHashtagList hashtagList={hashtagList} />
-        </div>
+        <CommunityHashtagSection hashtagList={hashtagList} />
 
         {/* 나머지 정보 */}
         <div className="flex items-center justify-between">
           {/* 카테고리/타입 */}
-          <div className="flex flex-row items-center gap-4">
-            <div className="flex flex-row items-center gap-1">
-              <Tag />
-              <span className="text-gray-500">카테고리</span>
-            </div>
-            <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600">
-              <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-medium">
-                {communityPostData.category}
-              </span>
-              <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs font-medium">
-                {communityPostData.type}
-              </span>
-            </div>
-          </div>
+          <CommunityPostCategoryTypeBadges
+            category={communityPostData.category}
+            type={communityPostData.type}
+          />
 
           {/* 사용자 정보 및 날짜 */}
-          <div className="flex flex-row items-center gap-4">
-            <div className="flex flex-row items-center gap-6">
-              <div className="flex flex-row items-center gap-2">
-                {communityPostData.profileUrl ? (
-                  <div className="relative w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
-                    <Image
-                      src={communityPostData.profileUrl}
-                      alt={communityPostData.author}
-                      fill
-                      className="object-cover"
-                      />
-                  </div>
-                ) : (
-                  <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs flex-shrink-0">
-                    🐥
-                  </div>
-                )}
-                <span className="text-sm font-medium text-gray-700">{communityPostData.author}</span>
-              </div>
-              <span className="text-gray-500">
-                {new Date(communityPostData.createdAt).toLocaleDateString('ko-KR', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit'
-                })}
-              </span>
-            </div>
-          </div>
+          <CommunityPostUserProfileItem
+            profileUrl={communityPostData.profileUrl}
+            author={communityPostData.author}
+            createdAt={communityPostData.createdAt}
+          />
         </div>
       </div>
-
       
       {/* 게시글 내용 */}
       <div className="mt-8 space-y-6">
