@@ -9,4 +9,8 @@ public class DoNotSupportEnumException extends ApiException {
     public DoNotSupportEnumException() {
         super(HttpStatus.BAD_REQUEST, MESSAGE);
     }
+
+    public DoNotSupportEnumException(String message) {
+        super(HttpStatus.BAD_REQUEST, message);
+    }
 }

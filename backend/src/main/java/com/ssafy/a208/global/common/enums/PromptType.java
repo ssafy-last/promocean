@@ -22,6 +22,6 @@ public enum PromptType {
             }
         }
 
-        throw new DoNotSupportEnumException();
+        throw new DoNotSupportEnumException("프롬프트 타입 값이 유효하지 않습니다");
     }
 }
