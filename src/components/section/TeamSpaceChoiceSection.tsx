@@ -38,12 +38,13 @@ export default function TeamSpaceChoiceSection({teamSpaceTeamChoiceList}: TeamSp
     const handleMemberSearch = (query : string) => {
         if(query.trim() === ""){
             setSearchSpaceMemberListState([]);
+            setIsMemberExistState(false);
             return;
         }
         const filteredMembers = mockMemberList.filter((member) =>
             member.name.includes(query) || member.email.includes(query)
         );
-        console.log("filteredMembers ",filteredMembers);
+        console.log("filteredMembers ",filteredMembers, " query : ", query);
 
         if(filteredMembers.length > 0) setIsMemberExistState(true);
         else setIsMemberExistState(false);
