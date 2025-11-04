@@ -8,7 +8,8 @@ public enum ImageDirectory {
     POSTS("posts"),
     PROFILES("profiles"),
     ARTICLES("articles"),
-    SUBMISSIONS("submissions");
+    SUBMISSIONS("submissions"),
+    SPACES("spaces");
 
     private final String name;
 

@@ -17,4 +17,11 @@ public class MemberReader {
         return memberRepository.findByIdAndDeletedAtIsNull(memberId).orElseThrow(
                 MemberNotFoundException::new);
     }
+
+    @Transactional(readOnly = true)
+    public Member getMemberByEmail(String email) {
+        return memberRepository.findByEmailAndDeletedAtIsNull(email).orElseThrow(
+                MemberNotFoundException::new);
+    }
+
 }
