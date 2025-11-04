@@ -39,6 +39,7 @@ public class AuthService {
                     .email(member.getEmail())
                     .nickname(member.getNickname())
                     .profileUrl(s3Service.getCloudFrontUrl(profile.getFilePath()))
+                    .personalSpaceId(member.getPersonalSpace().getId())
                     .build();
         }
 

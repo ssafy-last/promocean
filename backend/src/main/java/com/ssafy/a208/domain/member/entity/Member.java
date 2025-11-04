@@ -4,7 +4,6 @@ import com.ssafy.a208.domain.member.exception.UsableCountExceededException;
 import com.ssafy.a208.domain.space.entity.Space;
 import com.ssafy.a208.global.common.BaseEntity;
 import com.ssafy.a208.global.common.enums.MemberRole;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -51,7 +50,7 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private MemberRole role;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "personal_space_id", nullable = false)
     private Space personalSpace;
 
