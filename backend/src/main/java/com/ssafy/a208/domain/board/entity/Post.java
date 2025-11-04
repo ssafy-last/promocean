@@ -4,21 +4,15 @@ import com.ssafy.a208.domain.member.entity.Member;
 import com.ssafy.a208.global.common.BaseEntity;
 import com.ssafy.a208.global.common.enums.PostCategory;
 import com.ssafy.a208.global.common.enums.PromptType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -63,6 +57,10 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "author_id", nullable = false)
     private Member author;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST, orphanRemoval = false)
+    private List<PostLike> postLikes = new ArrayList<>();
+
+
     @Builder
     public Post(String title, String description, PostCategory category, String prompt,
             PromptType type,
@@ -75,5 +73,24 @@ public class Post extends BaseEntity {
         this.exampleQuestion = exampleQuestion;
         this.exampleAnswer = exampleAnswer;
         this.author = author;
+    }
+
+    public void update(String title, String description, PostCategory category,
+                       String prompt, PromptType type, String exampleQuestion, String exampleAnswer) {
+        this.title = title;
+        this.description = description;
+        this.category = category;
+        this.prompt = prompt;
+        this.type = type;
+        this.exampleQuestion = exampleQuestion;
+        this.exampleAnswer = exampleAnswer;
+    }
+
+    public boolean isAuthor(Long memberId) {
+        return this.author.getId().equals(memberId);
+    }
+
+    public void deletePost() {
+        this.delete();
     }
 }

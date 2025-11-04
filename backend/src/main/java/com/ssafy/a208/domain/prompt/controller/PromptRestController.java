@@ -46,7 +46,7 @@ public class PromptRestController {
             @Valid @RequestBody TextPromptReq request
     ) {
         TextPromptRes response = promptService.processTextPrompt(userDetails, request);
-        return ApiResponse.ok(response);
+        return ApiResponse.create(response);
     }
 
     /**
@@ -66,7 +66,7 @@ public class PromptRestController {
             @Valid @RequestBody ImagePromptReq request
     ) {
         ImagePromptRes response = promptService.processImagePrompt(userDetails, request);
-        return ApiResponse.ok(response);
+        return ApiResponse.create(response);
     }
 
 }
