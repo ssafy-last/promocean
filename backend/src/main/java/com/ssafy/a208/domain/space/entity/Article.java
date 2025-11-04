@@ -1,5 +1,6 @@
 package com.ssafy.a208.domain.space.entity;
 
+import com.ssafy.a208.domain.space.dto.request.ArticleReq;
 import com.ssafy.a208.global.common.BaseEntity;
 import com.ssafy.a208.global.common.enums.PromptType;
 import jakarta.persistence.Column;
@@ -66,5 +67,18 @@ public class Article extends BaseEntity {
         this.exampleQuestion = exampleQuestion;
         this.exampleAnswer = exampleAnswer;
         this.folder = folder;
+    }
+
+    public void updateArticle(ArticleReq articleReq) {
+        this.title = articleReq.title();
+        this.description = articleReq.description();
+        this.prompt = articleReq.prompt();
+        this.type = PromptType.valueOf(articleReq.type());
+        this.exampleQuestion = articleReq.exampleQuestion();
+        this.exampleAnswer = articleReq.exampleAnswer();
+    }
+
+    public void deleteArticle() {
+        this.delete();
     }
 }
