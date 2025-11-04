@@ -1,6 +1,9 @@
 package com.ssafy.a208.domain.space.service;
 
+import com.ssafy.a208.domain.member.entity.Member;
+import com.ssafy.a208.domain.space.entity.Participant;
 import com.ssafy.a208.domain.space.entity.Space;
+import com.ssafy.a208.domain.space.reader.ParticipantReader;
 import com.ssafy.a208.domain.space.reader.SpaceReader;
 import com.ssafy.a208.global.common.enums.SpaceType;
 import lombok.RequiredArgsConstructor;
@@ -11,18 +14,17 @@ import org.springframework.stereotype.Service;
 public class SpaceService {
 
     private final SpaceReader spaceReader;
-    private final ParticipantService participantService;
+    private final ParticipantReader participantReader;
 
-    public Space getEditableSpace(Long spaceId, Long memberId) {
+    public Space validateAccessToSpace(Long spaceId, Member member) {
         Space space = spaceReader.getSpaceById(spaceId);
-        if (space.getType() == SpaceType.TEAM) {
-            participantService.validateEditableParticipant(spaceId, memberId);
-        }
-        return space;
-    }
 
-    public void validateEditableSpace(Long spaceId, Long memberId) {
-        getEditableSpace(spaceId, memberId);
+        if (space.getType() == SpaceType.TEAM) {
+            Participant participant = participantReader.getParticipant(space, member);
+            participantReader.checkParticipantRole(participant);
+        }
+
+        return space;
     }
 
 }
