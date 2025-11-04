@@ -15,7 +15,7 @@ interface CommunityPostUserProfileItemProps {
  */
 export default function CommunityPostUserProfileItem({ profileUrl, author, createdAt }: CommunityPostUserProfileItemProps) {
   return (
-    <div className="flex flex-row items-center gap-4">
+    <div className="flex flex-row items-end gap-4">
       {/* 프로필 이미지 */}
       {profileUrl ? (
         <div className="relative w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
