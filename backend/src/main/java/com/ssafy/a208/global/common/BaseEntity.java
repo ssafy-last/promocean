@@ -46,6 +46,10 @@ public abstract class BaseEntity {
         }
     }
 
+    protected void restore() {
+        this.deletedAt = null;
+    }
+
     public boolean isDeleted() {
         return deletedAt != null;
     }

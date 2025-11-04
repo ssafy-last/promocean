@@ -32,4 +32,8 @@ public class ArticleFile extends FileEntity {
         super(originalName, filePath, contentType, size);
         this.article = article;
     }
+
+    public void deleteArticleFile() {
+        this.delete();
+    }
 }

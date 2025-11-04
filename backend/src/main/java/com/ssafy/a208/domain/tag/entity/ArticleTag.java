@@ -45,4 +45,12 @@ public class ArticleTag extends BaseEntity {
         this.tag = tag;
         this.article = article;
     }
+
+    public void deleteArticleTag() {
+        this.delete();
+    }
+
+    public void restoreArticleTag() {
+        this.restore();
+    }
 }
