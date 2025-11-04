@@ -1,3 +1,4 @@
+import { useRef } from "react";
 
 
 export interface TeamSpaceTeamChoiceLabelItemProps{
@@ -7,13 +8,28 @@ export interface TeamSpaceTeamChoiceLabelItemProps{
 
 
 export default function TeamSpaceTeamChoiceLabelItem({ labelName } : TeamSpaceTeamChoiceLabelItemProps){
+    
+    const divRef = useRef<HTMLDivElement>(null);
+
+    const testFunction  = ()=>{
+        console.log("testFunction 실행");
+    }
+
+    const handleDelete = () => {
+        console.log("삭제 버튼 클릭됨");
+
+        divRef.current?.remove();
+    };
+    
     return(
-        <div className = "flex flex-row gap-2 items-center rounded-[10px] px-2.5 py-1.5 hover:bg-gray-300/10">
+        <div ref={divRef} className = "flex flex-row gap-2 items-center rounded-[10px] px-2.5 py-1.5 hover:bg-gray-300/10">
             <div className = "flex flex-row gap-0.5">
             <div className = "w-5 h-5 rounded-[10px] bg-gray-300"/>
             <span className = "text-[14px] font-light">{labelName}</span>
             </div>
-            <button className = "text-[14px] font-light"> X </button>
+            <button className = "text-[14px] font-light"
+            onClick={handleDelete}
+            > X </button>
         </div>
     )
 }
