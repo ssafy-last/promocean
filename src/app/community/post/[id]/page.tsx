@@ -54,11 +54,11 @@ export default async function CommunityPostPage() {
           <CommunityPostDetailSection communityPostData={communityPostData} hashtagList={hashtagList} />
 
           {/* 좋아요 및 스크랩 섹션 */}
-          <CommunityLikeShareSection likeCount={communityPostResponse.likeCnt} commentCount={communityCommentList.length} />
+          <CommunityLikeShareSection likeCount={communityPostResponse.likeCnt}/>
 
           {/* 구분선 */}
           <hr className="border-gray-200" />
-          
+
           {/* 댓글 섹션 */}
           <CommunityCommentSection communityCommentList={communityCommentList} />
         </div>
