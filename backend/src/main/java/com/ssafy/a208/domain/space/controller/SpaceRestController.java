@@ -26,23 +26,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/spaces")
-@Tag(name = "스페이스", description = "스페이스 생성, 조회, 수정, 삭제 API가 담겨있어요")
+@Tag(name = "스페이스", description = "스페이스 생성/조회/수정/삭제 API가 담겨있어요")
 public class SpaceRestController {
     private final SpaceService spaceService;
 
     @PostMapping
-    @Operation(summary = "팀스페이스 생성", description = "팀스페이스를 생성할 수 있습니다.")
+    @Operation(summary = "팀스페이스 생성", description = "팀스페이스를 생성하는 API입니다.")
     public ResponseEntity<ApiResponse<SpaceInfoRes>> createTeamSpace(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody @Valid SpaceReq spaceReq
 
     ) {
-        SpaceInfoRes spaceInfoRes = spaceService.saveSpace(userDetails, spaceReq);
+        SpaceInfoRes spaceInfoRes = spaceService.saveTeamSpace(userDetails, spaceReq);
         return ApiResponse.of(HttpStatus.CREATED, spaceInfoRes);
     }
 
     @GetMapping
-    @Operation(summary = "팀스페이스 목록조회", description = "팀스페이스 목록을 조회할 수 있습니다.")
+    @Operation(summary = "팀스페이스 목록조회", description = "팀스페이스 목록을 조회하는 API입니다.")
     public ResponseEntity<ApiResponse<SpaceSummariesRes>> getTeamSpaces(
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
@@ -50,43 +50,14 @@ public class SpaceRestController {
         return ApiResponse.of(HttpStatus.OK, teamSpaces);
     }
 
-    @GetMapping("/{spaceId}")
-    @Operation(summary = "팀스페이스 상세조회", description = "팀스페이스의 내용을 상세 조회할 수 있습니다.")
-    public ResponseEntity<ApiResponse<SpaceDetailRes>> getTeamSpace(
-            @AuthenticationPrincipal CustomUserDetails userDetails,
-            @PathVariable Long spaceId
-    ) {
-        SpaceDetailRes space = spaceService.getTeamSpace(userDetails, spaceId);
-        return ApiResponse.of(HttpStatus.OK, space);
-    }
-
-    @GetMapping("/me")
-    @Operation(summary = "개인스페이스 상세조회", description = "개인스페이스의 내용을 상세 조회할 수 있습니다.")
-    public ResponseEntity<ApiResponse<SpaceDetailRes>> getPersonalSpace(
-            @AuthenticationPrincipal CustomUserDetails userDetails
-    ) {
-        SpaceDetailRes space = spaceService.getPersonalSpace(userDetails);
-        return ApiResponse.of(HttpStatus.OK, space);
-    }
-
     @PatchMapping("/{spaceId}")
-    @Operation(summary = "팀스페이스 수정", description = "팀스페이스의 제목을 수정할 수 있습니다.")
+    @Operation(summary = "스페이스 수정", description = "스페이스의 제목을 수정하는 API입니다.")
     public ResponseEntity<ApiResponse<SpaceDetailRes>> updateSpace(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable Long spaceId,
             @RequestBody @Valid SpaceReq spaceReq
     ) {
         spaceService.updateTeamSpace(userDetails, spaceId, spaceReq);
-        return ApiResponse.of(HttpStatus.OK);
-    }
-
-    @PatchMapping("/me")
-    @Operation(summary = "개인스페이스 수정", description = "개인스페이스의 제목을 수정할 수 있습니다.")
-    public ResponseEntity<ApiResponse<SpaceDetailRes>> updatePersonalSpace(
-            @AuthenticationPrincipal CustomUserDetails userDetails,
-            @RequestBody @Valid SpaceReq spaceReq
-    ) {
-        spaceService.updatePersonalSpace(userDetails, spaceReq);
         return ApiResponse.of(HttpStatus.OK);
     }
 
