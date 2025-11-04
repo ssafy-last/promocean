@@ -6,7 +6,7 @@ import CommunityPostDetailSection from "@/components/section/CommunityPostDetail
 import CommunityHashtagSection from "@/components/section/CommunityHashtagSection";
 import CommunityLikeShareSection from "@/components/section/CommunityLikeShareSection";
 import CommunityCommentSection from "@/components/section/CommunityCommentSection";
-import { CommunityFloatingItemProps, CommunityPostItemProps, HashtagItemProps } from "@/types/itemType";
+import { CommunityFloatingItemProps, CommunityPostItemResponse, CommunityPostItemProps, HashtagItemProps } from "@/types/itemType";
 
 /**
  * CommunityPostPage component
@@ -29,8 +29,24 @@ export default async function CommunityPostPage() {
     `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/mock/CommunityPostDetailData.json`,
     { cache: "no-store" }
   );
-  const communityPostData: CommunityPostItemProps = await communityPostDetailRes.json();
-  const hashtagList: HashtagItemProps[] = communityPostData.tags.map(tag => ({ tag }));
+  const communityPostResponse: CommunityPostItemResponse = await communityPostDetailRes.json();
+  const hashtagList: HashtagItemProps[] = communityPostResponse.tags.map(tag => ({ tag }));
+
+  // 글 상세보기 데이터
+  const communityPostData: CommunityPostItemProps = {
+    postId: communityPostResponse.postId,
+    author: communityPostResponse.author,
+    profileUrl: communityPostResponse.profileUrl,
+    title: communityPostResponse.title,
+    description: communityPostResponse.description,
+    category: communityPostResponse.category,
+    prompt: communityPostResponse.prompt,
+    type: communityPostResponse.type,
+    sampleQuestion: communityPostResponse.sampleQuestion,
+    sampleAnswer: communityPostResponse.sampleAnswer,
+    fileUrl: communityPostResponse.fileUrl,
+    createdAt: communityPostResponse.createdAt,
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -41,13 +57,13 @@ export default async function CommunityPostPage() {
         <div className="flex-1 flex flex-col gap-6">
 
           {/* 글 섹션 */}
-          <CommunityPostDetailSection />
+          <CommunityPostDetailSection communityPostData={communityPostData} />
 
           {/* 해시태그 섹션 */}
           <CommunityHashtagSection hashtagList={hashtagList} />
 
           {/* 좋아요 및 스크랩 섹션 */}
-          <CommunityLikeShareSection likeCount={communityPostData.likeCnt} />
+          <CommunityLikeShareSection likeCount={communityPostResponse.likeCnt} />
 
           {/* 댓글 섹션 */}
           <CommunityCommentSection />
