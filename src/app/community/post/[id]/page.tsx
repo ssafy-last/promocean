@@ -6,7 +6,7 @@ import CommunityPostDetailSection from "@/components/section/CommunityPostDetail
 import CommunityHashtagSection from "@/components/section/CommunityHashtagSection";
 import CommunityLikeShareSection from "@/components/section/CommunityLikeShareSection";
 import CommunityCommentSection from "@/components/section/CommunityCommentSection";
-import { CommunityFloatingItemProps, CommunityPostItemProps } from "@/types/itemType";
+import { CommunityFloatingItemProps, CommunityPostItemProps, HashtagItemProps } from "@/types/itemType";
 
 /**
  * CommunityPostPage component
@@ -25,11 +25,12 @@ export default async function CommunityPostPage() {
   const popularPosts: CommunityFloatingItemProps[] = await popularPostsRes.json();
 
   // Todo: 실제 API와 연동하기
-  const communityPostRes = await fetch(
+  const communityPostDetailRes = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/mock/CommunityPostDetailData.json`,
     { cache: "no-store" }
-  ).then(res => res.json()).catch(() => ({}));
-  const communityPostData: CommunityPostItemProps = communityPostRes.data || {};
+  );
+  const communityPostData: CommunityPostItemProps = await communityPostDetailRes.json();
+  const hashtagList: HashtagItemProps[] = communityPostData.tags.map(tag => ({ tag }));
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -38,19 +39,15 @@ export default async function CommunityPostPage() {
         
         {/* 왼쪽: 글 및 댓글 섹션 */}
         <div className="flex-1 flex flex-col gap-6">
-          <div className="bg-white p-8 rounded-lg shadow-md">
-            <h1 className="text-3xl font-bold text-gray-900 mb-8">커뮤니티 게시글</h1>
-            <p className="text-gray-600">커뮤니티 게시글 페이지</p>
-          </div>
 
           {/* 글 섹션 */}
           <CommunityPostDetailSection />
 
           {/* 해시태그 섹션 */}
-          <CommunityHashtagSection />
+          <CommunityHashtagSection hashtagList={hashtagList} />
 
           {/* 좋아요 및 스크랩 섹션 */}
-          <CommunityLikeShareSection />
+          <CommunityLikeShareSection likeCount={communityPostData.likeCnt} />
 
           {/* 댓글 섹션 */}
           <CommunityCommentSection />
@@ -60,6 +57,7 @@ export default async function CommunityPostPage() {
         <div className="hidden lg:block w-64 flex-shrink-0">
           <CommunityFloatingSection popularPosts={popularPosts} />
         </div>
+
       </div>
     </div>
   );
