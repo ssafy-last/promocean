@@ -52,9 +52,6 @@ export default function TeamSpaceChoiceSection({teamSpaceTeamChoiceList}: TeamSp
         setSearchSpaceMemberListState([...filteredMembers]);
     }   
 
-
-
-
     return(
         <div className="min-h-screen bg-gray-50 py-5 px-4 flex flex-col">
         <div className="flex flex-row justify-between items-center mb-5">
@@ -105,10 +102,7 @@ export default function TeamSpaceChoiceSection({teamSpaceTeamChoiceList}: TeamSp
                                         <label className="text-3xl text-gray-300 block mb-2 font-medium text-center">아직 검색한 팀원이 없어요</label>
                                     </div>
                             }
-
-
-
-
+                            
                             <div className="flex flex-row gap-8 justify-center-safe w-full">
                                 <button className="px-5 py-3 items-center justify-center bg-gray-200 rounded-4xl w-40
                                 hover:bg-gray-300 active:bg-gray-400"
