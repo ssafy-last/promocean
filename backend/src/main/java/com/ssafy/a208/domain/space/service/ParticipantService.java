@@ -9,8 +9,8 @@ import com.ssafy.a208.domain.space.repository.ParticipantRepository;
 import com.ssafy.a208.global.common.enums.ParticipantRole;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -70,6 +70,4 @@ public class ParticipantService {
             throw new SpaceAccessDeniedException("스페이스 조회 권한이 없는 회원입니다.");
         }
     }
-
-
 }

@@ -28,6 +28,7 @@ public class SpaceService {
     private final MemberReader memberReader;
     private final ParticipantService participantService;
 
+    @Transactional
     public Space savePersonalSpace(String userNickname) {
         Space space = Space.builder()
                 .name(String.format("%s의 개인 스페이스", userNickname))
@@ -72,7 +73,7 @@ public class SpaceService {
 
     @Transactional
     public void updateTeamSpace(CustomUserDetails userDetails, Long spaceId, SpaceReq spaceReq) {
-        participantService.validateEditableParticipant(spaceId, userDetails.memberId());
+        participantService.validateManageableParticipant(spaceId, userDetails.memberId());
         Space space = spaceRepository.findByIdAndDeletedAtIsNull(spaceId);
         space.updateName(spaceReq.name());
     }
