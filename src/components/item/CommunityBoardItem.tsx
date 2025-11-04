@@ -78,7 +78,7 @@ export default function CommunityBoardItem({ id, title, hashtags, category, like
           <span className="text-sm font-medium text-gray-700">{userName}</span>
         </div>
 
-        // TODO : 이 컴포넌트 처럼 다른 컴포넌트에 호버링 효과 제거하기 (하트랑 댓글 호버링 색상도 그렇고 통일 후에 적용)
+        {/* TODO : 이 컴포넌트 처럼 다른 컴포넌트에 호버링 효과 제거하기 (하트랑 댓글 호버링 색상도 그렇고 통일 후에 적용) */}
         {/* 아이콘들 (좋아요/댓글) */}
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1 transition-colors">
