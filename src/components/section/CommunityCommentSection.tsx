@@ -13,26 +13,27 @@ import ChatBubbleBottomCenterText from "@/components/icon/ChatBubbleBottomCenter
 export default function CommunityCommentSection( { communityCommentList }: { communityCommentList: CommunityCommentItemProps[] } ) {
   return (
     <div className="p-8 flex flex-col gap-6">
-      {/* 댓글 작성 섹션 */}
-      <div>
-        <div className="flex flex-row items-center gap-2 mb-6">
-          <ChatBubbleBottomCenterText />
-          <h3 className="text-xl font-semibold text-gray-900">
-            댓글 작성
-          </h3>
-        </div>
-        <CommentForm />
-      </div>
 
       {/* 댓글 목록 섹션 */}
       <div>
-        <div className="flex flex-row items-center gap-2 mb-6">
+        <div className="flex flex-row items-center gap-2 mb-2">
           <ChatBubbleBottomCenterText />
           <h3 className="text-xl font-semibold text-gray-900">
             댓글 {communityCommentList.length}개
           </h3>
         </div>
         <CommunityCommentList communityCommentList={communityCommentList} />
+      </div>
+
+      {/* 댓글 작성 섹션 */}
+      <div>
+        <div className="flex flex-row items-center gap-2 mb-4">
+          <ChatBubbleBottomCenterText />
+          <h3 className="text-xl font-semibold text-gray-900">
+            댓글 작성
+          </h3>
+        </div>
+        <CommentForm />
       </div>
     </div>
   )
