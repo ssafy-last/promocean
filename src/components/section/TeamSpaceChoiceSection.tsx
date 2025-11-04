@@ -4,6 +4,7 @@ import TeamSpaceAddButton from "../button/TeamSpaceAddButton";
 import SearchBar from "../filter/SearchBar";
 import { TeamSpaceTeamChoiceItemProps } from "../item/TeamSpaceTeamChoiceItem"
 import TeamSpaceTeamChoiceList, { TeamSpaceTeamChoiceListProps } from "../list/TeamSpaceTeamChoiceLlist"
+import SpaceAddMemberItem from "../item/SpaceAddMemberItem";
 
 export interface TeamSpaceChoiceSectionProps {
     teamSpaceTeamChoiceList : TeamSpaceTeamChoiceItemProps[];
@@ -15,7 +16,6 @@ export default function TeamSpaceChoiceSection({teamSpaceTeamChoiceList}: TeamSp
     const [isModalState, setIsModalState] = useState(false);
 
     return(
-
         <div className="min-h-screen bg-gray-50 py-5 px-4 flex flex-col">
         <div className="flex flex-row justify-between items-center mb-5">
           <TeamSpaceAddButton isModalRef={isModalState} setIsModalRef={setIsModalState}/>
@@ -44,17 +44,9 @@ export default function TeamSpaceChoiceSection({teamSpaceTeamChoiceList}: TeamSp
                                     <input type="text" placeholder="팀원 닉네임 또는 이메일을 입력하세요" className = "w-[600px] border border-gray-300 rounded-[10px] p-3"/>
                                     
                                     <div className ="overflow-y-scroll w-[600px] h-[300px] border border-t-0 border-gray-300 rounded-[10px] p-2.5 gap-2.5">
-                                        
-                                        <div className ="flex flex-row px-4 py-1 gap-3 items-center hover:bg-current/5 active:bg-current/10">
-                                            <div className = "rounded-full bg-gray-200 border w-10 h-10"></div>
-                                            <div>
-                                                <span className="font-medium text-lg">홍길동</span>
-                                                <p className="text-gray-400">홍길동@example.com</p>
-                                            </div>
-                                        </div>
-                
-            
-
+                                        <SpaceAddMemberItem name="홍길동" email="asasd@gmail.com"/>
+                                        <SpaceAddMemberItem name="홍길동" email="asasd@gmail.com"/>
+                                        <SpaceAddMemberItem name="홍길동" email="asasd@gmail.com"/>
                                     </div>
                                     
                                 </div>
