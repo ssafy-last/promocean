@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import SpaceAddMemberItem from '@components/item/SpaceAddMemberItem';
-import { fn } from '@storybook/test';
 
 const meta: Meta<typeof SpaceAddMemberItem> = {
   title: 'Components/Item/SpaceAddMemberItem',
@@ -37,7 +36,7 @@ const meta: Meta<typeof SpaceAddMemberItem> = {
     },
   },
   args: {
-    handleMemberClick: fn(),
+    handleMemberClick: (name: string) => console.log(`Clicked: ${name}`),
   },
 };
 

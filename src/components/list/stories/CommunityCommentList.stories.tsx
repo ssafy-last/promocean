@@ -29,28 +29,22 @@ type Story = StoryObj<typeof CommunityCommentList>;
 
 const mockComments: CommunityCommentItemProps[] = [
   {
-    profileImage: '/images/profile1.jpg',
-    nickname: '김철수',
-    timestamp: '2시간 전',
+    author: '김철수',
+    createdAt: '2024-06-01T10:00:00Z',
+    profileUrl: '/images/profile1.jpg',
     content: '정말 유용한 정보네요! 감사합니다.',
-    likes: 12,
-    isLiked: false,
   },
   {
-    profileImage: '/images/profile2.jpg',
-    nickname: '이영희',
-    timestamp: '1시간 전',
-    content: '이 방법을 사용해봤는데 정말 효과적이었어요. 특히 마지막 팁이 큰 도움이 되었습니다.',
-    likes: 8,
-    isLiked: true,
+    author: '이영희',
+    createdAt: '2024-06-01T11:30:00Z',
+    profileUrl: '/images/profile2.jpg',
+    content: '이 방법으로 문제를 해결했어요. 큰 도움이 되었습니다!',
   },
   {
-    profileImage: '/images/profile3.jpg',
-    nickname: '박민수',
-    timestamp: '30분 전',
+    author: '박민수',
+    createdAt: '2024-06-01T12:00:00Z',
+    profileUrl: '/images/profile3.jpg',
     content: '추가로 질문이 있는데요, 이 경우에는 어떻게 하면 좋을까요?',
-    likes: 3,
-    isLiked: false,
   },
 ];
 
@@ -111,36 +105,28 @@ export const ManyComments: Story = {
     communityCommentList: [
       ...mockComments,
       {
-        profileImage: '/images/profile4.jpg',
-        nickname: '정우성',
-        timestamp: '15분 전',
-        content: '좋은 글 잘 봤습니다!',
-        likes: 5,
-        isLiked: false,
+        author: '최지우',
+        createdAt: '2024-06-01T12:30:00Z',
+        profileUrl: '/images/profile4.jpg',
+        content: '좋은 정보 감사합니다! 많은 도움이 되었어요.',
       },
       {
-        profileImage: '/images/profile5.jpg',
-        nickname: '한지민',
-        timestamp: '10분 전',
-        content: '저도 이 방법으로 해결했어요. 감사합니다.',
-        likes: 7,
-        isLiked: true,
+        author: '한지민',
+        createdAt: '2024-06-01T13:00:00Z',
+        profileUrl: '/images/profile5.jpg',
+        content: '이 글을 읽고 바로 적용해봤는데 효과가 좋네요!',
       },
       {
-        profileImage: '/images/profile6.jpg',
-        nickname: '서강준',
-        timestamp: '5분 전',
-        content: '혹시 다른 방법도 있을까요?',
-        likes: 2,
-        isLiked: false,
+        author: '서강준',
+        createdAt: '2024-06-01T13:30:00Z',
+        profileUrl: '/images/profile6.jpg',
+        content: '추가로 궁금한 점이 있는데, 답변 부탁드려요.',
       },
       {
-        profileImage: '/images/profile7.jpg',
-        nickname: '장미란',
-        timestamp: '방금',
-        content: '완벽한 설명이네요!',
-        likes: 1,
-        isLiked: false,
+        author: '장미란',
+        createdAt: '2024-06-01T14:00:00Z',
+        profileUrl: '/images/profile7.jpg',
+        content: '정말 유익한 글이네요. 앞으로도 좋은 글 부탁드립니다!',
       },
     ],
   },
@@ -208,13 +194,11 @@ export const WithLongComments: Story = {
   args: {
     communityCommentList: [
       {
-        profileImage: '/images/profile1.jpg',
-        nickname: '김철수',
-        timestamp: '2시간 전',
+        author: '김철수',
+        createdAt: '2024-06-01T10:00:00Z',
+        profileUrl: '/images/profile1.jpg',
         content:
-          '이 글을 읽고 정말 많은 도움을 받았습니다. 특히 프롬프트 엔지니어링에 대한 부분이 인상 깊었는데요, 실제로 적용해보니 결과물의 품질이 현저히 향상되었습니다. 앞으로도 이런 유익한 정보 많이 공유해주시면 감사하겠습니다. 추가로 궁금한 점이 있는데, 특정 도메인에 특화된 프롬프트를 작성할 때는 어떤 점을 주의해야 할까요?',
-        likes: 15,
-        isLiked: true,
+          '정말 유용한 정보네요! 감사합니다. 특히 프롬프트 작성 팁이 큰 도움이 되었습니다. 앞으로도 좋은 글 부탁드려요! 추가로, 프롬프트를 작성할 때 주의해야 할 점이나 자주 하는 실수에 대해서도 다뤄주시면 좋을 것 같아요. 예를 들어, 너무 모호한 질문을 피하는 방법이나, 구체적인 예시를 포함하는 것이 왜 중요한지 등에 대해 설명해주시면 더욱 유익할 것 같습니다. 다시 한 번 좋은 정보 공유해주셔서 감사합니다!',
       },
       mockComments[1],
       mockComments[2],
@@ -234,20 +218,17 @@ export const HighlyLikedComments: Story = {
   args: {
     communityCommentList: [
       {
-        profileImage: '/images/profile1.jpg',
-        nickname: '인기 댓글 작성자',
-        timestamp: '1일 전',
+        author: '인기 댓글 작성자',
+        createdAt: '2024-05-31T12:00:00Z',
+        profileUrl: '/images/profile1.jpg',
         content: '정말 유용한 정보입니다! 모두에게 추천합니다.',
-        likes: 156,
-        isLiked: true,
       },
       {
-        profileImage: '/images/profile2.jpg',
-        nickname: '베스트 댓글러',
-        timestamp: '12시간 전',
+
+        author: '베스트 댓글러',
+        createdAt: '2024-05-31T12:30:00Z',
+        profileUrl: '/images/profile2.jpg',
         content: '이 방법으로 문제를 해결했어요. 감사합니다!',
-        likes: 89,
-        isLiked: false,
       },
       ...mockComments,
     ],
@@ -265,9 +246,9 @@ export const HighlyLikedComments: Story = {
 export const ScrollableList: Story = {
   args: {
     communityCommentList: Array.from({ length: 20 }, (_, i) => ({
-      profileImage: `/images/profile${(i % 7) + 1}.jpg`,
-      nickname: `사용자${i + 1}`,
-      timestamp: `${Math.floor(Math.random() * 24)}시간 전`,
+      author: `사용자${i + 1}`,
+      createdAt: `2024-06-01T${Math.floor(Math.random() * 24)}:00:00Z`,
+      profileUrl: `/images/profile${(i % 7) + 1}.jpg`,
       content: `댓글 내용 ${i + 1}: ${
         i % 3 === 0
           ? '좋은 정보 감사합니다!'
