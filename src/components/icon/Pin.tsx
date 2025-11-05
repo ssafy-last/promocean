@@ -1,13 +1,20 @@
+interface PinIconProps {
+  className?: string;
+}
 
-
-export default function Pin(){
-    return(
-        <svg fill="#000000" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-            <g id="SVGRepo_iconCarrier">
-            <path d="M 20.53125 2.5625 L 19.84375 3.5 L 14.9375 10.1875 C 12.308594 9.730469 9.527344 10.472656 7.5 12.5 L 6.78125 13.1875 L 12.09375 18.5 L 4 26.59375 L 4 28 L 5.40625 28 L 13.5 19.90625 L 18.8125 25.21875 L 19.5 24.5 C 21.527344 22.472656 22.269531 19.691406 21.8125 17.0625 L 28.5 12.15625 L 29.4375 11.46875 Z M 20.78125 5.625 L 26.375 11.21875 L 20.15625 15.78125 L 19.59375 16.1875 L 19.78125 16.84375 C 20.261719 18.675781 19.738281 20.585938 18.59375 22.1875 L 9.8125 13.40625 C 11.414063 12.261719 13.324219 11.738281 15.15625 12.21875 L 15.8125 12.40625 L 16.21875 11.84375 Z"></path>
-            </g>
-        </svg>
-    )
+export default function PinIcon({ className }: PinIconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g transform="rotate(45 12 12)">
+        <path
+          d="M16 12V4H17C17.55 4 18 3.55 18 3C18 2.45 17.55 2 17 2H7C6.45 2 6 2.45 6 3C6 3.55 6.45 4 7 4H8V12C8 12.55 7.55 13 7 13C6.45 13 6 13.45 6 14C6 14.55 6.45 15 7 15H11V21C11 21.55 11.45 22 12 22C12.55 22 13 21.55 13 21V15H17C17.55 15 18 14.55 18 14C18 13.45 17.55 13 17 13C16.45 13 16 12.55 16 12Z"
+        />
+      </g>
+    </svg>
+  );
 }
