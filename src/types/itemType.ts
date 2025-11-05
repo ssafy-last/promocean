@@ -204,3 +204,14 @@ export interface CommunityCommentItemProps {
   content: string
   createdAt: string
 }
+
+/**
+ * NoticeItemProps interface
+ * @description 공지사항 아이템 타입
+ */
+export interface NoticeItemProps {
+  noticeId: number
+  title: string
+  createdAt: string
+  updatedAt: string
+}
