@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 
 public class SpaceNotFoundException extends ApiException {
 
-    private static final String MESSAGE = "스페이스를 찾을 수 없습니다.";
+    private static final String MESSAGE = "스페이스 정보를 찾을 수 없습니다.";
 
     public SpaceNotFoundException() {
         super(HttpStatus.NOT_FOUND, MESSAGE);

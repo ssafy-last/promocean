@@ -5,6 +5,8 @@ import org.springframework.http.HttpStatus;
 
 public class SpaceAccessDeniedException extends ApiException {
 
+    private static final String MESSAGE = "스페이스 접근 권한이 없는 회원입니다.";
+
     public SpaceAccessDeniedException(String message) {
         super(HttpStatus.FORBIDDEN, message);
     }
