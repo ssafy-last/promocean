@@ -1,6 +1,7 @@
 // frontend/src/components/item/CommunityPostUserProfileItem.tsx
 
 import Image from "next/image";
+import { formatKoreanDateTime } from "@/utils/formatDate";
 
 interface CommunityPostUserProfileItemProps {
   profileUrl?: string;
@@ -35,13 +36,7 @@ export default function CommunityPostUserProfileItem({ profileUrl, author, creat
       <div className="flex flex-col gap-1">
         <span className="text-sm font-medium text-gray-700">{author}</span>
         <span className="text-xs text-gray-500">
-          {new Date(createdAt).toLocaleDateString('ko-KR', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-          })}
+          {formatKoreanDateTime(createdAt)}
         </span>
       </div>
     </div>
