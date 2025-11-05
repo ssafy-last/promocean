@@ -13,16 +13,13 @@ import { ContestInfoItemProps, ContestPostItemProps, LeaderboardItemProps } from
  */
 export default async function ContestPostPage() {
 
-  // Todo : 실제 API와 연동하기
+  // Todo : 실제 API와 연동하기, 대회 상세 게시글 조회
   const contestPostResponse = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/mock/ContestPostItem.json`,
     { cache: "no-store" }
-  ).then(res => res.json()).catch(() => ({ Contest: {} }));
+  ).then(res => res.json()).catch(() => ({}));
 
-  const contestPostData: ContestPostItemProps = contestPostResponse.Contest || {
-    title: "",
-    content: "",
-  };
+  const contestPostData: ContestPostItemProps = contestPostResponse;
 
   // TODO: 실제 API와 연동하기
   const leaderboardResponse = await fetch(
@@ -43,13 +40,15 @@ export default async function ContestPostPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+
+      {/* TODO : /contest에서 공통 레이아웃으로 설정? */}
+      {/* 컨테스트 헤더 */}
       <ContestHeader />
-      <ContestPostTabs />
       
-      <div className="max-w-7xl mx-auto px-4 py-8 flex flex-row gap-6 relative">
+      <div className="max-w-7xl pl-8 pr-4 py-8 flex flex-row gap-6 relative">
 
         {/* 왼쪽: 게시글 섹션 */}
-        <div className="flex-1 flex flex-col gap-6">
+        <div className="flex-1 flex flex-col gap-6 bg-white rounded-lg shadow-md">
           <ContestPostSection 
             contestPostData={contestPostData}
             leaderboardList={leaderboardList}
@@ -57,7 +56,7 @@ export default async function ContestPostPage() {
         </div>
 
         {/* 오른쪽: 플로팅 섹션 */}
-        <div className="hidden lg:block w-64 flex-shrink-0 space-y-6">
+        <div className="hidden lg:block w-64 flex-shrink-0">
           <ContestInfoSection 
             titles={contestInfoTitles}
             items={contestInfoData}
