@@ -209,7 +209,7 @@ export interface CommunityCommentItemProps {
  * NoticeItemProps interface
  * @description 공지사항 아이템 타입
  */
-export interface NoticeItemProps {
+export interface ContestNoticeItemProps {
   noticeId: number
   title: string
   createdAt: string
