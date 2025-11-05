@@ -11,10 +11,10 @@ export interface TeamSpaceTeamChoiceLabelListProps{
 
 export default function TeamSpaceTeamChoiceLabelList({ labelNameList, selectedMemberSetState, setSelectedMemberSetState }: TeamSpaceTeamChoiceLabelListProps){
     return(
-           <>
+            <div className ="flex flex-row gap-2 justify-end-safe py-1 px-2 line-clamp-2 w-full">
            {labelNameList.map((memberEmail) => (
                <TeamSpaceTeamChoiceLabelItem key={memberEmail} labelName={memberEmail} selectedMemberSetState={selectedMemberSetState} setSelectedMemberSetState={setSelectedMemberSetState} />
            ))}
-           </>
+        </div>
     )
 }
