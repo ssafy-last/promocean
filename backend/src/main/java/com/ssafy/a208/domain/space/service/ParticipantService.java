@@ -50,8 +50,13 @@ public class ParticipantService {
     }
 
     @Transactional(readOnly = true)
-    public List<Participant> getParticipants(Long memberId) {
-        return participantReader.getParticipants(memberId);
+    public List<Participant> getParticipantsByMemberId(Long memberId) {
+        return participantReader.getParticipantsByMemberId(memberId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Participant> getParticipantsBySpaceId(Long spaceId) {
+        return participantReader.getParticipantsBySpaceId(spaceId);
     }
 
     @Transactional(readOnly = true)

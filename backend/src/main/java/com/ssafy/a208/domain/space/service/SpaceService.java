@@ -25,7 +25,6 @@ import com.ssafy.a208.global.image.utils.S3PathResolver;
 import com.ssafy.a208.global.security.dto.CustomUserDetails;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -81,20 +80,22 @@ public class SpaceService {
 
     @Transactional(readOnly = true)
     public SpaceInfosRes getTeamSpaces(CustomUserDetails userDetails) {
-        List<Participant> participants = participantService.getParticipants(userDetails.memberId());
+        List<Participant> participants = participantService.getParticipantsByMemberId(userDetails.memberId());
         List<Long> spaceIds = participants.stream()
                 .map(participant -> participant.getSpace().getId())
                 .toList();
         List<Space> teamSpaces = spaceReader.getTeamSpaces(spaceIds);
         List<SpaceInfo> spaceInfos = teamSpaces.stream()
                 .map(teamSpace -> {
-                    SpaceCover spaceCover= spaceCoverReader.getSpaceCoverBySpaceId(
+                    SpaceCover spaceCover = spaceCoverReader.getSpaceCoverBySpaceId(
                             teamSpace.getId());
                     String coverUrl = s3Service.getCloudFrontUrl(spaceCover.getFilePath());
+                    int participantCnt = participantService.getParticipantsBySpaceId(teamSpace.getId()).size();
                     return SpaceInfo.builder()
                             .spaceId(teamSpace.getId())
                             .name(teamSpace.getName())
                             .spaceCoverUrl(coverUrl)
+                            .participantCnt(participantCnt)
                             .build();
                 })
                 .toList();

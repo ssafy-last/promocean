@@ -18,7 +18,12 @@ public class ParticipantReader {
                 .orElseThrow(SpaceNotFoundException::new);
     }
 
-    public List<Participant> getParticipants(Long memberId) {
+    public List<Participant> getParticipantsByMemberId(Long memberId) {
         return participantRepository.findParticipantByMemberIdAndDeletedAtIsNull(memberId);
     }
+
+    public List<Participant> getParticipantsBySpaceId(Long spaceId) {
+        return participantRepository.findParticipantBySpaceIdAndDeletedAtIsNull(spaceId);
+    }
+
 }
