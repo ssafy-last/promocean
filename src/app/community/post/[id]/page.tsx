@@ -3,7 +3,6 @@
 import CommunityHeader from "@/components/layout/CommunityHeader";
 import CommunityFloatingSection from "@/components/section/CommunityFloatingSection";
 import CommunityPostDetailSection from "@/components/section/CommunityPostDetailSection";
-import CommunityHashtagSection from "@/components/section/CommunityHashtagSection";
 import CommunityLikeShareSection from "@/components/section/CommunityLikeShareSection";
 import CommunityCommentSection from "@/components/section/CommunityCommentSection";
 import { CommunityFloatingItemProps, CommunityPostItemResponse, CommunityPostItemProps, HashtagItemProps, CommunityCommentItemProps } from "@/types/itemType";
