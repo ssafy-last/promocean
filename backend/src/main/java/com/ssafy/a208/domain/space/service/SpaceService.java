@@ -21,17 +21,14 @@ import com.ssafy.a208.global.common.enums.ParticipantRole;
 import com.ssafy.a208.global.common.enums.SpaceType;
 import com.ssafy.a208.global.image.dto.FileMetaData;
 import com.ssafy.a208.global.image.service.S3Service;
+import com.ssafy.a208.global.image.utils.S3PathResolver;
 import com.ssafy.a208.global.security.dto.CustomUserDetails;
-import com.ssafy.a208.global.security.exception.InvalidFilePathException;
-import com.ssafy.a208.global.security.exception.S3OperationException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import software.amazon.awssdk.services.s3.model.S3Exception;
 
 @Service
 @RequiredArgsConstructor
@@ -43,6 +40,7 @@ public class SpaceService {
     private final ParticipantService participantService;
     private final SpaceCoverRepository spaceCoverRepository;
     private final SpaceCoverReader spaceCoverReader;
+    private final S3PathResolver s3PathResolver;
     private final S3Service s3Service;
     private static final String DEFAULT_SPACE_KEY = "spaces/default-space.png";
 
@@ -92,10 +90,10 @@ public class SpaceService {
                 .map(teamSpace -> {
                     Optional<SpaceCover> spaceCover = spaceCoverRepository.findBySpaceIdAndDeletedAtIsNull(
                             teamSpace.getId());
-                    String coverUrl = null;
-                    if (spaceCover.isPresent()) {
-                        coverUrl = s3Service.getCloudFrontUrl(spaceCover.get().getFilePath());
-                    }
+                    String coverUrl = spaceCover
+                            .map(SpaceCover::getFilePath)
+                            .map(s3Service::getCloudFrontUrl)
+                            .orElse(null);
                     return SpaceInfo.builder()
                             .spaceId(teamSpace.getId())
                             .name(teamSpace.getName())
@@ -104,7 +102,7 @@ public class SpaceService {
                 })
                 .toList();
         return SpaceInfosRes.builder()
-                .spaceInfos(spaceInfos)
+                .spaces(spaceInfos)
                 .build();
     }
 
@@ -121,7 +119,7 @@ public class SpaceService {
                 if (!spaceCover.getFilePath().equals(DEFAULT_SPACE_KEY)) {
                     s3Service.deleteFile(spaceCover.getFilePath());
                 }
-                String filePath = resolveKey(spaceUpdateReq.spaceCoverPath(), DEFAULT_SPACE_KEY, ImageDirectory.SPACES);
+                String filePath = s3PathResolver.resolveAndMove(spaceUpdateReq.spaceCoverPath(), ImageDirectory.SPACES, DEFAULT_SPACE_KEY);
                 FileMetaData metadata = s3Service.getFileMetadata(filePath);
                 spaceCover.updateFile(metadata);
             }
@@ -171,22 +169,6 @@ public class SpaceService {
     private void validateDeletableSpace(Space space) {
         if (space.getType() == SpaceType.PERSONAL) {
             throw new CannotDeletePersonalSpaceException();
-        }
-    }
-
-    private String resolveKey(String filePath, String defaultKey, ImageDirectory imageDirectory) {
-        if (Objects.isNull(filePath) || filePath.isBlank()) {
-            return defaultKey;
-        }
-
-        if (!filePath.startsWith("tmp")) {
-            throw new InvalidFilePathException();
-        }
-        try {
-            return s3Service.moveObject(filePath, imageDirectory);
-        } catch (S3Exception e) {
-            e.printStackTrace();
-            throw new S3OperationException(HttpStatus.valueOf(e.statusCode()));
         }
     }
 
