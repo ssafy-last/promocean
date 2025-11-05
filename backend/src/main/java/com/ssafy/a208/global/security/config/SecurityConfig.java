@@ -34,7 +34,8 @@ public class SecurityConfig {
     private static final String MEMBER_DUPLICATE_CHECK_URL = "/api/v1/members";
     private static final String IMAGE_URL = "/api/v1/images";
     private static final String[] CONTEST_URLS = {
-            "/api/v1/contests", "/api/v1/contests/*"
+            "/api/v1/contests", "/api/v1/contests/*",
+            "/api/v1/contests/*/notices", "/api/v1/contests/*/notices/*"
     };
 
     @Bean
