@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { ContestSubmissionItemProps } from "@/types/itemType";
 import Heart from "@/components/icon/Heart";
+import UserSimpleProfile from "@/components/etc/UserSimpleProfile";
 
 /**
  * ContestSubmissionItem component
@@ -10,35 +11,36 @@ import Heart from "@/components/icon/Heart";
  * @returns {React.ReactNode}
  */
 export default function ContestSubmissionItem({ submissionId, author, profileUrl, description, type, submissionUrl, voteCnt }: ContestSubmissionItemProps) {
-  const isValidProfileUrl = profileUrl && 
-    profileUrl !== "..." && 
-    profileUrl.trim() !== "" && 
-    (profileUrl.startsWith("http") || profileUrl.startsWith("/") || profileUrl.startsWith("data:"));
-
   return (
-    <div className="flex items-start justify-between w-full bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 p-4 gap-4">
-      {/* 왼쪽 : 이미지 영역 */}
-      <div className="relative flex-shrink-0 w-16 h-16 rounded-md overflow-hidden bg-gray-100">
+    <div className="flex items-end w-full bg-white border-b border-gray-200 py-4 gap-4">
+
+      {/* 왼쪽 : 제출 이미지 */}
+      <div className="relative flex-shrink-0 w-20 h-20 rounded-md overflow-hidden bg-gray-100">
         {submissionUrl ? (
           <Image
             src={submissionUrl}
             alt={description}
             fill
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            className="object-cover"
           />
         ) : (
           <div className="w-full h-full bg-gray-200" />
         )}
       </div>
       
-      {/* 중앙 : 게시글 정보 영역 */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* Description (Title) */}
-        <h3 className="font-bold text-text text-base mb-4 line-clamp-1 group-hover:text-primary transition-colors">
+      {/* 중앙 : 타이틀, 설명, 타입 */}
+      <div className="flex-1 flex flex-col min-w-0 gap-2">
+        {/* 타이틀 */}
+        <h3 className="font-bold text-text text-lg group-hover:text-primary transition-colors">
           {description}
         </h3>
 
-        {/* Type Badge */}
+        {/* 설명 */}
+        <p className="text-sm text-gray-600 line-clamp-2">
+          {description}
+        </p>
+
+        {/* 타입 */}
         <div className="flex flex-wrap items-center gap-2">
           <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-full text-xs font-medium">
             {type}
@@ -46,28 +48,22 @@ export default function ContestSubmissionItem({ submissionId, author, profileUrl
         </div>
       </div>
 
-      {/* 오른쪽 : 유저 정보 및 아이콘 영역 */}
-      <div className="flex flex-row items-center justify-between text-gray-600 flex-shrink-0 gap-4 self-end">
-        {/* 유저 정보 */}
-        <div className="flex items-center gap-2">
-          {isValidProfileUrl ? (
-            <div className="relative w-6 h-6 rounded-full overflow-hidden flex-shrink-0">
-              <Image src={profileUrl} alt={author} fill className="object-cover" />
-            </div>
-          ) : (
-            <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs flex-shrink-0">
-              🐥
-            </div>
-          )}
-          <span className="text-sm font-medium text-gray-700">{author}</span>
-        </div>
+      {/* 오른쪽 : 작성자 정보 및 추천수*/}
+      <div className="flex flex-row items-end justify-end gap-3 flex-shrink-0 text-gray-600">
 
-        {/* 아이콘들 (투표 수) */}
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-1 transition-colors">
-            <Heart />
-            <span className="text-sm">{voteCnt}</span>
-          </div>
+        {/* 작성자 정보 */}
+        <UserSimpleProfile 
+          profileUrl={profileUrl}
+          nickname={author}
+          imageSize="md"
+          textSize="sm"
+          showName={true}
+        />
+
+        {/* 추천수 */}
+        <div className="flex items-center gap-1 transition-colors">
+          <Heart />
+          <span className="text-sm font-medium">{voteCnt}</span>
         </div>
       </div>
     </div>

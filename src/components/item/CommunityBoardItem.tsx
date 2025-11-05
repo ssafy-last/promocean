@@ -6,6 +6,7 @@ import Link from "next/link";
 import { CommunityBoardItemProps } from "@/types/itemType";
 import Heart from "@/components/icon/Heart";
 import ChatBubbleBottomCenterText from "@/components/icon/ChatBubbleBottomCenterText";
+import UserSimpleProfile from "@/components/etc/UserSimpleProfile";
 
 /**
  * CommunityBoardItem component
@@ -60,23 +61,13 @@ export default function CommunityBoardItem({ id, title, hashtags, category, like
       {/* 오른쪽 : 유저 정보 및 아이콘 영역 */}
       <div className="flex flex-row items-center justify-between text-gray-600 flex-shrink-0 gap-4 self-end">
         {/* 유저 정보 */}
-        <div className="flex items-center gap-2">
-          {userImage ? (
-            <div className="relative w-6 h-6 rounded-full overflow-hidden flex-shrink-0">
-              <Image
-                src={userImage}
-                alt={userName}
-                fill
-                className="object-cover"
-              />
-            </div>
-          ) : (
-            <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs flex-shrink-0">
-              🐥 // Todo : 디폴트 이미지로 변경하기 (GPT 생성)
-            </div>
-          )}
-          <span className="text-sm font-medium text-gray-700">{userName}</span>
-        </div>
+        <UserSimpleProfile 
+          profileUrl={userImage}
+          nickname={userName}
+          imageSize="sm"
+          textSize="sm"
+          showName={true}
+        />
 
         {/* TODO : 이 컴포넌트 처럼 다른 컴포넌트에 호버링 효과 제거하기 (하트랑 댓글 호버링 색상도 그렇고 통일 후에 적용) */}
         {/* 아이콘들 (좋아요/댓글) */}
