@@ -3,13 +3,14 @@
 // frontend/src/components/section/ContestPostSection.tsx
 
 import { useSearchParams } from "next/navigation";
-import { ContestPostItemProps, LeaderboardItemProps, ContestNoticeItemProps } from "@/types/itemType";
+import { ContestPostItemProps, LeaderboardItemProps, ContestNoticeItemProps, ContestSubmissionItemProps } from "@/types/itemType";
 import CommunityPostUserProfileItem from "@/components/item/CommunityPostUserProfileItem";
 import LeaderboardList from "@/components/list/LeaderboardList";
 import Tag from "@/components/icon/Tag";
 import Calendar from "@/components/icon/Calendar";
 import ContestPostTabs from "@/components/filter/ContestPostTabs";
 import ContestNoticeSection from "@/components/section/ContestNoticeSection";
+import ContestSubmissionSection from "@/components/section/ContestSubmissionSection";
 import { formatKoreanDate } from "@/utils/formatDate";
 
 /**
@@ -20,6 +21,7 @@ export interface ContestPostSectionProps {
   contestPostData: ContestPostItemProps
   leaderboardList: LeaderboardItemProps[]
   ContestNoticeList: ContestNoticeItemProps[]
+  contestSubmissionList: ContestSubmissionItemProps[]
 }
 
 /**
@@ -27,7 +29,7 @@ export interface ContestPostSectionProps {
  * @description ContestPostSection component is a contest post section component that displays the contest post section content
  * @returns {React.ReactNode}
  */
-export default function ContestPostSection({ contestPostData, leaderboardList, ContestNoticeList }: ContestPostSectionProps) {
+export default function ContestPostSection({ contestPostData, leaderboardList, ContestNoticeList, contestSubmissionList }: ContestPostSectionProps) {
   const searchParams = useSearchParams();
   const currentTab = searchParams.get('tab') || 'detail';
   return (
@@ -108,6 +110,10 @@ export default function ContestPostSection({ contestPostData, leaderboardList, C
 
         {currentTab === 'notice' && (
           <ContestNoticeSection ContestNoticeList={ContestNoticeList} />
+        )}
+        
+        {currentTab === 'submission' && (
+          <ContestSubmissionSection contestSubmissionList={contestSubmissionList} />
         )}
       </div>
     </div>
