@@ -65,7 +65,7 @@ export default function TeamSpaceAddModal({isModalState, setIsModalState}: TeamS
                                 <div className ="flex flex-row gap-2 justify-end-safe py-1 px-2 overflow-hidden">
                                     {
                                         Array.from(selectedMemberSetState).map((memberEmail) => (
-                                            <TeamSpaceTeamChoiceLabelItem key={memberEmail} labelName={memberEmail}/>
+                                            <TeamSpaceTeamChoiceLabelItem key={memberEmail} labelName={memberEmail} selectedMemberSetState={selectedMemberSetState} setSelectedMemberSetState={setSelectedMemberSetState} />
                                         ))
                                     }
                                 </div>
