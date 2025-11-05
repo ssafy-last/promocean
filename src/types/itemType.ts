@@ -96,8 +96,18 @@ export interface ContestInfoItemProps {
  * @description 대회 게시글 아이템 타입
  */
 export interface ContestPostItemProps {
+  contestId: number
+  author: string
+  profileUrl?: string
   title: string
   content: string
+  type: string
+  status: string
+  startAt: string
+  endAt: string
+  voteEndAt: string
+  createdAt: string
+  updatedAt: string
 }
 
 /**
