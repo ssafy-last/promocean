@@ -42,7 +42,7 @@ public class SpaceService {
     private final SpaceCoverReader spaceCoverReader;
 
     @Transactional
-    public Space savePersonalSpace(String userNickname) {
+    public Space createPersonalSpace(String userNickname) {
         Space space = Space.builder()
                 .name(String.format("%s의 개인 스페이스", userNickname))
                 .type(SpaceType.PERSONAL)
@@ -51,7 +51,7 @@ public class SpaceService {
     }
 
     @Transactional
-    public SpaceRes saveTeamSpace(CustomUserDetails userDetails, SpaceReq spaceReq) {
+    public SpaceRes createTeamSpace(CustomUserDetails userDetails, SpaceReq spaceReq) {
         Member member = memberReader.getMemberById(userDetails.memberId());
         Space space = Space.builder()
                 .name(spaceReq.name())
