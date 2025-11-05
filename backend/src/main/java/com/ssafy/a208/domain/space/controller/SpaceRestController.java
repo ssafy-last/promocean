@@ -1,9 +1,10 @@
 package com.ssafy.a208.domain.space.controller;
 
 import com.ssafy.a208.domain.space.dto.request.SpaceReq;
+import com.ssafy.a208.domain.space.dto.request.SpaceUpdateReq;
 import com.ssafy.a208.domain.space.dto.response.space.SpaceDetailRes;
-import com.ssafy.a208.domain.space.dto.response.space.SpaceInfoRes;
-import com.ssafy.a208.domain.space.dto.response.space.SpaceSummariesRes;
+import com.ssafy.a208.domain.space.dto.response.space.SpaceRes;
+import com.ssafy.a208.domain.space.dto.response.space.SpaceInfosRes;
 import com.ssafy.a208.domain.space.service.SpaceService;
 import com.ssafy.a208.global.common.dto.ApiResponse;
 import com.ssafy.a208.global.security.dto.CustomUserDetails;
@@ -32,32 +33,32 @@ public class SpaceRestController {
 
     @PostMapping
     @Operation(summary = "팀스페이스 생성", description = "팀스페이스를 생성하는 API입니다.")
-    public ResponseEntity<ApiResponse<SpaceInfoRes>> createTeamSpace(
+    public ResponseEntity<ApiResponse<SpaceRes>> createTeamSpace(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody @Valid SpaceReq spaceReq
 
     ) {
-        SpaceInfoRes spaceInfoRes = spaceService.saveTeamSpace(userDetails, spaceReq);
-        return ApiResponse.of(HttpStatus.CREATED, spaceInfoRes);
+        SpaceRes spaceSummaryRes = spaceService.saveTeamSpace(userDetails, spaceReq);
+        return ApiResponse.of(HttpStatus.CREATED, spaceSummaryRes);
     }
 
     @GetMapping
     @Operation(summary = "팀스페이스 목록조회", description = "팀스페이스 목록을 조회하는 API입니다.")
-    public ResponseEntity<ApiResponse<SpaceSummariesRes>> getTeamSpaces(
+    public ResponseEntity<ApiResponse<SpaceInfosRes>> getTeamSpaces(
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        SpaceSummariesRes teamSpaces = spaceService.getTeamSpaces(userDetails);
+        SpaceInfosRes teamSpaces = spaceService.getTeamSpaces(userDetails);
         return ApiResponse.of(HttpStatus.OK, teamSpaces);
     }
 
     @PatchMapping("/{spaceId}")
-    @Operation(summary = "스페이스 수정", description = "스페이스의 제목을 수정하는 API입니다.")
+    @Operation(summary = "스페이스 수정", description = "스페이스의 제목과 커버 이미지를 수정하는 API입니다.")
     public ResponseEntity<ApiResponse<SpaceDetailRes>> updateSpace(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable Long spaceId,
-            @RequestBody @Valid SpaceReq spaceReq
+            @RequestBody @Valid SpaceUpdateReq spaceUpdateReq
     ) {
-        spaceService.updateTeamSpace(userDetails, spaceId, spaceReq);
+        spaceService.updateTeamSpace(userDetails, spaceId, spaceUpdateReq);
         return ApiResponse.of(HttpStatus.OK);
     }
 
