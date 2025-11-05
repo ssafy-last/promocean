@@ -1,10 +1,8 @@
 package com.ssafy.a208.domain.contest.dto;
 
 import com.ssafy.a208.domain.contest.entity.Contest;
-import com.ssafy.a208.domain.member.entity.Profile;
+import java.time.LocalDateTime;
 import lombok.Builder;
-
-import java.time.LocalDate;
 
 @Builder
 public record ContestDetailRes(
@@ -14,10 +12,11 @@ public record ContestDetailRes(
     String title,
     String content,
     String type,
-    LocalDate startAt,
-    LocalDate endAt,
-    LocalDate voteEndAt,
-    LocalDate updatedAt
+    LocalDateTime startAt,
+    LocalDateTime endAt,
+    LocalDateTime voteEndAt,
+    LocalDateTime createdAt,
+    LocalDateTime updatedAt
 ) {
     public static ContestDetailRes from(Contest contest, String profileUrl) {
         return new ContestDetailRes(
@@ -30,7 +29,8 @@ public record ContestDetailRes(
                 contest.getStartAt(),
                 contest.getEndAt(),
                 contest.getVoteEndAt(),
-                contest.getUpdatedAt().toLocalDate()
+                contest.getCreatedAt(),
+                contest.getUpdatedAt()
         );
     }
 }
