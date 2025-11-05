@@ -8,6 +8,7 @@ import Cog9Tooth from '../icon/Cog9Tooth'
 import ArrowRightStartOnRectangle from '@/components/icon/ArrowRightStartOnRectangle'
 import ArrowRightEndOnRectangle from '@/components/icon/ArrowRightEndOnRectangle'
 import { useAuthStore } from '@/store/authStore'
+import UserSimpleProfile from '@/components/etc/UserSimpleProfile'
 
 /**
  * SidebarFooter component
@@ -19,7 +20,7 @@ export default function SidebarFooter() {
   const { isLoggedIn, user } = useAuthStore();
   const nickname = user?.nickname ?? '마이 페이지';
   const avatarIcon = user?.profileUrl
-    ? (<img src={user.profileUrl} alt={nickname} className="w-5 h-5 rounded-full object-cover" />)
+    ? (<UserSimpleProfile profileUrl={user.profileUrl} nickname={nickname} imageSize="w-5 h-5" showName={false} />)
     : (<UserCircle />);
   const { logout } = useAuthStore();
   
