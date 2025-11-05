@@ -15,7 +15,7 @@ export default async function TeamSpacePage() {
   );
 
   const teamSpaceTeamChoiceList : TeamSpaceTeamChoiceItemProps[] = await teamSpaceArchiveRes.json();
-
+  
   return (
     <div>
         <SpaceHeader nickname="홍길동"/>

@@ -1,20 +1,21 @@
 import { useState } from "react";
-import TeamSpaceTeamChoiceLabelItem from "../item/TeamSpaceTeamChoiceLabelItem";
 import SpaceAddMemberItem, { SpaceAddMemberItemProps } from "../item/SpaceAddMemberItem";
 import TeamSpaceAddMemberList from "../list/TeamSpaceAddMemberList";
-import TeamSpaceTeamChoiceList from "../list/TeamSpaceTeamChoiceLlist";
 import TeamSpaceTeamChoiceLabelList from "../list/TeamSpaceTeamChoiceLabelList";
+import { TeamSpaceTeamChoiceItemProps } from "../item/TeamSpaceTeamChoiceItem";
 
 
 export interface TeamSpaceAddModalProps{
     //추가 필요시 여기에 작성
     isModalState: boolean;
     setIsModalState: (state: boolean) => void;
+    teamSpaceTeamChoiceList?: TeamSpaceTeamChoiceItemProps[];
+    setTeamSpaceTeamChoiceList: (list: TeamSpaceTeamChoiceItemProps[]) => void;
 }
 
 
 
-export default function TeamSpaceAddModal({isModalState, setIsModalState}: TeamSpaceAddModalProps){
+export default function TeamSpaceAddModal({isModalState, setIsModalState, teamSpaceTeamChoiceList, setTeamSpaceTeamChoiceList}: TeamSpaceAddModalProps){
 
     const [isMemberExistState, setIsMemberExistState] = useState(false);
     const [searchSpaceMemberListState, setSearchSpaceMemberListState] = useState<SpaceAddMemberItemProps[]>([])
@@ -59,13 +60,20 @@ export default function TeamSpaceAddModal({isModalState, setIsModalState}: TeamS
             setSpaceNameErrorState(true);
             return;
         }
-        
         // 여기에 팀 스페이스 생성 로직 추가
         console.log("팀 스페이스 생성:", {
             name: spaceNameState,
             members: Array.from(selectedMemberSetState)
         });
         
+        setTeamSpaceTeamChoiceList([
+            ...teamSpaceTeamChoiceList!,
+            {
+            image : "/images/default_space_image.png",
+            title : spaceNameState,
+            description : "새로 생성된 팀 스페이스입니다."        
+            }])
+
         // 생성 후 모달 닫기
         setIsModalState(false);
     }

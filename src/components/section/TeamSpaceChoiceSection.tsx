@@ -17,6 +17,7 @@ export default function TeamSpaceChoiceSection({teamSpaceTeamChoiceList}: TeamSp
 
     const [isModalState, setIsModalState] = useState(false);
 
+    const [teamSpaceTeamChoiceListState, setTeamSpaceTeamChoiceListState] = useState<TeamSpaceTeamChoiceItemProps[]>(teamSpaceTeamChoiceList);
 
     
 
@@ -27,13 +28,16 @@ export default function TeamSpaceChoiceSection({teamSpaceTeamChoiceList}: TeamSp
           <SearchBar/>
         </div>
         {/* 팀 스페이스 아이템들 */}
-        <TeamSpaceTeamChoiceList teamSpaceTeamChoiceList={teamSpaceTeamChoiceList} />
+        <TeamSpaceTeamChoiceList teamSpaceTeamChoiceList={teamSpaceTeamChoiceListState} />
         
             {
                 isModalState && (
-                    <div>
-                        <TeamSpaceAddModal isModalState={isModalState} setIsModalState={setIsModalState}/>
-                    </div>
+                    <>
+                        <TeamSpaceAddModal isModalState={isModalState} setIsModalState={setIsModalState}
+                        teamSpaceTeamChoiceList={teamSpaceTeamChoiceListState}
+                        setTeamSpaceTeamChoiceList={setTeamSpaceTeamChoiceListState}
+                        />
+                    </>
                 )
             }
         </div>
