@@ -7,15 +7,18 @@
  */
 export default function ContestPostLayout({
   children,
-  modal,
+  noticeModal,
+  submissionModal,
 }: {
   children: React.ReactNode;
-  modal?: React.ReactNode;
+  noticeModal?: React.ReactNode;
+  submissionModal?: React.ReactNode;
 }) {
   return (
     <>
       {children}
-      {modal}
+      {noticeModal}
+      {submissionModal}
     </>
   );
 }

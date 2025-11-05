@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { ContestSubmissionItemProps } from "@/types/itemType";
+import { useRouter, useParams } from "next/navigation";
 import Heart from "@/components/icon/Heart";
 import UserSimpleProfile from "@/components/etc/UserSimpleProfile";
 
@@ -11,8 +12,14 @@ import UserSimpleProfile from "@/components/etc/UserSimpleProfile";
  * @returns {React.ReactNode}
  */
 export default function ContestSubmissionItem({ submissionId, author, profileUrl, description, type, submissionUrl, voteCnt }: ContestSubmissionItemProps) {
+
+  const router = useRouter();
+  const id = useParams().id;
+  const handleClick = (submissionId: number) => {
+    router.push(`/contest/post/${id}/submission/${submissionId}`);
+  }
   return (
-    <div className="flex items-end w-full bg-white border-b border-gray-200 py-4 gap-4">
+    <div className="flex items-end w-full bg-white border-b border-gray-200 py-4 gap-4 cursor-pointer" onClick={() => handleClick(submissionId)}>
 
       {/* 왼쪽 : 제출 이미지 */}
       <div className="relative flex-shrink-0 w-20 h-20 rounded-md overflow-hidden bg-gray-100">
