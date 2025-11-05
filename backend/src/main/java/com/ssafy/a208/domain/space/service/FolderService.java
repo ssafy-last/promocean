@@ -47,7 +47,7 @@ public class FolderService {
     @Transactional(readOnly = true)
     public FolderInfoListRes getFolders(CustomUserDetails userDetails, Long spaceId) {
         spaceService.validateReadableSpace(spaceId, userDetails.memberId());
-        List<Folder> folders = folderRepository.findBySpaceIdAndDeletedAtIsNull(spaceId);
+        List<Folder> folders = folderReader.getFolders(spaceId);
         List<FolderInfoRes> folderInfoRes = folders.stream()
                 .map(folder -> FolderInfoRes.builder()
                         .folderId(folder.getId())
