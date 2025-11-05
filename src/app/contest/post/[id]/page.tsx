@@ -3,7 +3,7 @@
 import ContestHeader from "@/components/layout/ContestHeader";
 import ContestPostSection from "@/components/section/ContestPostSection";
 import ContestInfoSection from "@/components/section/ContestInfoSection";
-import { ContestInfoItemProps, ContestPostItemProps, LeaderboardItemProps, ContestNoticeItemProps } from "@/types/itemType";
+import { ContestInfoItemProps, ContestPostItemProps, LeaderboardItemProps, ContestNoticeItemProps, ContestSubmissionItemProps } from "@/types/itemType";
 
 /**
  * ContestPostPage component
@@ -43,6 +43,11 @@ export default async function ContestPostPage() {
     {cache: "no-store"}
   ).then(res => res.json()).catch(() => []);
 
+  const contestSubmissionList: ContestSubmissionItemProps[] = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/mock/ContestSubmissionData.json`,
+    {cache: "no-store"}
+  ).then(res => res.json()).catch(() => []);
+
   return (
     <div className="min-h-screen bg-gray-50">
 
@@ -58,6 +63,7 @@ export default async function ContestPostPage() {
             contestPostData={contestPostData}
             leaderboardList={leaderboardList}
             ContestNoticeList={ContestNoticeList}
+            contestSubmissionList={contestSubmissionList}
           />
         </div>
 
