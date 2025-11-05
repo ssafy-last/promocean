@@ -52,4 +52,9 @@ public class Participant extends BaseEntity {
         this.member = member;
         this.space = space;
     }
+
+    public void deleteParticipant() {
+        this.delete();
+    }
+
 }
