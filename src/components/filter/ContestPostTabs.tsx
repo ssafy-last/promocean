@@ -24,7 +24,7 @@ export default function ContestPostTabs() {
 
   return (
     <nav className="border-b border-gray-200 bg-white">
-      <ul className="flex space-x-6 px-8">
+      <ul className="flex space-x-6">
         {tabs.map((tabItem) => {
           const href = `${pathname}?tab=${tabItem.tab}`;
           const isActive = currentTab === tabItem.tab;
