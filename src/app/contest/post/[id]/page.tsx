@@ -1,10 +1,9 @@
 // frontend/src/app/contest/post/[id]/page.tsx
 
 import ContestHeader from "@/components/layout/ContestHeader";
-import ContestPostTabs from "@/components/filter/ContestPostTabs";
 import ContestPostSection from "@/components/section/ContestPostSection";
 import ContestInfoSection from "@/components/section/ContestInfoSection";
-import { ContestInfoItemProps, ContestPostItemProps, LeaderboardItemProps } from "@/types/itemType";
+import { ContestInfoItemProps, ContestPostItemProps, LeaderboardItemProps, ContestNoticeItemProps } from "@/types/itemType";
 
 /**
  * ContestPostPage component
@@ -29,7 +28,7 @@ export default async function ContestPostPage() {
 
   const leaderboardList: LeaderboardItemProps[] = leaderboardResponse.Leaderboard || [];
 
-  // TODO: 실제 API와 연동하기
+  // TODO: 실제 API와 연동하기 deprecated?
   const contestInfoResponse = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/mock/ContestInfoItem.json`,
     { cache: "no-store" }
@@ -37,6 +36,12 @@ export default async function ContestPostPage() {
 
   const contestInfoData: ContestInfoItemProps[] = contestInfoResponse.items || [];
   const contestInfoTitles = ["대회 정보", "상금 유형", "참여 통계", "해시태그"];
+
+  // TODO : 실제 API와 연동하기
+  const ContestNoticeList: ContestNoticeItemProps[] = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/mock/ContestNoticeData.json`,
+    {cache: "no-store"}
+  ).then(res => res.json()).catch(() => []);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -52,6 +57,7 @@ export default async function ContestPostPage() {
           <ContestPostSection 
             contestPostData={contestPostData}
             leaderboardList={leaderboardList}
+            ContestNoticeList={ContestNoticeList}
           />
         </div>
 

@@ -3,12 +3,13 @@
 // frontend/src/components/section/ContestPostSection.tsx
 
 import { useSearchParams } from "next/navigation";
-import { ContestPostItemProps, LeaderboardItemProps } from "@/types/itemType";
+import { ContestPostItemProps, LeaderboardItemProps, ContestNoticeItemProps } from "@/types/itemType";
 import CommunityPostUserProfileItem from "@/components/item/CommunityPostUserProfileItem";
 import LeaderboardList from "@/components/list/LeaderboardList";
 import Tag from "@/components/icon/Tag";
 import Calendar from "@/components/icon/Calendar";
 import ContestPostTabs from "@/components/filter/ContestPostTabs";
+import ContestNoticeSection from "@/components/section/ContestNoticeSection";
 import { formatKoreanDate } from "@/utils/formatDate";
 
 /**
@@ -18,6 +19,7 @@ import { formatKoreanDate } from "@/utils/formatDate";
 export interface ContestPostSectionProps {
   contestPostData: ContestPostItemProps
   leaderboardList: LeaderboardItemProps[]
+  ContestNoticeList: ContestNoticeItemProps[]
 }
 
 /**
@@ -25,7 +27,7 @@ export interface ContestPostSectionProps {
  * @description ContestPostSection component is a contest post section component that displays the contest post section content
  * @returns {React.ReactNode}
  */
-export default function ContestPostSection({ contestPostData, leaderboardList }: ContestPostSectionProps) {
+export default function ContestPostSection({ contestPostData, leaderboardList, ContestNoticeList }: ContestPostSectionProps) {
   const searchParams = useSearchParams();
   const currentTab = searchParams.get('tab') || 'detail';
   return (
@@ -102,6 +104,10 @@ export default function ContestPostSection({ contestPostData, leaderboardList }:
 
         {currentTab === 'leaderboard' && (
           <LeaderboardList leaderboardList={leaderboardList} />
+        )}
+
+        {currentTab === 'notice' && (
+          <ContestNoticeSection ContestNoticeList={ContestNoticeList} />
         )}
       </div>
     </div>
