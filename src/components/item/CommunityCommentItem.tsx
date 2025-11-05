@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { CommunityCommentItemProps } from "@/types/itemType";
+import { formatKoreanDateTime } from "@/utils/formatDate";
 
 /**
  * CommunityCommentItem component
@@ -36,13 +37,7 @@ export default function CommunityCommentItem( { author, profileUrl, content, cre
           <div className="flex items-center gap-2 mb-2">
             <span className="font-semibold text-gray-900 text-sm">{author}</span>
             <span className="text-xs text-gray-500">
-              {new Date(createdAt).toLocaleDateString('ko-KR', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-              })}
+              {formatKoreanDateTime(createdAt)}
             </span>
           </div>
           
