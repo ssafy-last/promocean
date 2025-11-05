@@ -3,13 +3,19 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Bookmark from "../icon/Bookmark";
+import { SpaceArchiveData } from "@/app/my-space/page";
+import Pin from "../icon/Pin";
 
 export interface SpaceArchiveItemProps {
     title: string;
     bgColor : string;
+    archiveItemListState : SpaceArchiveData[] | undefined;
+    setArchiveItemListState : (newState: SpaceArchiveData[] | undefined) => void;
+    pinnedItemListState : SpaceArchiveData[] | undefined;
+    setPinnedItemListState : (newState: SpaceArchiveData[] | undefined) => void;
 }
 
-export default function SpaceArchiveItem({ title, bgColor }: SpaceArchiveItemProps) {
+export default function SpaceArchiveItem({ title, bgColor, archiveItemListState, setArchiveItemListState, pinnedItemListState, setPinnedItemListState }: SpaceArchiveItemProps) {
 
     const router = useRouter();
     const [isPinnedState, setIsPinnedState] = useState(false);
@@ -22,8 +28,17 @@ export default function SpaceArchiveItem({ title, bgColor }: SpaceArchiveItemPro
     const handlePinnedClick = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.stopPropagation(); // 이벤트 전파 방지
         setIsPinnedState(!isPinnedState);
+
+        if(!isPinnedState){
+          
+        }
+
+
         console.log(`${title} 아카이브 폴더 pinned 설정 클릭됨`);
     }
+
+
+
 return (
     <button
         className={`
@@ -50,8 +65,8 @@ return (
                     aria-label={`${title} 아카이브 폴더 pinned 설정`}
                     onChange={handlePinnedClick}
                 />
-                <Bookmark 
-                    className={`w-7 h-7 transition-all duration-200
+                <Pin 
+                    className={`w-6 h-6 transition-all duration-200
                                 ${isPinnedState 
                                     ? 'fill-yellow-400 stroke-yellow-500' 
                                     : 'fill-none stroke-gray-800'

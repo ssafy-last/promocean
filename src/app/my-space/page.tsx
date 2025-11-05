@@ -41,14 +41,20 @@ export default async function MySpacePage() {
       <div className="flex justify-start p-4 w-full">
         <div className="w-full">
           <SpaceCardHeader title="Pinned"/>
-          <SpaceArchiveList isPinnedList={true} archiveItemList={MockPinnedSpaceArchiveItemList}/>
+          <SpaceArchiveList isPinnedList={true} 
+          archiveItemList={MockPinnedSpaceArchiveItemList}
+          pinnedItemList={MockPinnedSpaceArchiveItemList}
+          />
         </div>
       </div>
 
       <div className="flex justify-start p-4 w-full">
         <div className="w-full">
           <SpaceCardHeader title="Folder"/>
-          <SpaceArchiveList isPinnedList={false} archiveItemList={MockFolderSpaceArchiveItemList}/>
+          <SpaceArchiveList isPinnedList={false} 
+          archiveItemList={MockFolderSpaceArchiveItemList}
+          pinnedItemList={MockPinnedSpaceArchiveItemList}
+          />
         </div>
       </div>
     </div>
