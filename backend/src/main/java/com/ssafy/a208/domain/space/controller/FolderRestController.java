@@ -1,8 +1,8 @@
 package com.ssafy.a208.domain.space.controller;
 
 import com.ssafy.a208.domain.space.dto.request.FolderReq;
-import com.ssafy.a208.domain.space.dto.response.folder.FolderInfoRes;
 import com.ssafy.a208.domain.space.dto.response.folder.FolderInfoListRes;
+import com.ssafy.a208.domain.space.dto.response.folder.FolderInfoRes;
 import com.ssafy.a208.domain.space.service.FolderService;
 import com.ssafy.a208.global.common.dto.ApiResponse;
 import com.ssafy.a208.global.security.dto.CustomUserDetails;
@@ -38,7 +38,7 @@ public class FolderRestController {
             @RequestBody @Valid FolderReq folderReq
     ) {
         FolderInfoRes res = folderService.createFolder(userDetails, spaceId, folderReq);
-        return ApiResponse.ok(res);
+        return ApiResponse.create(res);
     }
 
     @GetMapping
