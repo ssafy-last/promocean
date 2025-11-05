@@ -5,6 +5,7 @@ import com.ssafy.a208.domain.space.entity.Space;
 import com.ssafy.a208.domain.space.exception.AlreadyExistFolderException;
 import com.ssafy.a208.domain.space.exception.FolderNotFoundException;
 import com.ssafy.a208.domain.space.repository.FolderRepository;
+import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,10 @@ public class FolderReader {
     public Folder getFolderById(Long folderId) {
         return folderRepository.findByIdAndDeletedAtIsNull(folderId)
                 .orElseThrow(FolderNotFoundException::new);
+    }
+
+    public List<Folder> getFolders(Long spaceId) {
+        return folderRepository.findBySpaceIdAndDeletedAtIsNull(spaceId);
     }
 
     public void checkDuplicatedName(Space space, String name) {
