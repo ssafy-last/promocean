@@ -1,9 +1,8 @@
 package com.ssafy.a208.domain.space.service;
 
 import com.ssafy.a208.domain.space.dto.request.FolderReq;
-import com.ssafy.a208.domain.space.dto.response.FolderRes;
-import com.ssafy.a208.domain.space.dto.response.folder.FolderInfo;
-import com.ssafy.a208.domain.space.dto.response.folder.FolderInfosRes;
+import com.ssafy.a208.domain.space.dto.response.folder.FolderInfoListRes;
+import com.ssafy.a208.domain.space.dto.response.folder.FolderInfoRes;
 import com.ssafy.a208.domain.space.entity.Folder;
 import com.ssafy.a208.domain.space.entity.Space;
 import com.ssafy.a208.domain.space.exception.FolderNotFoundException;
@@ -25,7 +24,7 @@ public class FolderService {
     private final FolderRepository folderRepository;
 
     @Transactional
-    public FolderRes createFolder(CustomUserDetails userDetails, Long spaceId,
+    public FolderInfoRes createFolder(CustomUserDetails userDetails, Long spaceId,
             FolderReq folderReq) {
         Space space = spaceService.getEditableSpace(spaceId, userDetails.memberId());
         folderReader.checkDuplicatedName(space, folderReq.name());
@@ -37,7 +36,7 @@ public class FolderService {
                 .build();
         folderRepository.save(folder);
 
-        return FolderRes.builder()
+        return FolderInfoRes.builder()
                 .folderId(folder.getId())
                 .name(folder.getName())
                 .color(folder.getColor())
@@ -46,18 +45,18 @@ public class FolderService {
     }
 
     @Transactional(readOnly = true)
-    public FolderInfosRes getFolders(CustomUserDetails userDetails, Long spaceId) {
+    public FolderInfoListRes getFolders(CustomUserDetails userDetails, Long spaceId) {
         spaceService.validateReadableSpace(spaceId, userDetails.memberId());
         List<Folder> folders = folderRepository.findBySpaceIdAndDeletedAtIsNull(spaceId);
-        List<FolderInfo> folderInfos = folders.stream()
-                .map(folder -> FolderInfo.builder()
+        List<FolderInfoRes> folderInfoRes = folders.stream()
+                .map(folder -> FolderInfoRes.builder()
                         .folderId(folder.getId())
                         .name(folder.getName())
                         .color(folder.getColor())
                         .build())
                 .toList();
-        return FolderInfosRes.builder()
-                .folderInfos(folderInfos)
+        return FolderInfoListRes.builder()
+                .folders(folderInfoRes)
                 .build();
     }
 
@@ -80,12 +79,12 @@ public class FolderService {
     }
 
     @Transactional
-    public FolderRes pinFolder(CustomUserDetails userDetails, Long spaceId, Long folderId) {
+    public FolderInfoRes pinFolder(CustomUserDetails userDetails, Long spaceId, Long folderId) {
         spaceService.validateEditableSpace(spaceId, userDetails.memberId());
         Folder folder = folderReader.getFolderById(folderId);
 
         folder.updatePin();
-        return FolderRes.builder()
+        return FolderInfoRes.builder()
                 .folderId(folder.getId())
                 .name(folder.getName())
                 .color(folder.getColor())
