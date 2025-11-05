@@ -41,7 +41,7 @@ public class MemberService {
 
     @Transactional
     public void signup(SignupReq signupReq) {
-        Space space = spaceService.savePersonalSpace(signupReq.nickname());
+        Space space = spaceService.createPersonalSpace(signupReq.nickname());
         String encodedPassword = encoder.encode(signupReq.password());
         Member member = Member.builder()
                 .email(signupReq.email())

@@ -37,7 +37,7 @@ public class SpaceRestController {
             @RequestBody @Valid SpaceReq spaceReq
 
     ) {
-        SpaceRes spaceSummaryRes = spaceService.saveTeamSpace(userDetails, spaceReq);
+        SpaceRes spaceSummaryRes = spaceService.createTeamSpace(userDetails, spaceReq);
         return ApiResponse.create(spaceSummaryRes);
     }
 
