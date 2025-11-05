@@ -48,7 +48,7 @@ export default function TeamSpaceTeamChoiceItem({
                 height={160}  
                 >
                 </Image>
-                    <div className="absolute inset-0 backdrop-blur-xs group-hover:backdrop-blur-none"></div>
+                    <div className="absolute inset-0 backdrop-blur-[1px] group-hover:backdrop-blur-none"></div>
             </div>
             {/* 텍스트 영역 */}
             <div className="flex flex-col text-left items-start px-5 py-3 gap-1 flex-1 min-w-0 overflow-hidden">
