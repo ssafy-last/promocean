@@ -45,7 +45,10 @@ export default function SpaceArchiveList({
         }, 300);
     };
 
+    console.log("isPinnedList:", isPinnedList);
+    
     const displayList = isPinnedList ? pinnedItemListState : archiveItemListState;
+    console.log("displayList:", displayList);
 
     return (
         <div className="flex flex-wrap flex-row p-7 gap-4">
