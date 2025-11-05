@@ -11,10 +11,6 @@ export default function TeamSpaceTeamChoiceLabelItem({ labelName } : TeamSpaceTe
     
     const divRef = useRef<HTMLDivElement>(null);
 
-    const testFunction  = ()=>{
-        console.log("testFunction 실행");
-    }
-
     const handleDelete = () => {
         console.log("삭제 버튼 클릭됨");
 
