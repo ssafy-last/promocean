@@ -110,22 +110,22 @@ public class SpaceService {
     public void updateTeamSpace(CustomUserDetails userDetails, Long spaceId, SpaceUpdateReq spaceUpdateReq) {
         participantService.validateManageableParticipant(spaceId, userDetails.memberId());
         Space space = spaceReader.getSpaceById(spaceId);
-        if (space.getType().equals(SpaceType.TEAM)) {
-            if (!Objects.isNull(spaceUpdateReq.name()) && !spaceUpdateReq.name().isBlank()) {
-                space.updateName(spaceUpdateReq.name());
-            }
-            if (!Objects.isNull(spaceUpdateReq.spaceCoverPath()) && !spaceUpdateReq.spaceCoverPath().isBlank()) {
-                SpaceCover spaceCover = spaceCoverReader.getSpaceCoverBySpaceId(spaceId);
-                if (!spaceCover.getFilePath().equals(DEFAULT_SPACE_KEY)) {
-                    s3Service.deleteFile(spaceCover.getFilePath());
+        switch (space.getType()) {
+            case TEAM -> {
+                if (!Objects.isNull(spaceUpdateReq.name()) && !spaceUpdateReq.name().isBlank()) {
+                    space.updateName(spaceUpdateReq.name());
                 }
-                String filePath = s3PathResolver.resolveAndMove(spaceUpdateReq.spaceCoverPath(), ImageDirectory.SPACES, DEFAULT_SPACE_KEY);
-                FileMetaData metadata = s3Service.getFileMetadata(filePath);
-                spaceCover.updateFile(metadata);
+                if (!Objects.isNull(spaceUpdateReq.spaceCoverPath()) && !spaceUpdateReq.spaceCoverPath().isBlank()) {
+                    SpaceCover spaceCover = spaceCoverReader.getSpaceCoverBySpaceId(spaceId);
+                    if (!spaceCover.getFilePath().equals(DEFAULT_SPACE_KEY)) {
+                        s3Service.deleteFile(spaceCover.getFilePath());
+                    }
+                    String filePath = s3PathResolver.resolveAndMove(spaceUpdateReq.spaceCoverPath(), ImageDirectory.SPACES, DEFAULT_SPACE_KEY);
+                    FileMetaData metadata = s3Service.getFileMetadata(filePath);
+                    spaceCover.updateFile(metadata);
+                }
             }
-        }
-        else if (space.getType().equals(SpaceType.PERSONAL)) {
-            throw new InvalidSpaceCoverRequestException();
+            case PERSONAL -> throw new InvalidSpaceCoverRequestException();
         }
     }
 
