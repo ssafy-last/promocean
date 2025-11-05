@@ -16,6 +16,8 @@ export default function TeamSpaceAddModal({isModalState, setIsModalState}: TeamS
 
     const [isMemberExistState, setIsMemberExistState] = useState(false);
     const [searchSpaceMemberListState, setSearchSpaceMemberListState] = useState<SpaceAddMemberItemProps[]>([])
+    const [selectedMemberSetState, setSelectedMemberSetState] = useState<Set<string>>(new Set(["김철수", "이영희"]));
+    
     const mockMemberList : SpaceAddMemberItemProps[] =[
         {name : "홍길동", email : "hong@example.com"},
         {name : "김철수", email : "kim@example.com"},
@@ -61,7 +63,11 @@ export default function TeamSpaceAddModal({isModalState, setIsModalState}: TeamS
                             <input type="text" placeholder="팀 스페이스 이름을 입력하세요" className = "w-[600px] border border-gray-300 rounded-[10px] p-3"/>
                             <div>
                                 <div className ="flex flex-row gap-2 justify-end-safe py-1 px-2 overflow-hidden">
-                                    <TeamSpaceTeamChoiceLabelItem labelName="바보"/>
+                                    {
+                                        Array.from(selectedMemberSetState).map((memberEmail) => (
+                                            <TeamSpaceTeamChoiceLabelItem key={memberEmail} labelName={memberEmail}/>
+                                        ))
+                                    }
                                 </div>
 
 
@@ -72,7 +78,10 @@ export default function TeamSpaceAddModal({isModalState, setIsModalState}: TeamS
                                 />
                                 
                                 {isMemberExistState &&
-                                    <TeamSpaceAddMemberList searchSpaceMemberListState={searchSpaceMemberListState} />
+                                    <TeamSpaceAddMemberList 
+                                    searchSpaceMemberListState={searchSpaceMemberListState} 
+                                    selectedMemberSetState={selectedMemberSetState} 
+                                    setSelectedMemberSetState={setSelectedMemberSetState} />
                                 }
                             </div>
                         </div>
