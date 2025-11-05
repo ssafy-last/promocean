@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public record ContestCreateReq(
         @Size(max = 100, message = "제목은 100자를 넘을 수 없습니다.")
@@ -22,15 +22,15 @@ public record ContestCreateReq(
         int type,
 
         @NotNull
-        @Schema(description = "제출 시작 일자", example = "2025-10-28")
-        LocalDate startAt,
+        @Schema(description = "제출 시작 일자", example = "2025-11-20T00:00:00")
+        LocalDateTime startAt,
 
         @NotNull
-        @Schema(description = "제출 종료 일자", example = "2025-10-29")
-        LocalDate endAt,
+        @Schema(description = "제출 종료 일자", example = "2025-11-22T23:59:59")
+        LocalDateTime endAt,
 
         @NotNull
-        @Schema(description = "투표 종료 일자", example = "2025-10-30")
-        LocalDate voteEndAt
+        @Schema(description = "투표 종료 일자", example = "2025-11-25T23:59:59")
+        LocalDateTime voteEndAt
 ) {
 }

@@ -8,6 +8,7 @@ import com.ssafy.a208.domain.contest.exception.InvalidStartException;
 import com.ssafy.a208.domain.contest.exception.InvalidVoteException;
 import com.ssafy.a208.global.common.enums.MemberRole;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -20,10 +21,10 @@ public class ContestValidator {
             boolean startValid,
             ContestCreateReq contestCreateReq
     ) {
-        LocalDate now = LocalDate.now();
-        LocalDate startAt = contestCreateReq.startAt();
-        LocalDate endAt = contestCreateReq.endAt();
-        LocalDate voteEndAt = contestCreateReq.voteEndAt();
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime startAt = contestCreateReq.startAt();
+        LocalDateTime endAt = contestCreateReq.endAt();
+        LocalDateTime voteEndAt = contestCreateReq.voteEndAt();
 
         if(startValid && startAt.isBefore(now)) {
             throw new InvalidStartException();
