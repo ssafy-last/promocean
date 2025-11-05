@@ -88,12 +88,9 @@ public class SpaceService {
         List<Space> teamSpaces = spaceReader.getTeamSpaces(spaceIds);
         List<SpaceInfo> spaceInfos = teamSpaces.stream()
                 .map(teamSpace -> {
-                    Optional<SpaceCover> spaceCover = spaceCoverRepository.findBySpaceIdAndDeletedAtIsNull(
+                    SpaceCover spaceCover= spaceCoverReader.getSpaceCoverBySpaceId(
                             teamSpace.getId());
-                    String coverUrl = spaceCover
-                            .map(SpaceCover::getFilePath)
-                            .map(s3Service::getCloudFrontUrl)
-                            .orElse(null);
+                    String coverUrl = s3Service.getCloudFrontUrl(spaceCover.getFilePath());
                     return SpaceInfo.builder()
                             .spaceId(teamSpace.getId())
                             .name(teamSpace.getName())
