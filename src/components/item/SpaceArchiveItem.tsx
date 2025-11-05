@@ -64,12 +64,13 @@ export default function SpaceArchiveItem({
     return (
         <button
             className={`
-                w-40 h-60 relative ${bgColor} rounded-[10px]
+                w-40 h-60 relative rounded-[10px]
                 shadow-[0px_4px_6px_0px_rgba(0,0,0,0.10)] overflow-hidden
                 transition-all duration-200 ease-in-out
                 hover:-translate-y-1 hover:brightness-105 hover:shadow-lg
                 active:translate-y-0 active:scale-95 active:shadow-sm
             `}
+            style={{ backgroundColor: bgColor }}  // inline style로 배경색 적용
             onClick={handleArchiveRoute}
         >
             <div className="w-full h-20 p-2.5 left-0 top-40 absolute bg-white inline-flex justify-center items-center">

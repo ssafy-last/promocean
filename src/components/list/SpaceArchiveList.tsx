@@ -89,7 +89,10 @@ export default function SpaceArchiveList({
             ))}
 
             {shouldRenderModalState && (
-                <SpaceArchiveAddModal isOpen={isModalOpenState} onCloseAddModal={onCloseAddModal} />
+                <SpaceArchiveAddModal isOpen={isModalOpenState} onCloseAddModal={onCloseAddModal}
+                    archiveItemListState={archiveItemListState}
+                    setArchiveItemListState={setArchiveItemListState}
+                />
             )}
         </div>
     );
