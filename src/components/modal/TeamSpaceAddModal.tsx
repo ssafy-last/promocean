@@ -1,6 +1,7 @@
 import { useState } from "react";
 import TeamSpaceTeamChoiceLabelItem from "../item/TeamSpaceTeamChoiceLabelItem";
 import SpaceAddMemberItem, { SpaceAddMemberItemProps } from "../item/SpaceAddMemberItem";
+import TeamSpaceAddMemberList from "../list/TeamSpaceAddMemberList";
 
 
 export interface TeamSpaceAddModalProps{
@@ -15,6 +16,7 @@ export default function TeamSpaceAddModal({isModalState, setIsModalState}: TeamS
 
     const [isMemberExistState, setIsMemberExistState] = useState(false);
     const [searchSpaceMemberListState, setSearchSpaceMemberListState] = useState<SpaceAddMemberItemProps[]>([])
+
     const mockMemberList : SpaceAddMemberItemProps[] =[
         {name : "홍길동", email : "hong@example.com"},
         {name : "김철수", email : "kim@example.com"},
@@ -71,15 +73,17 @@ export default function TeamSpaceAddModal({isModalState, setIsModalState}: TeamS
                                 />
                                 
                                 {isMemberExistState &&
-                                    <div className ="overflow-y-scroll w-[600px] h-[300px] border border-t-0 border-gray-300 rounded-[10px] p-2.5 gap-2.5">
-                                        {searchSpaceMemberListState.map((member) => (
-                                            <SpaceAddMemberItem key={member.email} name={member.name} email={member.email} />
-                                        ))}
-                                    </div>
+                                    <TeamSpaceAddMemberList searchSpaceMemberListState={searchSpaceMemberListState}/>
                                 }
                             </div>
                         </div>
+                            
 
+                        <div>
+                        <textarea className="w-[600px] border border-gray-300 rounded-[10px] p-3" placeholder="팀원에게 전송할 메시지를 입력하세요">
+                        </textarea>
+
+                        </div>
                         { !isMemberExistState &&
                                 <div>
                                     <label className="text-3xl text-gray-300 block mb-2 font-medium text-center">아직 검색한 팀원이 없어요</label>
