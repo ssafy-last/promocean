@@ -137,8 +137,7 @@ public class SpaceService {
             s3Service.deleteFile(spaceCover.getFilePath());
         }
         List<Participant> participants = participantService.getParticipantsBySpaceId(spaceId);
-        participants.stream()
-                .forEach(participant -> participant.deleteParticipant());
+        participants.forEach(Participant::deleteParticipant);
         spaceCover.deleteSpaceCover();
         space.deleteTeamSpace();
     }
