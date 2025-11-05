@@ -1,5 +1,6 @@
 package com.ssafy.a208.domain.contest.entity;
 
+import com.ssafy.a208.domain.contest.dto.NoticeCreateReq;
 import com.ssafy.a208.domain.member.entity.Member;
 import com.ssafy.a208.global.common.BaseEntity;
 import jakarta.persistence.Column;
@@ -15,9 +16,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Getter
+@SQLRestriction("deleted_at is null")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Notice extends BaseEntity {
     @Id
@@ -46,5 +49,14 @@ public class Notice extends BaseEntity {
         this.content = content;
         this.contest = contest;
         this.author = author;
+    }
+
+    public void updateNotice(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
+
+    public void deleteNotice() {
+        this.delete();
     }
 }
