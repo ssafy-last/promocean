@@ -215,3 +215,17 @@ export interface ContestNoticeItemProps {
   createdAt: string
   updatedAt: string
 }
+
+/**
+ * ContestSubmissionItemProps interface
+ * @description 대회 제출 목록 아이템 타입
+ */
+export interface ContestSubmissionItemProps {
+  submissionId: number
+  author: string
+  profileUrl: string
+  description: string
+  type: string
+  submissionUrl: string
+  voteCnt: number
+}
