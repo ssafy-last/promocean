@@ -64,15 +64,15 @@ export default function TeamSpaceAddModal({isModalState, setIsModalState}: TeamS
                         
                             <input type="text" placeholder="팀 스페이스 이름을 입력하세요" className = "w-[600px] border border-gray-300 rounded-[10px] p-3"/>
                             <div>
-                                <div className ="flex flex-row gap-2 justify-end-safe py-1 px-2 line-clamp-2 w-full">
-                                    {
-                                        <TeamSpaceTeamChoiceLabelList
-                                            labelNameList={Array.from(selectedMemberSetState)}
-                                            selectedMemberSetState={selectedMemberSetState}
-                                            setSelectedMemberSetState={setSelectedMemberSetState}
-                                        />
-                                    }
-                                </div>
+                         
+                                {
+                                    <TeamSpaceTeamChoiceLabelList
+                                        labelNameList={Array.from(selectedMemberSetState)}
+                                        selectedMemberSetState={selectedMemberSetState}
+                                        setSelectedMemberSetState={setSelectedMemberSetState}
+                                    />
+                                }
+                         
 
 
                                 <input type="text" 
