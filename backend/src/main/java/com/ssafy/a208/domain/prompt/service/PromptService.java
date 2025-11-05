@@ -2,11 +2,9 @@ package com.ssafy.a208.domain.prompt.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.ssafy.a208.domain.member.entity.Member;
-import com.ssafy.a208.domain.member.repository.MemberRepository;
 import com.ssafy.a208.domain.prompt.dto.*;
 import com.ssafy.a208.domain.prompt.exception.ImageGenerationException;
 import com.ssafy.a208.domain.prompt.exception.PromptProcessingException;
-import com.ssafy.a208.domain.member.exception.MemberNotFoundException;
 import com.ssafy.a208.global.image.service.S3Service;
 import com.ssafy.a208.global.security.dto.CustomUserDetails;
 import jakarta.transaction.Transactional;
@@ -19,6 +17,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import com.ssafy.a208.domain.member.reader.MemberReader;
 
 import java.util.*;
 
@@ -34,7 +33,8 @@ public class PromptService {
     private final WebClient webClient;
     private final S3Service s3Service;
     private final S3Client s3Client;
-    private final MemberRepository memberRepository;
+    private final MemberReader memberReader;
+
 
     @Value("${gms.api.key}")
     private String gmsApiKey;
@@ -61,8 +61,7 @@ public class PromptService {
      */
     @Transactional
     public TextPromptRes processTextPrompt(CustomUserDetails userDetails, TextPromptReq request) {
-        Member member = memberRepository.findById(userDetails.memberId())
-                .orElseThrow(MemberNotFoundException::new);
+        Member member = memberReader.getMemberById(userDetails.memberId());
         member.decreaseUsableCnt();
 
         List<GptDto.Message> messages = new ArrayList<>();
@@ -129,8 +128,7 @@ public class PromptService {
      */
     @Transactional
     public ImagePromptRes processImagePrompt(CustomUserDetails userDetails, ImagePromptReq request) {
-        Member member = memberRepository.findById(userDetails.memberId())
-                .orElseThrow(MemberNotFoundException::new);
+        Member member = memberReader.getMemberById(userDetails.memberId());
         member.decreaseUsableCnt();
 
         GeminiDto.Request geminiRequest = GeminiDto.Request.builder()
