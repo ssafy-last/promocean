@@ -1,10 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
-import SpaceArchiveAddModal from '../SpaceArchiveAddModal';
+import SpaceArchiveAddModal, { SpaceArchiveAddModalProps } from '../SpaceArchiveAddModal';
+import { SpaceArchiveData } from '@/app/my-space/page';
 
 // Wrapper 컴포넌트 - 모달 상태 관리를 위한 컨트롤러
 function InteractiveWrapper() {
   const [isOpenState, setIsOpenState] = useState(true);
+  const [archiveList, setArchiveList] = useState<SpaceArchiveData[]>([
+    { title: '개발 문서', bgColor: '#3b82f6', isPinned: true },
+    { title: '디자인 에셋', bgColor: '#8b5cf6', isPinned: false },
+  ]);
 
   const handleCloseModal = () => {
     setIsOpenState(false);
@@ -13,16 +18,37 @@ function InteractiveWrapper() {
   };
 
   return (
-    <div>
-      <button 
-        onClick={() => setIsOpenState(true)}
-        className="btn btn-primary"
-      >
-        모달 열기
-      </button>
-      <SpaceArchiveAddModal 
+    <div className="min-h-screen bg-gray-100 p-8">
+      <div className="max-w-4xl mx-auto">
+        <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+          <h2 className="text-2xl font-bold mb-4">현재 카테고리 목록</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {archiveList.map((archive, index) => (
+              <div
+                key={index}
+                className="p-4 rounded-lg text-white"
+                style={{ backgroundColor: archive.bgColor }}
+              >
+                <div className="flex items-center justify-between">
+                  <h3 className="font-bold">{archive.title}</h3>
+                  {archive.isPinned && <span className="text-xs">📌</span>}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <button
+          onClick={() => setIsOpenState(true)}
+          className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+        >
+          카테고리 추가
+        </button>
+      </div>
+      <SpaceArchiveAddModal
         isOpen={isOpenState}
         onCloseAddModal={handleCloseModal}
+        archiveItemListState={archiveList}
+        setArchiveItemListState={setArchiveList}
       />
     </div>
   );
@@ -31,33 +57,36 @@ function InteractiveWrapper() {
 // 애니메이션 테스트용 컴포넌트
 function AnimationTestWrapper() {
   const [isOpenState, setIsOpenState] = useState(false);
+  const [archiveList, setArchiveList] = useState<SpaceArchiveData[]>([]);
 
   return (
     <div className="p-4">
       <div className="flex gap-4">
-        <button 
+        <button
           onClick={() => setIsOpenState(true)}
-          className="btn btn-primary"
+          className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
         >
           모달 열기
         </button>
-        <button 
+        <button
           onClick={() => setIsOpenState(false)}
-          className="btn btn-secondary"
+          className="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400"
         >
           모달 닫기
         </button>
       </div>
-      <SpaceArchiveAddModal 
+      <SpaceArchiveAddModal
         isOpen={isOpenState}
         onCloseAddModal={() => setIsOpenState(false)}
+        archiveItemListState={archiveList}
+        setArchiveItemListState={setArchiveList}
       />
     </div>
   );
 }
 
 const meta: Meta<typeof SpaceArchiveAddModal> = {
-  title: 'Components/SpaceArchiveAddModal',
+  title: 'Components/Modal/SpaceArchiveAddModal',
   component: SpaceArchiveAddModal,
   parameters: {
     layout: 'fullscreen',
@@ -84,6 +113,18 @@ const meta: Meta<typeof SpaceArchiveAddModal> = {
         type: { summary: '() => void' },
       },
     },
+    archiveItemListState: {
+      description: '현재 아카이브 아이템 목록',
+      table: {
+        type: { summary: 'SpaceArchiveData[]' },
+      },
+    },
+    setArchiveItemListState: {
+      description: '아카이브 아이템 목록을 업데이트하는 함수',
+      table: {
+        type: { summary: '(newState: SpaceArchiveData[]) => void' },
+      },
+    },
   },
 };
 
@@ -92,9 +133,18 @@ type Story = StoryObj<typeof SpaceArchiveAddModal>;
 
 // 기본 스토리 - 모달 열림 상태
 export const Default: Story = {
-  args: {
-    isOpen: true,
-    onCloseAddModal: () => console.log('Modal closed'),
+  render: () => {
+    const [archiveList, setArchiveList] = useState<SpaceArchiveData[]>([]);
+    return (
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <SpaceArchiveAddModal
+          isOpen={true}
+          onCloseAddModal={() => console.log('Modal closed')}
+          archiveItemListState={archiveList}
+          setArchiveItemListState={setArchiveList}
+        />
+      </div>
+    );
   },
   parameters: {
     docs: {
@@ -107,9 +157,28 @@ export const Default: Story = {
 
 // 모달 닫힘 상태
 export const Closed: Story = {
-  args: {
-    isOpen: false,
-    onCloseAddModal: () => console.log('Modal closed'),
+  render: () => {
+    const [isOpen, setIsOpen] = useState(false);
+    const [archiveList, setArchiveList] = useState<SpaceArchiveData[]>([]);
+    return (
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="text-center">
+          <p className="mb-4">모달이 닫혀있습니다.</p>
+          <button
+            onClick={() => setIsOpen(true)}
+            className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90"
+          >
+            모달 열기
+          </button>
+        </div>
+        <SpaceArchiveAddModal
+          isOpen={isOpen}
+          onCloseAddModal={() => setIsOpen(false)}
+          archiveItemListState={archiveList}
+          setArchiveItemListState={setArchiveList}
+        />
+      </div>
+    );
   },
   parameters: {
     docs: {
