@@ -1,13 +1,23 @@
 'use client'
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import SpaceArchiveItem from "../item/SpaceArchiveItem";
 import SpaceArchiveAddModal from "../modal/SpaceArchiveAddModal";
 import { SpaceArchiveData } from "@/app/my-space/page";
 
+/**
+ * SpaceArchiveListProps 인터페이스
+ * @isPinnedList: Pinned 리스트인지 여부
+ * 
+ * @archiveItemList: 일반 아카이브 리스트
+ * @pinnedItemList: 핀된 아카이브 리스트
+ * 
+ */
+
 export interface SpaceArchiveListProps {
   isPinnedList?: boolean;
-  archiveItemList?: SpaceArchiveData[]
+  archiveItemList?: SpaceArchiveData[];
+  pinnedItemList?: SpaceArchiveData[];
 }
 
 const interactiveBtnClasses = `
@@ -18,10 +28,13 @@ const interactiveBtnClasses = `
   active:translate-y-0 active:scale-95 active:shadow-sm
 `;
 
-export default function SpaceArchiveList({ isPinnedList, archiveItemList }: SpaceArchiveListProps) {
+export default function SpaceArchiveList({ isPinnedList, archiveItemList, pinnedItemList }: SpaceArchiveListProps) {
     const [isModalOpenState, setIsModalOpenState] = useState(false);
     const [shouldRenderModalState, setShouldRenderModalState] = useState(false);
     
+    const [archiveItemListState, setArchiveItemListState] = useState<SpaceArchiveData[] | undefined>(archiveItemList);
+    const [pinnedItemListState, setPinnedItemListState] = useState<SpaceArchiveData[] | undefined>(pinnedItemList);
+
     const onOpenAddModal = () => {
         setShouldRenderModalState(true);
         // DOM에 마운트된 후 애니메이션 시작을 위해 약간의 지연
@@ -67,9 +80,26 @@ export default function SpaceArchiveList({ isPinnedList, archiveItemList }: Spac
                 </button>
             )}
 
-            {archiveItemList?.map((item, index) => (
-                <SpaceArchiveItem key={index} title={item.title} bgColor={item.bgColor} />
-            ))}
+            
+            {
+            isPinnedList === false ? 
+                archiveItemListState?.map((item, index) => (
+                    <SpaceArchiveItem key={index} title={item.title} bgColor={item.bgColor} 
+                    archiveItemListState={archiveItemListState} 
+                    setArchiveItemListState={setArchiveItemListState} 
+                    pinnedItemListState={pinnedItemListState} 
+                    setPinnedItemListState={setPinnedItemListState}
+                    />
+                ))
+                :
+                pinnedItemListState?.map((item, index) => (
+                    <SpaceArchiveItem key={index} title={item.title} bgColor={item.bgColor} 
+                    archiveItemListState={archiveItemListState} 
+                    setArchiveItemListState={setArchiveItemListState} 
+                    pinnedItemListState={pinnedItemListState} 
+                    setPinnedItemListState={setPinnedItemListState} />
+                ))
+            }
 
             {shouldRenderModalState && (
                 <SpaceArchiveAddModal isOpen={isModalOpenState} onCloseAddModal={onCloseAddModal} />
