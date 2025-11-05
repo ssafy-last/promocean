@@ -83,8 +83,15 @@ export default function TeamSpaceAddModal({isModalState, setIsModalState, teamSp
                 className={`fixed flex inset-0 z-10 w-full h-full bg-black/40 backdrop-blur-xs justify-center items-center
                 transition-opacity duration-300 ease-out
                 ${isModalState ? 'opacity-100' : 'opacity-0'}`}
+                onClick={() => setIsModalState(false)}
                 >
-                    <form onSubmit={handleSubmit} className="flex flex-col bg-white p-10 rounded-lg w-1/3 justify-between h-[680px]">
+                    <form 
+                        onSubmit={handleSubmit} 
+                        className={`flex flex-col bg-white p-10 rounded-lg w-1/3 justify-between h-[680px]
+                            transition-all duration-300 ease-out
+                            ${isModalState ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 -translate-y-4'}`}
+                        onClick={(e) => e.stopPropagation()}
+                    >
                         
                         <div className="flex flex-col gap-3">
                             <h2 className="text-4xl font-bold pb-4">팀 스페이스 생성</h2>
@@ -123,7 +130,7 @@ export default function TeamSpaceAddModal({isModalState, setIsModalState, teamSp
                                 <input type="text" 
                                     placeholder="팀원 닉네임 또는 이메일을 입력하세요" 
                                     className = "w-full border border-gray-300 rounded-[10px] p-3"
-                                    onChange={(e) => -handleMemberSearch(e.target.value)}
+                                    onChange={(e) => handleMemberSearch(e.target.value)}
                                 />
                                 
                                 {isMemberExistState &&
