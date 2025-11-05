@@ -35,7 +35,6 @@ public class SpaceRestController {
     public ResponseEntity<ApiResponse<SpaceRes>> createTeamSpace(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody @Valid SpaceReq spaceReq
-
     ) {
         SpaceRes spaceSummaryRes = spaceService.createTeamSpace(userDetails, spaceReq);
         return ApiResponse.create(spaceSummaryRes);
