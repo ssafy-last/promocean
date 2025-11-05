@@ -5,7 +5,7 @@ import com.ssafy.a208.domain.member.reader.MemberReader;
 import com.ssafy.a208.domain.space.dto.request.ParticipantReq;
 import com.ssafy.a208.domain.space.entity.Participant;
 import com.ssafy.a208.domain.space.entity.Space;
-import com.ssafy.a208.domain.space.exception.SpaceAccessDeniedException;
+import com.ssafy.a208.domain.space.exception.space.SpaceAccessDeniedException;
 import com.ssafy.a208.domain.space.reader.ParticipantReader;
 import com.ssafy.a208.domain.space.repository.ParticipantRepository;
 import com.ssafy.a208.global.common.enums.ParticipantRole;
