@@ -5,15 +5,23 @@ import com.ssafy.a208.domain.member.exception.MemberNotFoundException;
 import com.ssafy.a208.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
 public class MemberReader {
-
     private final MemberRepository memberRepository;
 
-    public Member getMemberById(Long id) {
-        return memberRepository.findById(id)
-                .orElseThrow(MemberNotFoundException::new);
+    @Transactional(readOnly = true)
+    public Member getMemberById(Long memberId) {
+        return memberRepository.findByIdAndDeletedAtIsNull(memberId).orElseThrow(
+                MemberNotFoundException::new);
     }
+
+    @Transactional(readOnly = true)
+    public Member getMemberByEmail(String email) {
+        return memberRepository.findByEmailAndDeletedAtIsNull(email).orElseThrow(
+                MemberNotFoundException::new);
+    }
+
 }

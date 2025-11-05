@@ -1,4 +1,4 @@
-package com.ssafy.a208.domain.space.exception;
+package com.ssafy.a208.domain.space.exception.space;
 
 import com.ssafy.a208.global.common.exception.ApiException;
 import org.springframework.http.HttpStatus;

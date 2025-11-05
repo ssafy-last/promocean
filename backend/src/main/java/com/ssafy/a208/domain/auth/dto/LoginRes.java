@@ -7,7 +7,8 @@ public record LoginRes(
         String accessToken,
         String nickname,
         String email,
-        String profileUrl
+        String profileUrl,
+        Long personalSpaceId
 ) {
 
 }

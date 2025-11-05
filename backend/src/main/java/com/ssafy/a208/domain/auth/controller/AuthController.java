@@ -34,6 +34,7 @@ public class AuthController {
                 .email(loginRes.email())
                 .nickname(loginRes.nickname())
                 .profileUrl(loginRes.profileUrl())
+                .personalSpaceId(loginRes.personalSpaceId())
                 .build();
         return ApiResponse.ofToken(memberInfo, loginRes.accessToken());
     }
