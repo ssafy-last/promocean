@@ -1,23 +1,16 @@
 'use client'
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import SpaceArchiveItem from "../item/SpaceArchiveItem";
 import SpaceArchiveAddModal from "../modal/SpaceArchiveAddModal";
 import { SpaceArchiveData } from "@/app/my-space/page";
 
-/**
- * SpaceArchiveListProps 인터페이스
- * @isPinnedList: Pinned 리스트인지 여부
- * 
- * @archiveItemList: 일반 아카이브 리스트
- * @pinnedItemList: 핀된 아카이브 리스트
- * 
- */
-
 export interface SpaceArchiveListProps {
   isPinnedList?: boolean;
-  archiveItemList?: SpaceArchiveData[];
-  pinnedItemList?: SpaceArchiveData[];
+  archiveItemListState: SpaceArchiveData[];
+  setArchiveItemListState: (newState: SpaceArchiveData[]) => void;
+  pinnedItemListState: SpaceArchiveData[];
+  setPinnedItemListState: (newState: SpaceArchiveData[]) => void;
 }
 
 const interactiveBtnClasses = `
@@ -28,16 +21,18 @@ const interactiveBtnClasses = `
   active:translate-y-0 active:scale-95 active:shadow-sm
 `;
 
-export default function SpaceArchiveList({ isPinnedList, archiveItemList, pinnedItemList }: SpaceArchiveListProps) {
+export default function SpaceArchiveList({ 
+    isPinnedList, 
+    archiveItemListState,
+    setArchiveItemListState,
+    pinnedItemListState,
+    setPinnedItemListState
+}: SpaceArchiveListProps) {
     const [isModalOpenState, setIsModalOpenState] = useState(false);
     const [shouldRenderModalState, setShouldRenderModalState] = useState(false);
-    
-    const [archiveItemListState, setArchiveItemListState] = useState<SpaceArchiveData[] | undefined>(archiveItemList);
-    const [pinnedItemListState, setPinnedItemListState] = useState<SpaceArchiveData[] | undefined>(pinnedItemList);
 
     const onOpenAddModal = () => {
         setShouldRenderModalState(true);
-        // DOM에 마운트된 후 애니메이션 시작을 위해 약간의 지연
         setTimeout(() => {
             setIsModalOpenState(true);
         }, 10);
@@ -45,18 +40,15 @@ export default function SpaceArchiveList({ isPinnedList, archiveItemList, pinned
 
     const onCloseAddModal = () => {
         setIsModalOpenState(false);
-        // 애니메이션이 끝난 후 DOM에서 제거
         setTimeout(() => {
             setShouldRenderModalState(false);
-        }, 300); // transition duration과 동일하게 설정
+        }, 300);
     };
 
-    useEffect(() => {
-        console.log("open state : ", isModalOpenState);
-    }, [isModalOpenState]);
+    const displayList = isPinnedList ? pinnedItemListState : archiveItemListState;
 
     return (
-        <div className="flex flex-row p-7 gap-4">
+        <div className="flex flex-wrap flex-row p-7 gap-4">
             {isPinnedList ? (
                 <button
                     className={`${interactiveBtnClasses} bg-white outline-2 outline-dodger-blue-11`}
@@ -80,26 +72,18 @@ export default function SpaceArchiveList({ isPinnedList, archiveItemList, pinned
                 </button>
             )}
 
-            
-            {
-            isPinnedList === false ? 
-                archiveItemListState?.map((item, index) => (
-                    <SpaceArchiveItem key={index} title={item.title} bgColor={item.bgColor} 
+            {displayList.map((item) => (
+                <SpaceArchiveItem 
+                    key={item.title}
+                    title={item.title} 
+                    bgColor={item.bgColor} 
+                    isPinned={item.isPinned}
                     archiveItemListState={archiveItemListState} 
                     setArchiveItemListState={setArchiveItemListState} 
                     pinnedItemListState={pinnedItemListState} 
                     setPinnedItemListState={setPinnedItemListState}
-                    />
-                ))
-                :
-                pinnedItemListState?.map((item, index) => (
-                    <SpaceArchiveItem key={index} title={item.title} bgColor={item.bgColor} 
-                    archiveItemListState={archiveItemListState} 
-                    setArchiveItemListState={setArchiveItemListState} 
-                    pinnedItemListState={pinnedItemListState} 
-                    setPinnedItemListState={setPinnedItemListState} />
-                ))
-            }
+                />
+            ))}
 
             {shouldRenderModalState && (
                 <SpaceArchiveAddModal isOpen={isModalOpenState} onCloseAddModal={onCloseAddModal} />
