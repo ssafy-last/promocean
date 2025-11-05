@@ -3,8 +3,8 @@ package com.ssafy.a208.domain.space.controller;
 import com.ssafy.a208.domain.space.dto.request.SpaceReq;
 import com.ssafy.a208.domain.space.dto.request.SpaceUpdateReq;
 import com.ssafy.a208.domain.space.dto.response.space.SpaceDetailRes;
-import com.ssafy.a208.domain.space.dto.response.space.SpaceRes;
 import com.ssafy.a208.domain.space.dto.response.space.SpaceInfosRes;
+import com.ssafy.a208.domain.space.dto.response.space.SpaceRes;
 import com.ssafy.a208.domain.space.service.SpaceService;
 import com.ssafy.a208.global.common.dto.ApiResponse;
 import com.ssafy.a208.global.security.dto.CustomUserDetails;
@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,7 +38,7 @@ public class SpaceRestController {
 
     ) {
         SpaceRes spaceSummaryRes = spaceService.saveTeamSpace(userDetails, spaceReq);
-        return ApiResponse.of(HttpStatus.CREATED, spaceSummaryRes);
+        return ApiResponse.create(spaceSummaryRes);
     }
 
     @GetMapping
@@ -48,7 +47,7 @@ public class SpaceRestController {
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         SpaceInfosRes teamSpaces = spaceService.getTeamSpaces(userDetails);
-        return ApiResponse.of(HttpStatus.OK, teamSpaces);
+        return ApiResponse.ok(teamSpaces);
     }
 
     @PatchMapping("/{spaceId}")
@@ -59,7 +58,7 @@ public class SpaceRestController {
             @RequestBody @Valid SpaceUpdateReq spaceUpdateReq
     ) {
         spaceService.updateTeamSpace(userDetails, spaceId, spaceUpdateReq);
-        return ApiResponse.of(HttpStatus.OK);
+        return ApiResponse.ok();
     }
 
     @DeleteMapping("/{spaceId}")
@@ -69,7 +68,7 @@ public class SpaceRestController {
             @PathVariable Long spaceId
     ) {
         spaceService.deleteTeamSpace(userDetails, spaceId);
-        return ApiResponse.of(HttpStatus.OK);
+        return ApiResponse.ok();
     }
 
 }
