@@ -10,5 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface ParticipantRepository extends JpaRepository<Participant, Long> {
 
     List<Participant> findParticipantByMemberIdAndDeletedAtIsNull(Long memberId);
+    List<Participant> findParticipantBySpaceIdAndDeletedAtIsNull(Long spaceId);
     Optional<Participant> findBySpaceIdAndMemberIdAndDeletedAtIsNull(Long spaceId, Long memberId);
 }
