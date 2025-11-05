@@ -1,6 +1,7 @@
 import { useState } from "react";
 import TeamSpaceTeamChoiceLabelItem from "../item/TeamSpaceTeamChoiceLabelItem";
 import SpaceAddMemberItem, { SpaceAddMemberItemProps } from "../item/SpaceAddMemberItem";
+import TeamSpaceAddMemberList from "../list/TeamSpaceAddMemberList";
 
 
 export interface TeamSpaceAddModalProps{
@@ -71,11 +72,7 @@ export default function TeamSpaceAddModal({isModalState, setIsModalState}: TeamS
                                 />
                                 
                                 {isMemberExistState &&
-                                    <div className ="overflow-y-scroll w-[600px] h-[300px] border border-t-0 border-gray-300 rounded-[10px] p-2.5 gap-2.5">
-                                        {searchSpaceMemberListState.map((member) => (
-                                            <SpaceAddMemberItem key={member.email} name={member.name} email={member.email} />
-                                        ))}
-                                    </div>
+                                    <TeamSpaceAddMemberList searchSpaceMemberListState={searchSpaceMemberListState} />
                                 }
                             </div>
                         </div>
