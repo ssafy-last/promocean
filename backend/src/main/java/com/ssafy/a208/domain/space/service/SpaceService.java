@@ -82,7 +82,7 @@ public class SpaceService {
         List<Long> spaceIds = participants.stream()
                 .map(participant -> participant.getSpace().getId())
                 .toList();
-        List<Space> teamSpaces = spaceRepository.findAllByIdInAndTypeAndDeletedAtIsNull(spaceIds, SpaceType.TEAM);
+        List<Space> teamSpaces = spaceReader.getTeamSpaces(spaceIds);
         List<SpaceInfo> spaceInfos = teamSpaces.stream()
                 .map(teamSpace -> {
                     Optional<SpaceCover> spaceCover = spaceCoverRepository.findBySpaceIdAndDeletedAtIsNull(
@@ -106,7 +106,7 @@ public class SpaceService {
     @Transactional
     public void updateTeamSpace(CustomUserDetails userDetails, Long spaceId, SpaceUpdateReq spaceUpdateReq) {
         participantService.validateManageableParticipant(spaceId, userDetails.memberId());
-        Space space = spaceRepository.findByIdAndDeletedAtIsNull(spaceId);
+        Space space = spaceReader.getSpaceById(spaceId);
         if (space.getType().equals(SpaceType.TEAM)) {
             if (!Objects.isNull(spaceUpdateReq.name()) && !spaceUpdateReq.name().isBlank()) {
                 space.updateName(spaceUpdateReq.name());
@@ -126,7 +126,7 @@ public class SpaceService {
     @Transactional
     public void deleteTeamSpace(CustomUserDetails userDetails, Long spaceId) {
         participantService.validateManageableParticipant(spaceId, userDetails.memberId());
-        Space space = spaceRepository.findByIdAndDeletedAtIsNull(spaceId);
+        Space space = spaceReader.getSpaceById(spaceId);
         validateDeletableSpace(space);
         SpaceCover spaceCover = spaceCoverReader.getSpaceCoverBySpaceId(spaceId);
         spaceCover.deleteSpaceCover();
