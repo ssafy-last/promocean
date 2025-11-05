@@ -15,7 +15,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -46,15 +46,15 @@ public class Contest extends BaseEntity {
 
     @Comment("개최 일시")
     @Column(nullable = false)
-    private LocalDate startAt;
+    private LocalDateTime startAt;
 
     @Comment("종료 일시")
     @Column(nullable = false)
-    private LocalDate endAt;
+    private LocalDateTime endAt;
 
     @Comment("투표 종료 일시")
     @Column(nullable = false)
-    private LocalDate voteEndAt;
+    private LocalDateTime voteEndAt;
 
     @Comment("대회 상태")
     @Column(nullable = false)
@@ -66,8 +66,8 @@ public class Contest extends BaseEntity {
     private Member host;
 
     @Builder
-    public Contest(String title, String content, PromptType type, LocalDate startAt,
-            LocalDate endAt, LocalDate voteEndAt, Member host) {
+    public Contest(String title, String content, PromptType type, LocalDateTime startAt,
+            LocalDateTime endAt, LocalDateTime voteEndAt, Member host) {
         this.title = title;
         this.content = content;
         this.type = type;
