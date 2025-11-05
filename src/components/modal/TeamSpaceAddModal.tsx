@@ -56,13 +56,13 @@ export default function TeamSpaceAddModal({isModalState, setIsModalState}: TeamS
                 transition-opacity duration-300 ease-out
                 ${isModalState ? 'opacity-100' : 'opacity-0'}`}
                 >
-                    <div className="flex flex-col bg-white p-10 rounded-lg w-fit justify-between h-[680px]">
+                    <div className="flex flex-col bg-white p-10 rounded-lg w-1/3 justify-between h-[680px]">
                         
                         <div className="flex flex-col gap-3">
                             <h2 className="text-4xl font-semibold mb-4">팀 스페이스 생성</h2>
                             {/* 팀 스페이스 생성 폼 내용 */}
                         
-                            <input type="text" placeholder="팀 스페이스 이름을 입력하세요" className = "w-[600px] border border-gray-300 rounded-[10px] p-3"/>
+                            <input type="text" placeholder="팀 스페이스 이름을 입력하세요" className = "w-full border border-gray-300 rounded-[10px] p-3"/>
                             <div>
                          
                                 {
@@ -74,10 +74,10 @@ export default function TeamSpaceAddModal({isModalState, setIsModalState}: TeamS
                                 }
                          
 
-
+                                <div className="relative">
                                 <input type="text" 
                                     placeholder="팀원 닉네임 또는 이메일을 입력하세요" 
-                                    className = "w-[600px] border border-gray-300 rounded-[10px] p-3"
+                                    className = "w-full border border-gray-300 rounded-[10px] p-3"
                                     onChange={(e) => handleMemberSearch(e.target.value)}
                                 />
                                 
@@ -87,6 +87,7 @@ export default function TeamSpaceAddModal({isModalState, setIsModalState}: TeamS
                                     selectedMemberSetState={selectedMemberSetState} 
                                     setSelectedMemberSetState={setSelectedMemberSetState} />
                                 }
+                                </div>
                             </div>
                         </div>
 

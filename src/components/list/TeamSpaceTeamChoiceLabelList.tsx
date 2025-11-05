@@ -11,7 +11,7 @@ export interface TeamSpaceTeamChoiceLabelListProps{
 
 export default function TeamSpaceTeamChoiceLabelList({ labelNameList, selectedMemberSetState, setSelectedMemberSetState }: TeamSpaceTeamChoiceLabelListProps){
     return(
-            <div className ="flex flex-row gap-2 justify-end-safe py-1 px-2 line-clamp-2 w-full">
+            <div className ="flex flex-row flex-wrap gap-1 justify-end-safe py-1 px-2 line-clamp-2 w-full  overflow-hidden">
            {labelNameList.map((memberEmail) => (
                <TeamSpaceTeamChoiceLabelItem key={memberEmail} labelName={memberEmail} selectedMemberSetState={selectedMemberSetState} setSelectedMemberSetState={setSelectedMemberSetState} />
            ))}
