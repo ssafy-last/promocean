@@ -4,6 +4,6 @@ import java.util.List;
 import lombok.Builder;
 
 @Builder
-public record SpaceSummariesRes(List<SpaceSummaryRes> spaceSummaries) {
+public record SpaceInfosRes(List<SpaceInfo> spaceInfos) {
 
 }
