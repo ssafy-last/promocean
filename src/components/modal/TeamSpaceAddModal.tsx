@@ -123,7 +123,7 @@ export default function TeamSpaceAddModal({isModalState, setIsModalState, teamSp
                                 <input type="text" 
                                     placeholder="팀원 닉네임 또는 이메일을 입력하세요" 
                                     className = "w-full border border-gray-300 rounded-[10px] p-3"
-                                    onChange={(e) => handleMemberSearch(e.target.value)}
+                                    onChange={(e) => -handleMemberSearch(e.target.value)}
                                 />
                                 
                                 {isMemberExistState &&
