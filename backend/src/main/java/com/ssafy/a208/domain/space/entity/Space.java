@@ -43,7 +43,6 @@ public class Space extends BaseEntity {
     }
 
     public void deleteTeamSpace() {
-        this.name = this.id + "_" + this.name;
         this.delete();
     }
 
