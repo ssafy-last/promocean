@@ -1,7 +1,10 @@
+'use client';
+
 // frontend/src/components/item/ContestNoticeItem.tsx
 
 import { ContestNoticeItemProps } from "@/types/itemType";
 import { formatKoreanDate } from "@/utils/formatDate";
+import { useRouter, useParams } from "next/navigation";
 
 /**
  * ContestNoticeItem component
@@ -9,10 +12,17 @@ import { formatKoreanDate } from "@/utils/formatDate";
  * @returns {React.ReactNode}
  */
 export default function ContestNoticeItem({ noticeId, title, createdAt, updatedAt }: ContestNoticeItemProps) {
-  const isUpdated = createdAt !== updatedAt;
-  
+
+  // TODO : 업데이트 날짜는 필요 없을 것 같아서 일단 보류. 추후에 결정하기
+  // const isUpdated = createdAt !== updatedAt;
+  const router = useRouter();
+  const id = useParams().id; // TODO : postId로 폴더 명 수정 예정입니다. 모달창 함수 파라미터도 수정해야함
+  const handleClick = (noticeId: number) => {
+    router.push(`/contest/post/${id}/notice/${noticeId}`); 
+  }
+
   return (
-    <div className="flex items-center justify-between w-full bg-white border-b border-gray-200 py-4 gap-4 hover:bg-gray-50 transition-colors cursor-pointer">
+    <div className="flex items-center justify-between w-full bg-white border-b border-gray-200 py-4 gap-4 hover:bg-gray-50 transition-colors cursor-pointer" onClick={() => handleClick(noticeId)}>
 
       {/* 왼쪽 : 제목 */}
       <div className="flex-1 min-w-0 px-4">
