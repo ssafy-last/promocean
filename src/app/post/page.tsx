@@ -176,19 +176,37 @@ export default function PostPage() {
               onChange={setUsedPrompt}
             />
 
-            {/* 예시 질문 프롬프트 */}
-            <PostingWriteSection
-              title="예시 질문 프롬프트"
-              placeholder="예시 질문을 입력하세요..."
-              onChange={setExamplePrompt}
-            />
 
-            {/* 답변 프롬프트 */}
-            <PostingWriteSection
-              title="답변 프롬프트"
-              placeholder="답변을 입력하세요..."
-              onChange={setAnswerPrompt}
-            />
+          {
+            selectedPromptType === 'text' ? (
+              <div>
+                    {/* 예시 질문 프롬프트 */}
+                    <PostingWriteSection
+                      title="예시 질문 프롬프트"
+                      placeholder="예시 질문을 입력하세요..."
+                      onChange={setExamplePrompt}
+                    />
+
+                    {/* 답변 프롬프트 */}
+                    <PostingWriteSection
+                      title="답변 프롬프트"
+                      placeholder="답변을 입력하세요..."
+                      onChange={setAnswerPrompt}
+                    />
+                </div>
+            ) : (
+              <div>
+                    {/* 답변 프롬프트 */}
+                    <PostingWriteSection
+                      title="결과 사진"
+                      placeholder="결과 사진을 첨부하세요..."
+                      onChange={setAnswerPrompt}
+                    />
+                </div>
+            )
+
+          }
+
 
             {/* 프롬프트 작성 완료 버튼 */}
             <PostingFooter onSubmit={handleSubmit} />
