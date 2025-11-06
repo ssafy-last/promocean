@@ -9,6 +9,7 @@ import PostingWriteSection from "@/components/section/PostingWriteSection";
 import PostingFooter from "@/components/layout/PostingFooter";
 import PostingMetaFormSection from "@/components/section/PostingMetaFormSection";
 import { PostingFloatingItemProps } from "@/types/itemType";
+import { PostFormData, PostSubmitData } from "@/types/postType";
 
 /**
  * PostPage component
@@ -20,8 +21,53 @@ export default function PostPage() {
   const searchParams = useSearchParams();
   const postType = searchParams.get("type"); // Todo: postType에 렌더링 다르게 할 예정입니다. (community, article, contest)
 
+  // 폼 상태 관리
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("community");
+  const [tags, setTags] = useState("");
+  const [usedPrompt, setUsedPrompt] = useState("");
+  const [examplePrompt, setExamplePrompt] = useState("");
+  const [answerPrompt, setAnswerPrompt] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("work");
   const [selectedPromptType, setSelectedPromptType] = useState("text");
+
+  // 제출 핸들러
+  const handleSubmit = () => {
+    // 폼 데이터 수집
+    const formData: PostFormData = {
+      title,
+      category,
+      tags,
+      usedPrompt,
+      examplePrompt,
+      answerPrompt,
+      selectedCategory,
+      selectedPromptType,
+    };
+
+    // API 제출용 데이터로 변환
+    const submitData: PostSubmitData = {
+      title: formData.title,
+      category: formData.category,
+      tags: formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag),
+      content: {
+        usedPrompt: formData.usedPrompt,
+        examplePrompt: formData.examplePrompt,
+        answerPrompt: formData.answerPrompt,
+      },
+      metadata: {
+        category: formData.selectedCategory,
+        promptType: formData.selectedPromptType,
+      },
+    };
+
+    // TODO: API 호출
+    console.log('제출 데이터:', submitData);
+    alert('게시글이 제출되었습니다!\n콘솔을 확인하세요.');
+
+    // 나중에 여기서 API 호출
+    // await postApi.createPost(submitData);
+  };
 
   // Todo : 실제 사용할 아이콘으로 변경 예정
   // 간단한 아이콘 생성 함수
@@ -114,28 +160,38 @@ export default function PostPage() {
 
           {/* 글 작성 컨테이너 (8 비율) */}
           <div className="lg:col-span-4 space-y-4">
-            <PostingMetaFormSection />
+            <PostingMetaFormSection
+              title={title}
+              category={category}
+              tags={tags}
+              onTitleChange={setTitle}
+              onCategoryChange={setCategory}
+              onTagsChange={setTags}
+            />
 
             {/* 사용 프롬프트 */}
             <PostingWriteSection
               title="사용 프롬프트"
               placeholder="사용한 프롬프트를 입력하세요..."
+              onChange={setUsedPrompt}
             />
 
             {/* 예시 질문 프롬프트 */}
             <PostingWriteSection
               title="예시 질문 프롬프트"
               placeholder="예시 질문을 입력하세요..."
+              onChange={setExamplePrompt}
             />
 
             {/* 답변 프롬프트 */}
             <PostingWriteSection
               title="답변 프롬프트"
               placeholder="답변을 입력하세요..."
+              onChange={setAnswerPrompt}
             />
 
             {/* 프롬프트 작성 완료 버튼 */}
-            <PostingFooter />
+            <PostingFooter onSubmit={handleSubmit} />
           </div>
 
           {/* 플로팅 컨테이너 (2 비율) */}

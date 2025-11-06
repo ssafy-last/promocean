@@ -1,13 +1,25 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import TitleInput from '@/components/editor/TitleInput';
 
-export default function PostingMetaFormSection() {
-  const [title, setTitle] = useState('');
-  const [category, setCategory] = useState('community');
-  const [tags, setTags] = useState('');
+interface PostingMetaFormSectionProps {
+  title: string;
+  category: string;
+  tags: string;
+  onTitleChange: (value: string) => void;
+  onCategoryChange: (value: string) => void;
+  onTagsChange: (value: string) => void;
+}
 
+export default function PostingMetaFormSection({
+  title,
+  category,
+  tags,
+  onTitleChange,
+  onCategoryChange,
+  onTagsChange,
+}: PostingMetaFormSectionProps) {
   return (
     <section className="bg-white border border-gray-200 rounded-lg p-6 space-y-4">
       {/* 첫째줄: 카테고리 + 태그 */}
@@ -16,7 +28,7 @@ export default function PostingMetaFormSection() {
           <label className="block text-sm text-gray-700 mb-2">카테고리</label>
           <select
             value={category}
-            onChange={(e) => setCategory(e.target.value)}
+            onChange={(e) => onCategoryChange(e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="community">커뮤니티</option>
@@ -30,7 +42,7 @@ export default function PostingMetaFormSection() {
           <label className="block text-sm text-gray-700 mb-2">태그</label>
           <input
             value={tags}
-            onChange={(e) => setTags(e.target.value)}
+            onChange={(e) => onTagsChange(e.target.value)}
             placeholder="#태그, #쉼표로, #구분"
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
@@ -40,7 +52,7 @@ export default function PostingMetaFormSection() {
       {/* 둘째줄: 제목 */}
       <div>
         <label className="block text-sm text-gray-700 mb-2">제목</label>
-        <TitleInput value={title} onChange={setTitle} placeholder="제목을 입력하세요" />
+        <TitleInput value={title} onChange={onTitleChange} placeholder="제목을 입력하세요" />
       </div>
     </section>
   );
