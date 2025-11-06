@@ -1,33 +1,32 @@
 'use client';
 
-// frontend/src/components/section/PostingMetaFormSection.tsx
+import React from 'react';
+import TitleInput from '@/components/editor/TitleInput';
 
-import React, { useState } from 'react'
+interface PostingMetaFormSectionProps {
+  title: string;
+  category: string;
+  tags: string;
+  onTitleChange: (value: string) => void;
+  onCategoryChange: (value: string) => void;
+  onTagsChange: (value: string) => void;
+}
 
-export default function PostingMetaFormSection() {
-  const [title, setTitle] = useState('')
-  const [category, setCategory] = useState('community')
-  const [tags, setTags] = useState('')
-
+export default function PostingMetaFormSection({
+  category,
+  tags,
+  onCategoryChange,
+}: PostingMetaFormSectionProps) {
   return (
-    <section className="bg-white border border-gray-200 rounded-lg p-4 space-y-4">
-      <div>
-        <label className="block text-sm text-gray-700 mb-2">제목</label>
-        <input
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="제목을 입력하세요"
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-        />
-      </div>
-
+    <section className=" border border-gray-200 rounded-lg p-6 space-y-4">
+      {/* 첫째줄: 카테고리 + 태그 */}
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-sm text-gray-700 mb-2">카테고리</label>
           <select
             value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-primary"
+            onChange={(e) => onCategoryChange(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="community">커뮤니티</option>
             <option value="dev">개발</option>
@@ -36,18 +35,9 @@ export default function PostingMetaFormSection() {
           </select>
         </div>
 
-        <div>
-          <label className="block text-sm text-gray-700 mb-2">태그</label>
-          <input
-            value={tags}
-            onChange={(e) => setTags(e.target.value)}
-            placeholder="#태그, #쉼표로, #구분"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-          />
-        </div>
       </div>
+
+      {/* 둘째줄: 제목 */}
     </section>
-  )
+  );
 }
-
-

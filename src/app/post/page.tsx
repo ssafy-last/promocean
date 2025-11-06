@@ -3,12 +3,15 @@
 // frontend/src/app/post/page.tsx
 
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import PostingFloatingSection from "@/components/section/PostingFloatingSection";
 import PostingWriteSection from "@/components/section/PostingWriteSection";
 import PostingFooter from "@/components/layout/PostingFooter";
 import PostingMetaFormSection from "@/components/section/PostingMetaFormSection";
 import { PostingFloatingItemProps } from "@/types/itemType";
+import { PostFormData, PostSubmitData } from "@/types/postType";
+import TitleInput from "@/components/editor/TitleInput";
+import HashtagInput from "@/components/editor/HashtagInput";
 
 /**
  * PostPage component
@@ -20,8 +23,64 @@ export default function PostPage() {
   const searchParams = useSearchParams();
   const postType = searchParams.get("type"); // Todo: postType에 렌더링 다르게 할 예정입니다. (community, article, contest)
 
+  // 폼 상태 관리
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("community");
+  const [tags, setTags] = useState<string[]>([]); // 배열로 변경
+  const [usedPrompt, setUsedPrompt] = useState("");
+  const [examplePrompt, setExamplePrompt] = useState("");
+  const [answerPrompt, setAnswerPrompt] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("work");
   const [selectedPromptType, setSelectedPromptType] = useState("text");
+
+  //최종 gpt API로 제출할 prompt 저장용 ref 변수
+  const submitPrompt = useRef("");
+
+  // 제출 핸들러
+  const handleSubmit = () => {
+    // 폼 데이터 수집
+    const formData: PostFormData = {
+      title,
+      category,
+      tags,
+      usedPrompt,
+      examplePrompt,
+      answerPrompt,
+      selectedCategory,
+      selectedPromptType,
+    };
+
+    // API 제출용 데이터로 변환
+    const submitData: PostSubmitData = {
+      title: formData.title,
+      category: formData.category,
+      tags: formData.tags, // 이미 배열이므로 그대로 사용
+      content: {
+        usedPrompt: formData.usedPrompt,
+        examplePrompt: formData.examplePrompt,
+        answerPrompt: formData.answerPrompt,
+      },
+      metadata: {
+        category: formData.selectedCategory,
+        promptType: formData.selectedPromptType,
+      },
+    };
+
+    // TODO: API 호출
+    console.log('제출 데이터:', submitData);
+    alert('게시글이 제출되었습니다!\n콘솔을 확인하세요.');
+
+    // 나중에 여기서 API 호출
+    // await postApi.createPost(submitData);
+  };
+
+  const handleAISubmit = (s : string) =>{
+    submitPrompt.current = s
+    console.log('AI 생성 요청:', submitPrompt.current);
+    alert('AI 생성 요청이 제출되었습니다!\n콘솔을 확인하세요.');
+  }
+
+
 
   // Todo : 실제 사용할 아이콘으로 변경 예정
   // 간단한 아이콘 생성 함수
@@ -107,29 +166,69 @@ export default function PostPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-6xl mx-auto px-4">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">게시글 작성</h1>
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="mb-4">
+          <TitleInput value={title} onChange={setTitle} placeholder="제목을 입력하세요" />
+        </div>
+        <div className="mb-4">
+          <HashtagInput tags={tags} onTagsChange={setTags} />
+        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-          {/* 글 작성 컨테이너 */}
-          <div className="lg:col-span-2 space-y-4">
-            <PostingMetaFormSection />
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+
+          {/* 글 작성 컨테이너 (8 비율) */}
+          <div className="lg:col-span-4 space-y-4">
 
             {/* 사용 프롬프트 */}
-            <PostingWriteSection />
+            <PostingWriteSection
+              title="사용 프롬프트"
+              placeholder="사용한 프롬프트를 입력하세요..."
+              onChange={setUsedPrompt}
+              isSubmitButton={selectedPromptType === 'image'}
+            />
 
-            {/* 예시 질문 프롬프트 */}
-            <PostingWriteSection />
 
-            {/* 답변 프롬프트 */}
-            <PostingWriteSection />
+          {
+            selectedPromptType === 'text' ? (
+              <div>
+                    {/* 예시 질문 프롬프트 */}
+                    <PostingWriteSection
+                      title="예시 질문 프롬프트"
+                      placeholder="예시 질문을 입력하세요..."
+                      onChange={setExamplePrompt}
+                      isSubmitButton={true}
+                      onSubmit={()=>
+                        handleAISubmit(usedPrompt)
+                      }
+                    />
+
+                    {/* 답변 프롬프트 */}
+                    <PostingWriteSection
+                      title="답변 프롬프트"
+                      placeholder="답변을 입력하세요..."
+                      onChange={setAnswerPrompt}
+                    />
+                </div>
+            ) : (
+              <div>
+                    {/* 답변 프롬프트 */}
+                    <PostingWriteSection
+                      title="결과 사진"
+                      placeholder="결과 사진을 첨부하세요..."
+                      onChange={setAnswerPrompt}
+                    />
+                </div>
+            )
+
+          }
+
 
             {/* 프롬프트 작성 완료 버튼 */}
-            <PostingFooter />
+            <PostingFooter onSubmit={handleSubmit} />
           </div>
 
-          {/* 플로팅 컨테이너 */}
+          {/* 플로팅 컨테이너 (2 비율) */}
           <div className="lg:col-span-1 space-y-4">
 
             {/* 카테고리 선택 */}
@@ -151,6 +250,9 @@ export default function PostPage() {
             />
           </div>
         </div>
+
+
+
       </div>
     </div>
   );

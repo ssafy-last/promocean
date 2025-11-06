@@ -1,22 +1,28 @@
 'use client';
 
-// frontend/src/components/section/PostingWriteSection.tsx
+import React from 'react';
+import LexicalEditor from '@/components/editor/LexicalEditor';
 
-import React, { useState } from 'react'
-
-export default function PostingWriteSection() {
-  const [content, setContent] = useState('')
-
-  return (
-    <section className="bg-white border border-gray-200 rounded-lg p-4">
-      <textarea
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        placeholder="내용을 입력하세요"
-        className="w-full h-64 resize-y px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-      />
-    </section>
-  )
+interface PostingWriteSectionProps {
+  title?: string;
+  placeholder?: string;
+  isSubmitButton?: boolean;
+  onSubmit?: () => void;
+  onChange: (content: string) => void;
 }
 
-
+export default function PostingWriteSection({
+  title,
+  placeholder = '내용을 입력하세요...',
+  isSubmitButton,
+  onSubmit,
+  onChange,
+}: PostingWriteSectionProps) {
+  return (
+    <section className="flex flex-col gap-1 border-gray-200 rounded-lg py-4 px-2">
+      <LexicalEditor onChange={onChange} placeholder={placeholder} title={title} 
+        isSubmitButton={isSubmitButton} handleSubmit={onSubmit}
+      />
+    </section>
+  );
+}
