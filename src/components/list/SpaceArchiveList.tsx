@@ -1,13 +1,16 @@
 'use client'
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import SpaceArchiveItem from "../item/SpaceArchiveItem";
 import SpaceArchiveAddModal from "../modal/SpaceArchiveAddModal";
 import { SpaceArchiveData } from "@/app/my-space/page";
 
 export interface SpaceArchiveListProps {
   isPinnedList?: boolean;
-  archiveItemList?: SpaceArchiveData[]
+  archiveItemListState: SpaceArchiveData[];
+  setArchiveItemListState: (newState: SpaceArchiveData[]) => void;
+  pinnedItemListState: SpaceArchiveData[];
+  setPinnedItemListState: (newState: SpaceArchiveData[]) => void;
 }
 
 const interactiveBtnClasses = `
@@ -18,13 +21,18 @@ const interactiveBtnClasses = `
   active:translate-y-0 active:scale-95 active:shadow-sm
 `;
 
-export default function SpaceArchiveList({ isPinnedList, archiveItemList }: SpaceArchiveListProps) {
+export default function SpaceArchiveList({ 
+    isPinnedList, 
+    archiveItemListState,
+    setArchiveItemListState,
+    pinnedItemListState,
+    setPinnedItemListState
+}: SpaceArchiveListProps) {
     const [isModalOpenState, setIsModalOpenState] = useState(false);
     const [shouldRenderModalState, setShouldRenderModalState] = useState(false);
-    
+
     const onOpenAddModal = () => {
         setShouldRenderModalState(true);
-        // DOM에 마운트된 후 애니메이션 시작을 위해 약간의 지연
         setTimeout(() => {
             setIsModalOpenState(true);
         }, 10);
@@ -32,18 +40,18 @@ export default function SpaceArchiveList({ isPinnedList, archiveItemList }: Spac
 
     const onCloseAddModal = () => {
         setIsModalOpenState(false);
-        // 애니메이션이 끝난 후 DOM에서 제거
         setTimeout(() => {
             setShouldRenderModalState(false);
-        }, 300); // transition duration과 동일하게 설정
+        }, 300);
     };
 
-    useEffect(() => {
-        console.log("open state : ", isModalOpenState);
-    }, [isModalOpenState]);
+    console.log("isPinnedList:", isPinnedList);
+    
+    const displayList = isPinnedList ? pinnedItemListState : archiveItemListState;
+    console.log("displayList:", displayList);
 
     return (
-        <div className="flex flex-row p-7 gap-4">
+        <div className="flex flex-wrap flex-row p-7 gap-4">
             {isPinnedList ? (
                 <button
                     className={`${interactiveBtnClasses} bg-white outline-2 outline-dodger-blue-11`}
@@ -67,12 +75,24 @@ export default function SpaceArchiveList({ isPinnedList, archiveItemList }: Spac
                 </button>
             )}
 
-            {archiveItemList?.map((item, index) => (
-                <SpaceArchiveItem key={index} title={item.title} bgColor={item.bgColor} />
+            {displayList.map((item) => (
+                <SpaceArchiveItem 
+                    key={item.title}
+                    title={item.title} 
+                    bgColor={item.bgColor} 
+                    isPinned={item.isPinned}
+                    archiveItemListState={archiveItemListState} 
+                    setArchiveItemListState={setArchiveItemListState} 
+                    pinnedItemListState={pinnedItemListState} 
+                    setPinnedItemListState={setPinnedItemListState}
+                />
             ))}
 
             {shouldRenderModalState && (
-                <SpaceArchiveAddModal isOpen={isModalOpenState} onCloseAddModal={onCloseAddModal} />
+                <SpaceArchiveAddModal isOpen={isModalOpenState} onCloseAddModal={onCloseAddModal}
+                    archiveItemListState={archiveItemListState}
+                    setArchiveItemListState={setArchiveItemListState}
+                />
             )}
         </div>
     );

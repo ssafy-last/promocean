@@ -1,26 +1,65 @@
 import { useEffect, useState } from "react"
 import { HexColorPicker } from "react-colorful";
 import ColorPickerModal from "./ColorPickerModal";
+import { SpaceArchiveData } from "@/app/my-space/page";
 
 
 export interface SpaceArchiveAddModalProps{
     isOpen : boolean,
     onCloseAddModal : () => void
-
+    archiveItemListState: SpaceArchiveData[];
+    setArchiveItemListState: (newState: SpaceArchiveData[]) => void;
 }
 
-export default function SpaceArchiveAddModal({ isOpen, onCloseAddModal }: SpaceArchiveAddModalProps) {
+export default function SpaceArchiveAddModal({ isOpen, onCloseAddModal, archiveItemListState, setArchiveItemListState }: SpaceArchiveAddModalProps) {
     
     const [selectedColorState, setSelectedColorState] = useState("#000000")
     const [showColorPickerState, setShowColorPickerState] = useState(false);
+    const [titleState, setTitleState] = useState("");
+    const [titleErrorState, setTitleErrorState] = useState(false);
+    const [descriptionState, setDescriptionState] = useState("");
 
     const onToggleColorPicker = () => {
         setShowColorPickerState(!showColorPickerState);
     }
 
-    const onCloseColorPicker = () =>[
-        setShowColorPickerState(false)
-    ]
+    const onCloseColorPicker = () => {
+        setShowColorPickerState(false);
+    }
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        
+        if(titleState.trim() === ""){
+            setTitleErrorState(true);
+            return;
+        }
+
+        // 여기에 카테고리 추가 로직 추가
+        console.log("카테고리 추가:", {
+            title: titleState,
+            description: descriptionState,
+            bgColor: selectedColorState
+        });
+
+        // 새로운 카테고리 데이터를 기존 리스트에 추가
+        const newCategory: SpaceArchiveData = {
+            title: titleState,
+            bgColor: selectedColorState,
+            isPinned: false
+        };
+
+        console.log("bgcolor : ", newCategory.bgColor);
+
+        setArchiveItemListState([...archiveItemListState, newCategory]);
+
+        // 추가 후 모달 닫기 및 상태 초기화
+        setTitleState("");
+        setDescriptionState("");
+        setSelectedColorState("#000000");
+        setTitleErrorState(false);
+        onCloseAddModal();
+    }
 
     return (
         <div
@@ -29,7 +68,8 @@ export default function SpaceArchiveAddModal({ isOpen, onCloseAddModal }: SpaceA
                 ${isOpen ? 'opacity-100' : 'opacity-0'}`}
             onClick={onCloseAddModal}
         >
-            <div
+            <form
+                onSubmit={handleSubmit}
                 className={`flex flex-col bg-background w-[540px] h-[650px] rounded-2xl p-10 gap-5 shadow-xl
                     transition-all duration-300 ease-out
                     ${isOpen ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 -translate-y-4'}`}
@@ -49,6 +89,7 @@ export default function SpaceArchiveAddModal({ isOpen, onCloseAddModal }: SpaceA
                     <div className="flex flex-col w-[136px] px-2 py-2.5 justify-center gap-y-2.5">
                         {/* 사진 버튼 */}
                         <button
+                            type="button"
                             className="flex flex-row w-full px-3 py-2.5 rounded-4xl border-2 border-primary gap-1 
                               transition-all duration-200 hover:bg-primary/10 active:scale-95 active:brightness-95"
                         >
@@ -60,6 +101,7 @@ export default function SpaceArchiveAddModal({ isOpen, onCloseAddModal }: SpaceA
 
                         {/* 컬러 팔레트 버튼 */}
                         <button
+                            type="button"
                             className="flex flex-row w-full px-3 py-2.5 rounded-4xl border-2 border-primary gap-1 
                               transition-all duration-200 hover:bg-primary-content/10 active:scale-95 active:brightness-95"
                             onClick={onToggleColorPicker}
@@ -87,21 +129,35 @@ export default function SpaceArchiveAddModal({ isOpen, onCloseAddModal }: SpaceA
         
 
                 {/* 입력창 */}
-                <input
-                    type="text"
-                    placeholder="제목을 입력하세요"
-                    className="flex w-full h-12 shadow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
-                />
+                <div>
+                    <input
+                        type="text"
+                        placeholder="제목을 입력하세요"
+                        className={`flex w-full h-12 shadow p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all
+                            ${titleErrorState ? 'border-red-500' : 'border-gray-300'}`}
+                        value={titleState}
+                        onChange={(e) => {
+                            setTitleState(e.target.value);
+                            if(titleErrorState) setTitleErrorState(false);
+                        }}
+                    />
+                    {titleErrorState && (
+                        <p className="text-red-500 text-sm mt-1">제목을 입력해주세요</p>
+                    )}
+                </div>
 
                 <textarea
                     placeholder="카테고리 설명을 적어주세요"
                     className="flex w-full h-full shadow p-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                    value={descriptionState}
+                    onChange={(e) => setDescriptionState(e.target.value)}
                 />
 
                 {/* 하단 버튼 영역 */}
                 <div className="flex flex-row py-2 justify-center gap-8">
                     {/* 취소 버튼 */}
                     <button
+                        type="button"
                         className="flex px-5 py-3 bg-gray-300 w-40 justify-center rounded-4xl 
                             hover:bg-gray-400 active:scale-95 transition-all duration-150"
                         onClick={onCloseAddModal}
@@ -117,7 +173,7 @@ export default function SpaceArchiveAddModal({ isOpen, onCloseAddModal }: SpaceA
                             cursor-pointer transition-all duration-150 hover:bg-primary/80 active:scale-95"
                     />
                 </div>
-            </div>
+            </form>
         </div>
     );
 }
