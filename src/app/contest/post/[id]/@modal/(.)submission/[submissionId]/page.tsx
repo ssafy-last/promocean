@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, use } from "react";
 import Image from "next/image";
 import CommunityPostUserProfileItem from "@/components/item/CommunityPostUserProfileItem";
+import Heart from "@/components/icon/Heart";
 
 /**
  * ContestSubmissionDetailData interface
@@ -21,6 +22,7 @@ interface ContestSubmissionDetailData {
   type: string;
   result: string;
   updatedAt: string;
+  voteCnt: number;
 }
 
 /**
@@ -41,6 +43,7 @@ export default function ContestSubmissionModal({ params }: { params: Promise<{ s
           { cache: "no-store" }
         ).then(res => res.json()).catch(() => []);
         setSubmissionData(response);
+        console.log(response);
       } catch (error) {
         console.error("산출물 상세 정보를 불러오는데 실패했습니다:", error);
       }
@@ -91,12 +94,21 @@ export default function ContestSubmissionModal({ params }: { params: Promise<{ s
               {/* <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap">
                 {submissionData.type}
               </span> */}
-              {/* 작성자 정보 */}
-              <CommunityPostUserProfileItem
-                profileUrl={submissionData.profileUrl}
-                author={submissionData.author}
-                createdAt={submissionData.updatedAt}
-              />
+
+              <div className="flex flex-row items-center justify-between w-full">
+                {/* 작성자 정보 */}
+                <CommunityPostUserProfileItem
+                  profileUrl={submissionData.profileUrl}
+                  author={submissionData.author}
+                  createdAt={submissionData.updatedAt}
+                />
+
+                {/* 추천수 */}
+                <div className="flex items-center gap-1 transition-colors">
+                  <Heart />
+                  <span className="text-sm font-medium">{submissionData.voteCnt}</span>
+                </div>
+              </div>
             </div>
 
             {/* 텍스트 or 이미지 결과 */}
