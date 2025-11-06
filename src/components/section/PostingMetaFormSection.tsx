@@ -51,7 +51,6 @@ export default function PostingMetaFormSection({
 
       {/* 둘째줄: 제목 */}
       <div>
-        <label className="block text-sm text-gray-700 mb-2">제목</label>
         <TitleInput value={title} onChange={onTitleChange} placeholder="제목을 입력하세요" />
       </div>
     </section>
