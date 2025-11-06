@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(npm search:*)",
+      "Bash(findstr:*)",
+      "Bash(dir:*)",
+      "Bash(npm run storybook:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
