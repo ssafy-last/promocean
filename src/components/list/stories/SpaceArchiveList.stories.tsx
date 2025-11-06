@@ -23,18 +23,22 @@ const mockArchiveList: SpaceArchiveData[] = [
   {
     title: '개발 프롬프트',
     bgColor: '#3b82f6',
+    isPinned: true,
   },
   {
     title: '디자인 아이디어',
     bgColor: '#8b5cf6',
+    isPinned: false,
   },
   {
     title: '업무 자동화',
     bgColor: '#10b981',
+    isPinned: false,
   },
   {
     title: '마케팅 카피',
     bgColor: '#f59e0b',
+    isPinned: false,
   },
 ];
 
@@ -42,7 +46,16 @@ const mockArchiveList: SpaceArchiveData[] = [
 export const Default: Story = {
   args: {
     isPinnedList: false,
-    archiveItemList: mockArchiveList,
+    archiveItemListState: mockArchiveList,
+    pinnedItemListState: mockArchiveList.filter(item => item.isPinned),
+  },
+
+  parameters: {
+    docs: {
+      description: {
+        story: '기본 아카이브 리스트입니다. 추가 버튼(+)이 포함되어 있습니다.',
+      },
+    },
   },
 };
 
@@ -50,7 +63,9 @@ export const Default: Story = {
 export const PinnedList: Story = {
   args: {
     isPinnedList: true,
-    archiveItemList: mockArchiveList,
+    archiveItemListState: mockArchiveList,
+    pinnedItemListState: mockArchiveList.filter(item => item.isPinned),
+
   },
   parameters: {
     docs: {
@@ -65,7 +80,8 @@ export const PinnedList: Story = {
 export const EmptyList: Story = {
   args: {
     isPinnedList: false,
-    archiveItemList: [],
+    archiveItemListState: [],
+    pinnedItemListState: [],
   },
   parameters: {
     docs: {
@@ -80,7 +96,8 @@ export const EmptyList: Story = {
 export const SingleArchive: Story = {
   args: {
     isPinnedList: false,
-    archiveItemList: [mockArchiveList[0]],
+    archiveItemListState: [{ title: '단일 아카이브', bgColor: '#3b82f6', isPinned: false }],
+    pinnedItemListState: [],  
   },
   parameters: {
     docs: {
@@ -95,13 +112,12 @@ export const SingleArchive: Story = {
 export const ManyArchives: Story = {
   args: {
     isPinnedList: false,
-    archiveItemList: [
-      ...mockArchiveList,
-      ...mockArchiveList,
-      { title: '추가 아카이브 1', bgColor: '#ef4444' },
-      { title: '추가 아카이브 2', bgColor: '#06b6d4' },
-      { title: '추가 아카이브 3', bgColor: '#ec4899' },
-    ],
+    archiveItemListState: Array.from({ length: 20 }, (_, i) => ({
+      title: `아카이브 ${i + 1}`,
+      bgColor: '#3b82f6',
+      isPinned: false,
+    })),
+    pinnedItemListState: [],
   },
   parameters: {
     docs: {
@@ -116,15 +132,15 @@ export const ManyArchives: Story = {
 export const DifferentColors: Story = {
   args: {
     isPinnedList: false,
-    archiveItemList: [
-      { title: '빨강', bgColor: '#ef4444' },
-      { title: '주황', bgColor: '#f97316' },
-      { title: '노랑', bgColor: '#eab308' },
-      { title: '초록', bgColor: '#22c55e' },
-      { title: '파랑', bgColor: '#3b82f6' },
-      { title: '남색', bgColor: '#6366f1' },
-      { title: '보라', bgColor: '#a855f7' },
-      { title: '분홍', bgColor: '#ec4899' },
+    archiveItemListState  : [
+      { title: '빨강', bgColor: '#ef4444', isPinned: false },
+      { title: '주황', bgColor: '#f97316', isPinned: false },
+      { title: '노랑', bgColor: '#eab308', isPinned: false },
+      { title: '초록', bgColor: '#22c55e', isPinned: false },
+      { title: '파랑', bgColor: '#3b82f6', isPinned: false },
+      { title: '남색', bgColor: '#6366f1', isPinned: false },
+      { title: '보라', bgColor: '#a855f7', isPinned: false },
+      { title: '분홍', bgColor: '#ec4899', isPinned: false },
     ],
   },
   parameters: {
@@ -140,13 +156,14 @@ export const DifferentColors: Story = {
 export const LongTitles: Story = {
   args: {
     isPinnedList: false,
-    archiveItemList: [
-      { title: '매우 긴 아카이브 제목 예제입니다', bgColor: '#3b82f6' },
-      { title: '짧은 제목', bgColor: '#8b5cf6' },
-      { title: '중간 길이 제목', bgColor: '#10b981' },
-      {
+    archiveItemListState: [
+      { title: '매우 긴 아카이브 제목 예제입니다', bgColor: '#3b82f6', isPinned: false },
+      { title: '짧은 제목', bgColor: '#8b5cf6', isPinned: false },
+      { title: '중간 길이 제목', bgColor: '#10b981', isPinned: false },
+      { 
         title: '이것은 정말 매우 긴 제목입니다 테스트용',
         bgColor: '#f59e0b',
+        isPinned: false,
       },
     ],
   },
@@ -163,7 +180,7 @@ export const LongTitles: Story = {
 export const WithinMySpacePage: Story = {
   args: {
     isPinnedList: false,
-    archiveItemList: mockArchiveList,
+    archiveItemListState: mockArchiveList,
   },
   decorators: [
     (Story) => (
@@ -190,7 +207,13 @@ export const WithinMySpacePage: Story = {
         <div className="max-w-7xl mx-auto py-8">
           <div className="mb-8">
             <h2 className="text-xl font-bold mb-2 px-8">📌 고정된 아카이브</h2>
-            <SpaceArchiveList isPinnedList={true} archiveItemList={mockArchiveList.slice(0, 2)} />
+            <SpaceArchiveList 
+              isPinnedList={true}
+              archiveItemListState={mockArchiveList.slice(0, 2)}
+              pinnedItemListState={mockArchiveList.filter(item => item.isPinned)}
+              setArchiveItemListState={() => {}}
+              setPinnedItemListState={() => {}}
+            />
           </div>
 
           <div>
@@ -215,7 +238,7 @@ export const WithinMySpacePage: Story = {
 export const HoverEffectTest: Story = {
   args: {
     isPinnedList: false,
-    archiveItemList: mockArchiveList,
+    archiveItemListState: mockArchiveList,
   },
   decorators: [
     (Story) => (
@@ -242,7 +265,7 @@ export const HoverEffectTest: Story = {
 export const ModalInteractionTest: Story = {
   args: {
     isPinnedList: false,
-    archiveItemList: mockArchiveList.slice(0, 2),
+    archiveItemListState: mockArchiveList.slice(0, 2),
   },
   decorators: [
     (Story) => (
