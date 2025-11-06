@@ -22,7 +22,7 @@ export function TextFormatToolbar({
       <button
         onClick={() => formatText('bold')}
         className={`px-2.5 py-1.5 rounded text-sm font-semibold transition-colors ${
-          isBold ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          isBold ? 'bg-blue-500 text-white' : ' text-gray-700 hover:bg-gray-200'
         }`}
         type="button"
         title="Bold (Ctrl+B)"
@@ -32,7 +32,7 @@ export function TextFormatToolbar({
       <button
         onClick={() => formatText('italic')}
         className={`px-2.5 py-1.5 rounded text-sm italic transition-colors ${
-          isItalic ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          isItalic ? 'bg-blue-500 text-white' : ' text-gray-700 hover:bg-gray-200'
         }`}
         type="button"
         title="Italic (Ctrl+I)"
@@ -42,7 +42,7 @@ export function TextFormatToolbar({
       <button
         onClick={() => formatText('underline')}
         className={`px-2.5 py-1.5 rounded text-sm underline transition-colors ${
-          isUnderline ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          isUnderline ? 'bg-blue-500 text-white' : ' text-gray-700 hover:bg-gray-200'
         }`}
         type="button"
         title="Underline (Ctrl+U)"
@@ -52,7 +52,7 @@ export function TextFormatToolbar({
       <button
         onClick={() => formatText('strikethrough')}
         className={`px-2.5 py-1.5 rounded text-sm line-through transition-colors ${
-          isStrikethrough ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          isStrikethrough ? 'bg-blue-500 text-white' : ' text-gray-700 hover:bg-gray-200'
         }`}
         type="button"
         title="Strikethrough"
@@ -62,7 +62,7 @@ export function TextFormatToolbar({
       <button
         onClick={() => formatText('code')}
         className={`px-2.5 py-1.5 rounded text-sm font-mono transition-colors ${
-          isCode ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          isCode ? 'bg-blue-500 text-white' : ' text-gray-700 hover:bg-gray-200'
         }`}
         type="button"
         title="Inline Code"

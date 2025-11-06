@@ -19,6 +19,7 @@ import { CUSTOM_TRANSFORMERS } from './utils/markdownTransformers';
 
 interface LexicalEditorProps {
   onChange: (content: string) => void;
+  title?: string;
   placeholder?: string;
 }
 
@@ -28,6 +29,7 @@ function EditorErrorBoundary({ children }: { children: React.ReactNode }) {
 
 export default function LexicalEditor({
   onChange,
+  title,
   placeholder = '내용을 입력하세요...',
 }: LexicalEditorProps) {
   const initialConfig = {
@@ -85,15 +87,15 @@ export default function LexicalEditor({
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <div className="rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500">
-        <ToolbarPlugin />
+      <div className="rounded-lg overflow-hidden  hover:bg-gray-100 focus-within:border-[2px] focus-within:border-gray-200 ontline-none">
+        <ToolbarPlugin title={title}/>
         <div className="relative">
           <RichTextPlugin
             contentEditable={
-              <ContentEditable className="w-full min-h-[350px] max-h-[400px] overflow-y-auto px-6 py-4 outline-none prose prose-sm max-w-none" />
+              <ContentEditable className="w-full min-h-[350px] max-h-[400px] overflow-y-auto px-4 py-4 outline-none prose prose-sm max-w-none" />
             }
             placeholder={
-              <div className="absolute top-4 left-6 text-gray-400 pointer-events-none select-none">
+              <div className="absolute top-4 left-4 text-gray-400 pointer-events-none select-none">
                 {placeholder}
               </div>
             }
