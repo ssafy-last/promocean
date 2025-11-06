@@ -1,3 +1,6 @@
+'use client'
+
+import { useEffect, useState } from "react";
 import MySpaceTabs from "@/components/filter/MySpaceTabs";
 import SearchBar from "@/components/filter/SearchBar";
 import SpaceArchiveItem from "@/components/item/SpaceArchiveItem";
@@ -6,49 +9,79 @@ import SpaceCardHeader from "@/components/layout/SpaceCardHeader";
 import SpaceArchiveList from "@/components/list/SpaceArchiveList";
 import MySpaceArchiveFilterSection from "@/components/section/MySpaceArchiveFilterSection";
 
-export interface SpaceArchiveData{
-  title:string,
-  bgColor :string
+export interface SpaceArchiveData {
+  title: string;
+  bgColor: string;
+  isPinned: boolean;
 }
 
-// frontend/src/app/my-space/page.tsx
-export default async function MySpacePage() {
-  
+export default function MySpacePage() {
+  const [archiveItemListState, setArchiveItemListState] = useState<SpaceArchiveData[]>([]);
+  const [pinnedItemListState, setPinnedItemListState] = useState<SpaceArchiveData[]>([]);
+  const [isLoadingState, setIsLoadingState] = useState(true);
 
-  const mySpaceArchiveRes = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/mock/MySpaceArchiveData.json`,
-    { cache: "no-store" }
-  );
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const mySpaceArchiveRes = await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/mock/MySpaceArchiveData.json`,
+          { cache: "no-store" }
+        );
 
-  const mySpaceData = await mySpaceArchiveRes.json();
-  console.log("data ",mySpaceData)
+        const mySpaceData = await mySpaceArchiveRes.json();
+        console.log("data ", mySpaceData);
 
-  const MockPinnedSpaceArchiveItemList = mySpaceData.pinned;
-  const MockFolderSpaceArchiveItemList = mySpaceData.normal;
+        setPinnedItemListState(mySpaceData.pinned || []);
+        setArchiveItemListState(mySpaceData.normal || []);
+        setIsLoadingState(false);
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+        setIsLoadingState(false);
+      }
+    };
 
-  const testFunction = ()=>{
-    console.log("click");
+    fetchData();
+  }, []);
+
+  if (isLoadingState) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-xl">Loading...</div>
+      </div>
+    );
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="flex justify-end-safe">
         <div className="shrink-0 min-w-[380px]">
-          <MySpaceArchiveFilterSection buttonMode="search"/>
+          <MySpaceArchiveFilterSection buttonMode="search" />
         </div>
       </div>
 
       <div className="flex justify-start p-4 w-full">
         <div className="w-full">
-          <SpaceCardHeader title="Pinned"/>
-          <SpaceArchiveList isPinnedList={true} archiveItemList={MockPinnedSpaceArchiveItemList}/>
+          <SpaceCardHeader title="Pinned" />
+          <SpaceArchiveList 
+            isPinnedList={true}
+            archiveItemListState={archiveItemListState}
+            setArchiveItemListState={setArchiveItemListState}
+            pinnedItemListState={pinnedItemListState}
+            setPinnedItemListState={setPinnedItemListState}
+          />
         </div>
       </div>
 
       <div className="flex justify-start p-4 w-full">
         <div className="w-full">
-          <SpaceCardHeader title="Folder"/>
-          <SpaceArchiveList isPinnedList={false} archiveItemList={MockFolderSpaceArchiveItemList}/>
+          <SpaceCardHeader title="Folder" />
+          <SpaceArchiveList 
+            isPinnedList={false}
+            archiveItemListState={archiveItemListState}
+            setArchiveItemListState={setArchiveItemListState}
+            pinnedItemListState={pinnedItemListState}
+            setPinnedItemListState={setPinnedItemListState}
+          />
         </div>
       </div>
     </div>
