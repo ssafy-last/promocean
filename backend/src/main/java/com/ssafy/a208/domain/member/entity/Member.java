@@ -54,6 +54,9 @@ public class Member extends BaseEntity {
     @JoinColumn(name = "personal_space_id", nullable = false)
     private Space personalSpace;
 
+    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
+    private Profile profile;
+
     @Builder
     public Member(String nickname, String email, String password, int usableCnt,
             Space personalSpace) {
@@ -84,5 +87,12 @@ public class Member extends BaseEntity {
             throw new UsableCountExceededException();
         }
         this.usableCnt -= 1;
+    }
+
+    public String getProfileImage() {
+        if (this.profile != null && this.profile.getDeletedAt() == null) {
+            return this.profile.getFilePath();
+        }
+        return null;
     }
 }

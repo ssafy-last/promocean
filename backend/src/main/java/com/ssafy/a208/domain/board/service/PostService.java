@@ -13,6 +13,7 @@ import com.ssafy.a208.domain.board.reader.PostReader;
 import com.ssafy.a208.domain.board.repository.PostRepository;
 import com.ssafy.a208.domain.member.entity.Member;
 import com.ssafy.a208.domain.member.reader.MemberReader;
+import com.ssafy.a208.domain.scrap.service.ScrapService;
 import com.ssafy.a208.domain.tag.service.PostTagService;
 import com.ssafy.a208.global.common.enums.PostCategory;
 import com.ssafy.a208.global.common.enums.PromptType;
@@ -40,6 +41,8 @@ public class PostService {
     private final PostFileService postFileService;
     private final PostTagService postTagService;
     private final PostLikeService postLikeService;
+    private final ReplyService replyService;
+    private final ScrapService scrapService;
 
     /**
      * 게시글을 생성합니다.
@@ -171,6 +174,12 @@ public class PostService {
 
         // 게시글 소프트 딜리트
         post.deletePost();
+
+        // 댓글 소프트 딜리트
+        replyService.deleteRepliesByPost(post);
+
+        // 스크랩 소프트 딜리트
+        scrapService.deleteScrapsByPost(post);
 
         log.info("게시글 삭제 완료 - postId: {}", postId);
     }
