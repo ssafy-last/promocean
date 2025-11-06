@@ -1,3 +1,5 @@
+'use client';
+
 // frontend/src/components/item/ContestSubmissionItem.tsx
 
 import Image from "next/image";
