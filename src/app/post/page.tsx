@@ -107,29 +107,38 @@ export default function PostPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-6xl mx-auto px-4">
+      <div className="max-w-7xl mx-auto px-2">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">게시글 작성</h1>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
 
-          {/* 글 작성 컨테이너 */}
-          <div className="lg:col-span-2 space-y-4">
+          {/* 글 작성 컨테이너 (8 비율) */}
+          <div className="lg:col-span-4 space-y-4">
             <PostingMetaFormSection />
 
             {/* 사용 프롬프트 */}
-            <PostingWriteSection />
+            <PostingWriteSection
+              title="사용 프롬프트"
+              placeholder="사용한 프롬프트를 입력하세요..."
+            />
 
             {/* 예시 질문 프롬프트 */}
-            <PostingWriteSection />
+            <PostingWriteSection
+              title="예시 질문 프롬프트"
+              placeholder="예시 질문을 입력하세요..."
+            />
 
             {/* 답변 프롬프트 */}
-            <PostingWriteSection />
+            <PostingWriteSection
+              title="답변 프롬프트"
+              placeholder="답변을 입력하세요..."
+            />
 
             {/* 프롬프트 작성 완료 버튼 */}
             <PostingFooter />
           </div>
 
-          {/* 플로팅 컨테이너 */}
+          {/* 플로팅 컨테이너 (2 비율) */}
           <div className="lg:col-span-1 space-y-4">
 
             {/* 카테고리 선택 */}
