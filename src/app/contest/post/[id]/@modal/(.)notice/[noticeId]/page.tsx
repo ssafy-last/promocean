@@ -4,8 +4,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState, use } from "react";
-import { formatKoreanDate } from "@/utils/formatDate";
-import UserSimpleProfile from "@/components/etc/UserSimpleProfile";
+import CommunityPostUserProfileItem from "@/components/item/CommunityPostUserProfileItem";
 
 /**
  * ContestNoticeDetailData interface
@@ -62,51 +61,43 @@ export default function ContestNoticeModal({
 
       {/* 모달 본문 */}
       <div
-        className="relative bg-white p-6 rounded-xl shadow-xl w-[600px] max-h-[80vh] overflow-y-auto"
+        className="relative bg-white p-6 rounded-xl shadow-xl w-[90vw] max-w-[800px] max-h-[80vh] overflow-y-auto flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* 헤더 */}
-        <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
-          <h2 className="text-2xl font-bold text-gray-900">
-            {noticeData?.title || "공지사항"}
-          </h2>
-        </div>
-
-        {/* 본문 내용 */}
         {!noticeData ? (
-          <div className="text-center py-8 text-gray-500">
-            공지사항을 불러올 수 없습니다.
-          </div>
+          <>
+            {/* 헤더 - 데이터 없을 때 */}
+            <div className="mb-6 pb-4 border-b border-gray-200">
+              <h2 className="text-2xl font-bold text-gray-900">공지사항</h2>
+            </div>
+
+            {/* 에러 메시지 */}
+            <div className="text-center py-8 text-gray-500">
+              공지사항을 불러올 수 없습니다.
+            </div>
+          </>
         ) : (
           <>
-            {/* 작성자 정보 */}
-            <div className="flex items-center justify-between mb-6">
-              <UserSimpleProfile
+            {/* 헤더 - 제목 */}
+            <div className="mb-6 pb-4 border-gray-200 flex flex-col justify-between items-start gap-4">
+              <h2 className="text-2xl font-bold text-gray-900">
+                {noticeData.title}
+              </h2>
+              
+              {/* 작성자 정보 */}
+              <CommunityPostUserProfileItem
                 profileUrl={noticeData.profileUrl}
-                nickname={noticeData.author}
-                imageSize="md"
-                textSize="sm"
-                showName={true}
+                author={noticeData.author}
+                createdAt={noticeData.createdAt}
               />
-              <div className="text-sm text-gray-500">
-                <span>
-                  작성일: {formatKoreanDate(noticeData.createdAt)}
-                </span>
-                {noticeData.createdAt !== noticeData.updatedAt && (
-                  <>
-                    <span className="mx-2 text-gray-300">|</span>
-                    <span>
-                      수정일: {formatKoreanDate(noticeData.updatedAt)}
-                    </span>
-                  </>
-                )}
-              </div>
             </div>
 
             {/* 내용 */}
-            <div className="prose max-w-none mb-6">
-              <div className="text-gray-700 whitespace-pre-wrap">
-                {noticeData.content}
+            <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+              <div className="prose max-w-none">
+                <div className="text-gray-700 whitespace-pre-wrap">
+                  {noticeData.content}
+                </div>
               </div>
             </div>
           </>
