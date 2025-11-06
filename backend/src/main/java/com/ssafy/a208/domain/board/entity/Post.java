@@ -1,6 +1,7 @@
 package com.ssafy.a208.domain.board.entity;
 
 import com.ssafy.a208.domain.member.entity.Member;
+import com.ssafy.a208.domain.tag.entity.PostTag;
 import com.ssafy.a208.global.common.BaseEntity;
 import com.ssafy.a208.global.common.enums.PostCategory;
 import com.ssafy.a208.global.common.enums.PromptType;
@@ -53,12 +54,16 @@ public class Post extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String exampleAnswer;
 
+    @Comment("작성자")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id", nullable = false)
     private Member author;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST, orphanRemoval = false)
     private List<PostLike> postLikes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST, orphanRemoval = false)
+    private List<PostTag> postTags = new ArrayList<>();
 
 
     @Builder

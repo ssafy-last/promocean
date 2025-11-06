@@ -21,4 +21,6 @@ public @interface AllowedValues {
     Class<? extends Payload>[] payload() default {};
 
     int[] value();
+
+    boolean allowNull() default false;
 }

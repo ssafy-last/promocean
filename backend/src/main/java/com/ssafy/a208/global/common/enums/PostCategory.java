@@ -1,9 +1,9 @@
 package com.ssafy.a208.global.common.enums;
 
-import com.ssafy.a208.domain.board.exception.InvalidPostRequestException;
 import com.ssafy.a208.global.common.exception.DoNotSupportEnumException;
 import lombok.Getter;
 
+@Getter
 public enum PostCategory {
     BUSINESS(100, "업무"),
     DEVELOPMENT(200, "개발"),
