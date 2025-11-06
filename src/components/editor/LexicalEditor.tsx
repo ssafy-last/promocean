@@ -29,6 +29,8 @@ interface LexicalEditorProps {
   onChange: (content: string) => void;
   title?: string;
   placeholder?: string;
+  isSubmitButton?: boolean;
+  handleSubmit?: () => void;
 }
 
 function EditorErrorBoundary({ children }: { children: React.ReactNode }) {
@@ -48,6 +50,8 @@ export default function LexicalEditor({
   onChange,
   title,
   placeholder = '내용을 입력하세요...',
+  isSubmitButton,
+  handleSubmit,
 }: LexicalEditorProps) {
   const initialConfig = {
     namespace: 'PromoceanEditor',
@@ -118,7 +122,16 @@ export default function LexicalEditor({
             }
             ErrorBoundary={EditorErrorBoundary}
           />
+          {isSubmitButton && (    
+          <button type="button" className="absolute right-5 bottom-5
+          w-14 h-14 bg-primary rounded-full text-white 
+          hover:bg-primary/70 
+          active:bg-primary/90
+          transition-colors duration-200
+          " onClick={handleSubmit}>테스트</button>
+          )}
         </div>
+
         <HistoryPlugin />
         <ListPlugin />
         <CheckListPlugin />
