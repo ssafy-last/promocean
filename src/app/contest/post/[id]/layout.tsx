@@ -1,4 +1,4 @@
-// frontend/src/app/contest/post/[id]/layout.tsx
+// frontend/src/app/contest/post/[id]/@modal/layout.tsx
 
 /**
  * ContestPostLayout component
@@ -7,18 +7,15 @@
  */
 export default function ContestPostLayout({
   children,
-  noticeModal,
-  submissionModal,
+  modal,
 }: {
   children: React.ReactNode;
-  noticeModal?: React.ReactNode;
-  submissionModal?: React.ReactNode;
+  modal?: React.ReactNode;
 }) {
   return (
     <>
       {children}
-      {noticeModal}
-      {submissionModal}
+      {modal}
     </>
   );
 }
