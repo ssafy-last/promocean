@@ -3,7 +3,7 @@ package com.ssafy.a208.global.image.utils;
 import com.ssafy.a208.global.common.enums.ImageDirectory;
 import com.ssafy.a208.global.image.service.S3Service;
 import com.ssafy.a208.global.security.exception.InvalidFilePathException;
-import com.ssafy.a208.global.security.exception.S3OperationException;
+import com.ssafy.a208.global.image.exception.S3OperationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;

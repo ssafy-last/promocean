@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @RequiredArgsConstructor
 public class MemberReader {
+
     private final MemberRepository memberRepository;
 
     @Transactional(readOnly = true)
@@ -22,6 +23,14 @@ public class MemberReader {
     public Member getMemberByEmail(String email) {
         return memberRepository.findByEmailAndDeletedAtIsNull(email).orElseThrow(
                 MemberNotFoundException::new);
+    }
+
+    public boolean checkEmailExist(String email) {
+        return memberRepository.existsByEmail(email);
+    }
+
+    public boolean checkNicknameExist(String nickname) {
+        return memberRepository.existsByNickname(nickname);
     }
 
 }
