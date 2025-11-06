@@ -3,7 +3,7 @@
 // frontend/src/app/post/page.tsx
 
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import PostingFloatingSection from "@/components/section/PostingFloatingSection";
 import PostingWriteSection from "@/components/section/PostingWriteSection";
 import PostingFooter from "@/components/layout/PostingFooter";
@@ -32,6 +32,9 @@ export default function PostPage() {
   const [answerPrompt, setAnswerPrompt] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("work");
   const [selectedPromptType, setSelectedPromptType] = useState("text");
+
+  //최종 gpt API로 제출할 prompt 저장용 ref 변수
+  const submitPrompt = useRef("");
 
   // 제출 핸들러
   const handleSubmit = () => {
@@ -70,6 +73,14 @@ export default function PostPage() {
     // 나중에 여기서 API 호출
     // await postApi.createPost(submitData);
   };
+
+  const handleAISubmit = (s : string) =>{
+    submitPrompt.current = s
+    console.log('AI 생성 요청:', submitPrompt.current);
+    alert('AI 생성 요청이 제출되었습니다!\n콘솔을 확인하세요.');
+  }
+
+
 
   // Todo : 실제 사용할 아이콘으로 변경 예정
   // 간단한 아이콘 생성 함수
@@ -174,6 +185,7 @@ export default function PostPage() {
               title="사용 프롬프트"
               placeholder="사용한 프롬프트를 입력하세요..."
               onChange={setUsedPrompt}
+              isSubmitButton={selectedPromptType === 'image'}
             />
 
 
@@ -185,6 +197,10 @@ export default function PostPage() {
                       title="예시 질문 프롬프트"
                       placeholder="예시 질문을 입력하세요..."
                       onChange={setExamplePrompt}
+                      isSubmitButton={true}
+                      onSubmit={()=>
+                        handleAISubmit(usedPrompt)
+                      }
                     />
 
                     {/* 답변 프롬프트 */}
