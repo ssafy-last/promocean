@@ -46,4 +46,12 @@ public class Scrap extends BaseEntity {
         this.post = post;
         this.member = member;
     }
+
+    public void deleteScrap() {
+        this.delete();
+    }
+
+    public void restoreScrap() {
+        super.restore();
+    }
 }

@@ -7,6 +7,7 @@ import com.ssafy.a208.domain.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -29,5 +30,15 @@ public class PostLikeReader {
      */
     public Optional<PostLike> getPostLikeByPostAndMember(Post post, Member member) {
         return postLikeRepository.findByPostAndMemberAndDeletedAtIsNull(post, member);
+    }
+
+    /**
+     * 특정 게시글의 모든 좋아요 조회 (삭제되지 않은 것만)
+     *
+     * @param post 게시글 엔티티
+     * @return 좋아요 리스트
+     */
+    public List<PostLike> getPostLikesByPost(Post post) {
+        return postLikeRepository.findByPostAndDeletedAtIsNull(post);
     }
 }

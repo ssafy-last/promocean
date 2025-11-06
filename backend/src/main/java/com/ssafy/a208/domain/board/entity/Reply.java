@@ -43,4 +43,16 @@ public class Reply extends BaseEntity {
         this.post = post;
         this.author = author;
     }
+
+    public boolean isAuthor(Long memberId) {
+        return this.author.getId().equals(memberId);
+    }
+
+    public void updateContent(String content) {
+        this.content = content;
+    }
+
+    public void deleteReply() {
+        this.delete();
+    }
 }

@@ -63,4 +63,7 @@ public record ApiResponse<T>(
         return ApiResponse.of(HttpStatus.CREATED, data);
     }
 
+    public static <T> ResponseEntity<ApiResponse<T>> create() {
+        return ApiResponse.of(HttpStatus.CREATED);
+    }
 }

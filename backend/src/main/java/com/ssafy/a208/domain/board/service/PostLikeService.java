@@ -14,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -60,7 +62,8 @@ public class PostLikeService {
      */
     @Transactional
     public void deleteLikesByPost(Post post) {
-        post.getPostLikes().forEach(PostLike::deletePostLike);
+        List<PostLike> postLikes = postLikeReader.getPostLikesByPost(post);
+        postLikes.forEach(PostLike::deletePostLike);
         log.info("게시글 연결 좋아요 soft delete 완료 - postId: {}", post.getId());
     }
 }
