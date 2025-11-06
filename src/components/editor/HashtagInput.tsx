@@ -49,14 +49,14 @@ export default function HashtagInput({
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full rounded-lg hover:bg-gray-200">
       <div className="w-full min-h-[42px] px-3 py-2 rounded-md focus-within:outline-none">
         <div className="flex flex-wrap gap-2 items-center">
           {/* 태그 레이블 표시 */}
           {tags.map((tag, index) => (
             <div
               key={index}
-              className="inline-flex items-center gap-1 text-blue-600 px-3 py-1 rounded-full text-sm font-medium"
+              className="inline-flex items-center gap-1 text-blue-600 px-3 py-1 rounded-full text-[1rem] font-medium"
             >
               <span>#{tag}</span>
               <button
