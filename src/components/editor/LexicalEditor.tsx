@@ -85,12 +85,12 @@ export default function LexicalEditor({
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <div className="border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 bg-white shadow-sm">
+      <div className="rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500">
         <ToolbarPlugin />
         <div className="relative">
           <RichTextPlugin
             contentEditable={
-              <ContentEditable className="w-full min-h-[500px] max-h-[700px] overflow-y-auto px-6 py-4 outline-none prose prose-sm max-w-none" />
+              <ContentEditable className="w-full min-h-[350px] max-h-[400px] overflow-y-auto px-6 py-4 outline-none prose prose-sm max-w-none" />
             }
             placeholder={
               <div className="absolute top-4 left-6 text-gray-400 pointer-events-none select-none">

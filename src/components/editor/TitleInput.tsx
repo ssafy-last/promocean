@@ -10,12 +10,18 @@ export default function TitleInput({
   placeholder = '제목을 입력하세요',
 }: TitleInputProps) {
   return (
-    <input
-      type="text"
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      placeholder={placeholder}
-      className="w-full text-3xl font-bold px-4 py-3 border-0 outline-none focus:ring-0 placeholder:text-gray-300"
-    />
+    <div className="relative w-full px-2 py-4">
+      <input
+        type="text"
+        placeholder="이름을 입력하세요"
+        className="peer w-full text-4xl font-semibold border-none outline-none placeholder:text-gray-300"
+      />
+
+
+      <span
+        className="absolute bottom-0 left-0 h-[2.5px] w-0 bg-black transition-all duration-300 peer-focus:w-20 peer-focus:translate-x-2"
+      ></span>
+    </div>
+    
   );
 }

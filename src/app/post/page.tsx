@@ -10,6 +10,7 @@ import PostingFooter from "@/components/layout/PostingFooter";
 import PostingMetaFormSection from "@/components/section/PostingMetaFormSection";
 import { PostingFloatingItemProps } from "@/types/itemType";
 import { PostFormData, PostSubmitData } from "@/types/postType";
+import TitleInput from "@/components/editor/TitleInput";
 
 /**
  * PostPage component
@@ -156,18 +157,24 @@ export default function PostPage() {
       <div className="max-w-7xl mx-auto px-4">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">게시글 작성</h1>
 
+        <div>
+          <TitleInput value={title} onChange={setTitle} placeholder="제목을 입력하세요" />
+        </div>
+
+        <div>
+          <input
+            value={tags}
+            onChange={(e) => setTags(e.target.value)}
+            placeholder="#태그 #스페이스로 #구분"
+            className="w-full px-2 py-2 rounded-md focus:outline-none"
+          />
+        </div>
+
+
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
 
           {/* 글 작성 컨테이너 (8 비율) */}
           <div className="lg:col-span-4 space-y-4">
-            <PostingMetaFormSection
-              title={title}
-              category={category}
-              tags={tags}
-              onTitleChange={setTitle}
-              onCategoryChange={setCategory}
-              onTagsChange={setTags}
-            />
 
             {/* 사용 프롬프트 */}
             <PostingWriteSection
