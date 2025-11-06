@@ -17,12 +17,14 @@ export default function ContestPostTabs() {
 
   const tabs = [
     { name: "대회상세", tab: "detail" },
+    { name: "공지사항", tab: "notice" },
+    { name: "산출물", tab: "submission" },
     { name: "리더보드", tab: "leaderboard" },
   ];
 
   return (
     <nav className="border-b border-gray-200 bg-white">
-      <ul className="flex space-x-6 px-8">
+      <ul className="flex space-x-6">
         {tabs.map((tabItem) => {
           const href = `${pathname}?tab=${tabItem.tab}`;
           const isActive = currentTab === tabItem.tab;

@@ -96,8 +96,18 @@ export interface ContestInfoItemProps {
  * @description 대회 게시글 아이템 타입
  */
 export interface ContestPostItemProps {
+  contestId: number
+  author: string
+  profileUrl?: string
   title: string
   content: string
+  type: string
+  status: string
+  startAt: string
+  endAt: string
+  voteEndAt: string
+  createdAt: string
+  updatedAt: string
 }
 
 /**
@@ -193,4 +203,48 @@ export interface CommunityCommentItemProps {
   profileUrl: string
   content: string
   createdAt: string
+}
+
+/**
+ * NoticeItemProps interface
+ * @description 공지사항 아이템 타입
+ */
+export interface ContestNoticeItemProps {
+  noticeId: number
+  title: string
+  createdAt: string
+  updatedAt: string
+}
+
+/**
+ * ContestNoticeDetailItemProps interface
+ * @description 대회 공지사항 상세 아이템 타입
+ */
+export interface ContestNoticeDetailItemProps {
+  contestId: number
+  author: string
+  profileUrl: string
+  title: string
+  content: string
+  type: string
+  status: string
+  startAt: string
+  endAt: string
+  voteEndAt: string
+  createdAt: string
+  updatedAt: string
+}
+
+/**
+ * ContestSubmissionItemProps interface
+ * @description 대회 제출 목록 아이템 타입
+ */
+export interface ContestSubmissionItemProps {
+  submissionId: number
+  author: string
+  profileUrl: string
+  description: string
+  type: string
+  submissionUrl: string
+  voteCnt: number
 }
