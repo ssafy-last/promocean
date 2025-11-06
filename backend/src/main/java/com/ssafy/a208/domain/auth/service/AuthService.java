@@ -5,10 +5,8 @@ import com.ssafy.a208.domain.auth.dto.LoginRes;
 import com.ssafy.a208.domain.auth.exception.InvalidPasswordException;
 import com.ssafy.a208.domain.member.entity.Member;
 import com.ssafy.a208.domain.member.entity.Profile;
-import com.ssafy.a208.domain.member.exception.MemberNotFoundException;
-import com.ssafy.a208.domain.member.exception.ProfileNotFoundException;
-import com.ssafy.a208.domain.member.repository.MemberRepository;
-import com.ssafy.a208.domain.member.repository.ProfileRepository;
+import com.ssafy.a208.domain.member.reader.MemberReader;
+import com.ssafy.a208.domain.member.reader.ProfileReader;
 import com.ssafy.a208.global.image.service.S3Service;
 import com.ssafy.a208.global.security.util.JwtProvider;
 import lombok.RequiredArgsConstructor;
@@ -22,17 +20,15 @@ public class AuthService {
     private final S3Service s3Service;
     private final JwtProvider provider;
     private final PasswordEncoder encoder;
-    private final MemberRepository memberRepository;
-    private final ProfileRepository profileRepository;
+    private final MemberReader memberReader;
+    private final ProfileReader profileReader;
 
     public LoginRes login(LoginReq loginReq) {
-        Member member = memberRepository.findByEmail(loginReq.email())
-                .orElseThrow(MemberNotFoundException::new);
+        Member member = memberReader.getMemberByEmail(loginReq.email());
 
         if (encoder.matches(loginReq.password(), member.getPassword())) {
             String aT = provider.generateToken(member);
-            Profile profile = profileRepository.findByMemberIdAndDeletedAtIsNull(member.getId())
-                    .orElseThrow(ProfileNotFoundException::new);
+            Profile profile = profileReader.getProfile(member.getId());
 
             return LoginRes.builder()
                     .accessToken("Bearer " + aT)
