@@ -33,7 +33,7 @@ export default function ContestNoticeItem({ noticeId, title, createdAt, updatedA
       
       {/* 오른쪽 : 날짜 정보 */}
       <div className="flex items-center gap-3 text-xs text-gray-500 flex-shrink-0 px-4">
-        <span>작성일: {formatKoreanDate(createdAt)}</span>
+        <span>{formatKoreanDate(createdAt)}</span>
 
         {/* TODO : 업데이트 날짜는 필요 없을 것 같아서 일단 보류. 추후에 결정하기 */}
         {/* {isUpdated && (

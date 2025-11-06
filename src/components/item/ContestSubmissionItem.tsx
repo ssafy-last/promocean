@@ -21,7 +21,7 @@ export default function ContestSubmissionItem({ submissionId, author, profileUrl
     router.push(`/contest/post/${id}/submission/${submissionId}`);
   }
   return (
-    <div className="flex items-end w-full bg-white border-b border-gray-200 py-4 gap-4 cursor-pointer" onClick={() => handleClick(submissionId)}>
+    <div className="flex items-start w-full bg-white border-b border-gray-200 py-4 gap-4 cursor-pointer" onClick={() => handleClick(submissionId)}>
 
       {/* 왼쪽 : 제출 이미지 */}
       <div className="relative flex-shrink-0 w-20 h-20 rounded-md overflow-hidden bg-gray-100">
@@ -37,17 +37,12 @@ export default function ContestSubmissionItem({ submissionId, author, profileUrl
         )}
       </div>
       
-      {/* 중앙 : 타이틀, 설명, 타입 */}
-      <div className="flex-1 flex flex-col min-w-0 gap-2">
+      {/* 중앙 : 타이틀, 타입 */}
+      <div className="flex-1 flex flex-col min-w-0">
         {/* 타이틀 */}
-        <h3 className="font-bold text-text text-lg group-hover:text-primary transition-colors">
+        <h3 className="font-bold text-text text-lg mb-4 group-hover:text-primary transition-colors">
           {description}
         </h3>
-
-        {/* 설명 */}
-        <p className="text-sm text-gray-600 line-clamp-2">
-          {description}
-        </p>
 
         {/* 타입 */}
         <div className="flex flex-wrap items-center gap-2">
@@ -57,9 +52,8 @@ export default function ContestSubmissionItem({ submissionId, author, profileUrl
         </div>
       </div>
 
-      {/* 오른쪽 : 작성자 정보 및 추천수*/}
-      <div className="flex flex-row items-end justify-end gap-3 flex-shrink-0 text-gray-600">
-
+      {/* 오른쪽 : 작성자 정보 및 추천수 */}
+      <div className="flex flex-row items-center gap-4 flex-shrink-0 text-gray-600 self-end">
         {/* 작성자 정보 */}
         <UserSimpleProfile 
           profileUrl={profileUrl}

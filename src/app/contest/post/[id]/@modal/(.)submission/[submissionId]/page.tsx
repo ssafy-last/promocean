@@ -5,7 +5,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState, use } from "react";
 import Image from "next/image";
-import UserSimpleProfile from "@/components/etc/UserSimpleProfile";
+import CommunityPostUserProfileItem from "@/components/item/CommunityPostUserProfileItem";
 
 /**
  * ContestSubmissionDetailData interface
@@ -37,9 +37,10 @@ export default function ContestSubmissionModal({ params }: { params: Promise<{ s
     const fetchSubmissionDetail = async () => {
       try {
         // TODO: 실제 API와 연동하기
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/mock/ContestSubmissionDetailData.json`, { cache: "no-store" });
-        const data = await response.json();
-        setSubmissionData(data);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/mock/ContestSubmissionDetailData.json`,
+          { cache: "no-store" }
+        ).then(res => res.json()).catch(() => []);
+        setSubmissionData(response);
       } catch (error) {
         console.error("산출물 상세 정보를 불러오는데 실패했습니다:", error);
       }
@@ -63,44 +64,42 @@ export default function ContestSubmissionModal({ params }: { params: Promise<{ s
         className="relative bg-white p-6 rounded-xl shadow-xl w-[90vw] max-w-[800px] max-h-[80vh] overflow-y-auto flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* 헤더 */}
-        <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
-          <h2 className="text-2xl font-bold text-gray-900">
-            {submissionData?.description || "산출물"}
-          </h2>
-        </div>
-
-        {/* 본문 내용 */}
         {!submissionData ? (
-          <div className="text-center py-8 text-gray-500">
-            산출물을 불러올 수 없습니다.
-          </div>
+          <>
+            {/* 헤더 - 데이터 없을 때 */}
+            <div className="mb-6 pb-4 border-b border-gray-200">
+              <h2 className="text-2xl font-bold text-gray-900">산출물</h2>
+            </div>
+            
+            {/* 에러 메시지 */}
+            <div className="text-center py-8 text-gray-500">
+              산출물을 불러올 수 없습니다.
+            </div>
+          </>
         ) : (
           <>
-            {/* 작성자 정보 */}
-            <div className="flex items-center justify-between mb-6 min-w-0">
-              <div className="flex-shrink-0">
-                <UserSimpleProfile
-                  profileUrl={submissionData.profileUrl}
-                  nickname={submissionData.author}
-                  imageSize="md"
-                  textSize="sm"
-                  showName={true}
-                />
-              </div>
-              <div className="flex items-center gap-4 flex-shrink-0">
-                {/* 타입 배지 */}
-                <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap">
-                  {submissionData.type}
-                </span>
-                {/* 업데이트 날짜 */}
-                <div className="text-sm text-gray-500 whitespace-nowrap">
-                  <span>업데이트 날짜: {submissionData.updatedAt ?? 0}</span>
-                </div>
-              </div>
+            {/* 헤더 - 제목 */}
+            <div className="mb-6 pb-4 border-gray-200 flex flex-col justify-between items-start gap-4">
+              <h2 className="text-2xl font-bold text-gray-900">
+                {submissionData.description}
+              </h2>
+            {/* </div> */}
+
+            {/* 작성자 정보 + 타입 배지 - 오른쪽 정렬 */}
+            {/* <div className="flex justify-end items-center gap-4 mb-6"> */}
+              {/* 타입 배지 */}
+              {/* <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap">
+                {submissionData.type}
+              </span> */}
+              {/* 작성자 정보 */}
+              <CommunityPostUserProfileItem
+                profileUrl={submissionData.profileUrl}
+                author={submissionData.author}
+                createdAt={submissionData.updatedAt}
+              />
             </div>
 
-            {/* 텍스트 or 이미지 */}
+            {/* 텍스트 or 이미지 결과 */}
             {!isText ? (
               <div className="mb-6 flex items-center justify-center">
                 <div className="relative w-full max-w-2xl aspect-video overflow-hidden rounded-lg bg-gray-100">
@@ -113,21 +112,15 @@ export default function ContestSubmissionModal({ params }: { params: Promise<{ s
                 </div>
               </div>
             ) : (
-              <div className="mb-6 flex items-center justify-center">
-                <div className="relative w-full max-w-2xl aspect-video overflow-hidden rounded-lg bg-gray-100">
-                  <p className="text-gray-700 whitespace-pre-wrap">
-                    {submissionData.result}
-                  </p>
+              <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+                <h3 className="font-bold text-text text-lg mb-4 group-hover:text-primary transition-colors">
+                  프롬프트
+                </h3>
+                <div className="text-gray-700 whitespace-pre-wrap">
+                  {submissionData.result}
                 </div>
               </div>
             )}
-
-            {/* 내용 */}
-            <div className="prose max-w-none mb-6">
-              <div className="text-gray-700 whitespace-pre-wrap">
-                {submissionData.description}
-              </div>
-            </div>
           </>
         )}
       </div>
