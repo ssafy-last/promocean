@@ -3,12 +3,16 @@ package com.ssafy.a208.global.image.service;
 import com.ssafy.a208.global.common.enums.ImageDirectory;
 import com.ssafy.a208.global.image.dto.FileMetaData;
 import com.ssafy.a208.global.image.dto.S3Url;
+import com.ssafy.a208.global.image.exception.S3OperationException;
 import com.ssafy.a208.global.image.utils.FileMetadataUtil;
 import com.ssafy.a208.global.image.utils.S3Uploader;
 import com.ssafy.a208.global.image.utils.S3UrlGenerator;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.awscore.exception.AwsServiceException;
+import software.amazon.awssdk.core.exception.SdkClientException;
 import software.amazon.awssdk.services.s3.model.HeadObjectResponse;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
 
@@ -36,24 +40,42 @@ public class S3Service {
     }
 
     public String moveObject(String filePath, ImageDirectory imageDirectory) {
-        String url = s3Uploader.copyObject(filePath, imageDirectory.getName());
-        s3Uploader.deleteObject(filePath);
-        return url;
+        try {
+            String url = s3Uploader.copyObject(filePath, imageDirectory.getName());
+            this.deleteFile(filePath);
+            return url;
+        } catch (SdkClientException e) {
+            throw new S3OperationException();
+        } catch (AwsServiceException e) {
+            throw new S3OperationException(HttpStatus.valueOf(e.statusCode()));
+        }
     }
 
     public FileMetaData getFileMetadata(String key) {
-        HeadObjectResponse response = s3Uploader.getMetaData(key);
+        try {
+            HeadObjectResponse response = s3Uploader.getMetaData(key);
 
-        return FileMetaData.builder()
-                .originalName(fileMetadataUtil.getFileName(key))
-                .filePath(key)
-                .contentType(response.contentType())
-                .size(response.contentLength())
-                .build();
+            return FileMetaData.builder()
+                    .originalName(fileMetadataUtil.getFileName(key))
+                    .filePath(key)
+                    .contentType(response.contentType())
+                    .size(response.contentLength())
+                    .build();
+        } catch (SdkClientException e) {
+            throw new S3OperationException();
+        } catch (AwsServiceException e) {
+            throw new S3OperationException(HttpStatus.valueOf(e.statusCode()));
+        }
     }
 
     public void deleteFile(String filePath) {
-        s3Uploader.deleteObject(filePath);
+        try {
+            s3Uploader.deleteObject(filePath);
+        } catch (SdkClientException e) {
+            throw new S3OperationException();
+        } catch (AwsServiceException e) {
+            throw new S3OperationException(HttpStatus.valueOf(e.statusCode()));
+        }
     }
 
 }

@@ -43,4 +43,8 @@ public class FileEntity extends BaseEntity {
         this.contentType = fileMetaData.contentType();
         this.size = fileMetaData.size();
     }
+
+    public void deleteFile() {
+        this.delete();
+    }
 }
