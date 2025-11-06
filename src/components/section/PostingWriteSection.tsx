@@ -15,7 +15,7 @@ export default function PostingWriteSection({
   onChange,
 }: PostingWriteSectionProps) {
   return (
-    <section className="bg-white border border-gray-200 rounded-lg p-6">
+    <section className=" border-gray-200 rounded-lg p-4">
       {title && <h3 className="text-lg font-semibold text-gray-900 mb-4">{title}</h3>}
       <LexicalEditor onChange={onChange} placeholder={placeholder} />
     </section>

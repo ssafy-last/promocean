@@ -13,15 +13,12 @@ interface PostingMetaFormSectionProps {
 }
 
 export default function PostingMetaFormSection({
-  title,
   category,
   tags,
-  onTitleChange,
   onCategoryChange,
-  onTagsChange,
 }: PostingMetaFormSectionProps) {
   return (
-    <section className="bg-white border border-gray-200 rounded-lg p-6 space-y-4">
+    <section className=" border border-gray-200 rounded-lg p-6 space-y-4">
       {/* 첫째줄: 카테고리 + 태그 */}
       <div className="grid grid-cols-2 gap-4">
         <div>
@@ -38,21 +35,9 @@ export default function PostingMetaFormSection({
           </select>
         </div>
 
-        <div>
-          <label className="block text-sm text-gray-700 mb-2">태그</label>
-          <input
-            value={tags}
-            onChange={(e) => onTagsChange(e.target.value)}
-            placeholder="#태그, #쉼표로, #구분"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
       </div>
 
       {/* 둘째줄: 제목 */}
-      <div>
-        <TitleInput value={title} onChange={onTitleChange} placeholder="제목을 입력하세요" />
-      </div>
     </section>
   );
 }
