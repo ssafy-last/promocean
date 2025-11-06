@@ -11,6 +11,7 @@ import PostingMetaFormSection from "@/components/section/PostingMetaFormSection"
 import { PostingFloatingItemProps } from "@/types/itemType";
 import { PostFormData, PostSubmitData } from "@/types/postType";
 import TitleInput from "@/components/editor/TitleInput";
+import HashtagInput from "@/components/editor/HashtagInput";
 
 /**
  * PostPage component
@@ -25,7 +26,7 @@ export default function PostPage() {
   // 폼 상태 관리
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("community");
-  const [tags, setTags] = useState("");
+  const [tags, setTags] = useState<string[]>([]); // 배열로 변경
   const [usedPrompt, setUsedPrompt] = useState("");
   const [examplePrompt, setExamplePrompt] = useState("");
   const [answerPrompt, setAnswerPrompt] = useState("");
@@ -50,7 +51,7 @@ export default function PostPage() {
     const submitData: PostSubmitData = {
       title: formData.title,
       category: formData.category,
-      tags: formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag),
+      tags: formData.tags, // 이미 배열이므로 그대로 사용
       content: {
         usedPrompt: formData.usedPrompt,
         examplePrompt: formData.examplePrompt,
@@ -155,16 +156,11 @@ export default function PostPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4">
-        <div>
+        <div className="mb-4">
           <TitleInput value={title} onChange={setTitle} placeholder="제목을 입력하세요" />
         </div>
-        <div>
-          <input
-            value={tags}
-            onChange={(e) => setTags(e.target.value)}
-            placeholder="#태그 #스페이스로 #구분"
-            className="w-full px-2 py-2 rounded-md focus:outline-none"
-          />
+        <div className="mb-4">
+          <HashtagInput tags={tags} onTagsChange={setTags} />
         </div>
 
 
