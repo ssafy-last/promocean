@@ -17,7 +17,7 @@ export default function TitleInput({
         className="peer w-full text-5xl font-semibold border-none outline-none placeholder:text-gray-300"
       />
       <span
-        className="absolute bottom-0 left-0 h-[2.5px] w-0 bg-primary transition-all duration-300 peer-focus:w-40 peer-focus:translate-x-2"
+        className="absolute bottom-0 left-0 h-[2.5px] w-0 bg-primary transition-all duration-300 peer-focus:w-full peer-focus:translate-x-2"
       ></span>
     </div>
     

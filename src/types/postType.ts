@@ -3,7 +3,7 @@ export interface PostFormData {
   // 메타 정보
   title: string;
   category: string;
-  tags: string;
+  tags: string[]; // 배열로 변경
 
   // 에디터 콘텐츠
   usedPrompt: string; // 사용 프롬프트
