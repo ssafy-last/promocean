@@ -30,7 +30,7 @@ export default function PostingFloatingItem({ icon, label, value, checked, name 
         value={value}
         checked={isChecked}
         onChange={onChange}
-        className="w-4 h-4 text-primary border-gray-300 focus:ring-primary focus:ring-2 cursor-pointer"
+        className="w-4 h-4 text-primary border-gray-300  cursor-pointer"
       />
     </label>
   )
