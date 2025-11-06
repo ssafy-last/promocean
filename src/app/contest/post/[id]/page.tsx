@@ -1,4 +1,4 @@
-// frontend/src/app/contest/post/[id]/page.tsx
+// frontend/src/app/contest/post/[id]/@modal/page.tsx
 
 import ContestHeader from "@/components/layout/ContestHeader";
 import ContestPostSection from "@/components/section/ContestPostSection";
