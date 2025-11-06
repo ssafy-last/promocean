@@ -2,12 +2,30 @@
 
 import React, { useState, KeyboardEvent } from 'react';
 
+/**
+ * HashtagInputProps 인터페이스
+ * @interface HashtagInputProps
+ * @property {string[]} tags - 현재 태그 배열
+ * @property {(tags: string[]) => void} onTagsChange - 태그 변경 시 호출되는 함수
+ * @property {string} [placeholder] - 입력 필드의 플레이스홀더 텍스트
+ */
 interface HashtagInputProps {
   tags: string[];
   onTagsChange: (tags: string[]) => void;
   placeholder?: string;
 }
 
+
+/**
+ * 해시태그 입력 컴포넌트
+ * @param param0 - HashtagInputProps의 분해 할당
+ * 
+ * @property tags: string[] - 현재 태그 배열
+ * @property onTagsChange: (tags: string[]) => void - 태그 변경 시 호출되는 함수
+ * @property placeholder?: string - 입력 필드의 플레이스홀더 텍스트
+ * 
+ * @returns JSX.Element
+ */
 export default function HashtagInput({
   tags,
   onTagsChange,

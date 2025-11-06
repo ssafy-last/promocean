@@ -17,6 +17,14 @@ import { HorizontalRuleNode } from '@lexical/react/LexicalHorizontalRuleNode';
 import { ToolbarPlugin } from './plugins/ToolbarPlugin';
 import { CUSTOM_TRANSFORMERS } from './utils/markdownTransformers';
 
+
+/**
+ * LexicalEditorProps 인터페이스
+ * @interface LexicalEditorProps
+ * @property {(content: string) => void} onChange - 내용 변경 시 호출되는 함수
+ * @property {string} [title] - 에디터 상단 툴바에 표시될 제목
+ * @property {string} [placeholder] - 에디터의 플레이스홀더 텍스트
+ */
 interface LexicalEditorProps {
   onChange: (content: string) => void;
   title?: string;
@@ -27,6 +35,15 @@ function EditorErrorBoundary({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+
+/**
+ * LexicalEditor 컴포넌트
+ * @param param0 - LexicalEditorProps의 분해 할당
+ * @property onChange: (content: string) => void - 내용 변경 시 호출되는 함수
+ * @property title?: string - 에디터 상단 툴바에 표시될 제목
+ * @property placeholder?: string - 에디터의 플레이스홀더 텍스트
+ * @returns JSX.Element
+ */
 export default function LexicalEditor({
   onChange,
   title,
