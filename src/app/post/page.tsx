@@ -153,7 +153,7 @@ export default function PostPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-2">
+      <div className="max-w-7xl mx-auto px-4">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">게시글 작성</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
