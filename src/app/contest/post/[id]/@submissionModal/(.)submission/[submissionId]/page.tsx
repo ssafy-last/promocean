@@ -14,13 +14,13 @@ import UserSimpleProfile from "@/components/etc/UserSimpleProfile";
  */
 interface ContestSubmissionDetailData {
   submissionId: number;
-  contestId: number;
   author: string;
   profileUrl: string;
   description: string;
+  prompt: string;
   type: string;
-  submissionUrl: string;
-  voteCnt: number;
+  result: string;
+  updatedAt: string;
 }
 
 /**
@@ -28,11 +28,7 @@ interface ContestSubmissionDetailData {
  * @description 대회 상세 페이지에서 산출물을 조회하는 경우 나오는 모달입니다.
  * @returns {React.ReactNode}
  */
-export default function ContestSubmissionModal({
-  params,
-}: {
-  params: Promise<{ submissionId: string }>;
-}) {
+export default function ContestSubmissionModal({ params }: { params: Promise<{ submissionId: string }> }) {
   const router = useRouter();
   const { submissionId } = use(params);
   const [submissionData, setSubmissionData] = useState<ContestSubmissionDetailData | null>(null);
@@ -51,6 +47,8 @@ export default function ContestSubmissionModal({
 
     fetchSubmissionDetail();
   }, [submissionId]);
+
+  const isText = submissionData?.type === "텍스트" ? true : false;
 
   return (
     <div
@@ -95,23 +93,31 @@ export default function ContestSubmissionModal({
                 <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap">
                   {submissionData.type}
                 </span>
-                {/* 추천수 */}
+                {/* 업데이트 날짜 */}
                 <div className="text-sm text-gray-500 whitespace-nowrap">
-                  <span>추천수: {submissionData.voteCnt ?? 0}</span>
+                  <span>업데이트 날짜: {submissionData.updatedAt ?? 0}</span>
                 </div>
               </div>
             </div>
 
-            {/* 이미지 */}
-            {submissionData.submissionUrl && (
+            {/* 텍스트 or 이미지 */}
+            {!isText ? (
               <div className="mb-6 flex items-center justify-center">
                 <div className="relative w-full max-w-2xl aspect-video overflow-hidden rounded-lg bg-gray-100">
                   <Image
-                    src={submissionData.submissionUrl}
+                    src={submissionData.result}
                     alt={submissionData.description}
                     fill
                     className="object-contain"
                   />
+                </div>
+              </div>
+            ) : (
+              <div className="mb-6 flex items-center justify-center">
+                <div className="relative w-full max-w-2xl aspect-video overflow-hidden rounded-lg bg-gray-100">
+                  <p className="text-gray-700 whitespace-pre-wrap">
+                    {submissionData.result}
+                  </p>
                 </div>
               </div>
             )}
@@ -121,16 +127,6 @@ export default function ContestSubmissionModal({
               <div className="text-gray-700 whitespace-pre-wrap">
                 {submissionData.description}
               </div>
-            </div>
-
-            {/* 닫기 버튼 */}
-            <div className="flex justify-end pt-4 border-t border-gray-200">
-              <button
-                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
-                onClick={() => router.back()}
-              >
-                닫기
-              </button>
             </div>
           </>
         )}
