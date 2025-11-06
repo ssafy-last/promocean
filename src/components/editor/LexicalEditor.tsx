@@ -87,7 +87,7 @@ export default function LexicalEditor({
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <div className="rounded-lg overflow-hidden  hover:bg-gray-100 focus-within:border-[2px] focus-within:border-gray-200 ontline-none">
+      <div className="rounded-lg overflow-hidden border-[2px] border-[#f9fafb] focus-within:border-[2px] focus-within:border-primary outline-none transition-colors duration-100">
         <ToolbarPlugin title={title}/>
         <div className="relative">
           <RichTextPlugin

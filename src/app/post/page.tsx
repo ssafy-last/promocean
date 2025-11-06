@@ -158,7 +158,6 @@ export default function PostPage() {
         <div>
           <TitleInput value={title} onChange={setTitle} placeholder="제목을 입력하세요" />
         </div>
-
         <div>
           <input
             value={tags}
@@ -221,6 +220,9 @@ export default function PostPage() {
             />
           </div>
         </div>
+
+
+
       </div>
     </div>
   );
