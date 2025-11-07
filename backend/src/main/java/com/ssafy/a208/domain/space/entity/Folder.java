@@ -1,6 +1,5 @@
 package com.ssafy.a208.domain.space.entity;
 
-import com.ssafy.a208.domain.space.dto.request.FolderReq;
 import com.ssafy.a208.global.common.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,7 +9,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -50,9 +48,9 @@ public class Folder extends BaseEntity {
         this.space = space;
     }
 
-    public void updateFolder(FolderReq folderReq) {
-        this.name = folderReq.name();
-        this.color = folderReq.color();
+    public void updateFolder(String name, String color) {
+        this.name = name;
+        this.color = color;
     }
 
     public void updatePin() {
