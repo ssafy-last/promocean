@@ -5,36 +5,28 @@ import CommunityFloatingSection from "@/components/section/CommunityFloatingSect
 import CommunityPostDetailSection from "@/components/section/CommunityPostDetailSection";
 import CommunityLikeShareSection from "@/components/section/CommunityLikeShareSection";
 import CommunityCommentSection from "@/components/section/CommunityCommentSection";
-import { CommunityFloatingItemProps, CommunityPostItemResponse, CommunityPostItemProps, HashtagItemProps, CommunityCommentItemProps } from "@/types/itemType";
+import { CommunityPostItemProps, HashtagItemProps, CommunityCommentItemProps } from "@/types/itemType";
+import { CommunityAPI } from "@/api/community";
+
+interface CommunityPostPageProps {
+  params: Promise<{ id: string }>;
+}
 
 /**
  * CommunityPostPage component
  * @description CommunityPostPage component is a community post page component that displays the community post page content
  * @returns {React.ReactNode}
  */
-export default async function CommunityPostPage() {
+export default async function CommunityPostPage({ params }: CommunityPostPageProps) {
+  const { id } = await params;
+  const postId = parseInt(id);
 
-  // Todo : 실제 API와 연동하기
-  // 커뮤니티 화면  글 상세보기 화면에서 공통 레이아웃이므로 인기글 데이터를 공통으로 사용할 수 있습니다.
-  // 추후 변경 예정
-  const popularPostsRes = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/mock/PopularPost.json`,
-    { cache: "no-store" }
-  );
-  const popularPosts: CommunityFloatingItemProps[] = await popularPostsRes.json();
+  const { popularPosts } = await CommunityAPI.getPopularPosts();
+  const { communityPostDetailData } = await CommunityAPI.getCommunityPostDetailData(postId);
 
-  // Todo: 실제 API와 연동하기
-  const communityPostDetailRes = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/mock/CommunityPostDetailData.json`,
-    { cache: "no-store" }
-  );
-  const communityPostResponse: CommunityPostItemResponse = await communityPostDetailRes.json();
-  const hashtagList: HashtagItemProps[] = communityPostResponse.tags.map(tag => ({ tag }));
-
-  // 글 상세보기 데이터
-  const communityPostData: CommunityPostItemProps = communityPostResponse;
-
-  const communityCommentList: CommunityCommentItemProps[] = communityPostResponse.replies.map(item => ({
+  const hashtagList: HashtagItemProps[] = communityPostDetailData.tags.map(tag => ({ tag }));
+  const communityPostData: CommunityPostItemProps = communityPostDetailData;
+  const communityCommentList: CommunityCommentItemProps[] = communityPostDetailData.replies.map(item => ({
     author: item.author,
     profileUrl: item.profileUrl,
     content: item.content,
@@ -53,7 +45,7 @@ export default async function CommunityPostPage() {
           <CommunityPostDetailSection communityPostData={communityPostData} hashtagList={hashtagList} />
 
           {/* 좋아요 및 스크랩 섹션 */}
-          <CommunityLikeShareSection likeCount={communityPostResponse.likeCnt}/>
+          <CommunityLikeShareSection likeCount={communityPostDetailData.likeCnt}/>
 
           {/* 구분선 */}
           <hr className="border-gray-200" />
