@@ -24,7 +24,9 @@ export default function TeamSpaceAddMemberList({ searchSpaceMemberListState, sel
     return(
         <div className ="absolute bg-white overflow-y-scroll w-full h-[300px] border border-t-0 border-gray-300 rounded-[10px] p-2.5 gap-2.5">
             {searchSpaceMemberListState.map((member) => (
-                <SpaceAddMemberItem key={member.email} name={member.name} email={member.email} handleMemberClick={handleMemberClick} />
+                <SpaceAddMemberItem key={member.email} name={member.name} email={member.email} 
+                handleMemberClick={handleMemberClick} 
+                isMinusButton={false}/>
             ))}
         </div>
     )
