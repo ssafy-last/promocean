@@ -8,6 +8,7 @@ import {
   ContestNoticeItemProps,
   ContestSubmissionItemProps,
   ContestSubmissionDetailData,
+  ContestNoticeDetailData,
 } from "@/types/itemType";
 
 /**
@@ -51,6 +52,13 @@ export const ContestAPI = {
     const response = await apiFetch<ContestSubmissionDetailData>(`/mock/ContestSubmissionDetailData.json?submissionId=${submissionId}`);
     return {
       submissionData: response,
+    };
+  },
+
+  async getContestNoticeDetailData(noticeId: number) {
+    const response = await apiFetch<ContestNoticeDetailData>(`/mock/ContestNoticeDetailData.json?noticeId=${noticeId}`);
+    return {
+      noticeData: response,
     };
   },
 };
