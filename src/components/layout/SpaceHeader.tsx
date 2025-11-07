@@ -2,8 +2,9 @@
 
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import PlusCircle from "../icon/PlusCircle";
+import TeamSpaceManageModal from "../modal/TeamSpaceManageModal";
 
 /**
  * CommunityHeader component
@@ -37,6 +38,27 @@ export interface SpaceHeaderProps {
  */
 export default function SpaceHeader(
   {nickname, isTeamSpace = false, description}: SpaceHeaderProps) {
+
+  const [isModalOpenState, setIsModalOpenState] = useState(false);
+  const [modalTabState, setModalTabState] = useState<"권한" | "초대">("권한");  
+  const [memberListState, setMemberListState] = useState<string[]>([
+    "김철수",
+    "이영희",
+    "박민수",
+    "최지우",
+    "강다은",
+    "이수민",
+    "홍길동"
+  ]);
+
+  const handleModalOpen = () => {
+    setIsModalOpenState(!isModalOpenState);
+  }
+  const handleModalClose = () => {
+    setIsModalOpenState(false);
+  }
+
+
   return (
     <header className="w-full">
       {/* 상단 영역 - 전체 너비 */}
@@ -48,14 +70,28 @@ export default function SpaceHeader(
         </div>
 
         {
-          isTeamSpace &&(
-            <div className="flex flex-row gap-3">
-            <button className ="cursor-pointer" onClick={() => {}}>관리</button>
-            <button className ="cursor-pointer" onClick={() => {}}>초대</button>
-            </div>
+          isTeamSpace && (
+          <div className="relative flex flex-row gap-3">
+            <button className ="
+            cursor-pointer 
+            p-2 
+            rounded-md
+            hover:bg-primary/40
+            " onClick={handleModalOpen}>팀 관리</button>
+
+            {isModalOpenState && (
+              <TeamSpaceManageModal
+                modalTabState={modalTabState}
+                setModalTabState={setModalTabState}
+                memberListState={memberListState}
+                setMemberListState={setMemberListState}
+              />
+            )}
+          </div>
           )
         }
         
+
       </div>
     </header>
   );
