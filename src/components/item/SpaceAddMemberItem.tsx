@@ -14,7 +14,7 @@ export default function SpaceAddMemberItem({name, email, handleMemberClick, isMi
     return(
         <button 
         type="button"
-        className ="flex flex-row w-full justify-between px-4 py-1 gap-3 items-center hover:bg-current/5 active:bg-current/10
+        className ="flex flex-row w-full justify-between px-4 py-1 gap-3 items-center hover:bg-current/5 
         rounded-md"
         onClick={()=>{handleMemberClick?.(name)}}
         >
