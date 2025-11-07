@@ -70,10 +70,12 @@ export interface PostingFloatingItemProps {
 
 /**
  * ContestCardItemProps interface
- * @description 대회 카드 아이템 타입
+ * @page /contest
+ * @endpoint /api/v1/contests?page={page}&size={size}&sorter={sorter}&status={status}&title={title}&tag={tag}
+ * @description 대회 페이지에서 사용되는 대회 카드 아이템 타입입니다.
  */
 export interface ContestCardItemProps {
-  id: string
+  contestId: number
   title: string
   image: string
   participantCount: number
@@ -83,9 +85,12 @@ export interface ContestCardItemProps {
   startDate: string
 }
 
+// TODO : 삭제 예정입니다.
 /**
  * ContestInfoItemProps interface
- * @description 대회 정보 아이템 타입 - 내용만 받음 (title은 Section에서 props로 전달)
+ * @page /contest/post/[contestId]
+ * @endpoint /api/v1/contests/{contestId}/info
+ * @description 대회 상세 페이지 사이드바에서 사용되는 대회 정보 아이템 타입입니다.
  */
 export interface ContestInfoItemProps {
   content: string | React.ReactNode
@@ -93,7 +98,9 @@ export interface ContestInfoItemProps {
 
 /**
  * ContestPostItemProps interface
- * @description 대회 게시글 아이템 타입
+ * @page /contest/post/[contestId]
+ * @endpoint /api/v1/contests/{contestId}
+ * @description 대회 상세 페이지에서 사용되는 대회 게시글 아이템 타입입니다.
  */
 export interface ContestPostItemProps {
   contestId: number
@@ -110,9 +117,12 @@ export interface ContestPostItemProps {
   updatedAt: string
 }
 
+// TODO : 삭제 예정입니다.
 /**
  * LeaderboardItemProps interface
- * @description 리더보드 아이템 타입
+ * @page /contest/post/[contestId]
+ * @endpoint /api/v1/contests/{contestId}/leaderboard
+ * @description 대회 상세 페이지에서 사용되는 리더보드 아이템 타입입니다.
  */
 export interface LeaderboardItemProps {
   rank: number
@@ -207,7 +217,9 @@ export interface CommunityCommentItemProps {
 
 /**
  * NoticeItemProps interface
- * @description 공지사항 아이템 타입
+ * @page /contest/post/[contestId]?tab=notice
+ * @endpoint /api/v1/contests/{contestId}/notices
+ * @description 대회 상세 페이지에서 사용되는 대회 공지사항 아이템 타입입니다.
  */
 export interface ContestNoticeItemProps {
   noticeId: number
@@ -218,7 +230,9 @@ export interface ContestNoticeItemProps {
 
 /**
  * ContestNoticeDetailItemProps interface
- * @description 대회 공지사항 상세 아이템 타입
+ * @page /contest/post/[contestId]/notice/[noticeId]
+ * @endpoint /api/v1/contests/{contestId}/notices/{noticeId}
+ * @description 대회 상세 페이지에서 사용되는 대회 공지사항 상세 아이템 타입입니다.
  */
 export interface ContestNoticeDetailItemProps {
   contestId: number
@@ -237,7 +251,9 @@ export interface ContestNoticeDetailItemProps {
 
 /**
  * ContestSubmissionItemProps interface
- * @description 대회 제출 목록 아이템 타입
+ * @page /contest/post/[contestId]?tab=submission
+ * @endpoint /api/v1/contests/{contestId}/submissions
+ * @description 대회 상세 페이지에서 사용되는 대회 제출 목록 아이템 타입입니다.
  */
 export interface ContestSubmissionItemProps {
   submissionId: number
@@ -251,7 +267,9 @@ export interface ContestSubmissionItemProps {
 
 /**
  * ContestSubmissionDetailData interface
- * @description 대회 제출 상세 데이터 타입
+ * @page /contest/post/[contestId]/submission/[submissionId]
+ * @endpoint /api/v1/contests/{contestId}/submissions/{submissionId}
+ * @description 대회 상세 페이지에서 사용되는 대회 제출 상세 데이터 타입입니다.
  */
 export interface ContestSubmissionDetailData {
   submissionId: number
@@ -267,7 +285,9 @@ export interface ContestSubmissionDetailData {
 
 /**
  * ContestNoticeDetailData interface
- * @description 대회 공지사항 상세 데이터 타입
+ * @page /contest/post/[contestId]/notice/[noticeId]
+ * @endpoint /api/v1/contests/{contestId}/notices/{noticeId}
+ * @description 대회 상세 페이지에서 사용되는 대회 공지사항 상세 데이터 타입입니다.
  */
 export interface ContestNoticeDetailData {
   noticeId: number;
