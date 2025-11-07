@@ -3,7 +3,7 @@
 import ContestHeader from "@/components/layout/ContestHeader";
 import ContestPostSection from "@/components/section/ContestPostSection";
 import ContestInfoSection from "@/components/section/ContestInfoSection";
-import { ContestAPI } from "@/api/contest"; // ✅ fetcher 래핑 API import
+import { ContestAPI } from "@/api/contest";
 
 /**
  * ContestPostPage component
