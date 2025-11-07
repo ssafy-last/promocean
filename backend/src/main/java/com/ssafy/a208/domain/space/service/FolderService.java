@@ -67,7 +67,7 @@ public class FolderService {
         Folder folder = folderReader.getFolderById(folderId);
         folderReader.checkDuplicatedName(space, folderReq.name());
 
-        folder.updateFolder(folderReq);
+        folder.updateFolder(folderReq.name(), folderReq.color());
     }
 
     @Transactional
