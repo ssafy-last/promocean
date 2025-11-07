@@ -81,6 +81,8 @@ export default function SpaceHeader(
 
             {isModalOpenState && (
               <TeamSpaceManageModal
+                isModalOpenState={isModalOpenState}
+                handleModalClose={handleModalClose}
                 modalTabState={modalTabState}
                 setModalTabState={setModalTabState}
                 memberListState={memberListState}
