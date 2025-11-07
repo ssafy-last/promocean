@@ -8,8 +8,7 @@ import MySpaceArchiveFilterSection from "@/components/section/MySpaceArchiveFilt
 
 
 export default async function MySpaceMyPostPage() {
-  const TitleName = "내가 쓴 글";
-
+    const TitleName = "내가 쓴 글";
 
     const mySpaceBoardRes = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/mock/CommunityBoardData.json`,
