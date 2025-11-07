@@ -7,6 +7,7 @@ import {
   ContestInfoItemProps,
   ContestNoticeItemProps,
   ContestSubmissionItemProps,
+  ContestSubmissionDetailData,
 } from "@/types/itemType";
 
 /**
@@ -18,7 +19,7 @@ export const ContestAPI = {
 
   /**
    * 대회 상세 페이지 데이터 조회
-   * @description 대회 상세 페이지 데이터를 조회하는 API입니다. // Todo : 실제 API와 연동하기
+   * @description 대회 상세 페이지 데이터를 조회하는 API입니다.
    * @returns {Promise<{ contestPostData: ContestPostItemProps, leaderboardList: LeaderboardItemProps[], contestInfoData: ContestInfoItemProps[], contestInfoTitles: string[], contestNoticeList: ContestNoticeItemProps[], contestSubmissionList: ContestSubmissionItemProps[] }>}
    */
   async getContestPostPageData() {
@@ -43,6 +44,13 @@ export const ContestAPI = {
       contestInfoTitles: ["대회 정보", "상금 유형", "참여 통계", "해시태그"],
       contestNoticeList: contestNotice || [],
       contestSubmissionList: contestSubmission || [],
+    };
+  },
+
+  async getContestSubmissionDetailData(submissionId: number) {
+    const response = await apiFetch<ContestSubmissionDetailData>(`/mock/ContestSubmissionDetailData.json?submissionId=${submissionId}`);
+    return {
+      submissionData: response,
     };
   },
 };

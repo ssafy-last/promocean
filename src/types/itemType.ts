@@ -248,3 +248,19 @@ export interface ContestSubmissionItemProps {
   submissionUrl: string
   voteCnt: number
 }
+
+/**
+ * ContestSubmissionDetailData interface
+ * @description 대회 제출 상세 데이터 타입
+ */
+export interface ContestSubmissionDetailData {
+  submissionId: number
+  author: string
+  profileUrl: string
+  description: string
+  prompt: string
+  type: string
+  result: string
+  updatedAt: string
+  voteCnt: number
+}
