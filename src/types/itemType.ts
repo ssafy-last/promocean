@@ -264,3 +264,18 @@ export interface ContestSubmissionDetailData {
   updatedAt: string
   voteCnt: number
 }
+
+/**
+ * ContestNoticeDetailData interface
+ * @description 대회 공지사항 상세 데이터 타입
+ */
+export interface ContestNoticeDetailData {
+  noticeId: number;
+  contestId: number;
+  author: string;
+  profileUrl: string;
+  title: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+}
