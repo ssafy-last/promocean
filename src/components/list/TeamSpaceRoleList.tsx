@@ -11,7 +11,7 @@ export default function TeamSpaceRoleList({ memberListState }: TeamSpaceRoleList
 
     return(
 
-            <ul className ="flex flex-col gap-3 w-full py-2 [&>li]:rounded-md [&>li]:px-2 [&>li:hover]:bg-gray-100
+            <ul className ="flex flex-col gap-2 w-full py-2 [&>li]:rounded-md [&>li]:px-2 [&>li:hover]:bg-gray-100
                 overflow-y-scroll max-h-60">
 
                     {memberListState.map((member, index) => (
