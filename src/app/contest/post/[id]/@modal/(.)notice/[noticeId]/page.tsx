@@ -5,49 +5,25 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState, use } from "react";
 import CommunityPostUserProfileItem from "@/components/item/CommunityPostUserProfileItem";
-
-/**
- * ContestNoticeDetailData interface
- * @description ContestNoticeDetailData interface is a contest notice detail data interface that displays the contest notice detail data
- * @returns {React.ReactNode}
- */
-interface ContestNoticeDetailData {
-  noticeId: number;
-  contestId: number;
-  author: string;
-  profileUrl: string;
-  title: string;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import { ContestAPI } from "@/api/contest";
+import { ContestNoticeDetailData } from "@/types/itemType";
 
 /**
  * 대회 상세 페이지 공지사항 모달
  * @description 대회 상세 페이지에서 공지 사항을 조회하는 경우 나오는 모달입니다.
  * @returns {React.ReactNode}
  */
-export default function ContestNoticeModal({
-  params,
-}: {
-  params: Promise<{ noticeId: string }>;
-}) {
+export default function ContestNoticeModal({ params }: { params: Promise<{ noticeId: number }> }) {
+  
   const router = useRouter();
   const { noticeId } = use(params);
   const [noticeData, setNoticeData] = useState<ContestNoticeDetailData | null>(null);
 
   useEffect(() => {
     const fetchNoticeDetail = async () => {
-      try {
-        // TODO: 실제 API와 연동하기
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/mock/ContestNoticeDetailData.json`, { cache: "no-store" });
-        const data = await response.json();
-        setNoticeData(data);
-      } catch (error) {
-        console.error("공지사항 상세 정보를 불러오는데 실패했습니다:", error);
-      }
+      const { noticeData } = await ContestAPI.getContestNoticeDetailData(noticeId);
+      setNoticeData(noticeData);
     };
-
     fetchNoticeDetail();
   }, [noticeId]);
 
