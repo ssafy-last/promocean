@@ -91,7 +91,7 @@ export default function SpaceArchiveItem({
                     <Pin 
                         className={`w-6 h-6 transition-all duration-200
                                     ${isPinnedState 
-                                        ? 'fill-yellow-400 stroke-yellow-500' 
+                                        ? 'fill-red-400 stroke-gray-800' 
                                         : 'fill-none stroke-gray-800'
                                     }`}
                     />
