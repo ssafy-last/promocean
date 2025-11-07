@@ -7,48 +7,24 @@ import { useEffect, useState, use } from "react";
 import Image from "next/image";
 import CommunityPostUserProfileItem from "@/components/item/CommunityPostUserProfileItem";
 import Heart from "@/components/icon/Heart";
-
-/**
- * ContestSubmissionDetailData interface
- * @description ContestSubmissionDetailData interface is a contest submission detail data interface that displays the contest submission detail data
- * @returns {React.ReactNode}
- */
-interface ContestSubmissionDetailData {
-  submissionId: number;
-  author: string;
-  profileUrl: string;
-  description: string;
-  prompt: string;
-  type: string;
-  result: string;
-  updatedAt: string;
-  voteCnt: number;
-}
+import { ContestAPI } from "@/api/contest";
+import { ContestSubmissionDetailData } from "@/types/itemType";
 
 /**
  * 대회 상세 페이지 산출물 모달
  * @description 대회 상세 페이지에서 산출물을 조회하는 경우 나오는 모달입니다.
  * @returns {React.ReactNode}
  */
-export default function ContestSubmissionModal({ params }: { params: Promise<{ submissionId: string }> }) {
+export default function ContestSubmissionModal({ params }: { params: Promise<{ submissionId: number }> }) {
   const router = useRouter();
   const { submissionId } = use(params);
   const [submissionData, setSubmissionData] = useState<ContestSubmissionDetailData | null>(null);
 
   useEffect(() => {
     const fetchSubmissionDetail = async () => {
-      try {
-        // TODO: 실제 API와 연동하기
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/mock/ContestSubmissionDetailData.json`,
-          { cache: "no-store" }
-        ).then(res => res.json()).catch(() => []);
-        setSubmissionData(response);
-        console.log(response);
-      } catch (error) {
-        console.error("산출물 상세 정보를 불러오는데 실패했습니다:", error);
-      }
+      const { submissionData } = await ContestAPI.getContestSubmissionDetailData(submissionId);
+      setSubmissionData(submissionData);
     };
-
     fetchSubmissionDetail();
   }, [submissionId]);
 
