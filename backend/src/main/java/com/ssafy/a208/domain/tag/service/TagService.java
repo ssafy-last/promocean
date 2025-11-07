@@ -1,7 +1,6 @@
 package com.ssafy.a208.domain.tag.service;
 
 import com.ssafy.a208.domain.tag.entity.Tag;
-import com.ssafy.a208.domain.tag.reader.TagReader;
 import com.ssafy.a208.domain.tag.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class TagService {
 
-    private final TagReader tagReader;
     private final TagRepository tagRepository;
 
     @Transactional
