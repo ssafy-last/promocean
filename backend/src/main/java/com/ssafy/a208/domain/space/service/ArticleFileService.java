@@ -7,6 +7,8 @@ import com.ssafy.a208.domain.space.repository.ArticleFileRepository;
 import com.ssafy.a208.global.common.enums.ImageDirectory;
 import com.ssafy.a208.global.image.dto.FileMetaData;
 import com.ssafy.a208.global.image.service.S3Service;
+import com.ssafy.a208.global.security.exception.InvalidFilePathException;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +22,11 @@ public class ArticleFileService {
     private final ArticleFileRepository articleFileRepository;
 
     public String createArticleFile(String filePath, Article article) {
-        String destPath = s3Service.moveObject(filePath, ImageDirectory.ARTICLES);
+        if (Objects.isNull(filePath) || filePath.isBlank()) {
+            return null;
+        }
+
+        String destPath = extractFilePath(filePath);
         FileMetaData metaData = s3Service.getFileMetadata(destPath);
         ArticleFile articleFile = ArticleFile.builder()
                 .originalName(metaData.originalName())
@@ -30,12 +36,59 @@ public class ArticleFileService {
                 .article(article)
                 .build();
         articleFileRepository.save(articleFile);
+
         return destPath;
     }
 
     public void deleteArticleFile(Article article) {
         Optional<ArticleFile> articleFile = articleFileReader.getArticleFileById(article.getId());
-        articleFile.ifPresent(existing -> existing.deleteArticleFile());
+        articleFile.ifPresent(existing -> {
+            s3Service.deleteFile(existing.getFilePath());
+            existing.deleteArticleFile();
+        });
+    }
+
+    public String getArticleFileUrl(Article article) {
+        Optional<ArticleFile> articleFile = articleFileReader.getArticleFileById(article.getId());
+
+        return articleFile
+                .map(existing -> s3Service.getCloudFrontUrl(existing.getFilePath()))
+                .orElse(null);
+    }
+
+    public String getArticleFileUrlByString(String filePath) {
+        if (Objects.isNull(filePath) || filePath.isBlank()) {
+            return null;
+        }
+        return s3Service.getCloudFrontUrl(filePath);
+    }
+
+    public void updateArticleFile(String filePath, Article article) {
+        if (!Objects.isNull(filePath) && !filePath.isBlank()) {
+            return;
+        }
+
+        Optional<ArticleFile> file = articleFileReader.getArticleFileById(article.getId());
+        file.ifPresentOrElse(
+                existing -> {
+                    s3Service.deleteFile(existing.getFilePath());
+                    String destPath = extractFilePath(filePath);
+                    FileMetaData metaData = s3Service.getFileMetadata(destPath);
+                    existing.updateFile(metaData);
+                },
+                () -> {
+                    createArticleFile(filePath, article);
+                }
+        );
+
+    }
+
+    private String extractFilePath(String filePath) {
+        if (!filePath.startsWith("tmp")) {
+            throw new InvalidFilePathException();
+        }
+
+        return s3Service.moveObject(filePath, ImageDirectory.ARTICLES);
     }
 
 }
