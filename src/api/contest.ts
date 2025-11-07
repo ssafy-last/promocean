@@ -3,6 +3,7 @@
 import { apiFetch } from "@/api/fetcher";
 import {
   ContestPostItemProps,
+  ContestCardItemProps,
   LeaderboardItemProps,
   ContestInfoItemProps,
   ContestNoticeItemProps,
@@ -20,6 +21,7 @@ export const ContestAPI = {
 
   /**
    * 대회 페이지 조회 시 필요한 데이터 조회하는 API입니다.
+   * @page /contest/post/[contestId]
    * @description 대회 상세 페이지 데이터를 조회하는 API입니다.
    * @returns {Promise<{ contestPostData: ContestPostItemProps, leaderboardList: LeaderboardItemProps[], contestInfoData: ContestInfoItemProps[], contestInfoTitles: string[], contestNoticeList: ContestNoticeItemProps[], contestSubmissionList: ContestSubmissionItemProps[] }>}
    */
@@ -32,7 +34,7 @@ export const ContestAPI = {
       contestSubmission,
     ] = await Promise.all([
 
-      apiFetch<ContestPostItemProps>("/mock/ContestPostItem.json"),
+      apiFetch<ContestPostItemProps>("/mock/ContestPostDetail.json"),
       apiFetch<{ Leaderboard: LeaderboardItemProps[] }>("/mock/LeaderboardItem.json"),
       apiFetch<{ items: ContestInfoItemProps[] }>("/mock/ContestInfoItem.json"),
       apiFetch<ContestNoticeItemProps[]>("/mock/ContestNoticeData.json"),
@@ -54,12 +56,12 @@ export const ContestAPI = {
    * @page /contest?page=1&size=10&sorter=&status=&title=&tag=
    * @endpoint /api/v1/contests?page={page}&size={size}&sorter={sorter}&status={status}&title={title}&tag={tag}
    * @description 대회 목록 데이터를 조회하는 API입니다.
-   * @returns {Promise<{ contestList: ContestPostItemProps[] }>}
+   * @returns {Promise<{ contestCardList: ContestCardItemProps[] }>}
    */
-  async getContestList(page=0, size=10, sorter="", status="", title="", tag="") {
-    const response = await apiFetch<ContestPostItemProps[]>(`/mock/ContestPostItem.json`);
+  async getContestCardList(page=0, size=10, sorter="", status="", title="", tag="") {
+    const response = await apiFetch<ContestCardItemProps[]>(`/mock/ContestCardList.json`);
     return {
-      contestList: response,
+      contestCardList: response,
     };
   },
   
@@ -72,7 +74,7 @@ export const ContestAPI = {
    * @returns {Promise<{ contestData: ContestPostItemProps }>}
    */
   async getContestData(contestId: number) {
-    const response = await apiFetch<ContestInfoItemProps[]>(`/mock/ContestInfoData.json?contestId=${contestId}`);
+    const response = await apiFetch<ContestInfoItemProps[]>(`/mock/ContestPostDetail.json?contestId=${contestId}`);
     return {
       contestData: response,
     };
@@ -138,6 +140,4 @@ export const ContestAPI = {
       submissionData: response,
     };
   },
-
-
 };
