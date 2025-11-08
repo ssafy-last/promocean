@@ -155,13 +155,13 @@ export interface LeaderboardItemProps {
 }
 
 /**
- * CommunityPostItemProps interface
- * @description rptl커뮤니티 게시글 아이템 타입 (글 상세보기 화면, API와 동일하게 생성했습니다)
+ * CommunityPostItemResponse interface
+ * @description 커뮤니티 게시글 아이템 타입
  */
 export interface CommunityPostItemResponse {
   postId: number
   author: string
-  profile: string
+  profileUrl: string
   title: string
   description: string
   category: string
@@ -177,7 +177,7 @@ export interface CommunityPostItemResponse {
   createdAt: string
   replies: {
     author: string
-    profile: string
+    profileUrl: string
     content: string
     createdAt: string
     updatedAt: string

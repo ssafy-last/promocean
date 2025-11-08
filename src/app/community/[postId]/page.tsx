@@ -46,11 +46,10 @@ export default async function CommunityPostPage({ params }: CommunityPostPagePro
 
     const hashtagList: HashtagItemProps[] = communityPostDetailData.tags.map(tag => ({ tag }));
     
-    // API 응답의 profile을 profileUrl로 변환하여 컴포넌트에서 사용
     const communityPostData: CommunityPostItemProps = {
       postId: communityPostDetailData.postId,
       author: communityPostDetailData.author,
-      profileUrl: communityPostDetailData.profile,
+      profileUrl: communityPostDetailData.profileUrl,
       title: communityPostDetailData.title,
       description: communityPostDetailData.description,
       category: communityPostDetailData.category,
@@ -64,7 +63,7 @@ export default async function CommunityPostPage({ params }: CommunityPostPagePro
     
     const communityCommentList: CommunityCommentItemProps[] = communityPostDetailData.replies.map(item => ({
       author: item.author,
-      profileUrl: item.profile,
+      profileUrl: item.profileUrl,
       content: item.content,
       createdAt: item.createdAt,
       updatedAt: item.updatedAt,
