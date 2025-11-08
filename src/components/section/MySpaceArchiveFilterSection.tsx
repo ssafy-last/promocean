@@ -4,6 +4,7 @@
 
 import ComboBox from "@/components/filter/ComboBox";
 import SearchBar from "@/components/filter/SearchBar";
+import SortDropdown from "@/components/filter/SortDropdown";
 import { useRouter } from "next/navigation";
 
 /**
@@ -35,19 +36,32 @@ export default function MySpaceArchiveFilterSection({buttonMode} : MySpaceArchiv
     console.log("글 쓰기");
   }
 
-  return (
-    <div className="flex flex-row items-center justify-end gap-3 w-full px-4 py-4 bg-gray-50 border-gray-200">
-      <ComboBox />
-      <SearchBar />
+  const handleSortChange = (sortOption: string) => {
+    console.log("정렬 변경:", sortOption);
+  }
 
-      {/* Todo: 게시글 작성 컴포넌트 분리 */}
-      <button
-        type="button"
-        className="px-4 py-2 rounded-md bg-primary text-white font-medium hover:brightness-110 active:brightness-95 transition-colors"
-        onClick={buttonMode=="search" ? handleArchiveSearch : handleArchiveBoardWrite}
-      >
-        {buttonMode == "search" ? "카테고리 검색" : "글 쓰기"}
-      </button>
+  return (
+    <div className="flex flex-row items-center justify-between gap-3 w-full px-4 py-4 bg-gray-50 border-gray-200">
+      {/* 왼쪽: 정렬 드롭다운 */}
+      <div className="flex items-center gap-2">
+        <span className="text-sm text-gray-600 font-medium">정렬</span>
+        <SortDropdown onChange={handleSortChange} />
+      </div>
+
+      {/* 오른쪽: 검색 필터 및 버튼 */}
+      <div className="flex items-center gap-3">
+        <ComboBox />
+        <SearchBar />
+
+        {/* Todo: 게시글 작성 컴포넌트 분리 */}
+        <button
+          type="button"
+          className="px-4 py-2 rounded-md bg-primary text-white font-medium hover:brightness-110 active:brightness-95 transition-colors"
+          onClick={buttonMode=="search" ? handleArchiveSearch : handleArchiveBoardWrite}
+        >
+          {buttonMode == "search" ? "카테고리 검색" : "글 쓰기"}
+        </button>
+      </div>
     </div>
   );
 }

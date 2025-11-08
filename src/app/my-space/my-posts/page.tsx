@@ -22,13 +22,9 @@ export default async function MySpaceMyPostPage() {
 
       <SpaceBoardHeader titleName={TitleName} description="지금까지 내가 쓴 글을 볼 수 있습니다." />
 
-      <div className="flex justify-end-safe">
-        <div className="shrink-0 min-w-[380px]">
-          <MySpaceArchiveFilterSection buttonMode="write"/>
-        </div>
-      </div>
+      <MySpaceArchiveFilterSection buttonMode="write"/>
 
-      <SpaceArchiveBoardList 
+      <SpaceArchiveBoardList
         mySpaceBoardList={mySpaceBoardList}
         />
 
