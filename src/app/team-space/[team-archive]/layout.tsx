@@ -1,4 +1,5 @@
 import SpaceHeader from "@/components/layout/SpaceHeader";
+import TeamSpaceHeader from "@/components/layout/TeamSpaceHeader";
 
 interface TeamDetailLayoutProps {
     params : { 'team-archive' : string },
@@ -15,7 +16,7 @@ export default function TeamSpaceArchiveLayout({
 
         return(
             <div>
-             <SpaceHeader nickname={teamName}/>
+             <TeamSpaceHeader nickname={teamName}/>
              {children}
             </div>
         )
