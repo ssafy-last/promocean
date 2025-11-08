@@ -53,15 +53,17 @@ export interface CommunityBoardItemResponse {
  * @description API 응답의 게시글 목록 아이템 타입 (컴포넌트에서 사용)
  */
 export interface CommunityBoardItemProps {
-  id: string
+  postId: number
+  author: string
+  profileUrl: string
   title: string
-  hashtags: string[]
+  type: string
+  description: string
   category: string
-  likeCount: number
-  commentCount: number
-  image?: string
-  userImage?: string;    // 작성자 프로필 이미지
-  userName: string;          // 작성자 이름
+  tags: string[]
+  likeCnt: number
+  replyCnt: number
+  image?: string  // API 응답에 없지만 컴포넌트에서 사용
 }
 
 /**

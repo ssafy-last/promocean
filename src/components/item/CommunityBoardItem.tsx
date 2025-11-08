@@ -13,10 +13,10 @@ import UserSimpleProfile from "@/components/etc/UserSimpleProfile";
  * @description CommunityBoardItem component is a community board item component that displays the community board item content
  * @returns {React.ReactNode}
  */
-export default function CommunityBoardItem({ id, title, hashtags, category, likeCount, commentCount, image, userImage, userName }: CommunityBoardItemProps) {
+export default function CommunityBoardItem({ postId, author, profileUrl, title, category, tags, likeCnt, replyCnt, image }: CommunityBoardItemProps) {
   return (
     <Link
-      href={`/community/${id}`}
+      href={`/community/${postId}`}
       className="flex items-start justify-between w-full bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 p-4 gap-4"
     >
       {/* 왼쪽 : 이미지 영역 */}
@@ -46,7 +46,7 @@ export default function CommunityBoardItem({ id, title, hashtags, category, like
             {category}
           </span>
           <div className="flex flex-wrap gap-1 text-sm text-gray-500 truncate">
-            {hashtags.map((tag, idx) => (
+            {tags.map((tag, idx) => (
               <span
                 key={idx}
                 className="hover:text-primary cursor-pointer"
@@ -62,8 +62,8 @@ export default function CommunityBoardItem({ id, title, hashtags, category, like
       <div className="flex flex-row items-center justify-between text-gray-600 flex-shrink-0 gap-4 self-end">
         {/* 유저 정보 */}
         <UserSimpleProfile 
-          profileUrl={userImage}
-          nickname={userName}
+          profileUrl={profileUrl}
+          nickname={author}
           imageSize="sm"
           textSize="sm"
           showName={true}
@@ -74,11 +74,11 @@ export default function CommunityBoardItem({ id, title, hashtags, category, like
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1 transition-colors">
             <Heart />
-            <span className="text-sm">{likeCount}</span>
+            <span className="text-sm">{likeCnt}</span>
           </div>
           <div className="flex items-center gap-1 transition-colors">
             <ChatBubbleBottomCenterText />
-            <span className="text-sm">{commentCount}</span>
+            <span className="text-sm">{replyCnt}</span>
           </div>
         </div>
       </div>
