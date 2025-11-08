@@ -57,7 +57,7 @@ export const CommunityAPI = {
 
   /**
    * 커뮤니티 게시글 상세 데이터 조회하는 API입니다.
-   * @page /community/post/[id]
+   * @page /community/[postId]
    * @endpoint /api/v1/posts/{postId}
    * @description 커뮤니티 게시글 상세 데이터를 조회하는 API입니다.
    * @param {number} postId - 게시글 ID

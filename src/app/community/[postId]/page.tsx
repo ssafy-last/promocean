@@ -1,4 +1,4 @@
-// frontend/src/app/community/post/[id]/page.tsx
+// frontend/src/app/community/[postId]/page.tsx
 
 import CommunityHeader from "@/components/layout/CommunityHeader";
 import CommunityFloatingSection from "@/components/section/CommunityFloatingSection";
@@ -9,7 +9,7 @@ import { CommunityPostItemProps, HashtagItemProps, CommunityCommentItemProps } f
 import { CommunityAPI } from "@/api/community";
 
 interface CommunityPostPageProps {
-  params: Promise<{ id: string }>;
+  params: Promise<{ postId: string }>;
 }
 
 /**
@@ -18,8 +18,8 @@ interface CommunityPostPageProps {
  * @returns {React.ReactNode}
  */
 export default async function CommunityPostPage({ params }: CommunityPostPageProps) {
-  const { id } = await params;
-  const postId = parseInt(id);
+  const { postId: postIdStr } = await params;
+  const postId = parseInt(postIdStr);
 
   const { popularPosts } = await CommunityAPI.getPopularPosts();
   const { communityPostDetailData } = await CommunityAPI.getCommunityPostDetailData(postId);
