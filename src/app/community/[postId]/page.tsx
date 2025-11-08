@@ -87,7 +87,7 @@ export default async function CommunityPostPage({ params }: CommunityPostPagePro
           <hr className="border-gray-200" />
 
           {/* 댓글 섹션 */}
-          <CommunityCommentSection communityCommentList={communityCommentList} />
+          <CommunityCommentSection communityCommentList={communityCommentList} postId={postId} />
         </div>
 
         {/* 오른쪽: 플로팅 섹션 */}

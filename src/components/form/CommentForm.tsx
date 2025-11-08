@@ -3,19 +3,41 @@
 // frontend/src/components/form/CommentForm.tsx
 
 import { useState } from 'react';
+import { CommunityAPI } from '@/api/community';
+
+interface CommentFormProps {
+  postId: number;
+  onSuccess?: () => void;
+}
 
 /**
  * CommentForm component
- * @description CommentForm component is a comment form component that displays the comment form content
+ * @description 댓글 작성에 사용되는 폼 컴포넌트입니다.
  * @returns {React.ReactNode}
  */
-export default function CommentForm() {
+export default function CommentForm({ postId, onSuccess }: CommentFormProps) {
   const [comment, setComment] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: 댓글 작성 로직 구현
-    setComment('');
+    
+    if (!comment.trim() || isSubmitting) {
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      await CommunityAPI.createReply(postId, comment.trim());
+      setComment('');
+      onSuccess?.();
+    } catch (error) {
+      console.error('댓글 작성 실패:', error);
+      alert('댓글 작성에 실패했습니다. 다시 시도해주세요.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -31,10 +53,10 @@ export default function CommentForm() {
         <div className="flex justify-end">
           <button
             type="submit"
-            disabled={!comment.trim()}
+            disabled={!comment.trim() || isSubmitting}
             className="px-6 py-2 bg-primary hover:bg-blue-600 text-white font-medium rounded-lg transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed disabled:hover:bg-gray-300"
           >
-            댓글 작성
+            {isSubmitting ? '작성 중...' : '댓글 작성'}
           </button>
         </div>
       </form>

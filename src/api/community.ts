@@ -128,4 +128,28 @@ export const CommunityAPI = {
       communityPostDetailData,
     };
   },
+
+  /**
+   * 커뮤니티 게시글 댓글 작성하는 API입니다.
+   * @page /community/[postId]
+   * @endpoint POST /api/v1/posts/{postId}/replies
+   * @description 커뮤니티 게시글에 댓글을 작성하는 API입니다.
+   * @returns {Promise<{ message: string | null, data: null }>}
+   */
+  async createReply(postId: number, content: string) {
+    interface ApiResponse {
+      message: string | null;
+      data: null;
+    }
+
+    const response = await apiFetch<ApiResponse>(`/api/v1/posts/${postId}/replies`, {
+      method: 'POST',
+      body: JSON.stringify({ content }),
+    });
+
+    return {
+      message: response.message,
+      data: response.data,
+    };
+  },
 };
