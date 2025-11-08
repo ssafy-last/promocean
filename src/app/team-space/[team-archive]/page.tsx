@@ -55,6 +55,7 @@ export default function TeamSpaceArchivePage() {
           <SpaceCardHeader title="Pinned"/>
           <SpaceArchiveList 
             isPinnedList={true}
+            isTeamSpace={true}
             archiveItemListState={archiveItemListState}
             setArchiveItemListState={setArchiveItemListState}
             pinnedItemListState={pinnedItemListState}
@@ -68,6 +69,7 @@ export default function TeamSpaceArchivePage() {
           <SpaceCardHeader title="Folder"/>
           <SpaceArchiveList 
             isPinnedList={false}
+            isTeamSpace={true}
             archiveItemListState={archiveItemListState}
             setArchiveItemListState={setArchiveItemListState}
             pinnedItemListState={pinnedItemListState}
