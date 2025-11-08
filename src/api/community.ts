@@ -118,7 +118,8 @@ export const CommunityAPI = {
       data: CommunityPostItemResponse;
     }
     
-    const response = await apiFetch<ApiResponse>(`/api/v1/posts/${postId}`);
+    // const response = await apiFetch<ApiResponse>(`/api/v1/posts/${postId}`);
+    const response = await apiFetch<ApiResponse>(`/mock/CommunityPostDetailResponse.json`);
     
     // API 응답에서 data 추출
     const communityPostDetailData = response.data;
