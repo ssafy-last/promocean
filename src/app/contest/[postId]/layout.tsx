@@ -1,4 +1,4 @@
-// frontend/src/app/contest/post/[id]/@modal/layout.tsx
+// frontend/src/app/contest/[postId]/@modal/layout.tsx
 
 /**
  * ContestPostLayout component

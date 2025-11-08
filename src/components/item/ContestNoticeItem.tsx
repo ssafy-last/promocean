@@ -16,9 +16,9 @@ export default function ContestNoticeItem({ noticeId, title, createdAt, updatedA
   // TODO : 업데이트 날짜는 필요 없을 것 같아서 일단 보류. 추후에 결정하기
   // const isUpdated = createdAt !== updatedAt;
   const router = useRouter();
-  const id = useParams().id; // TODO : postId로 폴더 명 수정 예정입니다. 모달창 함수 파라미터도 수정해야함
+  const postId = useParams().postId;
   const handleClick = (noticeId: number) => {
-    router.push(`/contest/post/${id}/notice/${noticeId}`); 
+    router.push(`/contest/${postId}/notice/${noticeId}`);
   }
 
   return (

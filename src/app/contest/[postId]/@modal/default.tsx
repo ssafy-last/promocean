@@ -1,4 +1,4 @@
-// frontend/src/app/contest/post/[id]/@modal/default.tsx
+// frontend/src/app/contest/[postId]/@modal/default.tsx
 
 /**
  * Default modal slot
