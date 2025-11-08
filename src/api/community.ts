@@ -1,7 +1,7 @@
 // frontend/src/api/community.ts
 
 import { apiFetch } from "@/api/fetcher";
-import { CommunityBoardItemProps, CommunityFloatingItemProps, CommunityPostItemResponse } from "@/types/itemType";
+import { CommunityBoardItemProps, CommunityBoardItemResponse, CommunityFloatingItemProps, CommunityPostItemResponse } from "@/types/itemType";
 
 
 /**
@@ -34,10 +34,55 @@ export const CommunityAPI = {
    * @description 커뮤니티 게시판 데이터를 조회하는 API입니다.
    * @returns {Promise<{ communityBoardList: CommunityBoardItemProps[] }>}
    */
-  async getCommunityBoardList() {
-    const response = await apiFetch<CommunityBoardItemProps[]>(`/mock/CommunityBoardData.json`);
+  async getCommunityBoardList(params?: {
+    page?: number;
+    size?: number;
+    author?: string;
+    title?: string;
+    tag?: string;
+    sorter?: string;
+    category?: string;
+    type?: string;
+  }) {
+    // 쿼리 파라미터 생성
+    const queryParams = new URLSearchParams();
+    if (params?.page) queryParams.set('page', params.page.toString());
+    if (params?.size) queryParams.set('size', params.size.toString());
+    if (params?.author) queryParams.set('author', params.author);
+    if (params?.title) queryParams.set('title', params.title);
+    if (params?.tag) queryParams.set('tag', params.tag);
+    if (params?.sorter) queryParams.set('sorter', params.sorter);
+    if (params?.category) queryParams.set('category', params.category);
+    if (params?.type) queryParams.set('type', params.type);
+
+    if (queryParams.toString() === '') {
+      queryParams.set('page', '1');
+      queryParams.set('size', '10');
+    }
+
+    interface ApiResponse {
+      message: string | null;
+      data: {
+        posts: CommunityBoardItemResponse[];
+      };
+    }
+
+    const response = await apiFetch<ApiResponse>(`/api/v1/posts?${queryParams.toString()}`);
+
+    const communityBoardList: CommunityBoardItemProps[] = response.data.posts.map((post) => ({
+      id: post.postId.toString(),
+      title: post.title,
+      hashtags: post.tags,
+      category: post.category,
+      likeCount: post.likeCnt,
+      commentCount: post.replyCnt,
+      image: undefined, // API 응답에 image 필드가 없음
+      userImage: post.profileUrl,
+      userName: post.author,
+    }));
+
     return {
-      communityBoardList: response,
+      communityBoardList,
     };
   },
 
