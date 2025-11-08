@@ -5,12 +5,17 @@ import CommunityCommentList from "@/components/list/CommunityCommentList";
 import CommentForm from "@/components/form/CommentForm";
 import ChatBubbleBottomCenterText from "@/components/icon/ChatBubbleBottomCenterText";
 
+interface CommunityCommentSectionProps {
+  communityCommentList: CommunityCommentItemProps[];
+  postId: number;
+}
+
 /**
  * CommunityCommentSection component
- * @description CommunityCommentSection component is a community comment section component that displays the community comment section content
+ * @description 커뮤니티 게시물의 댓글 목록과 댓글 작성 폼을 포함하는 섹션 컴포넌트입니다.
  * @returns {React.ReactNode}
  */
-export default function CommunityCommentSection( { communityCommentList }: { communityCommentList: CommunityCommentItemProps[] } ) {
+export default function CommunityCommentSection({ communityCommentList, postId }: CommunityCommentSectionProps) {
   return (
     <div className="p-8 flex flex-col gap-6">
 
@@ -33,7 +38,7 @@ export default function CommunityCommentSection( { communityCommentList }: { com
             댓글 작성
           </h3>
         </div>
-        <CommentForm />
+        <CommentForm postId={postId} />
       </div>
     </div>
   )
