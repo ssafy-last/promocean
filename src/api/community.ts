@@ -64,9 +64,19 @@ export const CommunityAPI = {
    * @returns {Promise<{ communityPostDetailData: CommunityPostItemResponse }>}
    */
   async getCommunityPostDetailData(postId: number) {
-    const response = await apiFetch<CommunityPostItemResponse>(`/mock/CommunityPostDetailData.json?postId=${postId}`);
+    // API 응답 타입: { message: string | null, data: CommunityPostItemResponse }
+    interface ApiResponse {
+      message: string | null;
+      data: CommunityPostItemResponse;
+    }
+    
+    const response = await apiFetch<ApiResponse>(`/api/v1/posts/${postId}`);
+    
+    // API 응답에서 data 추출
+    const communityPostDetailData = response.data;
+    
     return {
-      communityPostDetailData: response,
+      communityPostDetailData,
     };
   },
 };

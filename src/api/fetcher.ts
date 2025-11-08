@@ -42,17 +42,53 @@ export async function apiFetch<T = unknown>(
 
   // 응답 파싱 (JSON 우선, 실패 시 text로 fallback)
   const contentType = response.headers.get('content-type') || '';
-  const payload = contentType.includes('application/json')
-    ? await response.json().catch(() => ({}))
-    : await response.text().catch(() => '');
+  let payload: unknown;
+  
+  try {
+    if (contentType.includes('application/json')) {
+      payload = await response.json();
+    } else {
+      const textPayload = await response.text();
+      // HTML 응답인 경우 (404 페이지 등) 감지
+      if (textPayload.trim().startsWith('<!DOCTYPE') || textPayload.trim().startsWith('<html')) {
+        if (response.status === 404) {
+          throw new Error('404 요청한 리소스를 찾을 수 없습니다.');
+        }
+        throw new Error(`${response.status} 서버 에러가 발생했습니다.`);
+      }
+      payload = textPayload;
+    }
+  } catch (error) {
+    // 이미 Error 객체인 경우 그대로 throw
+    if (error instanceof Error) {
+      throw error;
+    }
+    payload = {};
+  }
 
   // 에러 처리
   if (!response.ok) {
-    const message =
-      typeof payload === 'string'
-        ? payload
-        : payload?.message || '요청이 실패했습니다.';
-    throw new Error(`${response.status} ${message}`);
+    let errorMessage = '요청이 실패했습니다.';
+    
+    if (typeof payload === 'string') {
+      // HTML이 아닌 텍스트 응답만 사용
+      if (!payload.trim().startsWith('<!DOCTYPE') && !payload.trim().startsWith('<html')) {
+        errorMessage = payload || errorMessage;
+      }
+    } else if (payload && typeof payload === 'object') {
+      // API 응답 구조: { message: string | null, data: ... }
+      const payloadObj = payload as Record<string, unknown>;
+      if ('message' in payloadObj && typeof payloadObj.message === 'string' && payloadObj.message) {
+        errorMessage = payloadObj.message;
+      }
+    }
+    
+    // 404 에러인 경우 더 명확한 메시지
+    if (response.status === 404) {
+      errorMessage = '요청한 리소스를 찾을 수 없습니다.';
+    }
+    
+    throw new Error(`${response.status} ${errorMessage}`);
   }
 
   return payload as T;

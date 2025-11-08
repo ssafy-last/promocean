@@ -21,19 +21,56 @@ export default async function CommunityPostPage({ params }: CommunityPostPagePro
   const { postId: postIdStr } = await params;
   const postId = parseInt(postIdStr);
 
-  const { popularPosts } = await CommunityAPI.getPopularPosts();
-  const { communityPostDetailData } = await CommunityAPI.getCommunityPostDetailData(postId);
+  try {
+    const [popularPostsResult, postDetailResult] = await Promise.allSettled([
+      CommunityAPI.getPopularPosts(),
+      CommunityAPI.getCommunityPostDetailData(postId),
+    ]);
 
-  const hashtagList: HashtagItemProps[] = communityPostDetailData.tags.map(tag => ({ tag }));
-  const communityPostData: CommunityPostItemProps = communityPostDetailData;
-  const communityCommentList: CommunityCommentItemProps[] = communityPostDetailData.replies.map(item => ({
-    author: item.author,
-    profileUrl: item.profileUrl,
-    content: item.content,
-    createdAt: item.createdAt,
-  }));
+    // 게시글 상세 조회 실패 시 404 처리
+    if (postDetailResult.status === 'rejected') {
+      const error = postDetailResult.reason as Error;
+      
+      if (error.message.includes('404')) {
+        // notFound()를 호출하면 not-found.tsx가 렌더링됨
+        const { notFound } = await import('next/navigation');
+        notFound();
+      }
+      throw error;
+    }
 
-  return (
+    const { popularPosts } = popularPostsResult.status === 'fulfilled' 
+      ? popularPostsResult.value 
+      : { popularPosts: [] };
+    const { communityPostDetailData } = postDetailResult.value;
+
+    const hashtagList: HashtagItemProps[] = communityPostDetailData.tags.map(tag => ({ tag }));
+    
+    // API 응답의 profile을 profileUrl로 변환하여 컴포넌트에서 사용
+    const communityPostData: CommunityPostItemProps = {
+      postId: communityPostDetailData.postId,
+      author: communityPostDetailData.author,
+      profileUrl: communityPostDetailData.profile,
+      title: communityPostDetailData.title,
+      description: communityPostDetailData.description,
+      category: communityPostDetailData.category,
+      prompt: communityPostDetailData.prompt,
+      type: communityPostDetailData.type,
+      sampleQuestion: communityPostDetailData.sampleQuestion,
+      sampleAnswer: communityPostDetailData.sampleAnswer,
+      fileUrl: communityPostDetailData.fileUrl,
+      createdAt: communityPostDetailData.createdAt,
+    };
+    
+    const communityCommentList: CommunityCommentItemProps[] = communityPostDetailData.replies.map(item => ({
+      author: item.author,
+      profileUrl: item.profile,
+      content: item.content,
+      createdAt: item.createdAt,
+      updatedAt: item.updatedAt,
+    }));
+
+    return (
     <div className="min-h-screen bg-gray-50">
       <CommunityHeader />
       <div className="max-w-7xl pl-8 pr-4 py-8 flex flex-row gap-6 relative">
@@ -61,5 +98,9 @@ export default async function CommunityPostPage({ params }: CommunityPostPagePro
 
       </div>
     </div>
-  );
+    );
+  } catch (error) {
+    // 404가 아닌 다른 에러는 error.tsx로 전달
+    throw error;
+  }
 }
