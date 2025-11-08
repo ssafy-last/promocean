@@ -67,18 +67,21 @@ export const CommunityAPI = {
       };
     }
 
-    const response = await apiFetch<ApiResponse>(`/api/v1/posts?${queryParams.toString()}`);
+    // const response = await apiFetch<ApiResponse>(`/api/v1/posts?${queryParams.toString()}`);
+    const response = await apiFetch<ApiResponse>(`/mock/CommunityBoardListResponse.json`);
 
     const communityBoardList: CommunityBoardItemProps[] = response.data.posts.map((post) => ({
-      id: post.postId.toString(),
+      postId: post.postId,
+      author: post.author,
+      profileUrl: post.profileUrl,
       title: post.title,
-      hashtags: post.tags,
+      type: post.type,
+      description: post.description,
       category: post.category,
-      likeCount: post.likeCnt,
-      commentCount: post.replyCnt,
+      tags: post.tags,
+      likeCnt: post.likeCnt,
+      replyCnt: post.replyCnt,
       image: undefined, // API 응답에 image 필드가 없음
-      userImage: post.profileUrl,
-      userName: post.author,
     }));
 
     return {

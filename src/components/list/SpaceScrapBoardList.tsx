@@ -14,16 +14,18 @@ export default function SpaceScrapBoardList({itemList} : SpaceScrapBoardListProp
 
             itemList?.map((item, index) => (
                 <SpaceScrapBoardItem
-                    key={index}
-                    id = {item.id}
-                    title = {item.title}
-                    userName = {item.userName}
-                    userImage={item.userImage}
+                    key={item.postId}
+                    postId={item.postId}
+                    author={item.author}
+                    profileUrl={item.profileUrl}
+                    title={item.title}
+                    type={item.type}
+                    description={item.description}
                     category={item.category}
-                    commentCount={item.commentCount}
-                    hashtags={item.hashtags}
+                    tags={item.tags}
+                    likeCnt={item.likeCnt}
+                    replyCnt={item.replyCnt}
                     image={item.image}
-                    likeCount={item.likeCount}
                 />
             ))
 

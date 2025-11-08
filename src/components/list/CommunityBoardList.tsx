@@ -17,7 +17,7 @@ export default function CommunityBoardList({ communityBoardList }: CommunityBoar
     <div className="flex flex-col divide-y divide-gray-100 space-y-4">
       {communityBoardList.map((item) => (
         <CommunityBoardItem
-          key={item.id}
+          key={item.postId}
           {...item}
         />
       ))}
