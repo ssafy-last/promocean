@@ -28,8 +28,29 @@ export interface SidebarItemProps {
 }
 
 /**
+ * CommunityBoardItemResponse interface
+ * @page /community
+ * @endpoint /api/v1/posts?page={page}&size={size}&author={author}&title={title}&tag={tag}&sorter={sorter}&category={category}&type={type}
+ * @description API 응답의 게시글 목록 아이템 타입
+ */
+export interface CommunityBoardItemResponse {
+  postId: number
+  author: string
+  profileUrl: string
+  title: string
+  type: string
+  description: string
+  category: string
+  tags: string[]
+  likeCnt: number
+  replyCnt: number
+}
+
+/**
  * CommunityBoardItemProps interface
- * @description 커뮤니티 게시판 아이템 타입
+ * @page /community
+ * @endpoint /api/v1/posts?page={page}&size={size}&author={author}&title={title}&tag={tag}&sorter={sorter}&category={category}&type={type}
+ * @description API 응답의 게시글 목록 아이템 타입 (컴포넌트에서 사용)
  */
 export interface CommunityBoardItemProps {
   id: string
@@ -38,7 +59,7 @@ export interface CommunityBoardItemProps {
   category: string
   likeCount: number
   commentCount: number
-  image: string
+  image?: string
   userImage?: string;    // 작성자 프로필 이미지
   userName: string;          // 작성자 이름
 }
