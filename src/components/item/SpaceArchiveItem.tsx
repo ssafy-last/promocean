@@ -103,13 +103,14 @@ export default function SpaceArchiveItem({
 
     return (
         <>
-            <button
+            <div
                 className={`
                     w-40 h-60 relative rounded-[10px]
                     shadow-[0px_4px_6px_0px_rgba(0,0,0,0.10)] overflow-hidden
                     transition-all duration-200 ease-in-out
                     hover:-translate-y-1 hover:brightness-105 hover:shadow-lg
                     active:translate-y-0 active:scale-95 active:shadow-sm
+                    cursor-pointer
                 `}
                 style={{ backgroundColor: bgColor }}  // inline style로 배경색 적용
                 onClick={handleArchiveRoute}
@@ -163,7 +164,7 @@ export default function SpaceArchiveItem({
                         삭제
                     </button>
                 </div>
-            </button>
+            </div>
 
             {/* 삭제 확인 모달 */}
             <SpaceArchiveDeleteModal
