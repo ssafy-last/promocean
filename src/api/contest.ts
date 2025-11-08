@@ -5,6 +5,7 @@ import {
   ContestCardItemProps,
   LeaderboardItemProps,
   ContestInfoItemProps,
+  ContestPostItemProps,
   ContestNoticeItemProps,
   ContestSubmissionItemProps,
   ContestSubmissionDetailData,
@@ -20,17 +21,18 @@ export const ContestAPI = {
 
   /**
    * 대회 페이지 조회 시 필요한 데이터 조회하는 API입니다.
-   * @page /contest/post/[contestId]
+   * @page /contest/[postId]
    * @description 대회 상세 페이지 데이터를 조회하는 API입니다.
+   * @param {number} contestId - 대회 ID (postId)
    * @returns {Promise<{ contestPostData: ContestPostItemProps, leaderboardList: LeaderboardItemProps[], contestInfoData: ContestInfoItemProps[], contestInfoTitles: string[], contestNoticeList: ContestNoticeItemProps[], contestSubmissionList: ContestSubmissionItemProps[] }>}
    */
   async getContestPostPageData(contestId: number) {
     const [
-      contestPost,
-      leaderboard,
-      contestInfo,
-      contestNotice,
-      contestSubmission,
+      { contestData: contestPostData },
+      { leaderboardList },
+      { contestInfoData },
+      { contestNoticeList },
+      { contestSubmissionList },
     ] = await Promise.all([
 
       ContestAPI.getContestDetailData(contestId),
@@ -41,12 +43,12 @@ export const ContestAPI = {
     ]);
 
     return {
-      contestPostData: contestPost,
-      leaderboardList: leaderboard || [],
-      contestInfoData: contestInfo || [],
+      contestPostData,
+      leaderboardList: leaderboardList || [],
+      contestInfoData: contestInfoData || [],
       contestInfoTitles: ["대회 정보", "상금 유형", "참여 통계", "해시태그"],
-      contestNoticeList: contestNotice || [],
-      contestSubmissionList: contestSubmission || [],
+      contestNoticeList: contestNoticeList || [],
+      contestSubmissionList: contestSubmissionList || [],
     };
   },
 
@@ -66,10 +68,10 @@ export const ContestAPI = {
 
   /**
    * 대회 추가 요약 정보를 데이터 조회하는 API입니다.
-   * @page /contest/post/[contestId]
+   * @page /contest/[postId]
    * @endpoint 목 데이터 사용중입니다. TODO : 삭제 예정?
    * @description 대회 정보를 데이터를 조회하는 API입니다.
-   * @param {number} contestId - 대회 ID
+   * @param {number} contestId - 대회 ID (postId)
    * @returns {Promise<{ contestInfoData: ContestInfoItemProps[] }>}
    */
   async getContestInfoData(contestId: number) {
@@ -81,14 +83,14 @@ export const ContestAPI = {
   
   /**
    * 대회 상세 페이지를 조회하는 API입니다.
-   * @page /contest/post/[contestId]
+   * @page /contest/[postId]
    * @endpoint /api/v1/contests/{contestId}
    * @description 대회 상세 페이지를 조회하는 API입니다.
-   * @param {number} contestId - 대회 ID
+   * @param {number} contestId - 대회 ID (postId)
    * @returns {Promise<{ contestData: ContestPostItemProps }>}
    */
   async getContestDetailData(contestId: number) {
-    const response = await apiFetch<ContestInfoItemProps[]>(`/mock/ContestPostDetail.json?contestId=${contestId}`);
+    const response = await apiFetch<ContestPostItemProps>(`/mock/ContestPostDetail.json?contestId=${contestId}`);
     return {
       contestData: response,
     };
@@ -96,10 +98,10 @@ export const ContestAPI = {
 
   /**
    * 대회 상세 페이지 리더보드 목록 데이터 조회하는 API입니다.
-   * @page /contest/post/[contestId]?tab=leaderboard
+   * @page /contest/[postId]?tab=leaderboard
    * @endpoint 목 데이터 사용중입니다. TODO : 삭제 예정?
    * @description 대회 상세 페이지 리더보드 목록 데이터를 조회하는 API입니다.
-   * @param {number} contestId - 대회 ID
+   * @param {number} contestId - 대회 ID (postId)
    * @returns {Promise<{ leaderboardList: LeaderboardItemProps[] }>}
    */
   async getContestLeaderboardList(contestId: number) {
@@ -111,10 +113,10 @@ export const ContestAPI = {
 
   /**
    * 대회 상세 페이지 공지사항 목록 데이터 조회하는 API입니다.
-   * @page /contest/post/[contestId]?tab=notice
+   * @page /contest/[postId]?tab=notice
    * @endpoint /api/v1/contests/{contestId}/notices
    * @description 대회 상세 페이지 공지사항 목록 데이터를 조회하는 API입니다.
-   * @param {number} contestId - 대회 ID
+   * @param {number} contestId - 대회 ID (postId)
    * @returns {Promise<{ contestNoticeList: ContestNoticeItemProps[] }>}
    */
   async getContestNoticeList(contestId: number) {
@@ -126,7 +128,7 @@ export const ContestAPI = {
   
   /**
    * 대회 상세 페이지 공지사항 데이터 조회하는 API입니다.
-   * @page /contest/post/[contestId]/notice/[noticeId]
+   * @page /contest/[postId]/notice/[noticeId]
    * @endpoint /api/v1/contests/{contestId}/notices/{noticeId}
    * @description 대회 상세 페이지 공지사항 데이터를 조회하는 API입니다.
    * @param {number} noticeId - 공지사항 ID
@@ -141,10 +143,10 @@ export const ContestAPI = {
 
   /**
    * 대회 상세 페이지 산출물 목록 데이터 조회하는 API입니다.
-   * @page /contest/post/[contestId]?tab=submission
+   * @page /contest/[postId]?tab=submission
    * @endpoint /api/v1/contests/{contestId}/submissions
    * @description 대회 상세 페이지 산출물 목록 데이터를 조회하는 API입니다.
-   * @param {number} contestId - 대회 ID
+   * @param {number} contestId - 대회 ID (postId)
    * @returns {Promise<{ contestSubmissionList: ContestSubmissionItemProps[] }>}
   */
   async getContestSubmissionList(contestId: number) {
@@ -157,7 +159,7 @@ export const ContestAPI = {
 
   /**
    * 대회 상세 페이지 산출물 데이터 조회
-   * @page /contest/post/[contestId]/submission/[submissionId]
+   * @page /contest/[postId]/submission/[submissionId]
    * @endpoint /api/v1/contests/{contestId}/submissions/{submissionId}
    * @description 대회 상세 페이지 산출물 데이터를 조회하는 API입니다.
    * @param {number} submissionId - 산출물 ID
