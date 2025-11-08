@@ -7,6 +7,7 @@ import { SpaceArchiveData } from "@/app/my-space/page";
 
 export interface SpaceArchiveListProps {
   isPinnedList?: boolean;
+  isTeamSpace: boolean;
   archiveItemListState: SpaceArchiveData[];
   setArchiveItemListState: (newState: SpaceArchiveData[]) => void;
   pinnedItemListState: SpaceArchiveData[];
@@ -23,6 +24,7 @@ const interactiveBtnClasses = `
 
 export default function SpaceArchiveList({ 
     isPinnedList, 
+    isTeamSpace,
     archiveItemListState,
     setArchiveItemListState,
     pinnedItemListState,
@@ -81,6 +83,7 @@ export default function SpaceArchiveList({
                     title={item.title} 
                     bgColor={item.bgColor} 
                     isPinned={item.isPinned}
+                    isTeamSpace={isTeamSpace}
                     archiveItemListState={archiveItemListState} 
                     setArchiveItemListState={setArchiveItemListState} 
                     pinnedItemListState={pinnedItemListState} 
