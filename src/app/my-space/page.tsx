@@ -80,6 +80,7 @@ export default function MySpacePage() {
           <SpaceCardHeader title="Pinned" />
           <SpaceArchiveList 
             isPinnedList={true}
+            isTeamSpace={false}
             archiveItemListState={archiveItemListState}
             setArchiveItemListState={setArchiveItemListState}
             pinnedItemListState={pinnedItemListState}
@@ -93,6 +94,7 @@ export default function MySpacePage() {
           <SpaceCardHeader title="Folder" />
           <SpaceArchiveList 
             isPinnedList={false}
+            isTeamSpace={false}
             archiveItemListState={archiveItemListState}
             setArchiveItemListState={setArchiveItemListState}
             pinnedItemListState={pinnedItemListState}
