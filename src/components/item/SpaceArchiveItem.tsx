@@ -12,6 +12,7 @@ export interface SpaceArchiveItemProps {
     bgColor: string;
     isPinned: boolean;
     isTeamSpace :boolean;
+    teamName?: string;
     archiveItemListState: SpaceArchiveData[];
     setArchiveItemListState: (newState: SpaceArchiveData[]) => void;
     pinnedItemListState: SpaceArchiveData[];
@@ -23,6 +24,7 @@ export default function SpaceArchiveItem({
     bgColor,
     isPinned,
     isTeamSpace,
+    teamName,
     archiveItemListState,
     setArchiveItemListState,
     pinnedItemListState,
@@ -36,8 +38,8 @@ export default function SpaceArchiveItem({
 
     const handleArchiveRoute = () => {
         console.log(`${title} 아카이브 아이템 클릭됨`);
-        if(isTeamSpace) {
-          router.push('/team-space/[team-space]/archive/' + encodeURIComponent(title));
+        if(isTeamSpace && teamName) {
+          router.push(`/team-space/${encodeURIComponent(teamName)}/archive/${encodeURIComponent(title)}`);
         } else {
           router.push('/my-space/archive/' + encodeURIComponent(title));
         }
