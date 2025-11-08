@@ -26,8 +26,15 @@ export default function TeamSpaceManageModal( { isModalOpenState, handleModalClo
     ]);
 
     return(
+        <>
+            {/* 오버레이 - 바깥쪽 클릭 감지 */}
+            <div
+                className="fixed inset-0 bg-black/30 z-10"
+                onClick={handleModalClose}
+            />
 
-             <div className="absolute w-100  min-h-90 h-120 z-20 top-8 right-8 py-4 px-4 bg-white rounded-md shadow-md text-black flex flex-col gap-4">
+            {/* 모달 */}
+            <div className="absolute w-100  min-h-90 h-120 z-20 top-8 right-8 py-4 px-4 bg-white rounded-md shadow-md text-black flex flex-col gap-4">
                 
                 <TeamSpaceInsertionModalTabs 
                     modalTabState={modalTabState}
@@ -71,7 +78,6 @@ export default function TeamSpaceManageModal( { isModalOpenState, handleModalClo
 
 
               </div>
-
-        
+        </>
     )
 }
