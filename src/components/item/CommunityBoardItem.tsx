@@ -16,7 +16,7 @@ import UserSimpleProfile from "@/components/etc/UserSimpleProfile";
 export default function CommunityBoardItem({ id, title, hashtags, category, likeCount, commentCount, image, userImage, userName }: CommunityBoardItemProps) {
   return (
     <Link
-      href={`/community/post/${id}`}
+      href={`/community/${id}`}
       className="flex items-start justify-between w-full bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 p-4 gap-4"
     >
       {/* 왼쪽 : 이미지 영역 */}
