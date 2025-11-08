@@ -138,7 +138,7 @@ export interface LeaderboardItemProps {
 export interface CommunityPostItemResponse {
   postId: number
   author: string
-  profileUrl: string
+  profile: string
   title: string
   description: string
   category: string
@@ -146,15 +146,18 @@ export interface CommunityPostItemResponse {
   type: string
   sampleQuestion: string
   sampleAnswer: string
-  fileUrl?: string
+  fileUrl?: string | null
   tags: string[]
   likeCnt: number
+  replyCnt: number
+  isLiked: boolean
   createdAt: string
   replies: {
     author: string
-    profileUrl: string
+    profile: string
     content: string
     createdAt: string
+    updatedAt: string
   }[]
 }
 
@@ -188,7 +191,7 @@ export interface CommunityPostItemProps {
   type: string
   sampleQuestion: string
   sampleAnswer: string
-  fileUrl?: string
+  fileUrl?: string | null
   createdAt: string
 }
 
@@ -207,12 +210,14 @@ export interface HashtagItemProps {
  * @param profileUrl: 작성자 프로필 이미지
  * @param content: 댓글 내용
  * @param createdAt: 댓글 작성일시
+ * @param updatedAt: 댓글 수정일시
  */
 export interface CommunityCommentItemProps {
   author: string
   profileUrl: string
   content: string
   createdAt: string
+  updatedAt?: string
 }
 
 /**
