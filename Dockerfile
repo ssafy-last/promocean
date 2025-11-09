@@ -12,3 +12,5 @@ WORKDIR /app
 COPY --from=build /app ./
 EXPOSE 3000
 CMD ["npm", "run", "start"]
+
+# 빌드테스트를 위한 주석 추가..
