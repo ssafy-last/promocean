@@ -1,58 +1,120 @@
 'use client';
 
 import React from "react";
+import Pin from "@/components/icon/Pin";
+
+export interface ArchiveFolderItem {
+  title: string;
+  bgColor: string;
+  isPinned: boolean;
+}
 
 export interface PostingArchiveFolderSectionProps {
   selectedFolder: string;
   onFolderChange: (folder: string) => void;
-  folders?: string[];
-  isReadOnly?: boolean;
+  pinnedFolders: ArchiveFolderItem[];
+  normalFolders: ArchiveFolderItem[];
 }
 
 /**
  * PostingArchiveFolderSection component
- * @description 아카이브 폴더 선택 섹션 컴포넌트
+ * @description 아카이브 폴더 선택 섹션 컴포넌트 (라디오 버튼 형태)
  * @returns {React.ReactNode}
  */
 export default function PostingArchiveFolderSection({
   selectedFolder,
   onFolderChange,
-  folders = [],
-  isReadOnly = false
+  pinnedFolders,
+  normalFolders
 }: PostingArchiveFolderSectionProps) {
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
       <h3 className="text-lg font-semibold text-gray-800 mb-4">아카이브 폴더</h3>
 
-      <div className="space-y-2">
-        {isReadOnly ? (
-          // URL에서 폴더가 지정된 경우 (읽기 전용)
-          <div className="px-4 py-3 bg-gray-100 rounded-lg border border-gray-300">
-            <p className="text-sm text-gray-600 mb-1">선택된 폴더</p>
-            <p className="font-medium text-gray-800">{selectedFolder}</p>
-          </div>
-        ) : (
-          // 폴더 선택 가능한 경우
-          <select
-            value={selectedFolder}
-            onChange={(e) => onFolderChange(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-          >
-            <option value="">폴더를 선택하세요</option>
-            {folders.map((folder, index) => (
-              <option key={index} value={folder}>
-                {folder}
-              </option>
+      <div className="space-y-3 max-h-[500px] overflow-y-auto">
+        {/* Pinned 폴더 */}
+        {pinnedFolders.length > 0 && (
+          <div className="space-y-2">
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide px-2">
+              Pinned
+            </p>
+            {pinnedFolders.map((folder, index) => (
+              <label
+                key={`pinned-${index}`}
+                className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all border
+                  ${selectedFolder === folder.title
+                    ? 'bg-primary/10 border-primary shadow-sm'
+                    : 'bg-gray-50 border-gray-200 hover:bg-gray-100'
+                  }`}
+              >
+                <input
+                  type="radio"
+                  name="archive-folder"
+                  value={folder.title}
+                  checked={selectedFolder === folder.title}
+                  onChange={(e) => onFolderChange(e.target.value)}
+                  className="w-4 h-4 text-primary focus:ring-primary focus:ring-2"
+                />
+                <div className="flex items-center gap-2 flex-1">
+                  <div
+                    className="w-4 h-4 rounded"
+                    style={{ backgroundColor: folder.bgColor }}
+                  />
+                  <span className="font-medium text-gray-800">{folder.title}</span>
+                  <Pin className="w-4 h-4 fill-red-400 stroke-gray-800 ml-auto" />
+                </div>
+              </label>
             ))}
-          </select>
+          </div>
+        )}
+
+        {/* Normal 폴더 */}
+        {normalFolders.length > 0 && (
+          <div className="space-y-2">
+            {pinnedFolders.length > 0 && (
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide px-2 mt-4">
+                Folder
+              </p>
+            )}
+            {normalFolders.map((folder, index) => (
+              <label
+                key={`normal-${index}`}
+                className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all border
+                  ${selectedFolder === folder.title
+                    ? 'bg-primary/10 border-primary shadow-sm'
+                    : 'bg-gray-50 border-gray-200 hover:bg-gray-100'
+                  }`}
+              >
+                <input
+                  type="radio"
+                  name="archive-folder"
+                  value={folder.title}
+                  checked={selectedFolder === folder.title}
+                  onChange={(e) => onFolderChange(e.target.value)}
+                  className="w-4 h-4 text-primary focus:ring-primary focus:ring-2"
+                />
+                <div className="flex items-center gap-2 flex-1">
+                  <div
+                    className="w-4 h-4 rounded"
+                    style={{ backgroundColor: folder.bgColor }}
+                  />
+                  <span className="font-medium text-gray-800">{folder.title}</span>
+                </div>
+              </label>
+            ))}
+          </div>
+        )}
+
+        {pinnedFolders.length === 0 && normalFolders.length === 0 && (
+          <p className="text-sm text-gray-500 text-center py-4">
+            생성된 아카이브 폴더가 없습니다.
+          </p>
         )}
       </div>
 
-      {!isReadOnly && (
-        <p className="text-xs text-gray-500 mt-2">
-          게시글을 저장할 아카이브 폴더를 선택하세요
-        </p>
-      )}
+      <p className="text-xs text-gray-500 mt-3 pt-3 border-t border-gray-200">
+        게시글을 저장할 아카이브 폴더를 선택하세요
+      </p>
     </div>
   );
 }

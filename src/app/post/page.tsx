@@ -2,13 +2,13 @@
 
 // frontend/src/app/post/page.tsx
 
-import { useSearchParams } from "next/navigation";
-import { useRef, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useRef, useState, useEffect } from "react";
 import PostingFloatingSection from "@/components/section/PostingFloatingSection";
 import PostingWriteSection from "@/components/section/PostingWriteSection";
 import PostingFooter from "@/components/layout/PostingFooter";
 import PostingMetaFormSection from "@/components/section/PostingMetaFormSection";
-import PostingArchiveFolderSection from "@/components/section/PostingArchiveFolderSection";
+import PostingArchiveFolderSection, { ArchiveFolderItem } from "@/components/section/PostingArchiveFolderSection";
 import { PostingFloatingItemProps } from "@/types/itemType";
 import { PostFormData, PostSubmitData } from "@/types/postType";
 import TitleInput from "@/components/editor/TitleInput";
@@ -20,7 +20,7 @@ import HashtagInput from "@/components/editor/HashtagInput";
  * @returns {React.ReactNode}
  */
 export default function PostPage() {
-
+  const router = useRouter();
   const searchParams = useSearchParams();
   const postType = searchParams.get("type"); // community, my-space, team-space
   const folderName = searchParams.get("folder"); // 아카이브 폴더 이름
@@ -37,8 +37,53 @@ export default function PostPage() {
   const [selectedPromptType, setSelectedPromptType] = useState("text");
   const [selectedFolder, setSelectedFolder] = useState(folderName || "");
 
+  // 아카이브 폴더 상태
+  const [pinnedFolders, setPinnedFolders] = useState<ArchiveFolderItem[]>([]);
+  const [normalFolders, setNormalFolders] = useState<ArchiveFolderItem[]>([]);
+  const [isLoadingFolders, setIsLoadingFolders] = useState(false);
+
   //최종 gpt API로 제출할 prompt 저장용 ref 변수
   const submitPrompt = useRef("");
+
+  // 아카이브 타입인지 확인
+  const isArchiveType = postType === 'my-space' || postType === 'team-space';
+
+  // 아카이브 폴더 데이터 가져오기
+  useEffect(() => {
+    if (!isArchiveType) return;
+
+    const fetchArchiveFolders = async () => {
+      setIsLoadingFolders(true);
+      try {
+        // TODO: 백엔드 API 연결 후 수정 필요
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/mock/MySpaceArchiveData.json`,
+          { cache: "no-store" }
+        );
+        const data = await response.json();
+
+        setPinnedFolders(data.pinned || []);
+        setNormalFolders(data.normal || []);
+      } catch (error) {
+        console.error("Failed to fetch archive folders:", error);
+      } finally {
+        setIsLoadingFolders(false);
+      }
+    };
+
+    fetchArchiveFolders();
+  }, [isArchiveType]);
+
+  // 폴더 변경 시 쿼리 파라미터 업데이트
+  const handleFolderChange = (newFolder: string) => {
+    setSelectedFolder(newFolder);
+
+    // 쿼리 파라미터 업데이트
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("folder", newFolder);
+
+    router.replace(`/post?${params.toString()}`, { scroll: false });
+  };
 
   // 제출 핸들러
   const handleSubmit = () => {
@@ -183,12 +228,6 @@ export default function PostPage() {
     },
   ];
 
-  // 아카이브 타입인지 확인
-  const isArchiveType = postType === 'my-space' || postType === 'team-space';
-
-  // 임시 아카이브 폴더 목록 (TODO: API에서 가져오기)
-  const archiveFolders = ['AI 챗봇', '프로젝트 관리', '디자인 리소스', '개발 팁'];
-
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4">
@@ -280,12 +319,18 @@ export default function PostPage() {
 
             {/* 아카이브 폴더 선택 - 아카이브 타입일 때만 표시 */}
             {isArchiveType && (
-              <PostingArchiveFolderSection
-                selectedFolder={selectedFolder}
-                onFolderChange={setSelectedFolder}
-                folders={archiveFolders}
-                isReadOnly={!!folderName}
-              />
+              isLoadingFolders ? (
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                  <p className="text-sm text-gray-500 text-center py-4">폴더 목록 로딩 중...</p>
+                </div>
+              ) : (
+                <PostingArchiveFolderSection
+                  selectedFolder={selectedFolder}
+                  onFolderChange={handleFolderChange}
+                  pinnedFolders={pinnedFolders}
+                  normalFolders={normalFolders}
+                />
+              )
             )}
 
             {/* 프롬프트 타입 - 커뮤니티 타입일 때만 표시 */}
