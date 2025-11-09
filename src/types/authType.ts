@@ -10,6 +10,7 @@
  * @property data.nickname - 닉네임
  * @property data.email - 이메일
  * @property data.profileUrl - 프로필 이미지 URL
+ * @property data.personalSpaceId - 개인 스페이스 ID
  */
 export interface AuthResponse {
   message: string | null;
@@ -17,6 +18,7 @@ export interface AuthResponse {
     nickname: string;
     email: string;
     profileUrl: string;
+    personalSpaceId: number;
   } | null;
 }
 
