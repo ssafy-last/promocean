@@ -9,10 +9,11 @@ import ArrowRightStartOnRectangle from '@/components/icon/ArrowRightStartOnRecta
 import ArrowRightEndOnRectangle from '@/components/icon/ArrowRightEndOnRectangle'
 import { useAuthStore } from '@/store/authStore'
 import UserSimpleProfile from '@/components/etc/UserSimpleProfile'
+import { authAPI } from '@/api/auth'
 
 /**
  * SidebarFooter component
- * @description SidebarFooter component is a sidebar footer component that displays the sidebar footer content
+ * @description 회원 관련 정보가 들어간 사이드바 푸터입니다.
  * @returns {React.ReactNode}
  */
 export default function SidebarFooter() {
@@ -22,7 +23,14 @@ export default function SidebarFooter() {
   const avatarIcon = user?.profileUrl
     ? (<UserSimpleProfile profileUrl={user.profileUrl} nickname={nickname} imageSize="w-5 h-5" showName={false} />)
     : (<UserCircle />);
-  const { logout } = useAuthStore();
+
+  const handleLogout = async () => {
+    try {
+      await authAPI.logout();
+    } catch (error) {
+      console.error('로그아웃 실패:', error);
+    }
+  };
   
   return (
     <div>
@@ -46,7 +54,7 @@ export default function SidebarFooter() {
         <SidebarItem 
           icon={<ArrowRightStartOnRectangle />}
           title="로그아웃"
-          onClick={() => logout()}
+          onClick={handleLogout}
         />
       )}
 
