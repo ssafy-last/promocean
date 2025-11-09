@@ -1,12 +1,16 @@
 'use client'
 
 import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import SpaceCardHeader from "@/components/layout/SpaceCardHeader";
 import SpaceArchiveList from "@/components/list/SpaceArchiveList";
 import MySpaceArchiveFilterSection from "@/components/section/MySpaceArchiveFilterSection";
 import { SpaceArchiveData } from "@/app/my-space/page";
 
 export default function TeamSpaceArchivePage() {
+  const params = useParams();
+  const teamName = decodeURIComponent(params["team-archive"] as string);
+
   const [archiveItemListState, setArchiveItemListState] = useState<SpaceArchiveData[]>([]);
   const [pinnedItemListState, setPinnedItemListState] = useState<SpaceArchiveData[]>([]);
   const [isLoadingState, setIsLoadingState] = useState(true);
@@ -53,8 +57,10 @@ export default function TeamSpaceArchivePage() {
       <div className="flex justify-start p-4 w-full">
         <div className="w-full">
           <SpaceCardHeader title="Pinned"/>
-          <SpaceArchiveList 
+          <SpaceArchiveList
             isPinnedList={true}
+            isTeamSpace={true}
+            teamName={teamName}
             archiveItemListState={archiveItemListState}
             setArchiveItemListState={setArchiveItemListState}
             pinnedItemListState={pinnedItemListState}
@@ -66,8 +72,10 @@ export default function TeamSpaceArchivePage() {
       <div className="flex justify-start p-4 w-full">
         <div className="w-full">
           <SpaceCardHeader title="Folder"/>
-          <SpaceArchiveList 
+          <SpaceArchiveList
             isPinnedList={false}
+            isTeamSpace={true}
+            teamName={teamName}
             archiveItemListState={archiveItemListState}
             setArchiveItemListState={setArchiveItemListState}
             pinnedItemListState={pinnedItemListState}

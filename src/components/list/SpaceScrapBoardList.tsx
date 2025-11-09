@@ -1,4 +1,5 @@
-import SpaceScrapBoardItem, { SpaceScrapBoardItemProps } from "../item/SpaceScrapBoardItem";
+import SpaceScrapItem from "../item/SpaceScrapItem";
+import { SpaceScrapBoardItemProps } from "../item/SpaceScrapBoardItem";
 
 
 export interface  SpaceScrapBoardListProps{
@@ -9,11 +10,10 @@ export interface  SpaceScrapBoardListProps{
 export default function SpaceScrapBoardList({itemList} : SpaceScrapBoardListProps){
 
     return (
-        <div className="flex flex-col px-4 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-8 py-6">
           {
-
             itemList?.map((item, index) => (
-                <SpaceScrapBoardItem
+                <SpaceScrapItem
                     key={index}
                     id = {item.id}
                     title = {item.title}
@@ -26,12 +26,7 @@ export default function SpaceScrapBoardList({itemList} : SpaceScrapBoardListProp
                     likeCount={item.likeCount}
                 />
             ))
-
           }
-        
         </div>
-        
     )
-
-    
 }
