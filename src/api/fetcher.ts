@@ -37,7 +37,7 @@ export async function apiFetch<T = unknown>(
   // fetch 요청
   const response = await fetch(url, {
     ...init,
-    headers,
+    headers: headers as HeadersInit,
   });
 
   // 응답 파싱 (JSON 우선, 실패 시 text로 fallback)

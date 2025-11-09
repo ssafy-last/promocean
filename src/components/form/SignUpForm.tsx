@@ -6,7 +6,6 @@ import { useState } from 'react';
 import { useAuthStore } from '@/store/authStore';
 import { useRouter } from 'next/navigation';
 import { authAPI } from '@/api/auth';
-import { setAuthToken } from '@/lib/authToken';
 
 
 export default function SignUpForm() {
@@ -20,7 +19,6 @@ export default function SignUpForm() {
   const [nicknameAvailable, setNicknameAvailable] = useState<boolean | null>(null);
   const [isCheckingEmail, setIsCheckingEmail] = useState(false);
   const [isCheckingNickname, setIsCheckingNickname] = useState(false);
-  const { login } = useAuthStore();
   const router = useRouter();
 
   // 이메일 중복확인
@@ -132,29 +130,17 @@ export default function SignUpForm() {
     }
 
     try {
-
-      const response = await authAPI.signUp({ email, password, nickname });
+      const { payload, token } = await authAPI.signUp({ email, password, nickname });
       
-      // API 응답 검증
-      if (response.data) {
-        // 성공: data가 있는 경우
-        const user = {
-          email: response.data.email,
-          nickname: response.data.nickname,
-          profileUrl: response.data.profileUrl,
-        };
-        // 서버가 Set-Cookie로 내려주는 것이 베스트.
-        // 프론트 개발 환경에서는 응답에서 받은 토큰을 쿠키에 저장.
-        const token = 'mock-jwt-token';
-        setAuthToken(token);
-        login(user, token);
-        
-        // 회원가입 성공 시 메인 페이지로 이동
-        router.push('/');
-      } else {
-        // 실패: data가 null인 경우
-        throw new Error(response.message || '회원가입에 실패했습니다.');
-      }
+      const user = {
+        email: payload.data!.email,
+        nickname: payload.data!.nickname,
+        profileUrl: payload.data!.profileUrl,
+      };
+      
+      useAuthStore.getState().login(user, token);
+      
+      router.push('/');
     } catch (error) {
       console.error('회원가입 실패:', error);
       alert(error instanceof Error ? error.message : '회원가입에 실패했습니다.');

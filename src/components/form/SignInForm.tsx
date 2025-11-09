@@ -3,17 +3,15 @@
 // frontend/src/components/form/SignInForm.tsx
 
 import { useState } from 'react';
-import { useAuthStore } from '@/store/authStore';
 import { useRouter } from 'next/navigation';
 import { authAPI } from '@/api/auth';
-import { setAuthToken } from '@/lib/authToken';
+import { useAuthStore } from '@/store/authStore';
 
 export default function SignInForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuthStore();
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -22,34 +20,22 @@ export default function SignInForm() {
     setIsLoading(true);
     
     try {
-      const response = await authAPI.login({ email, password });
+      const { payload, token } = await authAPI.login({ email, password });
       
-      // API 응답 검증
-      if (response.data) {
-        // 성공: data가 있는 경우
-        const user = {
-          email: response.data.email,
-          nickname: response.data.nickname,
-          profileUrl: response.data.profileUrl,
-        };
-        // 서버가 Set-Cookie로 내려주는 것이 베스트.
-        // 프론트 개발 환경에서는 응답에서 받은 토큰을 쿠키에 저장.
-        const token = 'mock-jwt-token';
-        setAuthToken(token);
-        login(user, token);
-        
-        // 로그인 성공 시 메인 페이지로 이동
-        router.push('/');
-      } else {
-        // 실패: data가 null인 경우
-        throw new Error(response.message || '로그인에 실패했습니다.');
-      }
+      const user = {
+        email: payload.data!.email,
+        nickname: payload.data!.nickname,
+        profileUrl: payload.data!.profileUrl,
+      };
+      
+      useAuthStore.getState().login(user, token);
+      
+      router.push('/');
     } catch (error) {
       console.error('로그인 실패:', error);
-      // 에러 메시지 추출
       let errorMessage = '로그인에 실패했습니다.';
+
       if (error instanceof Error) {
-        // "400 회원 정보를 찾을 수 없습니다" 형식에서 메시지만 추출
         const match = error.message.match(/\d+\s(.+)/);
         errorMessage = match ? match[1] : error.message;
       }

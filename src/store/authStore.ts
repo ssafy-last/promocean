@@ -2,6 +2,7 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { setAuthToken, clearAuthToken } from '@/lib/authToken';
 
 /**
  * User 인터페이스
@@ -38,23 +39,26 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       token: null,
 
-      login: (user: User, token: string) =>
+      login: (user: User, token: string) => {
+        setAuthToken(token);
         set({
           isLoggedIn: true,
           user,
           token,
-        }),
+        });
+      },
         
-      logout: () =>
+      logout: () => {
+        clearAuthToken();
         set({
           isLoggedIn: false,
           user: null,
           token: null,
-        }),
+        });
+      },
     }),
     {
       name: 'auth-storage',
-
       // persist 미들웨어를 사용할 때, token은 제외하고 저장.
       partialize: (state) => ({
         isLoggedIn: state.isLoggedIn,
