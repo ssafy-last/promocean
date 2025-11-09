@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { CommunityBoardItemProps } from "@/types/itemType";
@@ -8,6 +8,7 @@ import Heart from "@/components/icon/Heart";
 import ChatBubbleBottomCenterText from "@/components/icon/ChatBubbleBottomCenterText";
 
 export interface SpaceScrapItemProps extends CommunityBoardItemProps {
+    onScrapToggle?: (id: number) => void;
 }
 
 /**
@@ -25,15 +26,28 @@ export default function SpaceScrapItem({
     commentCount,
     image,
     userImage,
-    userName
+    userName,
+    onScrapToggle
 }: SpaceScrapItemProps) {
+    const [isScrapped, setIsScrapped] = useState(true);
+
+    const handleScrapClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsScrapped(false);
+        if (onScrapToggle) {
+            onScrapToggle(id);
+        }
+    };
+
     return (
-        <Link
-            href={`/community/${id}`}
-            className="group flex flex-col bg-white rounded-xl shadow-sm hover:shadow-xl
-                transition-all duration-300 overflow-hidden border border-gray-100
-                hover:-translate-y-1 active:translate-y-0"
-        >
+        <div className="relative group">
+            <Link
+                href={`/community/${id}`}
+                className="flex flex-col bg-white rounded-xl shadow-sm hover:shadow-xl
+                    transition-all duration-300 overflow-hidden border border-gray-100
+                    hover:-translate-y-1 active:translate-y-0"
+            >
             {/* 썸네일 이미지 영역 */}
             <div className="relative w-full h-48 bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
                 {image ? (
@@ -116,6 +130,30 @@ export default function SpaceScrapItem({
                     </span>
                 </div>
             </div>
-        </Link>
+            </Link>
+
+            {/* 스크랩 버튼 - 카드 우측 상단 */}
+            <button
+                onClick={handleScrapClick}
+                className="absolute top-3 right-3 z-10 w-9 h-9 bg-white/95 backdrop-blur-sm rounded-full
+                    shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center
+                    hover:scale-110 active:scale-95"
+                aria-label="스크랩 해제"
+            >
+                <svg
+                    className="w-5 h-5"
+                    fill={isScrapped ? "#FFC107" : "none"}
+                    stroke={isScrapped ? "#F59E0B" : "currentColor"}
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
+                    />
+                </svg>
+            </button>
+        </div>
     );
 }
