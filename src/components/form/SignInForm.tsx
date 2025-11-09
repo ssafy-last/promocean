@@ -49,11 +49,11 @@ export default function SignInForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* 제목 */}
-      <h1 className="text-3xl font-bold text-white mb-8">로그인</h1>
+      <h1 className="text-3xl font-bold text-text mb-8">로그인</h1>
       
       {/* 이메일 입력 */}
       <div>
-        <label className="block text-white text-sm font-medium mb-2">
+        <label className="block text-text text-sm font-medium mb-2">
           이메일
         </label>
         <input
@@ -62,13 +62,13 @@ export default function SignInForm() {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Username"
           required
-          className="w-full px-4 py-3 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-4 py-3 rounded-lg bg-white text-text border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
         />
       </div>
 
       {/* 비밀번호 입력 */}
       <div>
-        <label className="block text-white text-sm font-medium mb-2">
+        <label className="block text-text text-sm font-medium mb-2">
           비밀번호
         </label>
         <input
@@ -77,21 +77,21 @@ export default function SignInForm() {
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
           required
-          className="w-full px-4 py-3 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-4 py-3 rounded-lg bg-white text-text border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
         />
       </div>
 
       {/* 비밀번호 찾기 링크 */}
       <div className="text-right">
-        <a href="#" className="text-sm text-gray-300 hover:text-white transition-colors">
-          계정을 잊으셨나요? <span className="text-blue-400">계정 찾기</span>
+        <a href="#" className="text-sm text-text/70 hover:text-primary transition-colors">
+          계정을 잊으셨나요? <span className="text-primary">계정 찾기</span>
         </a>
       </div>
 
       {/* 로그인 버튼 */}
       <button 
         type="submit"
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors"
+        className="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3 px-4 rounded-lg transition-colors shadow-md hover:shadow-lg"
       >
         Log in
       </button>

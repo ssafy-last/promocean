@@ -1,6 +1,6 @@
 // frontend/src/api/auth.ts
 
-import { AuthResponse, LoginRequest, SignUpRequest } from '@/types/authType';
+import { AuthResponse, LoginRequest, SignUpRequest, DuplicateCheckResponse } from '@/types/authType';
 import { apiFetch } from '@/api/fetcher';
 
 // Todo : environment variable 사용
@@ -35,6 +35,24 @@ export const authAPI = {
     return apiFetch<AuthResponse>(`/api/v1/members/join`, {
       method: 'POST',
       body: JSON.stringify(userData),
+    });
+  },
+
+  /**
+   * 중복확인 API (이메일 또는 닉네임)
+   * @param options - 중복확인 옵션 (email 또는 nickname 중 하나만 전달)
+   * @returns 중복확인 응답 데이터
+   */
+  async checkDuplicate(options: { email?: string; nickname?: string }): Promise<DuplicateCheckResponse> {
+    const params = new URLSearchParams();
+    if (options.email) {
+      params.set('email', options.email);
+    }
+    if (options.nickname) {
+      params.set('nickname', options.nickname);
+    }
+    return apiFetch<DuplicateCheckResponse>(`/api/v1/members?${params.toString()}`, {
+      method: 'GET',
     });
   },
 };

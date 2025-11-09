@@ -43,3 +43,15 @@ export interface SignUpRequest {
   password: string;
   nickname: string;
 }
+
+/**
+ * 중복확인 응답 인터페이스
+ * @property message - 메시지
+ * @property data - 중복 여부 (true: 중복됨, false: 중복 안됨 - 사용 가능)
+ */
+export interface DuplicateCheckResponse {
+  message: string | null;
+  data: {
+    isDuplicated: boolean;
+  } | null;
+}

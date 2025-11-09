@@ -26,13 +26,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative" >
-      {/* 배경 오버레이 */}
-      <div className="absolute inset-0 bg-black bg-opacity-50"></div>
-      
+    <div className="min-h-screen flex items-center justify-center bg-background" >
       {/* 로그인 폼 컨테이너 */}
       <div className="relative z-10 w-full max-w-md mx-4">
-        <div className="bg-gray-800 bg-opacity-90 backdrop-blur-sm rounded-2xl p-8 shadow-2xl">
+        <div className="bg-background/95 backdrop-blur-sm rounded-2xl p-8 shadow-2xl border border-primary/20">
           {/* 탭 */}
           <LoginTabs activeTab={activeTab} onTabChange={handleTabChange} />
           
