@@ -11,13 +11,17 @@ import { setAuthToken } from '@/lib/authToken';
 export default function SignInForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuthStore();
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+    setIsLoading(true);
+    
     try {
-
       const response = await authAPI.login({ email, password });
       
       // API 응답 검증
@@ -42,7 +46,16 @@ export default function SignInForm() {
       }
     } catch (error) {
       console.error('로그인 실패:', error);
-      alert(error instanceof Error ? error.message : '로그인에 실패했습니다.');
+      // 에러 메시지 추출
+      let errorMessage = '로그인에 실패했습니다.';
+      if (error instanceof Error) {
+        // "400 회원 정보를 찾을 수 없습니다" 형식에서 메시지만 추출
+        const match = error.message.match(/\d+\s(.+)/);
+        errorMessage = match ? match[1] : error.message;
+      }
+      setError(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -50,6 +63,13 @@ export default function SignInForm() {
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* 제목 */}
       <h1 className="text-3xl font-bold text-text mb-8">로그인</h1>
+      
+      {/* 에러 메시지 */}
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+          {error}
+        </div>
+      )}
       
       {/* 이메일 입력 */}
       <div>
@@ -59,10 +79,14 @@ export default function SignInForm() {
         <input
           type="email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            setError(null); // 입력 시 에러 메시지 초기화
+          }}
           placeholder="Username"
           required
-          className="w-full px-4 py-3 rounded-lg bg-white text-text border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+          disabled={isLoading}
+          className="w-full px-4 py-3 rounded-lg bg-white text-text border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed"
         />
       </div>
 
@@ -74,10 +98,14 @@ export default function SignInForm() {
         <input
           type="password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => {
+            setPassword(e.target.value);
+            setError(null); // 입력 시 에러 메시지 초기화
+          }}
           placeholder="Password"
           required
-          className="w-full px-4 py-3 rounded-lg bg-white text-text border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+          disabled={isLoading}
+          className="w-full px-4 py-3 rounded-lg bg-white text-text border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed"
         />
       </div>
 
@@ -91,9 +119,10 @@ export default function SignInForm() {
       {/* 로그인 버튼 */}
       <button 
         type="submit"
-        className="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3 px-4 rounded-lg transition-colors shadow-md hover:shadow-lg"
+        disabled={isLoading}
+        className="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3 px-4 rounded-lg transition-colors shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        Log in
+        {isLoading ? '로그인 중...' : 'Log in'}
       </button>
     </form>
   );
