@@ -5,21 +5,21 @@
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 
+const mySpaceCategories = [
+  { name: "아카이브", href: ["/my-space/archive", "/my-space"] },
+  { name: "스크랩", href: ["/my-space/scrap"] },
+  { name: "내가 쓴 글", href: ["/my-space/my-posts"] },
+];
+
 export default function MySpaceTabs() {
-  const categories = [
-    { name: "아카이브", href: ["/my-space/archive", "/my-space"] },
-    { name: "스크랩", href: ["/my-space/scrap"] },
-
-  ];
-
-  const pathname = usePathname();
+  const pathName = usePathname();
 
   return (
     <nav className="border-b border-gray-200 bg-white py-2">
       <ul className="flex space-x-6 px-8">
-        {categories.map((cat) => {
+        {mySpaceCategories.map((cat) => {
           // const href = `/my-space/${cat.href}`;
-          const isActive = cat.href.includes(pathname);
+          const isActive = cat.href.includes(pathName);
           return (
             <li key={cat.name}>
               <Link
