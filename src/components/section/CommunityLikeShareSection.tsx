@@ -2,7 +2,8 @@
 
 import Heart from "@/components/icon/Heart";
 import Share from "@/components/icon/Share";
-import Square2Stack from "@/components/icon/Square2Stack";
+import Bookmark from "@/components/icon/Bookmark";
+import ArrayDownTray from "@/components/icon/ArrayDownTray";
 
 /**
  * CommunityLikeShareSection component
@@ -12,6 +13,7 @@ import Square2Stack from "@/components/icon/Square2Stack";
 export default function CommunityLikeShareSection( { likeCount }: { likeCount: number } ) {
   return (
     <div className="flex flex-row items-center justify-center gap-8">
+
       {/* 좋아요, 댓글 */}
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-1">
@@ -20,17 +22,15 @@ export default function CommunityLikeShareSection( { likeCount }: { likeCount: n
         </div>
       </div>
       
-      {/* TODO : 복사, 저장 용어 및 아이콘 정리하기*/}
-
-      {/* 복사하기 */}
+      {/* 스크랩하기 */}
       <div className="flex items-center gap-1">
-        <Square2Stack />
-        <span className="text-sm">복사</span>
+        <Bookmark className="size-6" />
+        <span className="text-sm">스크랩</span>
       </div>
 
       {/* 저장하기 */}
       <div className="flex items-center gap-1">
-        <Share />
+        <ArrayDownTray />
         <span className="text-sm">저장</span>
       </div>
     </div>
