@@ -36,7 +36,12 @@ export default async function TeamSpaceArchiveFolderPage({ params }: TeamSpaceAr
         description={`${teamName} 팀의 ${folderName} 아카이브 글을 확인하세요`}
       />
 
-      <MySpaceArchiveFilterSection buttonMode="write"/>
+      <MySpaceArchiveFilterSection
+        buttonMode="write"
+        folderName={folderName}
+        isTeamSpace={true}
+        teamName={teamName}
+      />
 
       <SpaceArchiveBoardList
         mySpaceBoardList={teamSpaceBoardList}

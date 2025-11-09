@@ -8,6 +8,7 @@ import PostingFloatingSection from "@/components/section/PostingFloatingSection"
 import PostingWriteSection from "@/components/section/PostingWriteSection";
 import PostingFooter from "@/components/layout/PostingFooter";
 import PostingMetaFormSection from "@/components/section/PostingMetaFormSection";
+import PostingArchiveFolderSection from "@/components/section/PostingArchiveFolderSection";
 import { PostingFloatingItemProps } from "@/types/itemType";
 import { PostFormData, PostSubmitData } from "@/types/postType";
 import TitleInput from "@/components/editor/TitleInput";
@@ -21,7 +22,9 @@ import HashtagInput from "@/components/editor/HashtagInput";
 export default function PostPage() {
 
   const searchParams = useSearchParams();
-  const postType = searchParams.get("type"); // Todo: postType에 렌더링 다르게 할 예정입니다. (community, article, contest)
+  const postType = searchParams.get("type"); // community, my-space, team-space
+  const folderName = searchParams.get("folder"); // 아카이브 폴더 이름
+  const teamName = searchParams.get("name"); // 팀 스페이스 이름
 
   // 폼 상태 관리
   const [title, setTitle] = useState("");
@@ -32,12 +35,19 @@ export default function PostPage() {
   const [answerPrompt, setAnswerPrompt] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("work");
   const [selectedPromptType, setSelectedPromptType] = useState("text");
+  const [selectedFolder, setSelectedFolder] = useState(folderName || "");
 
   //최종 gpt API로 제출할 prompt 저장용 ref 변수
   const submitPrompt = useRef("");
 
   // 제출 핸들러
   const handleSubmit = () => {
+    // 아카이브 타입인 경우 폴더 선택 확인
+    if ((postType === 'my-space' || postType === 'team-space') && !selectedFolder) {
+      alert('아카이브 폴더를 선택해주세요.');
+      return;
+    }
+
     // 폼 데이터 수집
     const formData: PostFormData = {
       title,
@@ -66,8 +76,17 @@ export default function PostPage() {
       },
     };
 
+    // 아카이브 정보 추가
+    if (postType === 'my-space' || postType === 'team-space') {
+      submitData.archiveFolder = selectedFolder;
+      if (postType === 'team-space' && teamName) {
+        submitData.teamName = teamName;
+      }
+    }
+
     // TODO: API 호출
     console.log('제출 데이터:', submitData);
+    console.log('게시글 타입:', postType);
     alert('게시글이 제출되었습니다!\n콘솔을 확인하세요.');
 
     // 나중에 여기서 API 호출
@@ -164,6 +183,12 @@ export default function PostPage() {
     },
   ];
 
+  // 아카이브 타입인지 확인
+  const isArchiveType = postType === 'my-space' || postType === 'team-space';
+
+  // 임시 아카이브 폴더 목록 (TODO: API에서 가져오기)
+  const archiveFolders = ['AI 챗봇', '프로젝트 관리', '디자인 리소스', '개발 팁'];
+
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4">
@@ -180,48 +205,59 @@ export default function PostPage() {
           {/* 글 작성 컨테이너 (8 비율) */}
           <div className="lg:col-span-4 space-y-4">
 
-            {/* 사용 프롬프트 */}
-            <PostingWriteSection
-              title="사용 프롬프트"
-              placeholder="사용한 프롬프트를 입력하세요..."
-              onChange={setUsedPrompt}
-              isSubmitButton={selectedPromptType === 'image'}
-            />
-
-
-          {
-            selectedPromptType === 'text' ? (
-              <div>
-                    {/* 예시 질문 프롬프트 */}
-                    <PostingWriteSection
-                      title="예시 질문 프롬프트"
-                      placeholder="예시 질문을 입력하세요..."
-                      onChange={setExamplePrompt}
-                      isSubmitButton={true}
-                      onSubmit={()=>
-                        handleAISubmit(usedPrompt)
-                      }
-                    />
-
-                    {/* 답변 프롬프트 */}
-                    <PostingWriteSection
-                      title="답변 프롬프트"
-                      placeholder="답변을 입력하세요..."
-                      onChange={setAnswerPrompt}
-                    />
-                </div>
+            {/* 아카이브 타입일 때는 간단한 에디터만 표시 */}
+            {isArchiveType ? (
+              <PostingWriteSection
+                title="내용"
+                placeholder="내용을 입력하세요..."
+                onChange={setUsedPrompt}
+                isSubmitButton={false}
+              />
             ) : (
-              <div>
-                    {/* 답변 프롬프트 */}
-                    <PostingWriteSection
-                      title="결과 사진"
-                      placeholder="결과 사진을 첨부하세요..."
-                      onChange={setAnswerPrompt}
-                    />
-                </div>
-            )
+              // 커뮤니티 타입일 때는 기존 프롬프트 섹션 표시
+              <>
+                {/* 사용 프롬프트 */}
+                <PostingWriteSection
+                  title="사용 프롬프트"
+                  placeholder="사용한 프롬프트를 입력하세요..."
+                  onChange={setUsedPrompt}
+                  isSubmitButton={selectedPromptType === 'image'}
+                />
 
-          }
+                {
+                  selectedPromptType === 'text' ? (
+                    <div>
+                          {/* 예시 질문 프롬프트 */}
+                          <PostingWriteSection
+                            title="예시 질문 프롬프트"
+                            placeholder="예시 질문을 입력하세요..."
+                            onChange={setExamplePrompt}
+                            isSubmitButton={true}
+                            onSubmit={()=>
+                              handleAISubmit(usedPrompt)
+                            }
+                          />
+
+                          {/* 답변 프롬프트 */}
+                          <PostingWriteSection
+                            title="답변 프롬프트"
+                            placeholder="답변을 입력하세요..."
+                            onChange={setAnswerPrompt}
+                          />
+                      </div>
+                  ) : (
+                    <div>
+                          {/* 답변 프롬프트 */}
+                          <PostingWriteSection
+                            title="결과 사진"
+                            placeholder="결과 사진을 첨부하세요..."
+                            onChange={setAnswerPrompt}
+                          />
+                      </div>
+                  )
+                }
+              </>
+            )}
 
 
             {/* 프롬프트 작성 완료 버튼 */}
@@ -231,23 +267,37 @@ export default function PostPage() {
           {/* 플로팅 컨테이너 (2 비율) */}
           <div className="lg:col-span-1 space-y-4">
 
-            {/* 카테고리 선택 */}
-            <PostingFloatingSection
-              title="카테고리"
-              items={categoryItems}
-              selectedValue={selectedCategory}
-              onSelect={setSelectedCategory}
-              name="category"
-            />
+            {/* 카테고리 선택 - 커뮤니티 타입일 때만 표시 */}
+            {!isArchiveType && (
+              <PostingFloatingSection
+                title="카테고리"
+                items={categoryItems}
+                selectedValue={selectedCategory}
+                onSelect={setSelectedCategory}
+                name="category"
+              />
+            )}
 
-            {/* 프롬프트 타입 */}
-            <PostingFloatingSection
-              title="프롬프트 타입"
-              items={promptTypeItems}
-              selectedValue={selectedPromptType}
-              onSelect={setSelectedPromptType}
-              name="promptType"
-            />
+            {/* 아카이브 폴더 선택 - 아카이브 타입일 때만 표시 */}
+            {isArchiveType && (
+              <PostingArchiveFolderSection
+                selectedFolder={selectedFolder}
+                onFolderChange={setSelectedFolder}
+                folders={archiveFolders}
+                isReadOnly={!!folderName}
+              />
+            )}
+
+            {/* 프롬프트 타입 - 커뮤니티 타입일 때만 표시 */}
+            {!isArchiveType && (
+              <PostingFloatingSection
+                title="프롬프트 타입"
+                items={promptTypeItems}
+                selectedValue={selectedPromptType}
+                onSelect={setSelectedPromptType}
+                name="promptType"
+              />
+            )}
           </div>
         </div>
 
