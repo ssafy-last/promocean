@@ -6,6 +6,7 @@ import { CommunityCommentItemProps } from "@/types/itemType";
 import CommunityCommentList from "@/components/list/CommunityCommentList";
 import CommentForm from "@/components/form/CommentForm";
 import ChatBubbleBottomCenterText from "@/components/icon/ChatBubbleBottomCenterText";
+import { useRouter } from "next/navigation";
 
 interface CommunityCommentSectionProps {
   communityCommentList: CommunityCommentItemProps[];
@@ -18,6 +19,12 @@ interface CommunityCommentSectionProps {
  * @returns {React.ReactNode}
  */
 export default function CommunityCommentSection({ communityCommentList, postId }: CommunityCommentSectionProps) {
+  const router = useRouter();
+
+  const handleCommentSuccess = () => {
+    router.refresh();
+  };
+
   return (
     <div className="p-8 flex flex-col gap-6">
 
@@ -29,7 +36,7 @@ export default function CommunityCommentSection({ communityCommentList, postId }
             댓글 {communityCommentList.length}개
           </h3>
         </div>
-        <CommunityCommentList communityCommentList={communityCommentList} />
+        <CommunityCommentList communityCommentList={communityCommentList} postId={postId} onUpdate={handleCommentSuccess} />
       </div>
 
       {/* 댓글 작성 섹션 */}
@@ -40,7 +47,7 @@ export default function CommunityCommentSection({ communityCommentList, postId }
             댓글 작성
           </h3>
         </div>
-        <CommentForm postId={postId} />
+        <CommentForm postId={postId} onSuccess={handleCommentSuccess} />
       </div>
     </div>
   )
