@@ -136,6 +136,7 @@ export default function SignUpForm() {
         email: payload.data!.email,
         nickname: payload.data!.nickname,
         profileUrl: payload.data!.profileUrl,
+        personalSpaceId: payload.data!.personalSpaceId,
       };
       
       useAuthStore.getState().login(user, token);

@@ -6,6 +6,7 @@ import CommunityBoardSection from "@/components/section/CommunityBoardSection";
 import CommunityFloatingSection from "@/components/section/CommunityFloatingSection";
 import CommunityFooter from "@/components/layout/CommunityFooter";
 import { CommunityAPI } from "@/api/community";
+import { Suspense } from "react";
 
 /**
  * CommunityPage component
@@ -19,7 +20,9 @@ export default async function CommunityPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <CommunityHeader />
-      <CommunityTabs />
+      <Suspense fallback={<div>Loading...</div>}>
+        <CommunityTabs />
+      </Suspense>
 
       <div className="max-w-7xl pl-8 pr-4 py-8 flex flex-row gap-6 relative">
         

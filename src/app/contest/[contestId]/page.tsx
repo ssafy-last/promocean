@@ -1,4 +1,4 @@
-// frontend/src/app/contest/[postId]/page.tsx
+// frontend/src/app/contest/[contestId]/page.tsx
 
 import ContestHeader from "@/components/layout/ContestHeader";
 import ContestPostSection from "@/components/section/ContestPostSection";
@@ -6,7 +6,7 @@ import ContestInfoSection from "@/components/section/ContestInfoSection";
 import { ContestAPI } from "@/api/contest";
 
 interface ContestPostPageProps {
-  params: Promise<{ postId: string }>;
+  params: Promise<{ contestId: string }>;
 }
 
 /**
@@ -15,8 +15,8 @@ interface ContestPostPageProps {
  * @returns {React.ReactNode}
  */
 export default async function ContestPostPage({ params }: ContestPostPageProps) {
-  const { postId: postIdStr } = await params;
-  const postId = parseInt(postIdStr, 10);
+  const { contestId: contestIdStr } = await params;
+  const postId = parseInt(contestIdStr, 10);
 
   const {
     contestPostData,
