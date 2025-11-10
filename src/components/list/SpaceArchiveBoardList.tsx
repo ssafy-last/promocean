@@ -19,7 +19,7 @@ export default function SpaceArchiveBoardList({mySpaceBoardList} : SpaceArchiveB
                     id={item.id}
                     category={item.category}
                     title={item.title}
-                    hashtags={item.hashtags}
+                    tags={item.tags}
                     image={item.image}
                 />
             ))

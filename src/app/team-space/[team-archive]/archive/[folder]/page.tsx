@@ -23,10 +23,11 @@ export default async function TeamSpaceArchiveFolderPage({ params }: TeamSpaceAr
   // encodeURIComponent를 쓴 문자열에 대해선 꼭 해줘야 함.
 
   const teamSpaceBoardRes = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/mock/CommunityBoardData.json`,
+    `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/mock/CommunityBoardListResponse.json`,
     { cache: "no-store" }
   );
-  const teamSpaceBoardList: SpaceArchiveBoardItemProps[] = await teamSpaceBoardRes.json();
+  const teamSpaceBoardData = await teamSpaceBoardRes.json();
+  const teamSpaceBoardList: SpaceArchiveBoardItemProps[] = teamSpaceBoardData.data.posts;
 
   return (
 
