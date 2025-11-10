@@ -41,22 +41,13 @@ public class ContestRestController {
     @GetMapping
     @Operation(summary = "대회 목록조회 API", description = "대회 목록을 조회하는 API입니다.")
     public ResponseEntity<ApiResponse<Page<ContestListRes>>> getContestList(
-            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "") String sorter,
             @RequestParam(defaultValue = "") String status,
             @RequestParam(defaultValue = "") String title
     ) {
-        Sort sort = switch (sorter) {
-            case "startDesc" -> Sort.by(Sort.Direction.DESC, "startAt");
-            case "endDesc" -> Sort.by(Sort.Direction.DESC, "endAt");
-            default -> Sort.by(Sort.Direction.DESC, "createdAt");
-        };
-        Pageable pageable = PageRequest.of(page, size, sort);
-        ContestStatus contestStatus = ContestStatus.fromName(status);
-        String filter = title.isBlank() ? null : title.trim();
-
-        Page<ContestListRes> res = contestService.getContestList(pageable, contestStatus, filter);
+        Page<ContestListRes> res = contestService.getContestList(page, size, sorter, status, title);
 
         return ApiResponse.ok(res);
     }

@@ -78,12 +78,17 @@ public class Contest extends BaseEntity {
         this.host = host;
     }
     
-    public void updateContest(ContestCreateReq contestCreateReq, PromptType type) {
-        this.title = contestCreateReq.title();
-        this.content = contestCreateReq.content();
-        this.type = type;
-        this.startAt = contestCreateReq.startAt();
-        this.endAt = contestCreateReq.endAt();
-        this.voteEndAt = contestCreateReq.voteEndAt();
+    public void updateContest(
+            String title,
+            String content,
+            LocalDateTime startAt,
+            LocalDateTime endAt,
+            LocalDateTime voteEndAt
+    ) {
+        this.title = title;
+        this.content = content;
+        this.startAt = startAt;
+        this.endAt = endAt;
+        this.voteEndAt = voteEndAt;
     }
 }

@@ -5,24 +5,23 @@ import com.ssafy.a208.domain.contest.dto.ContestDetailRes;
 import com.ssafy.a208.domain.contest.dto.ContestListRes;
 import com.ssafy.a208.domain.contest.entity.Contest;
 import com.ssafy.a208.domain.contest.exception.ContestNotFoundException;
-import com.ssafy.a208.domain.contest.exception.InvalidAuthorException;
 import com.ssafy.a208.domain.contest.repository.ContestRepository;
 import com.ssafy.a208.domain.contest.util.ContestValidator;
 import com.ssafy.a208.domain.member.entity.Member;
 import com.ssafy.a208.domain.member.entity.Profile;
-import com.ssafy.a208.domain.member.exception.ProfileNotFoundException;
 import com.ssafy.a208.domain.member.reader.MemberReader;
-import com.ssafy.a208.domain.member.repository.ProfileRepository;
+import com.ssafy.a208.domain.member.reader.ProfileReader;
 import com.ssafy.a208.global.common.enums.ContestStatus;
 import com.ssafy.a208.global.common.enums.PromptType;
 import com.ssafy.a208.global.image.service.S3Service;
 import com.ssafy.a208.global.security.dto.CustomUserDetails;
 import java.util.List;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +31,7 @@ public class ContestService {
 
     private final ContestRepository contestRepository;
     private final MemberReader memberReader;
-    private final ProfileRepository profileRepository;
+    private final ProfileReader profileReader;
 
     private final S3Service s3Service;
     private final ContestValidator contestValidator;
@@ -61,8 +60,7 @@ public class ContestService {
 
         contestRepository.save(contest);
 
-        Profile profile = profileRepository.findByMemberIdAndDeletedAtIsNull(customUserDetails.memberId())
-                .orElseThrow(ProfileNotFoundException::new);
+        Profile profile = profileReader.getProfile(host.getId());
 
         String profileUrl =  s3Service.getCloudFrontUrl(profile.getFilePath());
 
@@ -71,25 +69,36 @@ public class ContestService {
 
     @Transactional(readOnly = true)
     public Page<ContestListRes> getContestList(
-            Pageable pageable,
-            ContestStatus contestStatus,
+            int page,
+            int size,
+            String sorter,
+            String status,
             String title
     ) {
-        Page<Contest> page;
-        if(contestStatus == null && title == null) {
-            page = contestRepository.findAll(pageable);
-        } else if(contestStatus != null && title == null) {
-            page = contestRepository.findByStatus(pageable, contestStatus);
+        page = Math.max(0, page - 1);
+        Sort sort = switch (sorter) {
+            case "startDesc" -> Sort.by(Sort.Direction.DESC, "startAt");
+            case "endDesc" -> Sort.by(Sort.Direction.DESC, "endAt");
+            default -> Sort.by(Sort.Direction.DESC, "createdAt");
+        };
+        Pageable pageable = PageRequest.of(page, size, sort);
+        ContestStatus contestStatus = ContestStatus.fromName(status);
+
+        Page<Contest> list;
+        if(contestStatus == null && title.trim().isEmpty()) {
+            list = contestRepository.findAll(pageable);
+        } else if(contestStatus != null && title.trim().isEmpty()) {
+            list = contestRepository.findByStatus(pageable, contestStatus);
         } else if(contestStatus == null) {
-            page = contestRepository.findByTitleContainingIgnoreCase(pageable, title);
+            list = contestRepository.findByTitleContainingIgnoreCase(pageable, title);
         } else {
-            page = contestRepository.findByStatusAndTitleContainingIgnoreCase(pageable, contestStatus, title);
+            list = contestRepository.findByStatusAndTitleContainingIgnoreCase(pageable, contestStatus, title);
         }
 
-        List<ContestListRes> contestList = page.getContent().stream()
+        List<ContestListRes> contestList = list.getContent().stream()
             .map(contest -> {
                 Long hostId = contest.getHost().getId();
-                Profile profile = profileRepository.findByMemberIdAndDeletedAtIsNull(hostId).orElse(null);
+                Profile profile = profileReader.getProfile(hostId);
                 String profileUrl = (profile != null)
                     ? s3Service.getCloudFrontUrl(profile.getFilePath())
                     : null;
@@ -98,7 +107,7 @@ public class ContestService {
             })
             .toList();
 
-        return new PageImpl<>(contestList, pageable, page.getTotalElements());
+        return new PageImpl<>(contestList, pageable, list.getTotalElements());
     }
 
     @Transactional(readOnly = true)
@@ -107,8 +116,7 @@ public class ContestService {
     ) {
         Contest contest = contestRepository.findById(contestId)
             .orElseThrow(ContestNotFoundException::new);
-        Profile profile = profileRepository.findByMemberIdAndDeletedAtIsNull(contest.getHost().getId())
-            .orElseThrow(ProfileNotFoundException::new);
+        Profile profile = profileReader.getProfile(contest.getHost().getId());
         String profileUrl =  s3Service.getCloudFrontUrl(profile.getFilePath());
 
         return ContestDetailRes.from(contest, profileUrl);
@@ -128,6 +136,12 @@ public class ContestService {
         contestValidator.validateRole(member.getRole());
         contestValidator.validateDate(false, contestCreateReq);
 
-        contest.updateContest(contestCreateReq, PromptType.valueOf(contestCreateReq.type()));
+        contest.updateContest(
+                contestCreateReq.title(),
+                contestCreateReq.content(),
+                contestCreateReq.startAt(),
+                contestCreateReq.endAt(),
+                contestCreateReq.voteEndAt()
+        );
     }
 }
