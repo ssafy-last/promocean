@@ -4,6 +4,7 @@ import { useState } from "react";
 import SpaceArchiveItem from "../item/SpaceArchiveItem";
 import SpaceArchiveAddModal from "../modal/SpaceArchiveAddModal";
 import { SpaceArchiveData } from "@/app/my-space/page";
+import { useAuthStore } from "@/store/authStore";
 
 export interface SpaceArchiveListProps {
   isPinnedList?: boolean;
@@ -48,6 +49,7 @@ export default function SpaceArchiveList({
             setShouldRenderModalState(false);
         }, 300);
     };
+
 
     console.log("isPinnedList:", isPinnedList);
     

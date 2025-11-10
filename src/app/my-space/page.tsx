@@ -8,6 +8,8 @@ import MySpaceHeader from "@/components/layout/SpaceHeader";
 import SpaceCardHeader from "@/components/layout/SpaceCardHeader";
 import SpaceArchiveList from "@/components/list/SpaceArchiveList";
 import MySpaceArchiveFilterSection from "@/components/section/MySpaceArchiveFilterSection";
+import { useAuthStore } from "@/store/authStore";
+import { SpaceAPI } from "@/api/space";
 
 export interface SpaceArchiveData {
   title: string;
@@ -34,21 +36,30 @@ export default function MySpacePage() {
   const [pinnedItemListState, setPinnedItemListState] = useState<SpaceArchiveData[]>([]);
   const [isLoadingState, setIsLoadingState] = useState(true);
 
+  //부분적 구독을 하고 싶으면 이런 구문을 쓰자.
+  const personalSpaceId = useAuthStore((state)=>state.user?.personalSpaceId);
+  
+
   useEffect(() => {
     const fetchData = async () => {
       try {
+
+        const mySpaceArchiveRes = await SpaceAPI.getMySpaceArchiveFoldersData(personalSpaceId);
         
-        //TODO : 백엔드 API 연결 후 수정 필요
-        const mySpaceArchiveRes = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/mock/MySpaceArchiveData.json`,
-          { cache: "no-store" }
-        );
+        if(mySpaceArchiveRes){ 
+          return;
+        }
 
-        const mySpaceData = await mySpaceArchiveRes.json() as MySpaceArchiveDataResponse;
-        console.log("data ", mySpaceData);
+          console.log("data!! ", mySpaceArchiveRes);
 
-        setPinnedItemListState(mySpaceData.pinned || []);
-        setArchiveItemListState(mySpaceData.normal || []);
+        //TODO :  가져온 response 를 pinned 와 none pinned로 나누어 리스트를 연결해야 합니다.
+
+        // const mySpaceData = await mySpaceArchiveRes.json() as MySpaceArchiveDataResponse;
+        // console.log("data ", mySpaceData);
+        const pinned : SpaceArchiveData[] = [];
+        const normal: SpaceArchiveData[] = [];
+        setPinnedItemListState(pinned || []);
+        setArchiveItemListState(normal || []);
         setIsLoadingState(false);
       } catch (error) {
         console.error("Failed to fetch data:", error);
@@ -57,7 +68,7 @@ export default function MySpacePage() {
     };
 
     fetchData();
-  }, []);
+  }, [personalSpaceId]);
 
   if (isLoadingState) {
     return (
