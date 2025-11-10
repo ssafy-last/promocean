@@ -145,6 +145,54 @@ export const CommunityAPI = {
   },
 
   /**
+   * 커뮤니티 게시글 스크랩 추가하는 API입니다.
+   * @page /community/[postId]
+   * @endpoint POST /api/v1/posts/{postId}/scraps
+   * @description 커뮤니티 게시글에 스크랩을 추가하는 API입니다.
+   * @param {number} postId - 게시글 ID
+   * @returns {Promise<{ message: string | null, data: null }>}
+   */
+  async createPostScrap(postId: number) {
+    interface ApiResponse {
+      message: string | null;
+      data: null;
+    }
+
+    const response = await apiFetch<ApiResponse>(`/api/v1/posts/${postId}/scraps`, {
+      method: 'POST',
+    });
+
+    return {
+      message: response.message,
+      data: response.data,
+    };
+  },
+
+  /**
+   * 커뮤니티 게시글 스크랩 해제하는 API입니다.
+   * @page /community/[postId]
+   * @endpoint DELETE /api/v1/posts/{postId}/scraps
+   * @description 커뮤니티 게시글 스크랩을 해제하는 API입니다.
+   * @param {number} postId - 게시글 ID
+   * @returns {Promise<{ message: string | null, data: null }>}
+   */
+  async deletePostScrap(postId: number) {
+    interface ApiResponse {
+      message: string | null;
+      data: null;
+    }
+
+    const response = await apiFetch<ApiResponse>(`/api/v1/posts/${postId}/scraps`, {
+      method: 'DELETE',
+    });
+
+    return {
+      message: response.message,
+      data: response.data,
+    };
+  },
+
+  /**
    * 커뮤니티 게시글 댓글 작성하는 API입니다.
    * @page /community/[postId]
    * @endpoint POST /api/v1/posts/{postId}/replies
