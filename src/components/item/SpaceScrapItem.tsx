@@ -7,7 +7,16 @@ import { CommunityBoardItemProps } from "@/types/itemType";
 import Heart from "@/components/icon/Heart";
 import ChatBubbleBottomCenterText from "@/components/icon/ChatBubbleBottomCenterText";
 
-export interface SpaceScrapItemProps extends CommunityBoardItemProps {
+export interface SpaceScrapItemProps {
+  id: string;
+  title: string;
+  hashtags: string[];
+  category: string;
+  likeCount: number;
+  commentCount: number;
+  image: string;
+  userImage: string;
+  userName: string;
     onScrapToggle?: (id: string) => void;
 }
 

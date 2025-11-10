@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import webpack from "webpack";
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -9,7 +10,17 @@ const nextConfig: NextConfig = {
   ignoreDuringBuilds: true,  // 빌드 시 ESLint 무시
   },
   reactCompiler: true,
-  output: 'export',
+  pageExtensions: ['page.tsx', 'page.ts', 'tsx', 'ts'],
+  
+  webpack: (config) => {
+    config.plugins.push(
+      new webpack.IgnorePlugin({
+        resourceRegExp: /\.stories\.(tsx|ts)$/,
+      })
+    );
+    
+    return config;
+  },
   
   images: {
     remotePatterns: [

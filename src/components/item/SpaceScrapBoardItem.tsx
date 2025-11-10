@@ -8,7 +8,15 @@ import Heart from "@/components/icon/Heart";
 import ChatBubbleBottomCenterText from "@/components/icon/ChatBubbleBottomCenterText";
 
 export interface SpaceScrapBoardItemProps extends CommunityBoardItemProps {
-
+  id: string;
+  title: string;
+  category: string;
+  hashtags: string[];
+  likeCount: number;
+  commentCount: number;
+  image: string;
+  userImage: string;
+  userName: string;
 }
 
 /**

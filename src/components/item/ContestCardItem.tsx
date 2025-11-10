@@ -9,7 +9,7 @@ import { ContestCardItemProps } from '@/types/itemType'
  * @description ContestCardItem component is a contest card item component that displays the contest card item content
  * @returns {React.ReactNode}
  */
-export default function ContestCardItem({ id, title, image, participantCount, deadline, status, tags, startDate }: ContestCardItemProps) {
+export default function ContestCardItem({ contestId, title, image, participantCount, deadline, status, tags, startDate }: ContestCardItemProps) {
   const statusText = {
     SCHEDULED: '개최전',
     ONGOING: deadline ? `종료까지 D-${deadline}` : '진행중',
@@ -18,7 +18,7 @@ export default function ContestCardItem({ id, title, image, participantCount, de
   }
   
   return (
-    <Link href={`/contest/${id}?tab=detail`} className="block group">
+    <Link href={`/contest/${contestId}?tab=detail`} className="block group">
       <div className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 group-hover:border-primary/20">
         {/* Image Section */}
         <div className="relative w-full h-48 overflow-hidden">

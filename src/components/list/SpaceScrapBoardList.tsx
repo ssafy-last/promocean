@@ -30,11 +30,10 @@ export default function SpaceScrapBoardList({itemList} : SpaceScrapBoardListProp
                     userName = {item.userName}
                     userImage={item.userImage}
                     category={item.category}
-                    tags={item.tags}
-                    likeCnt={item.likeCnt}
-                    replyCnt={item.replyCnt}
-                    image={item.image}
+                    hashtags={item.hashtags}
                     likeCount={item.likeCount}
+                    commentCount={item.commentCount}
+                    image={item.image}
                     onScrapToggle={handleScrapToggle}
                 />
             ))
