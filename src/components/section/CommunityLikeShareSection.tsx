@@ -21,6 +21,8 @@ export default function CommunityLikeShareSection({ likeCnt: initialLikeCnt, isL
 }) {
   const [isLiked, setIsLiked] = useState<boolean>(initialIsLiked);
   const [likeCnt, setLikeCnt] = useState<number>(initialLikeCnt);
+
+  const [isScraped, setIsScraped] = useState<boolean>(false);
   
   // 좋아요 함수
   const handleLikeClick = async () => {
@@ -52,6 +54,37 @@ export default function CommunityLikeShareSection({ likeCnt: initialLikeCnt, isL
     }
   };
 
+  // 스크랩 함수
+  const handleScrapClick = async () => {
+    try {
+      if (isScraped) {
+        // 스크랩 해제
+        await CommunityAPI.deletePostScrap(postId);
+        setIsScraped(false);
+      } else {
+        // 스크랩 추가
+        await CommunityAPI.createPostScrap(postId);
+        setIsScraped(true);
+      }
+    } catch (error) {
+      if (!(error instanceof Error)) return;
+
+      const errorMessage = error.message;
+
+      switch (errorMessage) {
+        case '인증되지 않은 회원입니다':
+          alert('로그인이 필요합니다.');
+          break;
+        case '게시글 정보를 찾을 수 없습니다.':
+          alert('게시글을 찾을 수 없습니다.');
+          break;
+        default:
+          alert(errorMessage);
+          break;
+      }
+    }
+  };
+
   return (
     <div className="flex flex-row items-center justify-center gap-8">
       {/* 좋아요 */}
@@ -69,10 +102,17 @@ export default function CommunityLikeShareSection({ likeCnt: initialLikeCnt, isL
       </button>
       
       {/* 스크랩하기 */}
-      <div className="flex items-center gap-1 cursor-pointer hover:opacity-70 transition-opacity">
-        <Bookmark className="w-4 h-4 stroke-gray-500" />
+      <button
+        onClick={handleScrapClick}
+        className="flex items-center gap-1 hover:opacity-70 transition-opacity"
+      >
+        {isScraped ? (
+          <Bookmark className="w-4 h-4 fill-[#f4e24e] stroke-[#f4e24e]" />
+        ) : (
+          <Bookmark className="w-4 h-4 stroke-gray-500" />
+        )}
         <span className="text-sm">스크랩</span>
-      </div>
+      </button>
 
       {/* 아카이브하기 */}
       <div className="flex items-center gap-1 cursor-pointer hover:opacity-70 transition-opacity">
