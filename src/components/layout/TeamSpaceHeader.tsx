@@ -57,12 +57,7 @@ export default function TeamSpaceHeader(
         </div>
 
         <div className="relative flex flex-row gap-3">
-          <button className="
-            cursor-pointer
-            p-2
-            rounded-md
-            hover:bg-primary/40
-            " onClick={handleModalOpen}>팀 관리</button>
+          <button className="cursor-pointer p-2 rounded-md hover:bg-primary/40" onClick={handleModalOpen}>팀 관리</button>
 
           {isModalOpenState && (
             <TeamSpaceManageModal

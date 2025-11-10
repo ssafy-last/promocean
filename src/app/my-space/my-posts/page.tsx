@@ -11,10 +11,12 @@ export default async function MySpaceMyPostPage() {
     const TitleName = "내가 쓴 글";
 
     const mySpaceBoardRes = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/mock/CommunityBoardData.json`,
+    `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/mock/CommunityBoardListResponse.json`,
     { cache: "no-store" }
   );
-  const mySpaceBoardList: SpaceArchiveBoardItemProps[] = await mySpaceBoardRes.json();
+
+  const mySpaceBoardData = await mySpaceBoardRes.json();
+  const mySpaceBoardList: SpaceArchiveBoardItemProps[] = mySpaceBoardData.data.posts;
 
   return (
 
