@@ -17,13 +17,13 @@ export const authAPI = {
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
     const endpoint = `/api/v1/auth/login`;
     const url = endpoint.startsWith('http') ? endpoint : `${BASE_URL}${endpoint}`;
-    
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(credentials),
+      credentials: "include",
     });
 
     // 응답 헤더에서 토큰 추출
