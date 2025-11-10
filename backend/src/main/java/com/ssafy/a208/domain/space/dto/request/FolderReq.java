@@ -11,7 +11,7 @@ public record FolderReq(
         String name,
 
         @NotBlank @Color
-        @Schema(description = "폴더 색상", example = "FFFF00FF")
+        @Schema(description = "폴더 색상", example = "FFF00f")
         String color
 ) {
 

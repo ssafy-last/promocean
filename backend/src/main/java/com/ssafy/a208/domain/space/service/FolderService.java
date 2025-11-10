@@ -31,7 +31,7 @@ public class FolderService {
 
         Folder folder = Folder.builder()
                 .name(folderReq.name())
-                .color(folderReq.color())
+                .color(folderReq.color().toLowerCase())
                 .space(space)
                 .build();
         folderRepository.save(folder);

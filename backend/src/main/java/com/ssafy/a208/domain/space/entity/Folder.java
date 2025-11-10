@@ -29,7 +29,7 @@ public class Folder extends BaseEntity {
     private String name;
 
     @Comment("폴더 색상")
-    @Column(nullable = false, length = 8)
+    @Column(nullable = false, length = 6)
     private String color;
 
     @Comment("핀 여부")
