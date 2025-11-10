@@ -1,17 +1,15 @@
 import {  SpaceArchiveData } from "@/app/my-space/page";
 import { apiFetch } from "./fetcher";
+import { ApiResponse } from "./common";
 
-
-export interface ApiResponse<T>{
-    data : T;
+export interface NoArgsResponse{
+    message : string;
 }
+
 
 export interface GetMySpaceArchiveFoldersResponse{
-
      folders : SpaceArchiveData[];
-
 }
-
 
 export interface PostMySpaceArchiveFolderRequest {
     name :string;
@@ -25,6 +23,17 @@ export interface PostMySpaceArchiveFolderResponse {
     isPinned : boolean;
 }
 
+export interface PatchMySpaceArchiveFolderDataRequest {
+    name : string;
+    color : string;
+}
+
+export interface PatchMySpaceArchiveFolderPinStatusRequest {
+    folderId : number;
+    name : string;
+    color : string;
+    isPinned : boolean;
+}
 
 export const SpaceAPI = {
 
@@ -59,17 +68,54 @@ export const SpaceAPI = {
 
         console.log("API Res ",res);
         return res;
+    },
+
+
+    /*
+    * 마이스페이스의 아카이브 폴더를 삭제하는 API입니다.
+    */
+    async deleteMySpaceArchiveFolderData(personalSpaceId : number , folderId : number) : Promise<NoArgsResponse | null> {
+        if(!personalSpaceId || !folderId) {
+            return null;
+        }
+
+        const res = await apiFetch<NoArgsResponse>(`/api/v1/spaces/${personalSpaceId}/folders/${folderId}`, {
+            method: "DELETE",
+        });
+
+        console.log("Delete API Res ",res);
+
+        return res;
+    },
+
+    async patchMySpaceArchiveFolderData (personalSpaceId : number, folderId : number, folderData : PatchMySpaceArchiveFolderDataRequest) : Promise<NoArgsResponse | null> {
+        if(!personalSpaceId || !folderId) {
+            return null;
+        }
+
+        const res = await apiFetch<NoArgsResponse>(`/api/v1/spaces/${personalSpaceId}/folders/${folderId}`, {
+            method: "PATCH",
+            body: JSON.stringify(folderData),
+        });
+
+        console.log("Patch API Res ",res);
+
+        return res;
+    },
+
+    async patchMySpaceArchiveFolderPinStatus (personalSpaceId : number, folderId : number) : Promise<PatchMySpaceArchiveFolderPinStatusRequest | null> {
+        if(!personalSpaceId || !folderId) {
+            return null;
+        }
+
+        const res = await apiFetch<ApiResponse<PatchMySpaceArchiveFolderPinStatusRequest>>(`/api/v1/spaces/${personalSpaceId}/folders/${folderId}/pin`, {
+            method: "PATCH"
+        });
+
+        console.log("Patch API Res ",res);
+
+        return res.data;
     }
-    
-//         //TODO : 백엔드 API 연결 후 수정 필요
-// const mySpaceArchiveRes = await fetch(
-//     `${process.env.NEXT_PUBLIC_BASE_URL}/mock/MySpaceArchiveData.json`,
-//     { cache: "no-store" }
-// );
-
-// const mySpaceData = await mySpaceArchiveRes.json() as MySpaceArchiveDataResponse;
-// console.log("data ", mySpaceData);
-
 
 }
 
