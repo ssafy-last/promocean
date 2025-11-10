@@ -1,7 +1,7 @@
 // frontend/src/api/auth.ts
 
 import { AuthResponse, LoginRequest, SignUpRequest, DuplicateCheckResponse } from '@/types/authType';
-import { apiFetch } from '@/api/fetcher';
+import { apiFetch, BASE_URL } from '@/api/fetcher';
 import { useAuthStore } from '@/store/authStore';
 
 export const authAPI = {
@@ -14,7 +14,6 @@ export const authAPI = {
    * @returns 로그인 응답 데이터와 토큰
    */
   async login(credentials: LoginRequest): Promise<{ payload: AuthResponse; token: string }> {
-    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
     const endpoint = `/api/v1/auth/login`;
     const url = endpoint.startsWith('http') ? endpoint : `${BASE_URL}${endpoint}`;
     const response = await fetch(url, {
@@ -63,10 +62,9 @@ export const authAPI = {
    * @page /auth/login?tab=signup
    * @endpoint /api/v1/members/join
    * @param userData - 회원가입 요청 데이터
-   * @returns 회원가입 응답 데이터와 토큰
+   * @returns 회원가입 응답 데이터
    */
-  async signUp(userData: SignUpRequest): Promise<{ payload: AuthResponse; token: string }> {
-    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+  async signUp(userData: SignUpRequest): Promise<void> {
     const endpoint = `/api/v1/members/join`;
     const url = endpoint.startsWith('http') ? endpoint : `${BASE_URL}${endpoint}`;
     
@@ -77,12 +75,6 @@ export const authAPI = {
       },
       body: JSON.stringify(userData),
     });
-
-    // 응답 헤더에서 토큰 추출
-    const token = 
-      response.headers.get('Authorization')?.replace('Bearer ', '') ||
-      response.headers.get('X-Access-Token') ||
-      null;
 
     // 응답 파싱
     const contentType = response.headers.get('content-type') || '';
@@ -102,12 +94,11 @@ export const authAPI = {
     }
 
     // 응답 검증
-    if (!payload.data || !token) {
-      throw new Error(payload.message || '회원가입에 실패했습니다');
+    if (!payload || (!payload.data && !payload.message)) {
+      throw new Error('회원가입 응답이 올바르지 않습니다.');
     }
 
-    // 상태 관리 로직은 제거하고 결과만 반환
-    return { payload, token };
+    return;
   },
 
   /**
