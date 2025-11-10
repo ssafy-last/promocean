@@ -38,7 +38,8 @@ public class SecurityConfig {
     private static final String IMAGE_URL = "/api/v1/images";
     private static final String[] CONTEST_URLS = {
             "/api/v1/contests", "/api/v1/contests/*",
-            "/api/v1/contests/*/notices", "/api/v1/contests/*/notices/*"
+            "/api/v1/contests/*/notices", "/api/v1/contests/*/notices/*",
+            "/api/v1/contests/*/submissions", "/api/v1/contests/*/submissions/*"
     };
     private static final String[] POST_URLS = {
             "/api/v1/posts", "/api/v1/posts/*"
