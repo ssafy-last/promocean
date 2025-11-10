@@ -1,16 +1,28 @@
-# 빌드
-FROM node:20 AS build
+# Build Stage
+FROM node:20-alpine AS builder
 WORKDIR /app
+
+# dependencies 설치
 COPY package*.json ./
-RUN npm install
+RUN npm ci
+
+# 프로젝트 전체 복사 후 빌드
 COPY . .
 RUN npm run build
 
-# 실행
+# Run Stage
 FROM node:20-alpine
 WORKDIR /app
-COPY --from=build /app ./
-EXPOSE 3000
-CMD ["npm", "run", "start"]
 
-# 테스트를 위한 주석석
+# 빌드 결과만 복사
+COPY --from=builder /app ./
+
+# Next.js SSR 서버 포트
+EXPOSE 3000
+
+# 환경 변수 설정
+ENV NODE_ENV=production
+ENV NEXT_PUBLIC_BASE_URL=https://promocean.co.kr
+
+# SSR 서버 실행
+CMD ["npm", "run", "start"]
