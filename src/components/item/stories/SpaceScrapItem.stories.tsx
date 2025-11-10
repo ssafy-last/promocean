@@ -256,6 +256,7 @@ export const GridView2Columns: Story = {
         category="AI/ML"
         likeCount={156}
         commentCount={67}
+        image="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&h=600&fit=crop"
         userImage="https://i.pravatar.cc/150?img=12"
         userName="최파이썬"
       />
@@ -335,6 +336,7 @@ export const GridView3Columns: Story = {
         category="품질"
         likeCount={112}
         commentCount={28}
+        image="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400&h=300&fit=crop"
         userImage="https://i.pravatar.cc/150?img=24"
         userName="강접근성"
       />

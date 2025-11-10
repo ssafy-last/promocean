@@ -20,10 +20,12 @@ export default meta;
 type Story = StoryObj<typeof CommunityFloatingSection>;
 
 const mockPopularPosts: CommunityFloatingItemProps[] = Array.from({ length: 5 }, (_, i) => ({
-  id: i + 1,
-  rank: i + 1,
+  id: `${i + 1}`,
   title: `인기 게시물 ${i + 1}`,
-  views: Math.floor(Math.random() * 5000),
+  hashtags: ['react', 'typescript', 'nextjs'],
+  image: `https://images.unsplash.com/photo-${1633356122544 + i}?w=800&h=600&fit=crop`,
+  likeCount: Math.floor(Math.random() * 100),
+  commentCount: Math.floor(Math.random() * 50),
 }));
 
 export const Default: Story = {

@@ -20,9 +20,9 @@ export default meta;
 type Story = StoryObj<typeof ContestInfoSection>;
 
 const mockItems: ContestInfoItemProps[] = [
-  { label: '대회 기간', value: '2024-01-01 ~ 2024-12-31' },
-  { label: '참가 인원', value: '256명' },
-  { label: '상금', value: '500만원' },
+  { content: '2024-01-01 ~ 2024-12-31' },
+  { content: '256명' },
+  { content: '500만원' },
 ];
 
 export const Default: Story = {

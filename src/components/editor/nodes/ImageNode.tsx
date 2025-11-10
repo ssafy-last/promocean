@@ -1,3 +1,4 @@
+import React from 'react';
 import { DecoratorNode, NodeKey, SerializedLexicalNode } from 'lexical';
 
 export interface SerializedImageNode extends SerializedLexicalNode {
@@ -10,7 +11,7 @@ export interface SerializedImageNode extends SerializedLexicalNode {
   version: 1;
 }
 
-export class ImageNode extends DecoratorNode<JSX.Element> {
+export class ImageNode extends DecoratorNode<React.ReactElement> {
   __src: string;
   __altText: string;
   __width: 'inherit' | number;
@@ -80,7 +81,7 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
     return false;
   }
 
-  decorate(): JSX.Element {
+  decorate(): React.ReactElement {
     return (
       <div className="my-4">
         {/* eslint-disable-next-line @next/next/no-img-element */}
