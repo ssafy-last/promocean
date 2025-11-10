@@ -18,27 +18,7 @@ export async function apiFetch<T = unknown>(
   input: string,
   init: RequestInit = {}
 ): Promise<T> {
-  // 개발 중 mock 파일 우선 처리 (서버 사이드)
-  const isServer = typeof window === 'undefined';
-  const isMockFile = input.startsWith('/mock/');
   
-  if (isServer && isMockFile) {
-    try {
-      // 서버 사이드에서만 동적으로 fs 모듈 import
-      const { readFileSync } = await import('fs');
-      const { join } = await import('path');
-      
-      // 서버 사이드에서는 파일 시스템으로 직접 읽기
-      const filePath = join(process.cwd(), 'public', input);
-      const fileContent = readFileSync(filePath, 'utf-8');
-      return JSON.parse(fileContent) as T;
-    } catch (error) {
-      // 파일 읽기 실패 시 에러 메시지
-      const errorMessage = error instanceof Error ? error.message : '알 수 없는 오류';
-      throw new Error(`Mock 파일을 읽을 수 없습니다: ${input} (${errorMessage})`);
-    }
-  }
-
   // 토큰 가져오기 (클라이언트 전용)
   const token = typeof window !== 'undefined' ? getAuthToken() : null;
 
