@@ -1,3 +1,5 @@
+'use client';
+
 // frontend/src/components/section/CommunityCommentSection.tsx
 
 import { CommunityCommentItemProps } from "@/types/itemType";

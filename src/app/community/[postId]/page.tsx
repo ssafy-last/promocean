@@ -24,28 +24,13 @@ export default async function CommunityPostPage({ params }: CommunityPostPagePro
 
     const hashtagList: HashtagItemProps[] = communityPostDetailData.tags.map(tag => ({ tag }));
     
-    const communityPostData: CommunityPostItemProps = {
-      postId: communityPostDetailData.postId,
-      author: communityPostDetailData.author,
-      profileUrl: communityPostDetailData.profileUrl,
-      title: communityPostDetailData.title,
-      description: communityPostDetailData.description,
-      category: communityPostDetailData.category,
-      prompt: communityPostDetailData.prompt,
-      type: communityPostDetailData.type,
-      sampleQuestion: communityPostDetailData.sampleQuestion,
-      sampleAnswer: communityPostDetailData.sampleAnswer,
-      fileUrl: communityPostDetailData.fileUrl,
-      createdAt: communityPostDetailData.createdAt,
-    };
+    const communityPostData: CommunityPostItemProps = { ...communityPostDetailData };
     
-    const communityCommentList: CommunityCommentItemProps[] = communityPostDetailData.replies.map(item => ({
-      author: item.author,
-      profileUrl: item.profileUrl,
-      content: item.content,
-      createdAt: item.createdAt,
-      updatedAt: item.updatedAt,
+    const communityCommentList: CommunityCommentItemProps[] =
+    communityPostDetailData.replies.map((item) => ({
+      ...item,
     }));
+  
 
     return (
       <div className="flex-1 flex flex-col gap-6 bg-white rounded-lg shadow-md">

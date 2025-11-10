@@ -1,7 +1,6 @@
 // frontend/src/components/section/CommunityLikeShareSection.tsx
 
 import Heart from "@/components/icon/Heart";
-import Share from "@/components/icon/Share";
 import Bookmark from "@/components/icon/Bookmark";
 import ArrayDownTray from "@/components/icon/ArrayDownTray";
 
@@ -28,10 +27,10 @@ export default function CommunityLikeShareSection( { likeCount }: { likeCount: n
         <span className="text-sm">스크랩</span>
       </div>
 
-      {/* 저장하기 */}
+      {/* 아카이브하기 */}
       <div className="flex items-center gap-1">
         <ArrayDownTray />
-        <span className="text-sm">저장</span>
+        <span className="text-sm">아카이브</span>
       </div>
     </div>
   )
