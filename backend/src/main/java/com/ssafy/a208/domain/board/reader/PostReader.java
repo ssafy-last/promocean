@@ -1,10 +1,17 @@
 package com.ssafy.a208.domain.board.reader;
 
+import com.ssafy.a208.domain.board.dto.PostListItemProjection;
+import com.ssafy.a208.domain.board.dto.PostListQueryDto;
 import com.ssafy.a208.domain.board.entity.Post;
 import com.ssafy.a208.domain.board.exception.PostNotFoundException;
 import com.ssafy.a208.domain.board.repository.PostRepository;
+import com.ssafy.a208.domain.tag.entity.PostTag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * 게시글 조회 전용 Reader 클래스.
@@ -25,5 +32,34 @@ public class PostReader {
     public Post getPostById(Long postId) {
         return postRepository.findByIdAndDeletedAtIsNull(postId)
                 .orElseThrow(PostNotFoundException::new);
+    }
+
+    /**
+     * 게시글 목록을 동적 조건으로 조회
+     *
+     * @param query 검색 조건
+     * @param pageable 페이징 정보
+     * @return 게시글 페이지
+     */
+    public Page<Post> getPostsWithFiltersV1(PostListQueryDto query, Pageable pageable) {
+        return postRepository.findPostsWithFiltersV1(query, pageable);
+    }
+
+    public Page<Post> getPostsWithFiltersV2(PostListQueryDto query, Pageable pageable) {
+        return postRepository.findPostsWithFiltersV2(query, pageable);
+    }
+
+    public Page<PostListItemProjection> getPostsWithFiltersV3(PostListQueryDto query, Pageable pageable) {
+        return postRepository.findPostsWithFiltersV3(query, pageable);
+    }
+
+    /**
+     * 게시글 ID 목록으로 태그 배치 조회 (목록 조회 최적화용)
+     *
+     * @param postIds 게시글 ID 목록
+     * @return 게시글들의 태그 목록
+     */
+    public List<PostTag> getPostTagsByPostIds(List<Long> postIds) {
+        return postRepository.findPostTagsByPostIds(postIds);
     }
 }

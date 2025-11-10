@@ -40,7 +40,9 @@ public class SecurityConfig {
             "/api/v1/contests", "/api/v1/contests/*",
             "/api/v1/contests/*/notices", "/api/v1/contests/*/notices/*"
     };
-
+    private static final String[] POST_URLS = {
+            "/api/v1/posts", "/api/v1/posts/*"
+    };
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -74,6 +76,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, SIGNUP_URL).permitAll()
                 .requestMatchers(HttpMethod.GET, MEMBER_DUPLICATE_CHECK_URL).permitAll()
                 .requestMatchers(HttpMethod.GET, CONTEST_URLS).permitAll()
+                .requestMatchers(HttpMethod.GET, POST_URLS).permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/error").permitAll()
                 .anyRequest().authenticated());

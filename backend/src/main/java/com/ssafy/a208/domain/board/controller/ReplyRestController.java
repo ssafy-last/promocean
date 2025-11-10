@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/posts")
 @RequiredArgsConstructor
-@Tag(name = "Reply API", description = "댓글 API")
+@Tag(name = "게시글 댓글", description = "게시글 댓글 작성/수정/삭제 API가 담겨있어요")
 public class ReplyRestController {
 
     private final ReplyService replyService;

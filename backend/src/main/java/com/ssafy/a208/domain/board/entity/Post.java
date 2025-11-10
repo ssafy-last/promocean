@@ -65,6 +65,8 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST, orphanRemoval = false)
     private List<PostTag> postTags = new ArrayList<>();
 
+    @OneToOne(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private PostFile postFile;
 
     @Builder
     public Post(String title, String description, PostCategory category, String prompt,

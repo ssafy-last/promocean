@@ -1,9 +1,6 @@
 package com.ssafy.a208.domain.board.controller;
 
-import com.ssafy.a208.domain.board.dto.PostCreateReq;
-import com.ssafy.a208.domain.board.dto.PostCreateRes;
-import com.ssafy.a208.domain.board.dto.PostUpdateReq;
-import com.ssafy.a208.domain.board.dto.PostUpdateRes;
+import com.ssafy.a208.domain.board.dto.*;
 import com.ssafy.a208.domain.board.service.PostService;
 import com.ssafy.a208.global.common.dto.ApiResponse;
 import com.ssafy.a208.global.security.dto.CustomUserDetails;
@@ -23,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/posts")
 @RequiredArgsConstructor
-@Tag(name = "Post API", description = "프롬프트 게시글 API")
+@Tag(name = "게시글", description = "게시글 작성/수정/삭제/상세 조회/목록 조회 API가 담겨있어요")
 public class PostRestController {
 
     private final PostService postService;
@@ -93,4 +90,43 @@ public class PostRestController {
         return ApiResponse.ok();
     }
 
+    /**
+     * 게시글 상세 조회 API
+     * 게시글의 상세 정보를 조회합니다. 비로그인 사용자도 조회 가능합니다.
+     *
+     * @param userDetails 인증된 사용자 정보 (Optional)
+     * @param postId 조회할 게시글 ID
+     * @return 게시글 상세 정보
+     */
+    @GetMapping("/{postId}")
+    @Operation(
+            summary = "게시글 상세 조회 API",
+            description = "게시글의 상세 정보를 조회합니다. 비로그인 사용자도 조회 가능합니다."
+    )
+    public ResponseEntity<ApiResponse<PostDetailRes>> getPostDetail(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable Long postId
+    ) {
+        PostDetailRes res = postService.getPostDetail(userDetails, postId);
+        return ApiResponse.ok(res);
+    }
+
+    /**
+     * 게시글 목록 조회 API
+     * 게시글 목록을 조회합니다. 비로그인 사용자도 조회 가능합니다.
+     *
+     * @param query 검색 조건
+     * @return 게시글 목록
+     */
+    @GetMapping
+    @Operation(
+            summary = "게시글 목록 조회 API",
+            description = "게시글 목록을 조회합니다. 작성자, 제목, 태그, 카테고리, 프롬프트 타입으로 필터링 가능하며, 최신순/인기순 정렬을 지원합니다. 비로그인 사용자도 조회 가능합니다."
+    )
+    public ResponseEntity<ApiResponse<PostListRes>> getPosts(
+            @ModelAttribute @Valid PostListQueryDto query
+    ) {
+        PostListRes res = postService.getPostsV3(query);
+        return ApiResponse.ok(res);
+    }
 }
