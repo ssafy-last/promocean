@@ -5,14 +5,14 @@
  * @description 좋아요 버튼에서 사용되는 컴포넌트입니다.
  * @returns {React.ReactNode}
  */
-export default function Heart() {
+export default function Heart({ className = "size-6" }: { className?: string }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="-6 -4.5 32 32"
       strokeWidth={1.5}
       stroke="#434343"
-      className="size-6"
+      className={className}
     >
       <path
         strokeLinecap="round"

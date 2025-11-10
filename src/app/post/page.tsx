@@ -3,7 +3,7 @@
 // frontend/src/app/post/page.tsx
 
 import { useSearchParams, useRouter } from "next/navigation";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, Suspense } from "react";
 import PostingFloatingSection from "@/components/section/PostingFloatingSection";
 import PostingWriteSection from "@/components/section/PostingWriteSection";
 import PostingFooter from "@/components/layout/PostingFooter";
@@ -15,11 +15,9 @@ import TitleInput from "@/components/editor/TitleInput";
 import HashtagInput from "@/components/editor/HashtagInput";
 
 /**
- * PostPage component
- * @description PostPage component is a post page component that displays the post page content
- * @returns {React.ReactNode}
+ * PostPageContent component (useSearchParams를 사용하는 내부 컴포넌트)
  */
-export default function PostPage() {
+function PostPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const postType = searchParams.get("type"); // community, my-space, team-space
@@ -350,5 +348,22 @@ export default function PostPage() {
 
       </div>
     </div>
+  );
+}
+
+/**
+ * PostPage component (Suspense로 감싼 메인 컴포넌트)
+ * @description PostPage component is a post page component that displays the post page content
+ * @returns {React.ReactNode}
+ */
+export default function PostPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 py-8 flex items-center justify-center">
+        <div className="text-gray-600">로딩 중...</div>
+      </div>
+    }>
+      <PostPageContent />
+    </Suspense>
   );
 }

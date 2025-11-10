@@ -162,7 +162,7 @@ export const NoImage: Story = {
   args: {
     posts: mockPosts.map((post) => ({
       ...post,
-      image: undefined,
+      image: '',
     })),
   },
   parameters: {

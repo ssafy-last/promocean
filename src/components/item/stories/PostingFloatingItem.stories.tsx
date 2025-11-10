@@ -119,6 +119,7 @@ export const DifferentIcons: Story = {
     return (
       <div className="space-y-2 max-w-md">
         <PostingFloatingItem
+          id="post"
           icon="📝"
           label="일반 게시글"
           value="post"
@@ -127,6 +128,7 @@ export const DifferentIcons: Story = {
           onChange={(e) => setSelected(e.target.value)}
         />
         <PostingFloatingItem
+          id="question"
           icon="💡"
           label="질문 게시글"
           value="question"
@@ -135,6 +137,7 @@ export const DifferentIcons: Story = {
           onChange={(e) => setSelected(e.target.value)}
         />
         <PostingFloatingItem
+          id="tips"
           icon="🔥"
           label="팁과 노하우"
           value="tips"
@@ -143,6 +146,7 @@ export const DifferentIcons: Story = {
           onChange={(e) => setSelected(e.target.value)}
         />
         <PostingFloatingItem
+          id="notice"
           icon="📢"
           label="공지사항"
           value="notice"
@@ -189,6 +193,7 @@ export const CategorySelection: Story = {
       <div className="space-y-2 max-w-md">
         <h3 className="font-bold text-lg mb-4">카테고리 선택</h3>
         <PostingFloatingItem
+          id="frontend"
           icon="⚛️"
           label="Frontend"
           value="frontend"
@@ -197,6 +202,7 @@ export const CategorySelection: Story = {
           onChange={(e) => setCategory(e.target.value)}
         />
         <PostingFloatingItem
+          id="backend"
           icon="🔧"
           label="Backend"
           value="backend"
@@ -205,6 +211,7 @@ export const CategorySelection: Story = {
           onChange={(e) => setCategory(e.target.value)}
         />
         <PostingFloatingItem
+          id="mobile"
           icon="📱"
           label="Mobile"
           value="mobile"
@@ -213,6 +220,7 @@ export const CategorySelection: Story = {
           onChange={(e) => setCategory(e.target.value)}
         />
         <PostingFloatingItem
+          id="design"
           icon="🎨"
           label="Design"
           value="design"
