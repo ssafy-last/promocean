@@ -2,7 +2,8 @@
 
 import HeroSection from "@/components/section/HeroSection";
 import PostCardSection from "@/components/section/PostCardSection";
-import { PostCardItemProps } from "@/types/itemType";
+import { PostCardItemProps, CommunityFloatingItemProps } from "@/types/itemType";
+import { CommunityAPI } from "@/api/community";
 
 /**
  * Home component
@@ -11,18 +12,14 @@ import { PostCardItemProps } from "@/types/itemType";
  */
 export default async function Home() {
 
-  // Todo : 실제 API와 연동하기
-  const [popularRes, recommendedRes] = await Promise.all([
-    fetch(`${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/mock/PopularPost.json`, {
-      cache: "no-store",
-    }),
-    fetch(`${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/mock/QNAPost.json`, {
-      cache: "no-store",
-    }),
-  ]);
-
-  const [popularPosts, recommendedPosts]: [PostCardItemProps[], PostCardItemProps[]] =
-    await Promise.all([popularRes.json(), recommendedRes.json()]);
+  const { popularPosts: popularPostsRaw } = await CommunityAPI.getPopularPosts();
+  
+  // TODO : API 만들어야함?
+  // CommunityFloatingItemProps를 PostCardItemProps로 변환
+  const popularPosts: PostCardItemProps[] = (popularPostsRaw as CommunityFloatingItemProps[]).map(item => ({
+    ...item,
+    category: "AI", // 기본값 또는 실제 category 값
+  }));
 
   return (
     <>
@@ -35,7 +32,7 @@ export default async function Home() {
 
       <PostCardSection
         postSectionTitle="추천 프롬프트"
-        postCardList={recommendedPosts}
+        postCardList={popularPosts}
       />
     </>
   );

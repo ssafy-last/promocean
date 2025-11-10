@@ -14,8 +14,8 @@ export default function LoginTabs({ activeTab, onTabChange }: LoginTabsProps) {
         onClick={() => onTabChange('login')}
         className={`text-lg font-medium transition-colors ${
           activeTab === 'login'
-            ? 'text-white border-b-2 border-white pb-2'
-            : 'text-gray-400 hover:text-white'
+            ? 'text-primary border-b-2 border-primary pb-2'
+            : 'text-text/60 hover:text-primary'
         }`}
       >
         로그인
@@ -24,8 +24,8 @@ export default function LoginTabs({ activeTab, onTabChange }: LoginTabsProps) {
         onClick={() => onTabChange('signup')}
         className={`text-lg font-medium transition-colors ${
           activeTab === 'signup'
-            ? 'text-white border-b-2 border-white pb-2'
-            : 'text-gray-400 hover:text-white'
+            ? 'text-primary border-b-2 border-primary pb-2'
+            : 'text-text/60 hover:text-primary'
         }`}
       >
         회원가입

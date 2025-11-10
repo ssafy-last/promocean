@@ -10,6 +10,7 @@
  * @property data.nickname - 닉네임
  * @property data.email - 이메일
  * @property data.profileUrl - 프로필 이미지 URL
+ * @property data.personalSpaceId - 개인 스페이스 ID
  */
 export interface AuthResponse {
   message: string | null;
@@ -17,6 +18,7 @@ export interface AuthResponse {
     nickname: string;
     email: string;
     profileUrl: string;
+    personalSpaceId: number;
   } | null;
 }
 
@@ -42,4 +44,16 @@ export interface SignUpRequest {
   email: string;
   password: string;
   nickname: string;
+}
+
+/**
+ * 중복확인 응답 인터페이스
+ * @property message - 메시지
+ * @property data - 중복 여부 (true: 중복됨, false: 중복 안됨 - 사용 가능)
+ */
+export interface DuplicateCheckResponse {
+  message: string | null;
+  data: {
+    isDuplicated: boolean;
+  } | null;
 }

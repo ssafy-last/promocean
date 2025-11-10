@@ -13,7 +13,7 @@ import ChatBubbleBottomCenterText from '../icon/ChatBubbleBottomCenterText'
  */
 export default function PostCardItem({ id, title, hashtags, category, likeCount, commentCount, image }: PostCardItemProps) {
   return (
-    <Link href={`community/post/${id}`} className="block group">
+    <Link href={`/community/${id}`} className="block group">
       <div className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 group-hover:border-primary/20">
 
         {/* Image Section */}
