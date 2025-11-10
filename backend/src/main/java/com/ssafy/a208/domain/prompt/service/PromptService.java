@@ -62,7 +62,6 @@ public class PromptService {
     @Transactional
     public TextPromptRes processTextPrompt(CustomUserDetails userDetails, TextPromptReq request) {
         Member member = memberReader.getMemberById(userDetails.memberId());
-        member.decreaseUsableCnt();
 
         List<GptDto.Message> messages = new ArrayList<>();
 
@@ -100,8 +99,11 @@ public class PromptService {
                 throw new PromptProcessingException("GPT API 응답이 비어있습니다.");
             }
 
+            member.decreaseUsableCnt();
+
             String answer = response.choices().get(0).message().content();
             GptDto.Usage usage = response.usage();
+            log.info("GPT API 호출 완료 - 토큰 사용량: {}", usage.totalTokens());
 
             return TextPromptRes.builder()
                     .exampleAnswer(answer)
@@ -129,7 +131,6 @@ public class PromptService {
     @Transactional
     public ImagePromptRes processImagePrompt(CustomUserDetails userDetails, ImagePromptReq request) {
         Member member = memberReader.getMemberById(userDetails.memberId());
-        member.decreaseUsableCnt();
 
         GeminiDto.Request geminiRequest = GeminiDto.Request.builder()
                 .contents(List.of(
@@ -189,6 +190,8 @@ public class PromptService {
 
             Map<String, String> result = uploadToS3(base64Image, mimeType);
             log.info("이미지 생성 완료 - URL: {}", result.get("imageUrl"));
+
+            member.decreaseUsableCnt();
             return ImagePromptRes.builder()
                     .cloudfrontUrl(result.get("imageUrl"))
                     .key(result.get("s3Key"))
