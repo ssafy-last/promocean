@@ -15,11 +15,10 @@ const meta: Meta<typeof SidebarItem> = {
   },
   tags: ['autodocs'],
   decorators: [
-    (Story, context) => {
-      const isCollapsed = context.args.isCollapsed || false;
+    (Story) => {
       return (
         <SidebarProvider>
-          <div style={{ width: isCollapsed ? '60px' : '200px' }}>
+          <div style={{ width: '200px' }}>
             <Story />
           </div>
         </SidebarProvider>

@@ -20,7 +20,7 @@ export default meta;
 type Story = StoryObj<typeof CommunityPostDetailSection>;
 
 const mockPost: CommunityPostItemProps = {
-  id: 1,
+  postId: 1,
   title: 'ChatGPT 프롬프트 작성 완벽 가이드',
   description: '효과적인 ChatGPT 프롬프트를 작성하는 방법에 대해 알아봅니다.',
   prompt: '당신은 전문 프롬프트 엔지니어입니다. 다음 주제에 대해 자세히 설명해주세요...',
@@ -60,9 +60,12 @@ export const WithoutImage: Story = {
 export const MinimalPost: Story = {
   args: {
     communityPostData: {
-      id: 1,
+      postId: 1,
       title: '간단한 팁',
       description: '짧은 설명',
+      prompt: '',
+      sampleQuestion: '',
+      sampleAnswer: '',
       category: 'AI',
       type: '팁',
       author: '작성자',

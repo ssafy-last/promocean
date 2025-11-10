@@ -20,13 +20,14 @@ export default meta;
 type Story = StoryObj<typeof ContestCardSection>;
 
 const mockContests: ContestCardItemProps[] = Array.from({ length: 6 }, (_, i) => ({
-  id: i + 1,
+  id: `${i + 1}`,
   title: `프롬프트 대회 ${i + 1}`,
-  description: `대회 설명 ${i + 1}`,
-  prize: `${(i + 1) * 100}만원`,
-  deadline: '2024-12-31',
-  participants: Math.floor(Math.random() * 500),
-  thumbnail: '/images/contest.jpg',
+  image: `https://images.unsplash.com/photo-${1633356122544 + i}?w=800&h=600&fit=crop`,
+  participantCount: Math.floor(Math.random() * 500),
+  deadline: `${i + 1}`,
+  status: (['SCHEDULED', 'ONGOING', 'VOTING', 'FINISHED'] as const)[i % 4],
+  tags: ['AI', '프롬프트', 'ChatGPT'],
+  startDate: '2025.01.15',
 }));
 
 export const Default: Story = {

@@ -309,7 +309,7 @@ export const ResponsiveTest: Story = {
 // 이미지 없는 카드
 export const NoImages: Story = {
   args: {
-    contestCards: mockContestCards.map((card) => ({ ...card, image: undefined })),
+    contestCards: mockContestCards.map((card) => ({ ...card, image: '' })),
   },
   parameters: {
     docs: {

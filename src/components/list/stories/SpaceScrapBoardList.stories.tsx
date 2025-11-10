@@ -184,7 +184,7 @@ export const EmptyList: Story = {
 // 이미지 없는 스크랩
 export const NoImages: Story = {
   args: {
-    itemList: mockScrapList.map((item) => ({ ...item, image: undefined })),
+    itemList: mockScrapList.map((item) => ({ ...item, image: '' })),
   },
   parameters: {
     docs: {

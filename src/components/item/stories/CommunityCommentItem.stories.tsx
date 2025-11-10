@@ -132,7 +132,7 @@ export const CommentList: Story = {
       <div className="bg-white">
         <CommunityCommentItem
           author="김개발"
-          profileUrl={undefined}
+          profileUrl=""
           content="정말 유익한 글이네요! 많은 도움이 되었습니다."
           createdAt="2025-01-15T10:30:00Z"
         />
@@ -144,7 +144,7 @@ export const CommentList: Story = {
         />
         <CommunityCommentItem
           author="이백엔드"
-          profileUrl={undefined}
+          profileUrl=""
           content="질문이 있는데, 이 방법을 사용할 때 성능 이슈는 없나요?"
           createdAt="2025-01-15T12:15:00Z"
         />
@@ -156,7 +156,7 @@ export const CommentList: Story = {
         />
         <CommunityCommentItem
           author="정풀스택"
-          profileUrl={undefined}
+          profileUrl=""
           content="감사합니다! 실무에 바로 적용해볼게요."
           createdAt="2025-01-15T14:30:00Z"
         />
