@@ -215,4 +215,51 @@ export const CommunityAPI = {
       data: response.data,
     };
   },
+
+  /**
+   * 커뮤니티 게시글 댓글 수정하는 API입니다.
+   * @page /community/[postId]
+   * @endpoint PUT /api/v1/posts/{postId}/replies/{replyId}
+   * @description 커뮤니티 게시글 댓글을 수정하는 API입니다.
+   * @returns {Promise<{ message: string | null, data: null }>}
+   */
+  async updateReply(postId: number, replyId: number, content: string) {
+    interface ApiResponse {
+      message: string | null;
+      data: null;
+    }
+
+    const response = await apiFetch<ApiResponse>(`/api/v1/posts/${postId}/replies/${replyId}`, {
+      method: 'PUT',
+      body: JSON.stringify({ content }),
+    });
+
+    return {
+      message: response.message,
+      data: response.data,
+    };
+  },
+
+  /**
+   * 커뮤니티 게시글 댓글 삭제하는 API입니다.
+   * @page /community/[postId]
+   * @endpoint DELETE /api/v1/posts/{postId}/replies/{replyId}
+   * @description 커뮤니티 게시글 댓글을 삭제하는 API입니다.
+   * @returns {Promise<{ message: string | null, data: null }>}
+   */
+  async deleteReply(postId: number, replyId: number) {
+    interface ApiResponse {
+      message: string | null;
+      data: null;
+    }
+
+    const response = await apiFetch<ApiResponse>(`/api/v1/posts/${postId}/replies/${replyId}`, {
+      method: 'DELETE',
+    });
+
+    return {
+      message: response.message,
+      data: response.data,
+    };
+  },
 };

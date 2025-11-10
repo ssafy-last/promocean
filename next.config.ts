@@ -29,12 +29,18 @@ const nextConfig: NextConfig = {
         hostname: 'images.unsplash.com',
         port: '',
         pathname: '/**',
-      },      
+      },
       {
         protocol: 'https',
         hostname: 'i.namu.wiki',
         port: '',
         pathname: '/i/**', // 특정 경로만 허용
+      },
+      {
+        protocol: 'https',
+        hostname: 'd3qr7nnlhj7oex.cloudfront.net',
+        port: '',
+        pathname: '/**',
       },
     ],
   },

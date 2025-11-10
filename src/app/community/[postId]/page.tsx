@@ -3,7 +3,7 @@
 import CommunityPostDetailSection from "@/components/section/CommunityPostDetailSection";
 import CommunityLikeShareSection from "@/components/section/CommunityLikeShareSection";
 import CommunityCommentSection from "@/components/section/CommunityCommentSection";
-import { CommunityPostItemProps, HashtagItemProps, CommunityCommentItemProps, CommunityPostItemResponse } from "@/types/itemType";
+import { CommunityPostItemProps, HashtagItemProps, CommunityCommentItemProps } from "@/types/itemType";
 import { CommunityAPI } from "@/api/community";
 
 interface CommunityPostPageProps {
@@ -27,7 +27,7 @@ export default async function CommunityPostPage({ params }: CommunityPostPagePro
     const communityPostData: CommunityPostItemProps = { ...communityPostDetailData };
     
     const communityCommentList: CommunityCommentItemProps[] =
-    communityPostDetailData.replies.map((item: CommunityPostItemResponse['replies'][0]) => ({
+    communityPostDetailData.replies.map((item: CommunityCommentItemProps) => ({
       ...item,
     }));
   
