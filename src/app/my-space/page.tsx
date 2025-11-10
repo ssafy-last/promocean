@@ -20,13 +20,13 @@ export default function MySpacePage() {
   const [isLoadingState, setIsLoadingState] = useState(true);
 
   //부분적 구독을 하고 싶으면 이런 구문을 쓰자.
-  const personalSpaceId = useAuthStore((state)=>state.user?.personalSpaceId);
+  const personalSpaceIdState = useAuthStore((state)=>state.user?.personalSpaceId);
   
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await SpaceAPI.getMySpaceArchiveFoldersData(personalSpaceId);
+        const res = await SpaceAPI.getMySpaceArchiveFoldersData(personalSpaceIdState);
 
         if(!res){ 
           return;
@@ -44,11 +44,8 @@ export default function MySpacePage() {
             archiveItemListState.push(folder);
           }
         }
-        
-
         // const mySpaceData = await mySpaceArchiveRes.json() as MySpaceArchiveDataResponse;
         // console.log("data ", mySpaceData);
-
         setPinnedItemListState(pinnedItemListState || []);
         setArchiveItemListState(archiveItemListState || []);
         setIsLoadingState(false);
@@ -59,7 +56,7 @@ export default function MySpacePage() {
     };
 
     fetchData();
-  }, [personalSpaceId]);
+  }, [personalSpaceIdState]);
 
   if (isLoadingState) {
     return (
