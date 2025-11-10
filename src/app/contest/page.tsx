@@ -3,15 +3,11 @@
 import ContestHeroSection from "@/components/section/ContestHeroSection";
 import ContestCardSection from "@/components/section/ContestCardSection";
 import { ContestCardItemProps } from "@/types/itemType";
+import { ContestAPI } from "@/api/contest";
 
 export default async function ContestPage() {
-  // TODO: 실제 API와 연동하기
-  const contestRes = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/mock/ContestCard.json`,
-    { cache: "no-store" }
-  );
 
-  const contestCardList: ContestCardItemProps[] = await contestRes.json().catch(() => []);
+  const { contestCardList }: { contestCardList: ContestCardItemProps[] } = await ContestAPI.getContestCardList(0, 10, "", "", "", "");
 
   return (
     <div className="min-h-screen bg-gray-50">

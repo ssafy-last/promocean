@@ -7,7 +7,10 @@ const nextConfig: NextConfig = {
   },
   eslint: {
   ignoreDuringBuilds: true,  // 빌드 시 ESLint 무시
-},
+  },
+  reactCompiler: true,
+  output: 'export',
+  
   images: {
     remotePatterns: [
       {
