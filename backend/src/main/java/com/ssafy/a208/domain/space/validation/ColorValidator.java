@@ -7,8 +7,7 @@ import java.util.regex.Pattern;
 public class ColorValidator implements ConstraintValidator<Color, CharSequence> {
 
     private Pattern specialPattern;
-    private static final int MIN = 6;
-    private static final int MAX = 8;
+    private static final int LENGTH = 6;
     private static final Pattern WHITESPACE = Pattern.compile("\\s");
 
     @Override
@@ -29,7 +28,7 @@ public class ColorValidator implements ConstraintValidator<Color, CharSequence> 
             return false;
         }
 
-        if (s.length() < MIN || s.length() > MAX) {
+        if (s.length() != LENGTH) {
             return false;
         }
 
