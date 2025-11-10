@@ -176,6 +176,7 @@ export interface CommunityPostItemResponse {
   isLiked: boolean
   createdAt: string
   replies: {
+    replyId: number
     author: string
     profileUrl: string
     content: string
@@ -236,6 +237,7 @@ export interface HashtagItemProps {
  * @param updatedAt: 댓글 수정일시
  */
 export interface CommunityCommentItemProps {
+  replyId: number
   author: string
   profileUrl: string
   content: string
