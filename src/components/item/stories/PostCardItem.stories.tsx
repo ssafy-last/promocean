@@ -300,6 +300,7 @@ export const FullLayoutExample: Story = {
             category="리뷰"
             likeCount={278}
             commentCount={34}
+            image="https://images.unsplash.com/photo-1619410283995-43d9134e7656?w=800&h=600&fit=crop"
           />
           <PostCardItem
             id="25"

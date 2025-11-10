@@ -13,7 +13,7 @@ export interface  SpaceScrapBoardListProps{
 export default function SpaceScrapBoardList({itemList} : SpaceScrapBoardListProps){
     const [scrapList, setScrapList] = useState(itemList);
 
-    const handleScrapToggle = (id: number) => {
+    const handleScrapToggle = (id: string) => {
         // 해당 id를 가진 아이템을 리스트에서 제거
         setScrapList(prevList => prevList.filter(item => item.id !== id));
         console.log(`게시물 ID ${id} 스크랩 해제됨`);

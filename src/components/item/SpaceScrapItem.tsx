@@ -8,7 +8,7 @@ import Heart from "@/components/icon/Heart";
 import ChatBubbleBottomCenterText from "@/components/icon/ChatBubbleBottomCenterText";
 
 export interface SpaceScrapItemProps extends CommunityBoardItemProps {
-    onScrapToggle?: (id: number) => void;
+    onScrapToggle?: (id: string) => void;
 }
 
 /**

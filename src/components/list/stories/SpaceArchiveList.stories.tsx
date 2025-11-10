@@ -207,8 +207,9 @@ export const WithinMySpacePage: Story = {
         <div className="max-w-7xl mx-auto py-8">
           <div className="mb-8">
             <h2 className="text-xl font-bold mb-2 px-8">📌 고정된 아카이브</h2>
-            <SpaceArchiveList 
+            <SpaceArchiveList
               isPinnedList={true}
+              isTeamSpace={false}
               archiveItemListState={mockArchiveList.slice(0, 2)}
               pinnedItemListState={mockArchiveList.filter(item => item.isPinned)}
               setArchiveItemListState={() => {}}

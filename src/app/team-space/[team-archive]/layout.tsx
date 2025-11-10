@@ -2,17 +2,18 @@ import SpaceHeader from "@/components/layout/SpaceHeader";
 import TeamSpaceHeader from "@/components/layout/TeamSpaceHeader";
 
 interface TeamDetailLayoutProps {
-    params : { 'team-archive' : string },
+    params : Promise<{ 'team-archive' : string }>,
     children : React.ReactNode
-    
+
 }
 
-export default function TeamSpaceArchiveLayout({
+export default async function TeamSpaceArchiveLayout({
     params,
     children
 }: Readonly<TeamDetailLayoutProps>){
 
-    const teamName = decodeURIComponent(params['team-archive']);
+    const resolvedParams = await params;
+    const teamName = decodeURIComponent(resolvedParams['team-archive']);
 
         return(
             <div>

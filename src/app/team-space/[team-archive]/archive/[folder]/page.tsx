@@ -7,16 +7,17 @@ import MySpaceArchiveFilterSection from "@/components/section/MySpaceArchiveFilt
 
 
 export interface TeamSpaceArchiveFolderPageProps {
-  params: {
+  params: Promise<{
     "team-archive": string;
     folder: string;
-  }
+  }>
 }
 
 
 export default async function TeamSpaceArchiveFolderPage({ params }: TeamSpaceArchiveFolderPageProps) {
-  const teamName = decodeURIComponent(params["team-archive"]);
-  const folderName = decodeURIComponent(params.folder);
+  const resolvedParams = await params;
+  const teamName = decodeURIComponent(resolvedParams["team-archive"]);
+  const folderName = decodeURIComponent(resolvedParams.folder);
   // decodeURIComponent : URL에 인코딩된 문자열을 원래 문자열로 디코딩하는 함수
   // 예를 들어, "AI%20챗봇"이라는 제목은 "AI 챗봇"으로 디코딩됩니다.
   // encodeURIComponent를 쓴 문자열에 대해선 꼭 해줘야 함.

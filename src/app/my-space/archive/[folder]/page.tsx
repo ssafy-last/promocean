@@ -9,13 +9,14 @@ import MySpaceArchiveFilterSection from "@/components/section/MySpaceArchiveFilt
 
 
 export interface MySpaceArchiveFolderPageProps {
-  params : { folder : string }
+  params : Promise<{ folder : string }>
 
 }
 
 
 export default async function MySpaceArchiveFolderPage({ params }: MySpaceArchiveFolderPageProps) {
-  const folderName = decodeURIComponent(params.folder);
+  const { folder } = await params;
+  const folderName = decodeURIComponent(folder);
   // decodeURIComponent : URL에 인코딩된 문자열을 원래 문자열로 디코딩하는 함수
   // 예를 들어, "AI%20챗봇"이라는 제목은 "AI 챗봇"으로 디코딩됩니다. 
   // encodeURIComponent를 쓴 문자열에 대해선 꼭 해줘야 함.

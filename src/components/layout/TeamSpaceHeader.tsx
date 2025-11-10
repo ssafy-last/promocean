@@ -29,7 +29,7 @@ export default function TeamSpaceHeader(
   {nickname, description}: TeamSpaceHeaderProps) {
 
   const [isModalOpenState, setIsModalOpenState] = useState(false);
-  const [modalTabState, setModalTabState] = useState<"권한" | "초대">("권한");
+  const [modalTabState, setModalTabState] = useState<"권한" | "초대" | "삭제">("권한");
   const [memberListState, setMemberListState] = useState<string[]>([
     "김철수",
     "이영희",
