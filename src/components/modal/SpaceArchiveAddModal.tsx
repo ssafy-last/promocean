@@ -55,15 +55,19 @@ export default function SpaceArchiveAddModal({ isOpen, onCloseAddModal, archiveI
         // };
 
 
+        
+
 
         const req : PostMySpaceArchiveFolderRequest={
             name : titleState,
-            color : selectedColorState.substring(1) // '#' 제거
+            color : selectedColorState.replace("#","")
         }
+        console.log("Request Data:", req);
 
         const newArchiveData : SpaceArchiveData = {
-            title: titleState,
-            bgColor: selectedColorState,
+            folderId : Date.now(), // 임시 ID, 실제로는 백엔드에서 받아와야 함
+            name: titleState,
+            color: selectedColorState,
             isPinned: false
          };
 

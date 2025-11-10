@@ -81,11 +81,11 @@ export default function SpaceArchiveList({
                 </button>
             )}
 
-            {displayList.map((item) => (
+            {displayList.map((item, index) => (
                 <SpaceArchiveItem
-                    key={item.title}
-                    title={item.title}
-                    bgColor={item.bgColor}
+                    key={item.folderId ?? index}
+                    title={item.name}
+                    bgColor={item.color}
                     isPinned={item.isPinned}
                     isTeamSpace={isTeamSpace}
                     teamName={teamName}
