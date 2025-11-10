@@ -10,7 +10,6 @@ public record ParticipantReq(
         @NotBlank
         @Schema(description = "이메일", example = "dlwnsfml@naver.com")
         String email,
-        @NotBlank
         @AllowedValues({10, 20, 30})
         @Schema(description = "참가자 타입", example = "20")
         int role) {

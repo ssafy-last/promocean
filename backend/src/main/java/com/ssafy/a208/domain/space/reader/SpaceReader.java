@@ -1,6 +1,7 @@
 package com.ssafy.a208.domain.space.reader;
 
 import com.ssafy.a208.domain.space.entity.Space;
+import com.ssafy.a208.domain.space.exception.space.CannotDeletePersonalSpaceException;
 import com.ssafy.a208.domain.space.exception.space.SpaceNotFoundException;
 import com.ssafy.a208.domain.space.repository.SpaceRepository;
 import com.ssafy.a208.global.common.enums.SpaceType;

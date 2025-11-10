@@ -32,6 +32,11 @@ public class ProfileService {
             "profiles/default/Profile5.png"
     };
 
+    public String getProfileUrl(Member member) {
+        Profile profile = profileReader.getProfile(member.getId());
+        return s3Service.getCloudFrontUrl(profile.getFilePath());
+    }
+
     @Transactional
     public ProfileRes updateProfileToDefault(CustomUserDetails userDetails) {
         Profile profile = profileReader.getProfile(userDetails.memberId());

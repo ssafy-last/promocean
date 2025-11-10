@@ -3,6 +3,7 @@ package com.ssafy.a208.domain.member.reader;
 import com.ssafy.a208.domain.member.entity.Member;
 import com.ssafy.a208.domain.member.exception.MemberNotFoundException;
 import com.ssafy.a208.domain.member.repository.MemberRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberReader {
 
     private final MemberRepository memberRepository;
+
+    @Transactional(readOnly = true)
+    public List<Member> getMembersById(List<Long> memberIds) {
+        return memberRepository.findAllByIdInAndDeletedAtIsNull(memberIds);
+    }
 
     @Transactional(readOnly = true)
     public Member getMemberById(Long memberId) {
