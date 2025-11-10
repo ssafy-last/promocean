@@ -3,7 +3,7 @@
 import CommunityPostDetailSection from "@/components/section/CommunityPostDetailSection";
 import CommunityLikeShareSection from "@/components/section/CommunityLikeShareSection";
 import CommunityCommentSection from "@/components/section/CommunityCommentSection";
-import { CommunityPostItemProps, HashtagItemProps, CommunityCommentItemProps } from "@/types/itemType";
+import { CommunityPostItemProps, HashtagItemProps, CommunityCommentItemProps, CommunityPostItemResponse } from "@/types/itemType";
 import { CommunityAPI } from "@/api/community";
 
 interface CommunityPostPageProps {
@@ -22,12 +22,12 @@ export default async function CommunityPostPage({ params }: CommunityPostPagePro
   try {
     const { communityPostDetailData } = await CommunityAPI.getCommunityPostDetailData(postId);
 
-    const hashtagList: HashtagItemProps[] = communityPostDetailData.tags.map(tag => ({ tag }));
+    const hashtagList: HashtagItemProps[] = communityPostDetailData.tags.map((tag: string) => ({ tag }));
     
     const communityPostData: CommunityPostItemProps = { ...communityPostDetailData };
     
     const communityCommentList: CommunityCommentItemProps[] =
-    communityPostDetailData.replies.map((item) => ({
+    communityPostDetailData.replies.map((item: CommunityPostItemResponse['replies'][0]) => ({
       ...item,
     }));
   
@@ -38,7 +38,7 @@ export default async function CommunityPostPage({ params }: CommunityPostPagePro
         <CommunityPostDetailSection communityPostData={communityPostData} hashtagList={hashtagList} />
 
         {/* 좋아요 및 스크랩 섹션 */}
-        <CommunityLikeShareSection likeCount={communityPostDetailData.likeCnt}/>
+        <CommunityLikeShareSection likeCnt={communityPostDetailData.likeCnt} isLiked={communityPostDetailData.isLiked} postId={postId} />
 
         {/* 구분선 */}
         <hr className="border-gray-200" />

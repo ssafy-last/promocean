@@ -1,17 +1,15 @@
 
-
 interface BookmarkProps {
     className?: string;
 }
 
-export default function Bookmark({ className }: BookmarkProps){
+export default function Bookmark({ className = "size-6" }: BookmarkProps){
     return(
         <svg 
             xmlns="http://www.w3.org/2000/svg" 
             fill="none" 
             viewBox="0 0 24 24" 
             strokeWidth="1.5" 
-            stroke="currentColor" 
             className={className}
         >
             <path 

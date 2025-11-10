@@ -70,19 +70,7 @@ export const CommunityAPI = {
     // const response = await apiFetch<ApiResponse>(`/api/v1/posts?${queryParams.toString()}`);
     const response = await apiFetch<ApiResponse>(`/mock/CommunityBoardListResponse.json`);
 
-    const communityBoardList: CommunityBoardItemProps[] = response.data.posts.map((post) => ({
-      postId: post.postId,
-      author: post.author,
-      profileUrl: post.profileUrl,
-      title: post.title,
-      type: post.type,
-      description: post.description,
-      category: post.category,
-      tags: post.tags,
-      likeCnt: post.likeCnt,
-      replyCnt: post.replyCnt,
-      image: undefined, // API 응답에 image 필드가 없음
-    }));
+    const communityBoardList: CommunityBoardItemProps[] = response.data.posts.map((post) => ({ ...post, image: undefined }));
 
     return {
       communityBoardList,
@@ -112,20 +100,47 @@ export const CommunityAPI = {
    * @returns {Promise<{ communityPostDetailData: CommunityPostItemResponse }>}
    */
   async getCommunityPostDetailData(postId: number) {
-    // API 응답 타입: { message: string | null, data: CommunityPostItemResponse }
     interface ApiResponse {
       message: string | null;
       data: CommunityPostItemResponse;
     }
     
     // const response = await apiFetch<ApiResponse>(`/api/v1/posts/${postId}`);
-    const response = await apiFetch<ApiResponse>(`/mock/CommunityPostDetailResponse.json`);
+    const response = await fetch('http://localhost:3000/mock/CommunityPostDetailResponse.json',
+      {
+        cache: "no-store",
+        next: { revalidate: 0 },
+      }
+    ).then((res) => res.json());
     
-    // API 응답에서 data 추출
     const communityPostDetailData = response.data;
     
     return {
       communityPostDetailData,
+    };
+  },
+
+  /**
+   * 커뮤니티 게시글 좋아요 추가하는 API입니다.
+   * @page /community/[postId]
+   * @endpoint POST /api/v1/posts/{postId}/likes
+   * @description 커뮤니티 게시글에 좋아요를 추가하는 API입니다.
+   * @param {number} postId - 게시글 ID
+   * @returns {Promise<{ message: string | null, data: null }>}
+   */
+  async createPostLike(postId: number) {
+    interface ApiResponse {
+      message: string | null;
+      data: null;
+    }
+
+    const response = await apiFetch<ApiResponse>(`/api/v1/posts/${postId}/likes`, {
+      method: 'POST',
+    });
+
+    return {
+      message: response.message,
+      data: response.data,
     };
   },
 
