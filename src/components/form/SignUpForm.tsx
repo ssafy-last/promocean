@@ -3,7 +3,6 @@
 // frontend/src/components/form/SignUpForm.tsx
 
 import { useState } from 'react';
-import { useAuthStore } from '@/store/authStore';
 import { useRouter } from 'next/navigation';
 import { authAPI } from '@/api/auth';
 

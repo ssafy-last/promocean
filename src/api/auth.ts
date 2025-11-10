@@ -50,7 +50,7 @@ export const authAPI = {
 
     // 응답 검증
     if (!payload.data || !token) {
-      throw new Error(payload.message || '로그인에 실패했습니다. (토큰 또는 데이터 누락)');
+      throw new Error(payload.message || '로그인에 실패했습니다.');
     }
 
     // 상태 관리 로직은 제거하고 결과만 반환
