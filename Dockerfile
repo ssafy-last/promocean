@@ -20,7 +20,7 @@ COPY --from=builder /app ./
 # Next.js SSR 서버 포트
 EXPOSE 3000
 
-# 환경 변수 설정
+# 환경 변수 설정하기기
 ENV NODE_ENV=production
 ENV NEXT_PUBLIC_BASE_URL=https://promocean.co.kr
 
