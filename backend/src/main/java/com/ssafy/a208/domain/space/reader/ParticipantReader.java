@@ -13,7 +13,12 @@ public class ParticipantReader {
 
     private final ParticipantRepository participantRepository;
 
-    public Participant getParticipant(Long spaceId, Long memberId) {
+    public Participant getParticipant(Long participantId) {
+        return participantRepository.findByIdAndDeletedAtIsNull(participantId)
+                .orElseThrow(SpaceNotFoundException::new);
+    }
+
+    public Participant getParticipantBySpaceIdAndMemberId(Long spaceId, Long memberId) {
         return participantRepository.findBySpaceIdAndMemberIdAndDeletedAtIsNull(spaceId, memberId)
                 .orElseThrow(SpaceNotFoundException::new);
     }

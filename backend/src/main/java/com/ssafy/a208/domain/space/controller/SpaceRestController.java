@@ -3,7 +3,7 @@ package com.ssafy.a208.domain.space.controller;
 import com.ssafy.a208.domain.space.dto.request.SpaceReq;
 import com.ssafy.a208.domain.space.dto.request.SpaceUpdateReq;
 import com.ssafy.a208.domain.space.dto.response.space.SpaceDetailRes;
-import com.ssafy.a208.domain.space.dto.response.space.SpaceInfosRes;
+import com.ssafy.a208.domain.space.dto.response.space.SpaceInfoListRes;
 import com.ssafy.a208.domain.space.dto.response.space.SpaceRes;
 import com.ssafy.a208.domain.space.service.SpaceService;
 import com.ssafy.a208.global.common.dto.ApiResponse;
@@ -42,10 +42,10 @@ public class SpaceRestController {
 
     @GetMapping
     @Operation(summary = "팀스페이스 목록조회", description = "팀스페이스 목록을 조회하는 API입니다.")
-    public ResponseEntity<ApiResponse<SpaceInfosRes>> getTeamSpaces(
+    public ResponseEntity<ApiResponse<SpaceInfoListRes>> getTeamSpaces(
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        SpaceInfosRes teamSpaces = spaceService.getTeamSpaces(userDetails);
+        SpaceInfoListRes teamSpaces = spaceService.getTeamSpaces(userDetails);
         return ApiResponse.ok(teamSpaces);
     }
 
