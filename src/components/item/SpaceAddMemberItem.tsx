@@ -26,10 +26,10 @@ export default function SpaceAddMemberItem({name, email, handleMemberClick, isMi
             </div>
             </div>
 
-            {isMinusButton && ( 
+            {isMinusButton && (
             <div className = "flex flex-col">
-            <button className="flex bg-primary rounded-full size-5 text-white justify-center items-center hover:bg-primary/70 active:bg-primary/100"
-            onClick={(e)=>{e.preventDefault()}}>-</button>
+            <div className="flex bg-primary rounded-full size-5 text-white justify-center items-center hover:bg-primary/70 active:bg-primary cursor-pointer"
+            onClick={(e)=>{e.preventDefault(); e.stopPropagation();}}>-</div>
             </div>
             )}
         </button>

@@ -7,10 +7,16 @@ import MySpaceArchiveFilterSection from "@/components/section/MySpaceArchiveFilt
 export default async function MySpaceScrapPage() {
   // 커뮤니티 게시판 데이터 fetch
   const communityBoardRes = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/mock/CommunityBoardData.json`,
+    `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/mock/CommunityBoardListResponse.json`,
     { cache: "no-store" }
   );
-  const spaceScrapBoardList: SpaceScrapBoardItemProps[] = await communityBoardRes.json();
+
+
+  const spaceScrapBoardData = await communityBoardRes.json();
+  const spaceScrapBoardList = spaceScrapBoardData.data.posts;
+
+
+  console.log("spaceScrapBoardList:", spaceScrapBoardList);
 
 return (
 

@@ -3,20 +3,20 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { CommunityBoardItemProps } from "@/types/itemType";
 import Heart from "@/components/icon/Heart";
 import ChatBubbleBottomCenterText from "@/components/icon/ChatBubbleBottomCenterText";
 
-export interface SpaceScrapBoardItemProps extends CommunityBoardItemProps {
-  id: string;
+export interface SpaceScrapBoardItemProps {
+  postId: string;
   title: string;
   category: string;
-  hashtags: string[];
-  likeCount: number;
-  commentCount: number;
+  tags: string[];
+  likeCnt: number;
+  replyCnt: number;
+  
   image: string;
-  userImage: string;
-  userName: string;
+  profileUrl: string;
+  author: string;
 }
 
 /**
@@ -24,7 +24,7 @@ export interface SpaceScrapBoardItemProps extends CommunityBoardItemProps {
  * @description CommunityBoardItem component is a community board item component that displays the community board item content
  * @returns {React.ReactNode}
  */
-export default function SpaceScrapBoardItem({ postId, author, profileUrl, title, category, tags, likeCnt, replyCnt, image }: SpaceScrapBoardItemProps) {
+export default function SpaceScrapBoardItem({ postId, tags, category, replyCnt, image, likeCnt, title, profileUrl, author }: SpaceScrapBoardItemProps) {
   return (
     <Link
       href={`/community/${postId}`}
