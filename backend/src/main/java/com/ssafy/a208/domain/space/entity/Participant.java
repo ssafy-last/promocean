@@ -53,6 +53,14 @@ public class Participant extends BaseEntity {
         this.space = space;
     }
 
+    public void updateParticipantNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void updateParticipantRole(ParticipantRole role) {
+        this.role = role;
+    }
+
     public void deleteParticipant() {
         this.delete();
     }
