@@ -20,6 +20,6 @@ public @interface Color {
 
     Class<? extends Payload>[] payload() default {};
 
-    String specialCharsRegex() default "[A-F0-9]";
+    String specialCharsRegex() default "[A-Fa-f0-9]";
 
 }
