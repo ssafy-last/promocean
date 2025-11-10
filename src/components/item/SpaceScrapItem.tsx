@@ -8,15 +8,15 @@ import Heart from "@/components/icon/Heart";
 import ChatBubbleBottomCenterText from "@/components/icon/ChatBubbleBottomCenterText";
 
 export interface SpaceScrapItemProps {
-  id: string;
+  postId: string;
   title: string;
-  hashtags: string[];
+  tags: string[];
   category: string;
-  likeCount: number;
-  commentCount: number;
+  likeCnt: number;
+  replyCnt: number;
   image: string;
-  userImage: string;
-  userName: string;
+  profileUrl: string;
+  author: string;
     onScrapToggle?: (id: string) => void;
 }
 
@@ -27,15 +27,15 @@ export interface SpaceScrapItemProps {
  * @returns {React.ReactNode}
  */
 export default function SpaceScrapItem({
-    id,
+    postId,
     title,
-    hashtags,
+    tags,
     category,
-    likeCount,
-    commentCount,
+    likeCnt,
+    replyCnt,
     image,
-    userImage,
-    userName,
+    profileUrl,
+    author,
     onScrapToggle
 }: SpaceScrapItemProps) {
     const [isScrapped, setIsScrapped] = useState(true);
@@ -45,14 +45,16 @@ export default function SpaceScrapItem({
         e.stopPropagation();
         setIsScrapped(false);
         if (onScrapToggle) {
-            onScrapToggle(id);
+            onScrapToggle(postId);
         }
     };
+
+    console.log("해쉬태그 : ", tags);
 
     return (
         <div className="relative group">
             <Link
-                href={`/community/${id}`}
+                href={`/community/${postId}`}
                 className="flex flex-col bg-white rounded-xl shadow-sm hover:shadow-xl
                     transition-all duration-300 overflow-hidden border border-gray-100
                     hover:-translate-y-1 active:translate-y-0"
@@ -86,11 +88,11 @@ export default function SpaceScrapItem({
                 <div className="absolute bottom-3 right-3 flex items-center gap-3 bg-black/60 backdrop-blur-sm px-3 py-1.5 rounded-full">
                     <div className="flex items-center gap-1 text-white">
                         <Heart className="w-4 h-4 fill-white" />
-                        <span className="text-xs font-medium">{likeCount}</span>
+                        <span className="text-xs font-medium">{likeCnt}</span>
                     </div>
                     <div className="flex items-center gap-1 text-white">
                         <ChatBubbleBottomCenterText className="w-4 h-4" />
-                        <span className="text-xs font-medium">{commentCount}</span>
+                        <span className="text-xs font-medium">{replyCnt}</span>
                     </div>
                 </div>
             </div>
@@ -104,7 +106,7 @@ export default function SpaceScrapItem({
 
                 {/* 해시태그 */}
                 <div className="flex flex-wrap gap-1.5">
-                    {hashtags.slice(0, 3).map((tag, idx) => (
+                    {tags.slice(0, 3).map((tag, idx) => (
                         <span
                             key={idx}
                             className="text-xs text-gray-600 hover:text-primary cursor-pointer transition-colors"
@@ -112,19 +114,19 @@ export default function SpaceScrapItem({
                             #{tag}
                         </span>
                     ))}
-                    {hashtags.length > 3 && (
+                    {tags.length > 3 && (
                         <span className="text-xs text-gray-400">
-                            +{hashtags.length - 3}
+                            +{tags.length - 3}
                         </span>
                     )}
                 </div>
 
                 {/* 작성자 정보 */}
                 <div className="flex items-center gap-2 pt-2 border-t border-gray-100">
-                    {userImage ? (
+                    {profileUrl ? (
                         <Image
-                            src={userImage}
-                            alt={userName}
+                            src={profileUrl}
+                            alt={author}
                             width={28}
                             height={28}
                             className="rounded-full object-cover"
@@ -135,7 +137,7 @@ export default function SpaceScrapItem({
                         </div>
                     )}
                     <span className="text-sm font-medium text-gray-700 truncate">
-                        {userName}
+                        {author}
                     </span>
                 </div>
             </div>

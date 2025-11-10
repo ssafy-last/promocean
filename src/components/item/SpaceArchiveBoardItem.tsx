@@ -7,11 +7,11 @@ export interface SpaceArchiveBoardItemProps{
     id: number;
     title: string;
     category: string;
-    hashtags: string[];
+    tags: string[];
     image?: string;
 }
 
-export default function SpaceArchiveBoardItem( { id, title, category, hashtags, image }: SpaceArchiveBoardItemProps) {
+export default function SpaceArchiveBoardItem( { id, title, category, tags, image }: SpaceArchiveBoardItemProps) {
   return (
     <Link
       href={`/community/${id}`}
@@ -47,7 +47,7 @@ export default function SpaceArchiveBoardItem( { id, title, category, hashtags, 
               {category}
             </span>
             <div className="flex flex-wrap gap-1 text-sm text-gray-500 truncate">
-              {hashtags.map((tag, idx) => (
+              {tags.map((tag, idx) => (
                 <span
                   key={idx}
                   className="hover:text-primary cursor-pointer"
