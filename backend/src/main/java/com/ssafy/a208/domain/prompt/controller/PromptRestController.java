@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/prompt")
 @RequiredArgsConstructor
-@Tag(name = "Prompt API", description = "GMS 기반 AI 프롬프트 처리 API")
+@Tag(name = "AI 프롬프트 답변/이미지 생성", description = "GMS 기반 AI 프롬프트 텍스트/이미지 처리 API가 담겨있어요")
 public class PromptRestController {
 
     private final PromptService promptService;

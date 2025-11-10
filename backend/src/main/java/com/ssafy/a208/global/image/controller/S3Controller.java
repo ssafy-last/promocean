@@ -4,6 +4,7 @@ import com.ssafy.a208.global.common.dto.ApiResponse;
 import com.ssafy.a208.global.image.dto.S3Url;
 import com.ssafy.a208.global.image.service.S3Service;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/images")
+@Tag(name = "S3 이미지", description = "S3에 업로드할 URL 생성 API가 담겨있어요")
 public class S3Controller {
 
     private final S3Service s3Service;
