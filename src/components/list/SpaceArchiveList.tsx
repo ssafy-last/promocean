@@ -84,8 +84,9 @@ export default function SpaceArchiveList({
             {displayList.map((item, index) => (
                 <SpaceArchiveItem
                     key={item.folderId ?? index}
-                    title={item.name}
-                    bgColor={item.color}
+                    folderId={item.folderId}
+                    name={item.name}
+                    color={item.color}
                     isPinned={item.isPinned}
                     isTeamSpace={isTeamSpace}
                     teamName={teamName}
