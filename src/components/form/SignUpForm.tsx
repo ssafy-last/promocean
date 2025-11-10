@@ -3,7 +3,6 @@
 // frontend/src/components/form/SignUpForm.tsx
 
 import { useState } from 'react';
-import { useAuthStore } from '@/store/authStore';
 import { useRouter } from 'next/navigation';
 import { authAPI } from '@/api/auth';
 
@@ -130,20 +129,10 @@ export default function SignUpForm() {
     }
 
     try {
-      const { payload, token } = await authAPI.signUp({ email, password, nickname });
-      
-      const user = {
-        email: payload.data!.email,
-        nickname: payload.data!.nickname,
-        profileUrl: payload.data!.profileUrl,
-        personalSpaceId: payload.data!.personalSpaceId,
-      };
-      
-      useAuthStore.getState().login(user, token);
-      
-      router.push('/');
+      await authAPI.signUp({ email, password, nickname });
+      alert('회원가입이 완료되었습니다.');
+      router.push('/auth/login?tab=login');
     } catch (error) {
-      console.error('회원가입 실패:', error);
       alert(error instanceof Error ? error.message : '회원가입에 실패했습니다.');
     }
   };

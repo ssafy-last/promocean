@@ -96,12 +96,12 @@ export default function SignInForm() {
         />
       </div>
 
-      {/* 비밀번호 찾기 링크 */}
-      <div className="text-right">
+      {/* TODO : 비밀번호 찾기 링크 삭제 예정 (API 없음) */}
+      {/* <div className="text-right">
         <a href="#" className="text-sm text-text/70 hover:text-primary transition-colors">
           계정을 잊으셨나요? <span className="text-primary">계정 찾기</span>
         </a>
-      </div>
+      </div> */}
 
       {/* 로그인 버튼 */}
       <button 
