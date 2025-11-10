@@ -1,16 +1,22 @@
-// frontend/src/app/contest/post/[id]/@modal/page.tsx
+// frontend/src/app/contest/[postId]/page.tsx
 
 import ContestHeader from "@/components/layout/ContestHeader";
 import ContestPostSection from "@/components/section/ContestPostSection";
 import ContestInfoSection from "@/components/section/ContestInfoSection";
 import { ContestAPI } from "@/api/contest";
 
+interface ContestPostPageProps {
+  params: Promise<{ postId: string }>;
+}
+
 /**
  * ContestPostPage component
  * @description 대회 상세 게시글 페이지 (mock → 실제 API 전환 예정)
  * @returns {React.ReactNode}
  */
-export default async function ContestPostPage() {
+export default async function ContestPostPage({ params }: ContestPostPageProps) {
+  const { postId: postIdStr } = await params;
+  const postId = parseInt(postIdStr, 10);
 
   const {
     contestPostData,
@@ -19,7 +25,7 @@ export default async function ContestPostPage() {
     contestInfoTitles,
     contestNoticeList,
     contestSubmissionList,
-  } = await ContestAPI.getContestPostPageData();
+  } = await ContestAPI.getContestPostPageData(postId);
 
   return (
     <div className="min-h-screen bg-gray-50">

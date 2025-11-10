@@ -28,19 +28,42 @@ export interface SidebarItemProps {
 }
 
 /**
+ * CommunityBoardItemResponse interface
+ * @page /community
+ * @endpoint /api/v1/posts?page={page}&size={size}&author={author}&title={title}&tag={tag}&sorter={sorter}&category={category}&type={type}
+ * @description API 응답의 게시글 목록 아이템 타입
+ */
+export interface CommunityBoardItemResponse {
+  postId: number
+  author: string
+  profileUrl: string
+  title: string
+  type: string
+  description: string
+  category: string
+  tags: string[]
+  likeCnt: number
+  replyCnt: number
+}
+
+/**
  * CommunityBoardItemProps interface
- * @description 커뮤니티 게시판 아이템 타입
+ * @page /community
+ * @endpoint /api/v1/posts?page={page}&size={size}&author={author}&title={title}&tag={tag}&sorter={sorter}&category={category}&type={type}
+ * @description API 응답의 게시글 목록 아이템 타입 (컴포넌트에서 사용)
  */
 export interface CommunityBoardItemProps {
-  id: string
+  postId: number
+  author: string
+  profileUrl: string
   title: string
-  hashtags: string[]
+  type: string
+  description: string
   category: string
-  likeCount: number
-  commentCount: number
-  image: string
-  userImage?: string;    // 작성자 프로필 이미지
-  userName: string;          // 작성자 이름
+  tags: string[]
+  likeCnt: number
+  replyCnt: number
+  image?: string  // API 응답에 없지만 컴포넌트에서 사용
 }
 
 /**
@@ -132,8 +155,8 @@ export interface LeaderboardItemProps {
 }
 
 /**
- * CommunityPostItemProps interface
- * @description rptl커뮤니티 게시글 아이템 타입 (글 상세보기 화면, API와 동일하게 생성했습니다)
+ * CommunityPostItemResponse interface
+ * @description 커뮤니티 게시글 아이템 타입
  */
 export interface CommunityPostItemResponse {
   postId: number
@@ -146,15 +169,18 @@ export interface CommunityPostItemResponse {
   type: string
   sampleQuestion: string
   sampleAnswer: string
-  fileUrl?: string
+  fileUrl?: string | null
   tags: string[]
   likeCnt: number
+  replyCnt: number
+  isLiked: boolean
   createdAt: string
   replies: {
     author: string
     profileUrl: string
     content: string
     createdAt: string
+    updatedAt: string
   }[]
 }
 
@@ -188,7 +214,7 @@ export interface CommunityPostItemProps {
   type: string
   sampleQuestion: string
   sampleAnswer: string
-  fileUrl?: string
+  fileUrl?: string | null
   createdAt: string
 }
 
@@ -207,12 +233,14 @@ export interface HashtagItemProps {
  * @param profileUrl: 작성자 프로필 이미지
  * @param content: 댓글 내용
  * @param createdAt: 댓글 작성일시
+ * @param updatedAt: 댓글 수정일시
  */
 export interface CommunityCommentItemProps {
   author: string
   profileUrl: string
   content: string
   createdAt: string
+  updatedAt?: string
 }
 
 /**

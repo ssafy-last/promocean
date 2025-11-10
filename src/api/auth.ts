@@ -1,42 +1,148 @@
 // frontend/src/api/auth.ts
 
-import { AuthResponse, LoginRequest, SignUpRequest } from '@/types/authType';
+import { AuthResponse, LoginRequest, SignUpRequest, DuplicateCheckResponse } from '@/types/authType';
 import { apiFetch } from '@/api/fetcher';
-
-// Todo : environment variable 사용
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+import { useAuthStore } from '@/store/authStore';
 
 export const authAPI = {
 
   /**
    * 로그인 API
+   * @page /auth/login?tab=login
+   * @endpoint /api/v1/auth/login
    * @param credentials - 로그인 요청 데이터
-   * @returns 로그인 응답 데이터
+   * @returns 로그인 응답 데이터와 토큰
    */
-  async login(credentials: LoginRequest): Promise<AuthResponse> {
+  async login(credentials: LoginRequest): Promise<{ payload: AuthResponse; token: string }> {
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const endpoint = `/api/v1/auth/login`;
+    const url = endpoint.startsWith('http') ? endpoint : `${BASE_URL}${endpoint}`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(credentials),
+      credentials: "include",
+    });
 
-    const response = await fetch('/mock/AuthResponse.json', { cache: 'no-store' });
-    const data = await response.json();
-    return data;
+    // 응답 헤더에서 토큰 추출
+    const token = 
+      response.headers.get('Authorization')?.replace('Bearer ', '') ||
+      response.headers.get('X-Access-Token') ||
+      null;
+
+    // 응답 파싱
+    const contentType = response.headers.get('content-type') || '';
+    let payload: AuthResponse;
     
-    // Todo : 목데이터에서 실제 데이터로 변경 필요.
-    // return apiFetch<AuthResponse>(`/api/v1/auth/login`, {
-    //   method: 'POST',
-    //   body: JSON.stringify(credentials),
-    // });
+    if (contentType.includes('application/json')) {
+      payload = await response.json();
+    } else {
+      const textPayload = await response.text();
+      throw new Error(`예상치 못한 응답 형식: ${textPayload}`);
+    }
+
+    // 에러 처리
+    if (!response.ok) {
+      const errorMessage = payload.message || '로그인에 실패했습니다.';
+      throw new Error(`${response.status} ${errorMessage}`);
+    }
+
+    // 응답 검증
+    if (!payload.data || !token) {
+      throw new Error(payload.message || '로그인에 실패했습니다. (토큰 또는 데이터 누락)');
+    }
+
+    // 상태 관리 로직은 제거하고 결과만 반환
+    return { payload, token };
   },
 
   /**
    * 회원가입 API
+   * @page /auth/login?tab=signup
+   * @endpoint /api/v1/members/join
    * @param userData - 회원가입 요청 데이터
-   * @returns 회원가입 응답 데이터
+   * @returns 회원가입 응답 데이터와 토큰
    */
-  async signUp(userData: SignUpRequest): Promise<AuthResponse> {
-    return apiFetch<AuthResponse>(`/api/v1/members/join`, {
+  async signUp(userData: SignUpRequest): Promise<{ payload: AuthResponse; token: string }> {
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const endpoint = `/api/v1/members/join`;
+    const url = endpoint.startsWith('http') ? endpoint : `${BASE_URL}${endpoint}`;
+    
+    const response = await fetch(url, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify(userData),
     });
+
+    // 응답 헤더에서 토큰 추출
+    const token = 
+      response.headers.get('Authorization')?.replace('Bearer ', '') ||
+      response.headers.get('X-Access-Token') ||
+      null;
+
+    // 응답 파싱
+    const contentType = response.headers.get('content-type') || '';
+    let payload: AuthResponse;
+    
+    if (contentType.includes('application/json')) {
+      payload = await response.json();
+    } else {
+      const textPayload = await response.text();
+      throw new Error(`예상치 못한 응답 형식: ${textPayload}`);
+    }
+
+    // 에러 처리
+    if (!response.ok) {
+      const errorMessage = payload.message || '회원가입에 실패했습니다.';
+      throw new Error(`${response.status} ${errorMessage}`);
+    }
+
+    // 응답 검증
+    if (!payload.data || !token) {
+      throw new Error(payload.message || '회원가입에 실패했습니다');
+    }
+
+    // 상태 관리 로직은 제거하고 결과만 반환
+    return { payload, token };
+  },
+
+  /**
+   * 중복확인 API (이메일 또는 닉네임)
+   * @page /auth/login?tab=signup
+   * @endpoint /api/v1/members?email=email&nickname=nickname
+   * @param options - 중복확인 옵션 (email 또는 nickname 중 하나만 전달)
+   * @returns 중복확인 응답 데이터
+   */
+  async checkDuplicate(options: { email?: string; nickname?: string }): Promise<DuplicateCheckResponse> {
+    const params = new URLSearchParams();
+    if (options.email) {
+      params.set('email', options.email);
+    }
+    if (options.nickname) {
+      params.set('nickname', options.nickname);
+    }
+    return apiFetch<DuplicateCheckResponse>(`/api/v1/members?${params.toString()}`, {
+      method: 'GET',
+    });
+  },
+
+  /**
+   * 로그아웃 API
+   * @endpoint /api/v1/auth/logout
+   */
+  async logout(): Promise<void> {
+    try {
+      await apiFetch<{ message: string | null; data: null }>(`/api/v1/auth/logout`, {
+        method: 'POST',
+      });
+    } catch (error) {
+      console.error('로그아웃 API 실패:', error);
+    }
+    const { logout } = useAuthStore.getState();
+    logout();
   },
 };
-
-
