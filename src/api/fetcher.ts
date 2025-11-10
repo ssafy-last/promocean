@@ -3,7 +3,11 @@
 import { getAuthToken } from '@/lib/authToken';
 
 // 환경 변수 기반 기본 URL 설정
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+// 프로덕션에서는 NEXT_PUBLIC_BASE_URL 환경 변수가 필수입니다
+export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+if (!BASE_URL) {
+  throw new Error('NEXT_PUBLIC_BASE_URL 환경 변수가 설정되지 않았습니다.');
+}
 
 /**
  * API 요청 공통 래퍼 (fetch 기반)
