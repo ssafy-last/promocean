@@ -20,9 +20,9 @@ export default meta;
 type Story = StoryObj<typeof PostingFloatingSection>;
 
 const mockItems: PostingFloatingItemProps[] = [
-  { label: '옵션 1', value: 'option1' },
-  { label: '옵션 2', value: 'option2' },
-  { label: '옵션 3', value: 'option3' },
+  { id: '1', icon: <span className="text-lg">💻</span>, label: '옵션 1', value: 'option1' },
+  { id: '2', icon: <span className="text-lg">🎨</span>, label: '옵션 2', value: 'option2' },
+  { id: '3', icon: <span className="text-lg">📝</span>, label: '옵션 3', value: 'option3' },
 ];
 
 export const Default: Story = {

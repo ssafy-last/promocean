@@ -2,19 +2,21 @@
 
 import MySpaceTabs from "@/components/filter/MySpaceTabs";
 import SpaceArchiveBoardItem, { SpaceArchiveBoardItemProps } from "@/components/item/SpaceArchiveBoardItem";
+import { SpaceBoardHeader } from "@/components/layout/SpaceBoardHeader";
 import SpaceArchiveBoardList from "@/components/list/SpaceArchiveBoardList";
 import SpaceArchiveList from "@/components/list/SpaceArchiveList";
 import MySpaceArchiveFilterSection from "@/components/section/MySpaceArchiveFilterSection";
 
 
 export interface MySpaceArchiveFolderPageProps {
-  params : { folder : string }
+  params : Promise<{ folder : string }>
 
 }
 
 
 export default async function MySpaceArchiveFolderPage({ params }: MySpaceArchiveFolderPageProps) {
-  const folderName = decodeURIComponent(params.folder);
+  const { folder } = await params;
+  const folderName = decodeURIComponent(folder);
   // decodeURIComponent : URL에 인코딩된 문자열을 원래 문자열로 디코딩하는 함수
   // 예를 들어, "AI%20챗봇"이라는 제목은 "AI 챗봇"으로 디코딩됩니다. 
   // encodeURIComponent를 쓴 문자열에 대해선 꼭 해줘야 함.
@@ -29,13 +31,15 @@ export default async function MySpaceArchiveFolderPage({ params }: MySpaceArchiv
 
     <div className="min-h-screen bg-gray-50">
 
-      <div className="flex justify-start max-w-6xl px-4 py-3 text-[40px] font-bold text-gray-900">
-        <h1 className="text-[40px] font-bold text-gray-900">{folderName}</h1>
-      </div>
+      <SpaceBoardHeader titleName={folderName} description={`자신이 아카이브에 쓴 글을 확인하세요`} /> 
 
       <div className="flex justify-end-safe">
         <div className="shrink-0 min-w-[380px]">
-          <MySpaceArchiveFilterSection buttonMode="write"/>
+          <MySpaceArchiveFilterSection
+            buttonMode="write"
+            folderName={folderName}
+            isTeamSpace={false}
+          />
         </div>
       </div>
 

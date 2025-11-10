@@ -12,7 +12,7 @@ import {
   HorizontalRuleNode,
   $createHorizontalRuleNode,
 } from '@lexical/react/LexicalHorizontalRuleNode';
-import { $createParagraphNode, $createTextNode, TextNode } from 'lexical';
+import { $createParagraphNode, $createTextNode, TextNode, $isTextNode } from 'lexical';
 
 const HR: ElementTransformer = {
   dependencies: [HorizontalRuleNode],
@@ -60,7 +60,7 @@ const CODE_BLOCK: ElementTransformer = {
 const HASHTAG: TextMatchTransformer = {
   dependencies: [TextNode],
   export: (node) => {
-    if (!node.hasFormat('code')) {
+    if (!$isTextNode(node) || !node.hasFormat('code')) {
       return null;
     }
     const text = node.getTextContent();
@@ -82,15 +82,12 @@ const HASHTAG: TextMatchTransformer = {
 };
 
 // 링크 transformer를 제외한 transformers
-const filteredElementTransformers = ELEMENT_TRANSFORMERS.filter(
-  (transformer) => transformer !== LINK
-);
 const filteredTextMatchTransformers = TEXT_MATCH_TRANSFORMERS.filter(
   (transformer) => transformer !== LINK
 );
 
 export const CUSTOM_TRANSFORMERS = [
-  ...filteredElementTransformers,
+  ...ELEMENT_TRANSFORMERS,
   ...TEXT_FORMAT_TRANSFORMERS,
   ...filteredTextMatchTransformers,
   HASHTAG,

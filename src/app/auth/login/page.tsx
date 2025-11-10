@@ -3,12 +3,12 @@
 // frontend/src/app/auth/login/page.tsx
 
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useMemo } from 'react';
+import { useMemo, Suspense } from 'react';
 import LoginTabs from "@/components/filter/LoginTabs";
 import SignInForm from "@/components/form/SignInForm";
 import SignUpForm from "@/components/form/SignUpForm";
 
-export default function LoginPage() {
+function LoginPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -38,5 +38,17 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-white">로딩 중...</div>
+      </div>
+    }>
+      <LoginPageContent />
+    </Suspense>
   );
 }

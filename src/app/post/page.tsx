@@ -2,26 +2,27 @@
 
 // frontend/src/app/post/page.tsx
 
-import { useSearchParams } from "next/navigation";
-import { useRef, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useRef, useState, useEffect, Suspense } from "react";
 import PostingFloatingSection from "@/components/section/PostingFloatingSection";
 import PostingWriteSection from "@/components/section/PostingWriteSection";
 import PostingFooter from "@/components/layout/PostingFooter";
 import PostingMetaFormSection from "@/components/section/PostingMetaFormSection";
+import PostingArchiveFolderSection, { ArchiveFolderItem } from "@/components/section/PostingArchiveFolderSection";
 import { PostingFloatingItemProps } from "@/types/itemType";
 import { PostFormData, PostSubmitData } from "@/types/postType";
 import TitleInput from "@/components/editor/TitleInput";
 import HashtagInput from "@/components/editor/HashtagInput";
 
 /**
- * PostPage component
- * @description PostPage component is a post page component that displays the post page content
- * @returns {React.ReactNode}
+ * PostPageContent component (useSearchParams를 사용하는 내부 컴포넌트)
  */
-export default function PostPage() {
-
+function PostPageContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
-  const postType = searchParams.get("type"); // Todo: postType에 렌더링 다르게 할 예정입니다. (community, article, contest)
+  const postType = searchParams.get("type"); // community, my-space, team-space
+  const folderName = searchParams.get("folder"); // 아카이브 폴더 이름
+  const teamName = searchParams.get("name"); // 팀 스페이스 이름
 
   // 폼 상태 관리
   const [title, setTitle] = useState("");
@@ -32,12 +33,64 @@ export default function PostPage() {
   const [answerPrompt, setAnswerPrompt] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("work");
   const [selectedPromptType, setSelectedPromptType] = useState("text");
+  const [selectedFolder, setSelectedFolder] = useState(folderName || "");
+
+  // 아카이브 폴더 상태
+  const [pinnedFolders, setPinnedFolders] = useState<ArchiveFolderItem[]>([]);
+  const [normalFolders, setNormalFolders] = useState<ArchiveFolderItem[]>([]);
+  const [isLoadingFolders, setIsLoadingFolders] = useState(false);
 
   //최종 gpt API로 제출할 prompt 저장용 ref 변수
   const submitPrompt = useRef("");
 
+  // 아카이브 타입인지 확인
+  const isArchiveType = postType === 'my-space' || postType === 'team-space';
+
+  // 아카이브 폴더 데이터 가져오기
+  useEffect(() => {
+    if (!isArchiveType) return;
+
+    const fetchArchiveFolders = async () => {
+      setIsLoadingFolders(true);
+      try {
+        // TODO: 백엔드 API 연결 후 수정 필요
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/mock/MySpaceArchiveData.json`,
+          { cache: "no-store" }
+        );
+        const data = await response.json();
+
+        setPinnedFolders(data.pinned || []);
+        setNormalFolders(data.normal || []);
+      } catch (error) {
+        console.error("Failed to fetch archive folders:", error);
+      } finally {
+        setIsLoadingFolders(false);
+      }
+    };
+
+    fetchArchiveFolders();
+  }, [isArchiveType]);
+
+  // 폴더 변경 시 쿼리 파라미터 업데이트
+  const handleFolderChange = (newFolder: string) => {
+    setSelectedFolder(newFolder);
+
+    // 쿼리 파라미터 업데이트
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("folder", newFolder);
+
+    router.replace(`/post?${params.toString()}`, { scroll: false });
+  };
+
   // 제출 핸들러
   const handleSubmit = () => {
+    // 아카이브 타입인 경우 폴더 선택 확인
+    if ((postType === 'my-space' || postType === 'team-space') && !selectedFolder) {
+      alert('아카이브 폴더를 선택해주세요.');
+      return;
+    }
+
     // 폼 데이터 수집
     const formData: PostFormData = {
       title,
@@ -66,8 +119,17 @@ export default function PostPage() {
       },
     };
 
+    // 아카이브 정보 추가
+    if (postType === 'my-space' || postType === 'team-space') {
+      submitData.archiveFolder = selectedFolder;
+      if (postType === 'team-space' && teamName) {
+        submitData.teamName = teamName;
+      }
+    }
+
     // TODO: API 호출
     console.log('제출 데이터:', submitData);
+    console.log('게시글 타입:', postType);
     alert('게시글이 제출되었습니다!\n콘솔을 확인하세요.');
 
     // 나중에 여기서 API 호출
@@ -180,48 +242,59 @@ export default function PostPage() {
           {/* 글 작성 컨테이너 (8 비율) */}
           <div className="lg:col-span-4 space-y-4">
 
-            {/* 사용 프롬프트 */}
-            <PostingWriteSection
-              title="사용 프롬프트"
-              placeholder="사용한 프롬프트를 입력하세요..."
-              onChange={setUsedPrompt}
-              isSubmitButton={selectedPromptType === 'image'}
-            />
-
-
-          {
-            selectedPromptType === 'text' ? (
-              <div>
-                    {/* 예시 질문 프롬프트 */}
-                    <PostingWriteSection
-                      title="예시 질문 프롬프트"
-                      placeholder="예시 질문을 입력하세요..."
-                      onChange={setExamplePrompt}
-                      isSubmitButton={true}
-                      onSubmit={()=>
-                        handleAISubmit(usedPrompt)
-                      }
-                    />
-
-                    {/* 답변 프롬프트 */}
-                    <PostingWriteSection
-                      title="답변 프롬프트"
-                      placeholder="답변을 입력하세요..."
-                      onChange={setAnswerPrompt}
-                    />
-                </div>
+            {/* 아카이브 타입일 때는 간단한 에디터만 표시 */}
+            {isArchiveType ? (
+              <PostingWriteSection
+                title="내용"
+                placeholder="내용을 입력하세요..."
+                onChange={setUsedPrompt}
+                isSubmitButton={false}
+              />
             ) : (
-              <div>
-                    {/* 답변 프롬프트 */}
-                    <PostingWriteSection
-                      title="결과 사진"
-                      placeholder="결과 사진을 첨부하세요..."
-                      onChange={setAnswerPrompt}
-                    />
-                </div>
-            )
+              // 커뮤니티 타입일 때는 기존 프롬프트 섹션 표시
+              <>
+                {/* 사용 프롬프트 */}
+                <PostingWriteSection
+                  title="사용 프롬프트"
+                  placeholder="사용한 프롬프트를 입력하세요..."
+                  onChange={setUsedPrompt}
+                  isSubmitButton={selectedPromptType === 'image'}
+                />
 
-          }
+                {
+                  selectedPromptType === 'text' ? (
+                    <div>
+                          {/* 예시 질문 프롬프트 */}
+                          <PostingWriteSection
+                            title="예시 질문 프롬프트"
+                            placeholder="예시 질문을 입력하세요..."
+                            onChange={setExamplePrompt}
+                            isSubmitButton={true}
+                            onSubmit={()=>
+                              handleAISubmit(usedPrompt)
+                            }
+                          />
+
+                          {/* 답변 프롬프트 */}
+                          <PostingWriteSection
+                            title="답변 프롬프트"
+                            placeholder="답변을 입력하세요..."
+                            onChange={setAnswerPrompt}
+                          />
+                      </div>
+                  ) : (
+                    <div>
+                          {/* 답변 프롬프트 */}
+                          <PostingWriteSection
+                            title="결과 사진"
+                            placeholder="결과 사진을 첨부하세요..."
+                            onChange={setAnswerPrompt}
+                          />
+                      </div>
+                  )
+                }
+              </>
+            )}
 
 
             {/* 프롬프트 작성 완료 버튼 */}
@@ -231,23 +304,43 @@ export default function PostPage() {
           {/* 플로팅 컨테이너 (2 비율) */}
           <div className="lg:col-span-1 space-y-4">
 
-            {/* 카테고리 선택 */}
-            <PostingFloatingSection
-              title="카테고리"
-              items={categoryItems}
-              selectedValue={selectedCategory}
-              onSelect={setSelectedCategory}
-              name="category"
-            />
+            {/* 카테고리 선택 - 커뮤니티 타입일 때만 표시 */}
+            {!isArchiveType && (
+              <PostingFloatingSection
+                title="카테고리"
+                items={categoryItems}
+                selectedValue={selectedCategory}
+                onSelect={setSelectedCategory}
+                name="category"
+              />
+            )}
 
-            {/* 프롬프트 타입 */}
-            <PostingFloatingSection
-              title="프롬프트 타입"
-              items={promptTypeItems}
-              selectedValue={selectedPromptType}
-              onSelect={setSelectedPromptType}
-              name="promptType"
-            />
+            {/* 아카이브 폴더 선택 - 아카이브 타입일 때만 표시 */}
+            {isArchiveType && (
+              isLoadingFolders ? (
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                  <p className="text-sm text-gray-500 text-center py-4">폴더 목록 로딩 중...</p>
+                </div>
+              ) : (
+                <PostingArchiveFolderSection
+                  selectedFolder={selectedFolder}
+                  onFolderChange={handleFolderChange}
+                  pinnedFolders={pinnedFolders}
+                  normalFolders={normalFolders}
+                />
+              )
+            )}
+
+            {/* 프롬프트 타입 - 커뮤니티 타입일 때만 표시 */}
+            {!isArchiveType && (
+              <PostingFloatingSection
+                title="프롬프트 타입"
+                items={promptTypeItems}
+                selectedValue={selectedPromptType}
+                onSelect={setSelectedPromptType}
+                name="promptType"
+              />
+            )}
           </div>
         </div>
 
@@ -255,5 +348,22 @@ export default function PostPage() {
 
       </div>
     </div>
+  );
+}
+
+/**
+ * PostPage component (Suspense로 감싼 메인 컴포넌트)
+ * @description PostPage component is a post page component that displays the post page content
+ * @returns {React.ReactNode}
+ */
+export default function PostPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 py-8 flex items-center justify-center">
+        <div className="text-gray-600">로딩 중...</div>
+      </div>
+    }>
+      <PostPageContent />
+    </Suspense>
   );
 }

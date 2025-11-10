@@ -29,4 +29,6 @@ export interface PostSubmitData {
     category: string;
     promptType: string;
   };
+  archiveFolder?: string; // 아카이브 폴더 (my-space, team-space용)
+  teamName?: string; // 팀 이름 (team-space용)
 }

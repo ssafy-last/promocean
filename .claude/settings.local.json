@@ -5,7 +5,10 @@
       "Bash(npm search:*)",
       "Bash(findstr:*)",
       "Bash(dir:*)",
-      "Bash(npm run storybook:*)"
+      "Bash(npm run storybook:*)",
+      "Bash(npm run build:*)",
+      "Bash(Select-String -Pattern \"Failed to compile|Type error|Successfully|Compiled successfully\")",
+      "Bash(Select-Object -First 10)"
     ],
     "deny": [],
     "ask": []
