@@ -14,6 +14,7 @@ interface User {
   email: string;
   nickname: string;
   profileUrl: string;
+  personalSpaceId: number;
 }
 
 /**
