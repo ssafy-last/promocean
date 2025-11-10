@@ -84,7 +84,7 @@ export const Default: Story = {
     title: 'React 컴포넌트 챌린지',
     image: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&h=600&fit=crop',
     participantCount: 156,
-    deadline: 7,
+    deadline: '7',
     status: 'ONGOING',
     tags: ['react', 'frontend', 'ui'],
     startDate: '2025.01.15',
@@ -165,7 +165,7 @@ export const DeadlineSoon: Story = {
     title: '알고리즘 챌린지',
     image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&h=600&fit=crop',
     participantCount: 567,
-    deadline: 1,
+    deadline: '1',
     status: 'ONGOING',
     tags: ['algorithm', 'coding', 'problem-solving'],
     startDate: '2025.01.10',
@@ -186,7 +186,7 @@ export const LongTitle: Story = {
     title: 'Next.js와 TypeScript를 활용한 대규모 프론트엔드 애플리케이션 개발 챌린지',
     image: 'https://images.unsplash.com/photo-1579468118864-1b9ea3c0db4a?w=800&h=600&fit=crop',
     participantCount: 89,
-    deadline: 14,
+    deadline: '14',
     status: 'ONGOING',
     tags: ['nextjs', 'typescript'],
     startDate: '2025.01.08',
@@ -207,7 +207,7 @@ export const ManyParticipants: Story = {
     title: '웹 접근성 개선 대회',
     image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&h=600&fit=crop',
     participantCount: 2500,
-    deadline: 30,
+    deadline: '30',
     status: 'ONGOING',
     tags: ['accessibility', 'web', 'a11y'],
     startDate: '2025.01.01',
@@ -228,7 +228,7 @@ export const ManyTags: Story = {
     title: '모바일 앱 개발 대회',
     image: 'https://images.unsplash.com/photo-1605745341112-85968b19335b?w=800&h=600&fit=crop',
     participantCount: 178,
-    deadline: 21,
+    deadline: '21',
     status: 'ONGOING',
     tags: ['mobile', 'react-native', 'flutter', 'ios', 'android', 'app'],
     startDate: '2025.01.05',
@@ -251,7 +251,7 @@ export const GridLayout: Story = {
         title="React 컴포넌트 챌린지"
         image="https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&h=600&fit=crop"
         participantCount={156}
-        deadline={7}
+        deadline="7"
         status="ONGOING"
         tags={['react', 'frontend']}
         startDate="2025.01.15"
@@ -288,7 +288,7 @@ export const GridLayout: Story = {
         title="알고리즘 챌린지"
         image="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&h=600&fit=crop"
         participantCount={567}
-        deadline={1}
+        deadline="1"
         status="ONGOING"
         tags={['algorithm', 'coding']}
         startDate="2025.01.10"
@@ -298,7 +298,7 @@ export const GridLayout: Story = {
         title="웹 접근성 개선 대회"
         image="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&h=600&fit=crop"
         participantCount={2500}
-        deadline={30}
+        deadline="30"
         status="ONGOING"
         tags={['accessibility', 'web']}
         startDate="2025.01.01"
@@ -321,7 +321,7 @@ export const HoverTest: Story = {
     title: '마우스를 올려보세요!',
     image: 'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=800&h=600&fit=crop',
     participantCount: 100,
-    deadline: 10,
+    deadline: '10',
     status: 'ONGOING',
     tags: ['hover', 'test'],
     startDate: '2025.01.12',

@@ -1,14 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import SpaceScrapBoardItem from '@components/item/SpaceScrapBoardItem';
+import SpaceScrapItem from '@components/item/SpaceScrapItem';
 
-const meta: Meta<typeof SpaceScrapBoardItem> = {
-  title: 'Components/Item/SpaceScrapBoardItem',
-  component: SpaceScrapBoardItem,
+const meta: Meta<typeof SpaceScrapItem> = {
+  title: 'Components/Item/SpaceScrapItem',
+  component: SpaceScrapItem,
   parameters: {
     layout: 'padded',
     docs: {
       description: {
-        component: '스페이스 스크랩 보드 아이템 컴포넌트입니다. 썸네일, 제목, 카테고리, 해시태그, 좋아요, 댓글 수, 유저 정보를 표시합니다.',
+        component: '스페이스 스크랩 카드 아이템 컴포넌트입니다. 핀터레스트/인스타그램 스타일의 카드 형태로 썸네일, 제목, 카테고리, 해시태그, 좋아요, 댓글 수, 유저 정보를 표시합니다.',
       },
     },
   },
@@ -81,7 +81,7 @@ const meta: Meta<typeof SpaceScrapBoardItem> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof SpaceScrapBoardItem>;
+type Story = StoryObj<typeof SpaceScrapItem>;
 
 // 기본 스토리
 export const Default: Story = {
@@ -99,7 +99,7 @@ export const Default: Story = {
   parameters: {
     docs: {
       description: {
-        story: '기본 스페이스 스크랩 보드 아이템입니다.',
+        story: '기본 스페이스 스크랩 카드 아이템입니다.',
       },
     },
   },
@@ -120,7 +120,7 @@ export const NoThumbnail: Story = {
   parameters: {
     docs: {
       description: {
-        story: '썸네일 이미지가 없는 경우 회색 배경이 표시됩니다.',
+        story: '썸네일 이미지가 없는 경우 기본 이미지 아이콘이 표시됩니다.',
       },
     },
   },
@@ -163,7 +163,7 @@ export const LongTitle: Story = {
   parameters: {
     docs: {
       description: {
-        story: '긴 제목의 경우 line-clamp-1로 1줄까지만 표시됩니다.',
+        story: '긴 제목의 경우 line-clamp-2로 2줄까지 표시되고 나머지는 생략됩니다.',
       },
     },
   },
@@ -185,7 +185,7 @@ export const ManyHashtags: Story = {
   parameters: {
     docs: {
       description: {
-        story: '해시태그가 많은 경우 flex-wrap으로 자동 줄바꿈됩니다.',
+        story: '해시태그가 많은 경우 최대 3개까지 표시되고 나머지는 +N 형태로 표시됩니다.',
       },
     },
   },
@@ -213,11 +213,11 @@ export const PopularPost: Story = {
   },
 };
 
-// 리스트 뷰
-export const ListView: Story = {
+// 그리드 뷰 (2열)
+export const GridView2Columns: Story = {
   render: () => (
-    <div className="space-y-3 max-w-4xl">
-      <SpaceScrapBoardItem
+    <div className="grid grid-cols-2 gap-4 max-w-4xl">
+      <SpaceScrapItem
         id="10"
         title="JavaScript ES2024 새로운 기능"
         hashtags={['javascript', 'es2024']}
@@ -228,7 +228,7 @@ export const ListView: Story = {
         userImage="https://i.pravatar.cc/150?img=10"
         userName="김자바"
       />
-      <SpaceScrapBoardItem
+      <SpaceScrapItem
         id="11"
         title="효과적인 UI/UX 디자인 원칙"
         hashtags={['design', 'uiux']}
@@ -239,7 +239,7 @@ export const ListView: Story = {
         userImage="https://i.pravatar.cc/150?img=11"
         userName="이디자인"
       />
-      <SpaceScrapBoardItem
+      <SpaceScrapItem
         id="12"
         title="개발자를 위한 생산성 도구 추천"
         hashtags={['tools', 'productivity']}
@@ -249,7 +249,7 @@ export const ListView: Story = {
         image="https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=800&h=600&fit=crop"
         userName="박도구"
       />
-      <SpaceScrapBoardItem
+      <SpaceScrapItem
         id="13"
         title="Python으로 시작하는 머신러닝"
         hashtags={['python', 'machinelearning', 'ai']}
@@ -265,7 +265,87 @@ export const ListView: Story = {
   parameters: {
     docs: {
       description: {
-        story: '여러 아이템을 리스트 형태로 표시하는 예시입니다.',
+        story: '2열 그리드 레이아웃으로 표시하는 예시입니다.',
+      },
+    },
+  },
+};
+
+// 그리드 뷰 (3열)
+export const GridView3Columns: Story = {
+  render: () => (
+    <div className="grid grid-cols-3 gap-4 max-w-6xl">
+      <SpaceScrapItem
+        id="20"
+        title="React Hooks 완벽 가이드"
+        hashtags={['react', 'hooks', 'tutorial']}
+        category="개발"
+        likeCount={234}
+        commentCount={67}
+        image="https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=400&h=300&fit=crop"
+        userImage="https://i.pravatar.cc/150?img=20"
+        userName="김리액트"
+      />
+      <SpaceScrapItem
+        id="21"
+        title="CSS Grid vs Flexbox"
+        hashtags={['css', 'layout']}
+        category="디자인"
+        likeCount={189}
+        commentCount={45}
+        image="https://images.unsplash.com/photo-1507721999472-8ed4421c4af2?w=400&h=300&fit=crop"
+        userImage="https://i.pravatar.cc/150?img=21"
+        userName="이씨에스"
+      />
+      <SpaceScrapItem
+        id="22"
+        title="Node.js 성능 최적화"
+        hashtags={['nodejs', 'performance']}
+        category="백엔드"
+        likeCount={156}
+        commentCount={34}
+        image="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=300&fit=crop"
+        userName="박노드"
+      />
+      <SpaceScrapItem
+        id="23"
+        title="Git 브랜치 전략"
+        hashtags={['git', 'version-control']}
+        category="개발"
+        likeCount={98}
+        commentCount={23}
+        image="https://images.unsplash.com/photo-1556075798-4825dfaaf498?w=400&h=300&fit=crop"
+        userImage="https://i.pravatar.cc/150?img=22"
+        userName="최깃"
+      />
+      <SpaceScrapItem
+        id="24"
+        title="Docker 컨테이너 가이드"
+        hashtags={['docker', 'devops']}
+        category="인프라"
+        likeCount={145}
+        commentCount={56}
+        image="https://images.unsplash.com/photo-1605745341075-2e1f00f83ff0?w=400&h=300&fit=crop"
+        userImage="https://i.pravatar.cc/150?img=23"
+        userName="정도커"
+      />
+      <SpaceScrapItem
+        id="25"
+        title="웹 접근성 체크리스트"
+        hashtags={['accessibility', 'a11y', 'web']}
+        category="품질"
+        likeCount={112}
+        commentCount={28}
+        image="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400&h=300&fit=crop"
+        userImage="https://i.pravatar.cc/150?img=24"
+        userName="강접근성"
+      />
+    </div>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: '3열 그리드 레이아웃으로 표시하는 예시입니다. 스크랩 페이지의 기본 레이아웃입니다.',
       },
     },
   },
@@ -287,7 +367,7 @@ export const HoverTest: Story = {
   parameters: {
     docs: {
       description: {
-        story: '마우스를 올리면 shadow가 강화되고, 좋아요/댓글 아이콘 색상이 변경되는 호버 애니메이션을 확인할 수 있습니다.',
+        story: '마우스를 올리면 카드가 위로 살짝 올라가고, 그림자가 강화되며, 이미지가 확대되는 호버 애니메이션을 확인할 수 있습니다.',
       },
     },
   },
@@ -307,7 +387,55 @@ export const MinimalInfo: Story = {
   parameters: {
     docs: {
       description: {
-        story: '최소한의 정보만 있는 게시물입니다.',
+        story: '최소한의 정보만 있는 게시물입니다. 이미지와 프로필 사진이 없어도 정상적으로 표시됩니다.',
+      },
+    },
+  },
+};
+
+// 다양한 카테고리 믹스
+export const CategoryMix: Story = {
+  render: () => (
+    <div className="grid grid-cols-3 gap-4 max-w-6xl">
+      <SpaceScrapItem
+        id="30"
+        title="AI로 코드 리뷰하기"
+        hashtags={['ai', 'code-review']}
+        category="AI/ML"
+        likeCount={456}
+        commentCount={123}
+        image="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=300&fit=crop"
+        userImage="https://i.pravatar.cc/150?img=30"
+        userName="AI전문가"
+      />
+      <SpaceScrapItem
+        id="31"
+        title="미니멀 디자인의 힘"
+        hashtags={['design', 'minimal']}
+        category="디자인"
+        likeCount={234}
+        commentCount={67}
+        image="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&h=300&fit=crop"
+        userImage="https://i.pravatar.cc/150?img=31"
+        userName="디자이너"
+      />
+      <SpaceScrapItem
+        id="32"
+        title="클라우드 비용 최적화 팁"
+        hashtags={['cloud', 'aws', 'cost']}
+        category="인프라"
+        likeCount={178}
+        commentCount={45}
+        image="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=300&fit=crop"
+        userImage="https://i.pravatar.cc/150?img=32"
+        userName="클라우드러"
+      />
+    </div>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: '다양한 카테고리의 아이템들을 함께 표시하는 예시입니다.',
       },
     },
   },

@@ -4,38 +4,50 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { SpaceArchiveData } from "@/app/my-space/page";
 import Pin from "../icon/Pin";
+import SpaceArchiveDeleteModal from "../modal/SpaceArchiveDeleteModal";
+import SpaceArchiveEditModal from "../modal/SpaceArchiveEditModal";
 
 export interface SpaceArchiveItemProps {
     title: string;
     bgColor: string;
     isPinned: boolean;
+    isTeamSpace :boolean;
+    teamName?: string;
     archiveItemListState: SpaceArchiveData[];
     setArchiveItemListState: (newState: SpaceArchiveData[]) => void;
     pinnedItemListState: SpaceArchiveData[];
     setPinnedItemListState: (newState: SpaceArchiveData[]) => void;
 }
 
-export default function SpaceArchiveItem({ 
-    title, 
-    bgColor, 
-    isPinned, 
-    archiveItemListState, 
-    setArchiveItemListState, 
-    pinnedItemListState, 
-    setPinnedItemListState 
+export default function SpaceArchiveItem({
+    title,
+    bgColor,
+    isPinned,
+    isTeamSpace,
+    teamName,
+    archiveItemListState,
+    setArchiveItemListState,
+    pinnedItemListState,
+    setPinnedItemListState
 }: SpaceArchiveItemProps) {
 
     const router = useRouter();
     const [isPinnedState, setIsPinnedState] = useState(isPinned);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
     const handleArchiveRoute = () => {
         console.log(`${title} 아카이브 아이템 클릭됨`);
-        router.push('/my-space/archive/' + encodeURIComponent(title));
+        if(isTeamSpace && teamName) {
+          router.push(`/team-space/${encodeURIComponent(teamName)}/archive/${encodeURIComponent(title)}`);
+        } else {
+          router.push('/my-space/archive/' + encodeURIComponent(title));
+        }
     }
 
     const handlePinnedClick = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.stopPropagation();
-        
+
         const newPinnedState = !isPinnedState;
         setIsPinnedState(newPinnedState);
 
@@ -47,7 +59,7 @@ export default function SpaceArchiveItem({
 
             // Pinned 리스트에 추가
             setPinnedItemListState([...pinnedItemListState, { title, bgColor, isPinned: true }]);
-        } 
+        }
         // true → false (Pinned → 일반 폴더)
         else {
             // Pinned 리스트에서 제거
@@ -61,42 +73,115 @@ export default function SpaceArchiveItem({
         console.log(`${title} 아카이브 폴더 pinned ${newPinnedState ? '설정' : '해제'}됨`);
     }
 
+    const handleDelete = () => {
+        // Pinned 상태에 따라 해당 리스트에서 삭제
+        if (isPinnedState) {
+            const updatedPinnedList = pinnedItemListState.filter(item => item.title !== title);
+            setPinnedItemListState(updatedPinnedList);
+        } else {
+            const updatedArchiveList = archiveItemListState.filter(item => item.title !== title);
+            setArchiveItemListState(updatedArchiveList);
+        }
+        console.log(`${title} 아카이브 폴더 삭제됨`);
+    }
+
+    const handleEdit = (newTitle: string, newBgColor: string) => {
+        // Pinned 상태에 따라 해당 리스트에서 업데이트
+        if (isPinnedState) {
+            const updatedPinnedList = pinnedItemListState.map(item =>
+                item.title === title ? { ...item, title: newTitle, bgColor: newBgColor } : item
+            );
+            setPinnedItemListState(updatedPinnedList);
+        } else {
+            const updatedArchiveList = archiveItemListState.map(item =>
+                item.title === title ? { ...item, title: newTitle, bgColor: newBgColor } : item
+            );
+            setArchiveItemListState(updatedArchiveList);
+        }
+        console.log(`${title} 아카이브 폴더 수정됨:`, { newTitle, newBgColor });
+    }
+
     return (
-        <button
-            className={`
-                w-40 h-60 relative rounded-[10px]
-                shadow-[0px_4px_6px_0px_rgba(0,0,0,0.10)] overflow-hidden
-                transition-all duration-200 ease-in-out
-                hover:-translate-y-1 hover:brightness-105 hover:shadow-lg
-                active:translate-y-0 active:scale-95 active:shadow-sm
-            `}
-            style={{ backgroundColor: bgColor }}  // inline style로 배경색 적용
-            onClick={handleArchiveRoute}
-        >
-            <div className="w-full h-20 p-2.5 left-0 top-40 absolute bg-white inline-flex justify-center items-center">
-                <div className="text-center justify-center text-(--text-color) text-2xl font-medium leading-9">
-                    {title}
+        <>
+            <div
+                className={`
+                    w-40 h-60 relative rounded-[10px]
+                    shadow-[0px_4px_6px_0px_rgba(0,0,0,0.10)] overflow-hidden
+                    transition-all duration-200 ease-in-out
+                    hover:-translate-y-1 hover:brightness-105 hover:shadow-lg
+                    active:translate-y-0 active:scale-95 active:shadow-sm
+                    cursor-pointer
+                `}
+                style={{ backgroundColor: bgColor }}  // inline style로 배경색 적용
+                onClick={handleArchiveRoute}
+            >
+                <div className="w-full h-20 p-2.5 left-0 top-40 absolute bg-white inline-flex justify-center items-center">
+                    <div className="text-center justify-center text-(--text-color) text-2xl font-medium leading-9">
+                        {title}
+                    </div>
+                </div>
+
+                {/* Pin 영역 */}
+                <div className="w-6 h-6 absolute top-[0.8rem] right-[0.8rem]" onClick={(e) => e.stopPropagation()}>
+                    <label className="relative block w-6 h-6 cursor-pointer">
+                        <input
+                            type="checkbox"
+                            checked={isPinnedState}
+                            className="absolute opacity-0 w-7 h-7 cursor-pointer"
+                            aria-label={`${title} 아카이브 폴더 pinned 설정`}
+                            onChange={handlePinnedClick}
+                        />
+                        <Pin
+                            className={`w-6 h-6 transition-all duration-200
+                                        ${isPinnedState
+                                    ? 'fill-red-400 stroke-gray-800'
+                                    : 'fill-none stroke-gray-800'
+                                }`}
+                        />
+                    </label>
+                </div>
+
+                {/* 수정 및 삭제 버튼 영역 */}
+                <div className="absolute bottom-22 left-0 w-full flex flex-row gap-2 px-2" onClick={(e) => e.stopPropagation()}>
+                    <button
+                        className="flex-1 px-2 py-1.5 bg-white/90 text-gray-700 text-sm rounded-md
+                            hover:bg-white hover:shadow-md active:scale-95 transition-all duration-150"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setIsEditModalOpen(true);
+                        }}
+                    >
+                        수정
+                    </button>
+                    <button
+                        className="flex-1 px-2 py-1.5 bg-red-500/90 text-white text-sm rounded-md
+                            hover:bg-red-500 hover:shadow-md active:scale-95 transition-all duration-150"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setIsDeleteModalOpen(true);
+                        }}
+                    >
+                        삭제
+                    </button>
                 </div>
             </div>
 
-            <div className="w-6 h-6 absolute top-[0.8rem] right-[0.8rem]" onClick={(e) => e.stopPropagation()}>
-                <label className="relative block w-6 h-6 cursor-pointer">
-                    <input
-                        type="checkbox"
-                        checked={isPinnedState}
-                        className="absolute opacity-0 w-7 h-7 cursor-pointer"
-                        aria-label={`${title} 아카이브 폴더 pinned 설정`}
-                        onChange={handlePinnedClick}
-                    />
-                    <Pin 
-                        className={`w-6 h-6 transition-all duration-200
-                                    ${isPinnedState 
-                                        ? 'fill-yellow-400 stroke-yellow-500' 
-                                        : 'fill-none stroke-gray-800'
-                                    }`}
-                    />
-                </label>
-            </div>
-        </button>
+            {/* 삭제 확인 모달 */}
+            <SpaceArchiveDeleteModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onConfirm={handleDelete}
+                title={title}
+            />
+
+            {/* 수정 모달 */}
+            <SpaceArchiveEditModal
+                isOpen={isEditModalOpen}
+                onClose={() => setIsEditModalOpen(false)}
+                currentTitle={title}
+                currentBgColor={bgColor}
+                onSave={handleEdit}
+            />
+        </>
     );
 }

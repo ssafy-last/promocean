@@ -159,30 +159,33 @@ export const StickyFooter: Story = {
 
 // 다양한 너비에서
 export const DifferentWidths: Story = {
-  render: () => (
-    <div className="space-y-8">
-      <div>
-        <h3 className="text-lg font-semibold mb-4">전체 너비</h3>
-        <div className="bg-white p-4 rounded-lg border border-gray-200">
-          <PostingFooter />
+  render: () => {
+    const mockSubmit = () => console.log('Submit clicked');
+    return (
+      <div className="space-y-8">
+        <div>
+          <h3 className="text-lg font-semibold mb-4">전체 너비</h3>
+          <div className="bg-white p-4 rounded-lg border border-gray-200">
+            <PostingFooter onSubmit={mockSubmit} />
+          </div>
         </div>
-      </div>
 
-      <div>
-        <h3 className="text-lg font-semibold mb-4">중간 너비 (768px)</h3>
-        <div className="max-w-3xl bg-white p-4 rounded-lg border border-gray-200">
-          <PostingFooter />
+        <div>
+          <h3 className="text-lg font-semibold mb-4">중간 너비 (768px)</h3>
+          <div className="max-w-3xl bg-white p-4 rounded-lg border border-gray-200">
+            <PostingFooter onSubmit={mockSubmit} />
+          </div>
         </div>
-      </div>
 
-      <div>
-        <h3 className="text-lg font-semibold mb-4">좁은 너비 (모바일, 480px)</h3>
-        <div className="max-w-md bg-white p-4 rounded-lg border border-gray-200">
-          <PostingFooter />
+        <div>
+          <h3 className="text-lg font-semibold mb-4">좁은 너비 (모바일, 480px)</h3>
+          <div className="max-w-md bg-white p-4 rounded-lg border border-gray-200">
+            <PostingFooter onSubmit={mockSubmit} />
+          </div>
         </div>
       </div>
-    </div>
-  ),
+    );
+  },
   parameters: {
     docs: {
       description: {
@@ -258,7 +261,7 @@ export const FullPageSimulation: Story = {
           </div>
 
           <div className="p-6 border-t border-gray-200 bg-gray-50">
-            <PostingFooter />
+            <PostingFooter onSubmit={() => console.log('Submit clicked')} />
           </div>
         </div>
       </div>
