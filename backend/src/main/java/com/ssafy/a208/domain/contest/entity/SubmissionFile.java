@@ -1,6 +1,7 @@
 package com.ssafy.a208.domain.contest.entity;
 
 import com.ssafy.a208.global.common.FileEntity;
+import com.ssafy.a208.global.image.dto.FileMetaData;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -13,6 +14,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Getter
@@ -25,6 +28,7 @@ public class SubmissionFile extends FileEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "submission_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Submission submission;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -37,5 +41,9 @@ public class SubmissionFile extends FileEntity {
         super(originalName, filePath, contentType, size);
         this.submission = submission;
         this.contest = contest;
+    }
+
+    public void updateSubmissionFile(FileMetaData fileMetaData) {
+        this.updateFile(fileMetaData);
     }
 }

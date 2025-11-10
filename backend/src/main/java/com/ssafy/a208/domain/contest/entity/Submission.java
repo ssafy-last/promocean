@@ -61,4 +61,10 @@ public class Submission extends BaseEntity {
         this.contest = contest;
         this.member = member;
     }
+
+    public void updateSubmission(String prompt, String description, String result) {
+        this.prompt = prompt;
+        this.description = description;
+        this.result = result;
+    }
 }
