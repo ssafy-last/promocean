@@ -13,9 +13,10 @@ export interface  SpaceScrapBoardListProps{
 export default function SpaceScrapBoardList({itemList} : SpaceScrapBoardListProps){
     const [scrapList, setScrapList] = useState(itemList);
 
+    console.log("SpaceScrapBoardList - itemList:", itemList);
     const handleScrapToggle = (id: string) => {
         // 해당 id를 가진 아이템을 리스트에서 제거
-        setScrapList(prevList => prevList.filter(item => item.id !== id));
+        setScrapList(prevList => prevList.filter(item => item.postId !== id));
         console.log(`게시물 ID ${id} 스크랩 해제됨`);
     };
 
@@ -24,15 +25,15 @@ export default function SpaceScrapBoardList({itemList} : SpaceScrapBoardListProp
           {
             scrapList?.map((item, index) => (
                 <SpaceScrapItem
-                    key={item.id}
-                    id = {item.id}
-                    title = {item.title}
-                    userName = {item.userName}
-                    userImage={item.userImage}
+                    key={index}
+                    postId={item.postId}
+                    title={item.title}
+                    profileUrl={item.profileUrl}
+                    author={item.author}
                     category={item.category}
-                    hashtags={item.hashtags}
-                    likeCount={item.likeCount}
-                    commentCount={item.commentCount}
+                    tags={item.tags}
+                    likeCnt={item.likeCnt}
+                    replyCnt={item.replyCnt}
                     image={item.image}
                     onScrapToggle={handleScrapToggle}
                 />
