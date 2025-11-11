@@ -6,7 +6,6 @@ import { useState } from "react";
 import CommunityBoardFilterSection from "@/components/section/CommunityBoardFilterSection";
 import CommunityBoardList from '@/components/list/CommunityBoardList'
 import { CommunityBoardItemProps } from '@/types/itemType'
-import { useRouter } from "next/navigation";
 
 interface CommunityBoardSectionProps {
   communityBoardList: CommunityBoardItemProps[]
@@ -20,11 +19,6 @@ interface CommunityBoardSectionProps {
  */
 export default function CommunityBoardSection({ communityBoardList: initialCommunityBoardList }: CommunityBoardSectionProps) {
   const [communityBoardList, setCommunityBoardList] = useState<CommunityBoardItemProps[]>(initialCommunityBoardList);
-
-  const router = useRouter();
-  const handleWritePost = () => {
-    router.push("/post?type=community");
-  }
 
   const handleSearchResult = (result: CommunityBoardItemProps[]) => {
     setCommunityBoardList(result);
@@ -48,17 +42,6 @@ export default function CommunityBoardSection({ communityBoardList: initialCommu
         
           {/* 게시글 목록 */}
           <CommunityBoardList communityBoardList={communityBoardList} />
-
-          {/* 게시글 작성 버튼 */}
-          <div className="flex justify-end py-6">
-            <button
-            type="button"
-            className="px-4 py-2 rounded-md bg-primary text-white font-medium hover:brightness-110 active:brightness-95 transition-colors"
-            onClick={handleWritePost}
-          >
-              게시글 작성
-            </button>
-        </div>
       </div>
     </div>
   )

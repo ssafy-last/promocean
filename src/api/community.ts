@@ -50,7 +50,7 @@ export const CommunityAPI = {
     // 디폴트값 설정
     const defaultParams = {
       page: params?.page || 1,
-      size: params?.size || 10,
+      size: 10, // 응답이 10개보다 적더라도 항상 10으로 요청
     };
     
     // 디폴트값 추가
