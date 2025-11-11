@@ -75,9 +75,12 @@ export default function SpaceArchiveItem({
 
     const handlePinnedClick = async (e: React.ChangeEvent<HTMLInputElement>) => {
         e.stopPropagation();
+        const res = await SpaceAPI.patchMySpaceArchiveFolderPinStatus(spaceId!, folderId);
 
+        
         const newPinnedState = !isPinnedState;
         setIsPinnedState(newPinnedState);
+        
 
         // false → true (일반 폴더 → Pinned)
         if (newPinnedState) {
@@ -97,9 +100,9 @@ export default function SpaceArchiveItem({
             // 일반 리스트에 추가
             setArchiveItemListState([...archiveItemListState, { folderId, name, color, isPinned: false }]);
         }
-
-        const res = await SpaceAPI.patchMySpaceArchiveFolderPinStatus(spaceId!, folderId);
-
+        
+        const res2 = await SpaceAPI.getSpaceArchiveFoldersData(spaceId!);
+        
 
         
         // setArchiveItemListState([]);
@@ -107,13 +110,14 @@ export default function SpaceArchiveItem({
 
         console.log("pin res " ,res);
         console.log(`${name} 아카이브 폴더 pinned ${newPinnedState ? '설정' : '해제'}됨`);
-        const res2 = await SpaceAPI.getSpaceArchiveFoldersData(spaceId!);
 
     console.log("폴더 데이터 재조회 ",res2);
     }
 
     const handleDelete = async() => {
         // Pinned 상태에 따라 해당 리스트에서 삭제
+        const res = await SpaceAPI.deleteMySpaceArchiveFolderData(spaceId!, folderId);
+
         if (isPinnedState) {
             const updatedPinnedList = pinnedItemListState.filter(item => item.name !== name);
             setPinnedItemListState(updatedPinnedList);
@@ -122,7 +126,6 @@ export default function SpaceArchiveItem({
             setArchiveItemListState(updatedArchiveList);
         }
         
-        const res = await SpaceAPI.deleteMySpaceArchiveFolderData(spaceId!, folderId);
 
     //   setArchiveItemListState([]);
     //     setPinnedItemListState([]);

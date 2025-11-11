@@ -5,6 +5,7 @@ import { SpaceArchiveData } from "@/app/my-space/page";
 import { useAuthStore } from "@/store/authStore";
 import SpaceAPI, { PostMySpaceArchiveFolderRequest } from "@/api/space";
 import { Space } from "lucide-react";
+import { colorCodeBackToFront } from "@/utils/colorController";
 
 
 export interface SpaceArchiveAddModalProps{
@@ -46,23 +47,24 @@ export default function SpaceArchiveAddModal({ isOpen, spaceId, onCloseAddModal,
         }
         console.log("Request Data:", req);
 
-        const newArchiveData : SpaceArchiveData = {
-            folderId : Date.now(), // 임시 ID, 실제로는 백엔드에서 받아와야 함
-            name: titleState,
-            color: selectedColorState,
-            isPinned: false
-         };
-
-         const res = await SpaceAPI.postMySpaceArchiveFolderData(spaceId, req);
-            if(!res){
-                console.error("Failed to add new archive folder");
+        
+        const res = await SpaceAPI.postMySpaceArchiveFolderData(spaceId, req);
+        if(!res){
+            console.error("Failed to add new archive folder");
                 return;
             }
             else{
                 console.log("Successfully added new archive folder:", res);
             }
-         
-
+            
+            console.log("Response Datazz:", res);
+            
+        const newArchiveData : SpaceArchiveData = {
+            folderId : res.folderId, // 임시 ID, 실제로는 백엔드에서 받아와야 함
+            name: res.name,
+            color: colorCodeBackToFront(res.color),
+            isPinned: res.isPinned
+            };
 
         setArchiveItemListState([...archiveItemListState, newArchiveData]);
 
