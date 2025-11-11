@@ -40,7 +40,7 @@ public class PostFileService {
      */
     @Transactional
     public String createPostFile(String filePath, Post post) {
-        String destPath = s3Service.moveObject(filePath, ImageDirectory.POSTS);
+        String destPath = extractFilePath(filePath);
         FileMetaData metaData = s3Service.getFileMetadata(destPath);
 
         PostFile postFile = PostFile.builder()
@@ -97,29 +97,24 @@ public class PostFileService {
             }
 
             // 새 파일로 변경
-            if (newFilePath.startsWith("tmp/")) {
-                existingFileOptional.ifPresentOrElse(
-                        existingFile -> {
-                            // 기존 S3 파일 삭제
-                            s3Service.deleteFile(existingFile.getFilePath());
+            // tmp 검증과 이동
+            String destPath = extractFilePath(newFilePath);
 
-                            // 새 파일 이동
-                            String destPath = s3Service.moveObject(newFilePath, ImageDirectory.POSTS);
-                            FileMetaData metaData = s3Service.getFileMetadata(destPath);
+            existingFileOptional.ifPresentOrElse(
+                    existingFile -> {
+                        // 기존 S3 파일 삭제
+                        s3Service.deleteFile(existingFile.getFilePath());
 
-                            // DB 업데이트
-                            existingFile.updateFile(metaData);
-                            log.info("게시글 파일 수정 완료 - postId: {}, filePath: {}",
-                                    post.getId(), destPath);
-                        },
-                        () -> createPostFile(newFilePath, post)
-                );
-            } else if (newFilePath.startsWith("posts/")) {
-                // posts 경로인데 기존 파일과 다름 -> 다른 게시글의 파일 참조 시도
-                throw new InvalidFilePathException();
-            } else {
-                throw new InvalidFilePathException();
-            }
+                        // 새 파일 메타데이터로 교체
+                        FileMetaData metaData = s3Service.getFileMetadata(destPath);
+                        // DB 업데이트
+                        existingFile.updateFile(metaData);
+
+                        log.info("게시글 파일 수정 완료 - postId: {}, filePath: {}", post.getId(), destPath);
+                    },
+                    () -> createPostFile(newFilePath, post)
+            );
+
 
         } else {
             // 텍스트 프롬프트인 경우 기존 파일 삭제
@@ -137,5 +132,18 @@ public class PostFileService {
         s3Service.deleteFile(postFile.getFilePath());
         postFile.deletePostFile();
         log.info("게시글 파일 삭제 완료 - filePath: {}", postFile.getFilePath());
+    }
+
+    /**
+     *  tmp/ 경로 검증 및 파일 이동을 담당하는 헬퍼 메서드입니다.
+     * - S3Service.moveObject 호출 시 posts 디렉토리로 이동
+     * @param filePath 원본 파일 경로
+     * @return 이동된 파일의 최종 경로
+     */
+    private String extractFilePath(String filePath) {
+        if (!filePath.startsWith("tmp/")) {
+            throw new InvalidFilePathException();
+        }
+        return s3Service.moveObject(filePath, ImageDirectory.POSTS);
     }
 }
