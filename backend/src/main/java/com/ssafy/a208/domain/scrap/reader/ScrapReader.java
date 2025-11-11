@@ -2,6 +2,7 @@ package com.ssafy.a208.domain.scrap.reader;
 
 import com.ssafy.a208.domain.board.entity.Post;
 import com.ssafy.a208.domain.member.entity.Member;
+import com.ssafy.a208.domain.scrap.dto.ScrapPostProjection;
 import com.ssafy.a208.domain.scrap.dto.ScrapQueryDto;
 import com.ssafy.a208.domain.scrap.entity.Scrap;
 import com.ssafy.a208.domain.scrap.exception.ScrapNotFoundException;
@@ -59,14 +60,14 @@ public class ScrapReader {
     }
 
     /**
-     * 회원의 스크랩 목록을 동적 조건으로 조회
+     * 회원의 스크랩 목록을 Projection 기반으로 조회합니다.
      *
-     * @param member 회원
-     * @param query 검색 조건
+     * @param member   조회 대상 회원
+     * @param query    검색 조건 DTO
      * @param pageable 페이징 정보
-     * @return 스크랩 페이지
+     * @return 스크랩 Projection 페이지
      */
-    public Page<Scrap> getScrapsByMemberWithFilters(Member member, ScrapQueryDto query, Pageable pageable) {
+    public Page<ScrapPostProjection> getScrapsByMemberWithFilters(Member member, ScrapQueryDto query, Pageable pageable) {
         return scrapRepository.findScrapsByMemberWithFilters(member, query, pageable);
     }
 

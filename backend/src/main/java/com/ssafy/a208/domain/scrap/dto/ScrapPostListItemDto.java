@@ -1,19 +1,16 @@
 package com.ssafy.a208.domain.scrap.dto;
 
-import com.ssafy.a208.domain.board.entity.Post;
-import com.ssafy.a208.global.common.validation.AllowedValues;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 스크랩 목록의 게시글 정보 DTO
  */
 @Builder
 @Schema(description = "스크랩된 게시글 정보")
-public record ScrapPostDto(
+public record ScrapPostListItemDto(
 
         @Schema(description = "게시글 ID", example = "3")
         Long postId,
@@ -35,6 +32,9 @@ public record ScrapPostDto(
 
         @Schema(description = "태그 리스트", example = "[\"그림\", \"예술\", \"최고\"]")
         List<String> tags,
+
+        @Schema(description = "썸네일 URL", example = "https://cloudfront.url/post-image.jpg")
+        String fileUrl,
 
         @Schema(description = "게시글 삭제 여부", example = "false")
         Boolean isDeleted

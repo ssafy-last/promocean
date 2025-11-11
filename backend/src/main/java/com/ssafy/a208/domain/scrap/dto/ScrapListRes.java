@@ -13,7 +13,7 @@ import java.util.List;
 public record ScrapListRes(
 
         @Schema(description = "스크랩된 게시글 리스트")
-        List<ScrapPostDto> posts,
+        List<ScrapPostListItemDto> posts,
 
         @Schema(description = "현재 페이지의 게시글 개수", example = "10")
         Integer itemCnt,

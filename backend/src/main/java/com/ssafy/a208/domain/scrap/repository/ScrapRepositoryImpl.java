@@ -4,6 +4,8 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.a208.domain.member.entity.Member;
+import com.ssafy.a208.domain.scrap.dto.QScrapPostProjection;
+import com.ssafy.a208.domain.scrap.dto.ScrapPostProjection;
 import com.ssafy.a208.domain.scrap.dto.ScrapQueryDto;
 import com.ssafy.a208.domain.scrap.entity.Scrap;
 import com.ssafy.a208.global.common.enums.PostCategory;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.ssafy.a208.domain.board.entity.QPost.post;
+import static com.ssafy.a208.domain.board.entity.QPostFile.postFile;
 import static com.ssafy.a208.domain.member.entity.QMember.member;
 import static com.ssafy.a208.domain.member.entity.QProfile.profile;
 import static com.ssafy.a208.domain.scrap.entity.QScrap.scrap;
@@ -34,16 +37,26 @@ public class ScrapRepositoryImpl implements ScrapRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<Scrap> findScrapsByMemberWithFilters(Member memberEntity, ScrapQueryDto query, Pageable pageable) {
+    public Page<ScrapPostProjection> findScrapsByMemberWithFilters(Member memberEntity, ScrapQueryDto query, Pageable pageable) {
 
-        List<Scrap> scraps = queryFactory
-                .selectFrom(scrap)
-                .distinct()
-                .join(scrap.post, post).fetchJoin()
-                .join(post.author, member).fetchJoin()
-                .leftJoin(member.profile, profile).fetchJoin()
-                .leftJoin(post.postTags, postTag).fetchJoin()
-                .leftJoin(postTag.tag, tag).fetchJoin()
+        // Projection 기반으로 필요한 컬럼만 select
+        List<ScrapPostProjection> scraps = queryFactory
+                .select(new QScrapPostProjection(
+                        post.id,
+                        post.author.nickname,
+                        profile.filePath,
+                        post.title,
+                        post.type.stringValue(),
+                        post.category.stringValue(),
+                        postFile.filePath,
+                        scrap.createdAt,
+                        post.deletedAt.isNotNull()
+                ))
+                .from(scrap)
+                .join(scrap.post, post)
+                .join(post.author, member)
+                .leftJoin(member.profile, profile)
+                .leftJoin(post.postFile, postFile)
                 .where(
                         scrapMemberEq(memberEntity),
                         scrapNotDeleted(),
@@ -58,21 +71,14 @@ public class ScrapRepositoryImpl implements ScrapRepositoryCustom {
                 .limit(pageable.getPageSize())
                 .fetch();
 
+        // 전체 개수 조회
         Long total = queryFactory
                 .select(scrap.countDistinct())
                 .from(scrap)
                 .join(scrap.post, post)
-                .join(post.author, member)
-                .leftJoin(post.postTags, postTag)
-                .leftJoin(postTag.tag, tag)
                 .where(
                         scrapMemberEq(memberEntity),
-                        scrapNotDeleted(),
-                        authorContains(query.author()),
-                        titleContains(query.title()),
-                        categoryEq(query.category()),
-                        typeEq(query.type()),
-                        tagEquals(query.tag())
+                        scrapNotDeleted()
                 )
                 .fetchOne();
 
