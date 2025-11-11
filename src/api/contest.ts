@@ -59,13 +59,38 @@ export const ContestAPI = {
    * @description 대회 목록 데이터를 조회하는 API입니다.
    * @returns {Promise<{ contestCardList: ContestCardItemProps[] }>}
    */
-  async getContestCardList(page=0, size=10, sorter="", status="", title="", tag="") {
+  async getContestCardList(params?: {
+    page?: number;
+    size?: number;
+    sorter?: string;
+    status?: string;
+    title?: string;
+    tag?: string;
+  }) {
+    // 쿼리 파라미터 생성 (값이 있는 파라미터만 추가)
+    const queryParams = new URLSearchParams();
     
+    // 디폴트값 설정
+    const defaultParams = {
+      page: params?.page || 1,
+      size: params?.size || 10,
+    };
+    
+    // 디폴트값 추가
+    queryParams.set('page', defaultParams.page.toString());
+    queryParams.set('size', defaultParams.size.toString());
+    
+    // 나머지 파라미터는 값이 있을 때만 추가
+    if (params?.sorter) queryParams.set('sorter', params.sorter);
+    if (params?.status) queryParams.set('status', params.status);
+    if (params?.title) queryParams.set('title', params.title);
+    if (params?.tag) queryParams.set('tag', params.tag);
+
     // interface ApiResponse {
     //   message: string | null;
     //   data: ContestCardItemProps[];
     // }
-    // const response = await apiFetch<ApiResponse>(`/api/v1/contests?page=${page}&size=${size}&sorter=${sorter}&status=${status}&title=${title}&tag=${tag}`);
+    // const response = await apiFetch<ApiResponse>(`/api/v1/contests?${queryParams.toString()}`);
     const response = await fetch(`http://localhost:3000/mock/ContestCardList.json`, {
       cache: "no-store", // mock 데이터는 캐싱하지 않게
     }).then(res => res.json());
