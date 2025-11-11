@@ -11,7 +11,6 @@ export interface TeamSpaceChoiceItemProps {
     participantCnt : number;
     spaceCoverUrl : string;
     spaceId : number;
-    description?: string;
 }
 
 
@@ -20,13 +19,12 @@ export default function TeamSpaceChoiceItem({
     participantCnt,
     spaceId,
     spaceCoverUrl,
-    description
 } : TeamSpaceChoiceItemProps) {
 
     const router = useRouter();
     const handleClick = () => {
         console.log("TeamSpaceTeamChoiceItem clicked");
-        router.push('/team-space/'+name);
+        router.push(`/team-space/${spaceId}`);
     }
     return(
            <button className="group flex flex-col h-60 rounded-2xl bg-white/50 hover:bg-primary/90 overflow-hidden transition-all duration-300 ease-out border-gray-400 backdrop-blur-md hover:shadow-2xs hover:border-3 hover:-translate-y-1 active:translate-y-0 active:shadow-md"
