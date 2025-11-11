@@ -7,7 +7,7 @@ import React from 'react'
  * @description 메인 페이지에서 표시되는 포스트 카드 아이템 타입
  */
 export interface PostCardItemProps {
-  id: string
+  postId: number
   title: string
   hashtags: string[]
   category: string
@@ -71,7 +71,7 @@ export interface CommunityBoardItemProps {
  * @description 커뮤니티 플로팅 아이템 타입 (인기글)
  */
 export interface CommunityFloatingItemProps {
-  id: string
+  postId: number
   title: string
   hashtags: string[]
   image: string
@@ -84,7 +84,7 @@ export interface CommunityFloatingItemProps {
  * @description 게시글 작성 플로팅 아이템 타입 (카테고리 등)
  */
 export interface PostingFloatingItemProps {
-  id: string
+  postId: number
   icon: React.ReactNode
   label: string
   value: string
