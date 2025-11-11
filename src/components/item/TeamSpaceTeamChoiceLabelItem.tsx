@@ -15,14 +15,14 @@ export default function TeamSpaceTeamChoiceLabelItem({ member, onRoleChange, onR
     return(
         <div className="flex flex-row w-full justify-between px-4 py-3 gap-3 items-center hover:bg-gray-50 rounded-md">
             <div className="flex gap-3 items-center flex-1 min-w-0">
-                <div className="rounded-full bg-gray-200 border w-10 h-10 flex-shrink-0"></div>
+                <div className="rounded-full bg-gray-200 border w-10 h-10 shrink-0"></div>
                 <div className="text-left overflow-hidden">
                     <p className="font-medium text-sm truncate">{member.name}</p>
                     <p className="text-xs text-gray-400 truncate">{member.email}</p>
                 </div>
             </div>
 
-            <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="flex items-center gap-2 shrink-0">
                 <select
                     value={member.role}
                     onChange={(e) => onRoleChange(member.email, Number(e.target.value) as TeamSpaceRole)}
