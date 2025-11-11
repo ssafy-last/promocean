@@ -1,8 +1,8 @@
-import TeamSpaceTeamChoiceItem, { TeamSpaceTeamChoiceItemProps } from "../item/TeamSpaceTeamChoiceItem"
+import TeamSpaceTeamChoiceItem, { TeamSpaceChoiceItemProps } from "../item/TeamSpaceTeamChoiceItem"
 
 
 export interface TeamSpaceTeamChoiceListProps {
-    teamSpaceTeamChoiceList : TeamSpaceTeamChoiceItemProps[]
+    teamSpaceTeamChoiceList : TeamSpaceChoiceItemProps[]
 }
 
 
