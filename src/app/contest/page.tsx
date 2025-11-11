@@ -3,6 +3,7 @@
 // import ContestHeroSection from "@/components/section/ContestHeroSection";
 import ContestHeader from "@/components/layout/ContestHeader";
 import ContestCardSection from "@/components/section/ContestCardSection";
+import ContestFooter from "@/components/layout/ContestFooter";
 import { ContestAPI } from "@/api/contest";
 
 interface ContestPageProps {
@@ -39,6 +40,7 @@ export default async function ContestPage({ searchParams }: ContestPageProps) {
       {/* <ContestHeroSection /> */}
       <ContestHeader />
       <ContestCardSection contestCardList={contestCardList} />
+      <ContestFooter />
     </div>
   );
 }
