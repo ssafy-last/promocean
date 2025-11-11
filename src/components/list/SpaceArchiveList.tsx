@@ -10,6 +10,7 @@ export interface SpaceArchiveListProps {
   isPinnedList?: boolean;
   isTeamSpace: boolean;
   teamName?: string;
+  spaceId : number;
   archiveItemListState: SpaceArchiveData[];
   setArchiveItemListState: (newState: SpaceArchiveData[]) => void;
   pinnedItemListState: SpaceArchiveData[];
@@ -28,6 +29,7 @@ export default function SpaceArchiveList({
     isPinnedList,
     isTeamSpace,
     teamName,
+    spaceId,
     archiveItemListState,
     setArchiveItemListState,
     pinnedItemListState,
@@ -51,10 +53,10 @@ export default function SpaceArchiveList({
     };
 
 
-    console.log("isPinnedList:", isPinnedList);
+    // console.log("isPinnedList:", isPinnedList);
     
     const displayList = isPinnedList ? pinnedItemListState : archiveItemListState;
-    console.log("displayList:", displayList);
+    // console.log("displayList:", displayList);
 
     return (
         <div className="flex flex-wrap flex-row p-7 gap-4">
@@ -90,6 +92,7 @@ export default function SpaceArchiveList({
                     isPinned={item.isPinned}
                     isTeamSpace={isTeamSpace}
                     teamName={teamName}
+                    spaceId={spaceId}
                     archiveItemListState={archiveItemListState}
                     setArchiveItemListState={setArchiveItemListState}
                     pinnedItemListState={pinnedItemListState}
