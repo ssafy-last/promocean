@@ -124,17 +124,47 @@ public class PostService {
         PostCategory category = PostCategory.valueOf(req.category());
         PromptType promptType = PromptType.valueOf(req.promptType());
 
-        // 텍스트 프롬프트에서 프롬프트 변경 시 예시도 변경 필요
-        if (promptType == PromptType.TEXT && !post.getPrompt().equals(req.prompt())) {
-            if (post.getExampleAnswer() != null
-                    && post.getExampleAnswer().equals(req.sampleAnswer())) {
+        // 파일 처리
+        // 프롬프트 변경 여부 확인
+        boolean isPromptChanged = !post.getPrompt().equals(req.prompt());
+
+        // TEXT 타입: 프롬프트 변경 시 예시 답변 검증
+        if (promptType == PromptType.TEXT && isPromptChanged) {
+            // 예시 답변이 있고, 기존 값과 동일하면 에러
+            if (req.sampleAnswer() != null
+                    && !req.sampleAnswer().isBlank()
+                    && post.getExampleAnswer() != null
+                    && req.sampleAnswer().equals(post.getExampleAnswer())) {
                 throw new InvalidPostRequestException(
-                        "프롬프트가 변경되었습니다. 새로운 프롬프트에 맞는 예시 답변을 입력해주세요");
+                        "프롬프트가 변경되었습니다. 새로운 프롬프트에 맞는 예시 답변을 입력하거나 비워주세요");
+            }
+        }
+
+        // IMAGE 타입: 프롬프트 변경 시 파일 검증
+        if (promptType == PromptType.IMAGE && isPromptChanged) {
+            // 파일 경로가 있는 경우
+            if (req.filePath() != null && !req.filePath().isBlank()) {
+                // 기존 파일과 동일한지 확인
+                postFileReader.getPostFileByPost(post)
+                        .ifPresent(existingFile -> {
+                            if (existingFile.getFilePath().equals(req.filePath())) {
+                                throw new InvalidPostRequestException(
+                                        "프롬프트가 변경되었습니다. 새로운 프롬프트에 맞는 이미지를 업로드하거나 비워주세요");
+                            }
+                        });
             }
         }
 
         // 파일 처리
-        postFileService.updatePostFile(post, promptType, req.filePath(), req.prompt());
+        if (promptType == PromptType.IMAGE && Objects.nonNull(req.filePath())
+                && !req.filePath().isBlank()) {
+            // 이미지 타입이고 파일 경로가 있을 때만 업데이트
+            postFileService.updatePostFile(post, req.filePath());
+        } else if (promptType == PromptType.TEXT) {
+            // 텍스트 타입으로 변경 시 기존 파일 삭제
+            postFileReader.getPostFileByPost(post)
+                    .ifPresent(postFileService::deletePostFile);
+        }
 
         // 게시글 기본 정보 업데이트
         post.update(

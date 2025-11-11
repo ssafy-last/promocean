@@ -60,66 +60,44 @@ public class PostFileService {
 
     /**
      * 게시글 파일을 업데이트합니다.
+     * 기존 파일이 있으면 삭제 후 새 파일로 교체하고, 없으면 새로 생성합니다.
      *
      * @param post 게시글 엔티티
-     * @param promptType 프롬프트 타입
      * @param newFilePath 새로운 파일 경로
-     * @param newPrompt 새로운 프롬프트 내용
      */
     @Transactional
-    public void updatePostFile(Post post, PromptType promptType, String newFilePath, String newPrompt) {
+    public void updatePostFile(Post post, String newFilePath) {
         Optional<PostFile> existingFileOptional = postFileReader.getPostFileByPost(post);
 
-        // 이미지 프롬프트인 경우
-        if (promptType == PromptType.IMAGE) {
-            if (Objects.isNull(newFilePath) || newFilePath.isBlank()) {
-                return;
-            }
+        // 기존 파일 경로와 동일한지 확인
+        boolean isSameFile = existingFileOptional
+                .map(existing -> existing.getFilePath().equals(newFilePath))
+                .orElse(false);
 
-            // 기존 파일 경로와 동일한지 확인
-            boolean isSameFile = existingFileOptional
-                    .map(existing -> existing.getFilePath().equals(newFilePath))
-                    .orElse(false);
-
-            if (isSameFile) {
-                // 프롬프트가 변경되었는지 확인
-                boolean isPromptChanged = !post.getPrompt().equals(newPrompt);
-
-                if (isPromptChanged) {
-                    // 프롬프트는 바뀌었는데 이미지는 그대로면 에러
-                    throw new InvalidPostRequestException(
-                            "프롬프트가 변경되었습니다. 새로운 프롬프트에 맞는 이미지를 업로드해주세요");
-                }
-
-                // 기존 파일과 동일하고 프롬프트도 안 바뀜 -> 변경 xxxx
-                log.info("기존 파일 유지 - postId: {}, filePath: {}", post.getId(), newFilePath);
-                return;
-            }
-
-            // 새 파일로 변경
-            // tmp 검증과 이동
-            String destPath = extractFilePath(newFilePath);
-
-            existingFileOptional.ifPresentOrElse(
-                    existingFile -> {
-                        // 기존 S3 파일 삭제
-                        s3Service.deleteFile(existingFile.getFilePath());
-
-                        // 새 파일 메타데이터로 교체
-                        FileMetaData metaData = s3Service.getFileMetadata(destPath);
-                        // DB 업데이트
-                        existingFile.updateFile(metaData);
-
-                        log.info("게시글 파일 수정 완료 - postId: {}, filePath: {}", post.getId(), destPath);
-                    },
-                    () -> createPostFile(newFilePath, post)
-            );
-
-
-        } else {
-            // 텍스트 프롬프트인 경우 기존 파일 삭제
-            existingFileOptional.ifPresent(this::deletePostFile);
+        if (isSameFile) {
+            // 기존 파일과 동일 -> 변경 없음
+            log.info("기존 파일 유지 - postId: {}, filePath: {}", post.getId(), newFilePath);
+            return;
         }
+
+        // 새 파일로 변경
+        // tmp 검증과 이동
+        String destPath = extractFilePath(newFilePath);
+
+        existingFileOptional.ifPresentOrElse(
+                existingFile -> {
+                    // 기존 S3 파일 삭제
+                    s3Service.deleteFile(existingFile.getFilePath());
+
+                    // 새 파일 메타데이터로 교체
+                    FileMetaData metaData = s3Service.getFileMetadata(destPath);
+                    // DB 업데이트
+                    existingFile.updateFile(metaData);
+
+                    log.info("게시글 파일 수정 완료 - postId: {}, filePath: {}", post.getId(), destPath);
+                },
+                () -> createPostFile(newFilePath, post)
+        );
     }
 
     /**
