@@ -1,10 +1,8 @@
 // frontend/src/app/community/page.tsx
 
-import CommunityTabs from "@/components/filter/CommunityTabs";
 import CommunityBoardSection from "@/components/section/CommunityBoardSection";
 import CommunityFooter from "@/components/layout/CommunityFooter";
 import { CommunityAPI } from "@/api/community";
-import { Suspense } from "react";
 
 /**
  * CommunityPage component
@@ -16,10 +14,6 @@ export default async function CommunityPage() {
 
   return (
     <>
-      <Suspense fallback={<div>Loading...</div>}>
-        <CommunityTabs />
-      </Suspense>
-
       <CommunityBoardSection communityBoardList={communityBoardList} />
       <CommunityFooter />
     </>
