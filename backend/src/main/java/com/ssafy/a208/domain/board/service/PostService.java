@@ -235,51 +235,41 @@ public class PostService {
      */
     @Transactional(readOnly = true)
     public PostDetailRes getPostDetail(CustomUserDetails userDetails, Long postId) {
-        Post post = postReader.getPostById(postId);
-        Member author = post.getAuthor();
+        // Projection으로 게시글 기본 정보 조회
+        PostDetailProjection projection = postReader.getPostDetailById(postId)
+                .orElseThrow(PostNotFoundException::new);
 
-        // 작성자 프로필 이미지 URL
-        String profileKey = author.getProfileImage();
-        String profileUrl = profileKey != null ?
-                s3Service.getCloudFrontUrl(profileKey) : null;
+        // 프로필 URL
+        String profileUrl = projection.getProfilePath() != null ?
+                s3Service.getCloudFrontUrl(projection.getProfilePath()) : null;
 
-        // 파일 URL 조회 (이미지 프롬프트인 경우)
-        String fileUrl = null;
-        if (post.getType() == PromptType.IMAGE) {
-            fileUrl = postFileReader.getPostFileByPost(post)
-                    .map(postFile -> s3Service.getCloudFrontUrl(postFile.getFilePath()))
-                    .orElse(null);
-        }
+        // 파일 URL
+        String fileUrl = projection.getFilePath() != null ?
+                s3Service.getCloudFrontUrl(projection.getFilePath()) : null;
 
-        // 태그 목록
-        List<String> tags = post.getPostTags().stream()
-                .filter(postTag -> postTag.getDeletedAt() == null)
-                .map(postTag -> postTag.getTag().getName())
+        // 태그 목록 (배치 조회)
+        List<PostTag> postTags = postReader.getPostTagsByPostIds(List.of(postId));
+        List<String> tags = postTags.stream()
+                .map(pt -> pt.getTag().getName())
                 .toList();
-
-        // 좋아요 수
-        int likeCnt = postLikeReader.getPostLikesByPost(post).size();
-
-        // 댓글 목록
-        List<Reply> replies = replyReader.getRepliesByPost(post);
-        int replyCnt = replies.size();
 
         // 현재 사용자의 좋아요 여부
         boolean isLiked = false;
         if (userDetails != null) {
             Member currentMember = memberReader.getMemberById(userDetails.memberId());
-            isLiked = postLikeReader.getPostLikeByPostAndMember(post, currentMember).isPresent();
+            isLiked = postLikeReader.existsByPostIdAndMember(postId, currentMember);
         }
 
-        // 댓글 DTO 변환
-        List<PostDetailRes.ReplyDto> replyDtos = replies.stream()
+        // 댓글 목록 조회 (Projection 사용)
+        List<ReplyProjection> replyProjections = postReader.getRepliesByPostId(postId);
+        List<PostDetailRes.ReplyDto> replyDtos = replyProjections.stream()
                 .map(reply -> {
-                    String replyProfileKey = reply.getAuthor().getProfileImage();
-                    String replyProfileUrl = replyProfileKey != null ?
-                            s3Service.getCloudFrontUrl(replyProfileKey) : null;
+                    String replyProfileUrl = reply.getProfilePath() != null ?
+                            s3Service.getCloudFrontUrl(reply.getProfilePath()) : null;
 
                     return PostDetailRes.ReplyDto.builder()
-                            .author(reply.getAuthor().getNickname())
+                            .replyId(reply.getReplyId())
+                            .author(reply.getAuthorNickname())
                             .profile(replyProfileUrl)
                             .content(reply.getContent())
                             .createdAt(reply.getCreatedAt())
@@ -291,22 +281,22 @@ public class PostService {
         log.info("게시글 상세 조회 완료 - postId: {}", postId);
 
         return PostDetailRes.builder()
-                .postId(post.getId())
-                .author(author.getNickname())
+                .postId(projection.getPostId())
+                .author(projection.getAuthorNickname())
                 .profile(profileUrl)
-                .title(post.getTitle())
-                .description(post.getDescription())
-                .category(post.getCategory().getName())
-                .prompt(post.getPrompt())
-                .type(post.getType().getName())
-                .sampleQuestion(post.getExampleQuestion())
-                .sampleAnswer(post.getExampleAnswer())
+                .title(projection.getTitle())
+                .description(projection.getDescription())
+                .category(projection.getCategory().getName())
+                .prompt(projection.getPrompt())
+                .type(projection.getType().getName())
+                .sampleQuestion(projection.getSampleQuestion())
+                .sampleAnswer(projection.getSampleAnswer())
                 .fileUrl(fileUrl)
                 .tags(tags)
-                .likeCnt(likeCnt)
-                .replyCnt(replyCnt)
+                .likeCnt(projection.getLikeCount().intValue())
+                .replyCnt(projection.getReplyCount().intValue())
                 .isLiked(isLiked)
-                .createdAt(post.getCreatedAt())
+                .createdAt(projection.getCreatedAt())
                 .replies(replyDtos)
                 .build();
     }
