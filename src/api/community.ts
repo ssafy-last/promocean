@@ -28,7 +28,7 @@ export const CommunityAPI = {
   },
 
   /**
-   * 커뮤니티 게시판 데이터 조회하는 API입니다.
+   * 커뮤니티 게시판 목록 조회하는 API입니다.
    * @page /community
    * @endpoint /api/v1/posts?page={page}&size={size}&author={author}&title={title}&tag={tag}&sorter={sorter}&category={category}&type={type}
    * @description 커뮤니티 게시판 데이터를 조회하는 API입니다.
@@ -44,21 +44,25 @@ export const CommunityAPI = {
     category?: string;
     type?: string;
   }) {
-    // 쿼리 파라미터 생성
+    // 쿼리 파라미터 생성 (값이 있는 파라미터만 추가)
     const queryParams = new URLSearchParams();
-    if (params?.page) queryParams.set('page', params.page.toString());
-    if (params?.size) queryParams.set('size', params.size.toString());
+    
+    // 디폴트값 설정
+    const defaultParams = {
+      page: params?.page || 1,
+      size: 10, // 응답이 10개보다 적더라도 항상 10으로 요청
+    };
+    
+    // 디폴트값 추가
+    queryParams.set('page', defaultParams.page.toString());
+    queryParams.set('size', defaultParams.size.toString());
+    
+    // 나머지 파라미터는 값이 있을 때만 추가
     if (params?.author) queryParams.set('author', params.author);
     if (params?.title) queryParams.set('title', params.title);
     if (params?.tag) queryParams.set('tag', params.tag);
     if (params?.sorter) queryParams.set('sorter', params.sorter);
     if (params?.category) queryParams.set('category', params.category);
-    if (params?.type) queryParams.set('type', params.type);
-
-    if (queryParams.toString() === '') {
-      queryParams.set('page', '1');
-      queryParams.set('size', '10');
-    }
 
     interface ApiResponse {
       message: string | null;
@@ -70,19 +74,7 @@ export const CommunityAPI = {
     // const response = await apiFetch<ApiResponse>(`/api/v1/posts?${queryParams.toString()}`);
     const response = await apiFetch<ApiResponse>(`/mock/CommunityBoardListResponse.json`);
 
-    const communityBoardList: CommunityBoardItemProps[] = response.data.posts.map((post) => ({
-      postId: post.postId,
-      author: post.author,
-      profileUrl: post.profileUrl,
-      title: post.title,
-      type: post.type,
-      description: post.description,
-      category: post.category,
-      tags: post.tags,
-      likeCnt: post.likeCnt,
-      replyCnt: post.replyCnt,
-      image: undefined, // API 응답에 image 필드가 없음
-    }));
+    const communityBoardList: CommunityBoardItemProps[] = response.data.posts.map((post) => ({ ...post, image: undefined }));
 
     return {
       communityBoardList,
@@ -112,20 +104,95 @@ export const CommunityAPI = {
    * @returns {Promise<{ communityPostDetailData: CommunityPostItemResponse }>}
    */
   async getCommunityPostDetailData(postId: number) {
-    // API 응답 타입: { message: string | null, data: CommunityPostItemResponse }
     interface ApiResponse {
       message: string | null;
       data: CommunityPostItemResponse;
     }
     
     // const response = await apiFetch<ApiResponse>(`/api/v1/posts/${postId}`);
-    const response = await apiFetch<ApiResponse>(`/mock/CommunityPostDetailResponse.json`);
+    const response = await fetch('http://localhost:3000/mock/CommunityPostDetailResponse.json',
+      {
+        cache: "no-store",
+        next: { revalidate: 0 },
+      }
+    ).then((res) => res.json());
     
-    // API 응답에서 data 추출
     const communityPostDetailData = response.data;
     
     return {
       communityPostDetailData,
+    };
+  },
+
+  /**
+   * 커뮤니티 게시글 좋아요 추가하는 API입니다.
+   * @page /community/[postId]
+   * @endpoint POST /api/v1/posts/{postId}/likes
+   * @description 커뮤니티 게시글에 좋아요를 추가하는 API입니다.
+   * @param {number} postId - 게시글 ID
+   * @returns {Promise<{ message: string | null, data: null }>}
+   */
+  async createPostLike(postId: number) {
+    interface ApiResponse {
+      message: string | null;
+      data: null;
+    }
+
+    const response = await apiFetch<ApiResponse>(`/api/v1/posts/${postId}/likes`, {
+      method: 'POST',
+    });
+
+    return {
+      message: response.message,
+      data: response.data,
+    };
+  },
+
+  /**
+   * 커뮤니티 게시글 스크랩 추가하는 API입니다.
+   * @page /community/[postId]
+   * @endpoint POST /api/v1/posts/{postId}/scraps
+   * @description 커뮤니티 게시글에 스크랩을 추가하는 API입니다.
+   * @param {number} postId - 게시글 ID
+   * @returns {Promise<{ message: string | null, data: null }>}
+   */
+  async createPostScrap(postId: number) {
+    interface ApiResponse {
+      message: string | null;
+      data: null;
+    }
+
+    const response = await apiFetch<ApiResponse>(`/api/v1/posts/${postId}/scraps`, {
+      method: 'POST',
+    });
+
+    return {
+      message: response.message,
+      data: response.data,
+    };
+  },
+
+  /**
+   * 커뮤니티 게시글 스크랩 해제하는 API입니다.
+   * @page /community/[postId]
+   * @endpoint DELETE /api/v1/posts/{postId}/scraps
+   * @description 커뮤니티 게시글 스크랩을 해제하는 API입니다.
+   * @param {number} postId - 게시글 ID
+   * @returns {Promise<{ message: string | null, data: null }>}
+   */
+  async deletePostScrap(postId: number) {
+    interface ApiResponse {
+      message: string | null;
+      data: null;
+    }
+
+    const response = await apiFetch<ApiResponse>(`/api/v1/posts/${postId}/scraps`, {
+      method: 'DELETE',
+    });
+
+    return {
+      message: response.message,
+      data: response.data,
     };
   },
 
@@ -145,6 +212,53 @@ export const CommunityAPI = {
     const response = await apiFetch<ApiResponse>(`/api/v1/posts/${postId}/replies`, {
       method: 'POST',
       body: JSON.stringify({ content }),
+    });
+
+    return {
+      message: response.message,
+      data: response.data,
+    };
+  },
+
+  /**
+   * 커뮤니티 게시글 댓글 수정하는 API입니다.
+   * @page /community/[postId]
+   * @endpoint PUT /api/v1/posts/{postId}/replies/{replyId}
+   * @description 커뮤니티 게시글 댓글을 수정하는 API입니다.
+   * @returns {Promise<{ message: string | null, data: null }>}
+   */
+  async updateReply(postId: number, replyId: number, content: string) {
+    interface ApiResponse {
+      message: string | null;
+      data: null;
+    }
+
+    const response = await apiFetch<ApiResponse>(`/api/v1/posts/${postId}/replies/${replyId}`, {
+      method: 'PUT',
+      body: JSON.stringify({ content }),
+    });
+
+    return {
+      message: response.message,
+      data: response.data,
+    };
+  },
+
+  /**
+   * 커뮤니티 게시글 댓글 삭제하는 API입니다.
+   * @page /community/[postId]
+   * @endpoint DELETE /api/v1/posts/{postId}/replies/{replyId}
+   * @description 커뮤니티 게시글 댓글을 삭제하는 API입니다.
+   * @returns {Promise<{ message: string | null, data: null }>}
+   */
+  async deleteReply(postId: number, replyId: number) {
+    interface ApiResponse {
+      message: string | null;
+      data: null;
+    }
+
+    const response = await apiFetch<ApiResponse>(`/api/v1/posts/${postId}/replies/${replyId}`, {
+      method: 'DELETE',
     });
 
     return {

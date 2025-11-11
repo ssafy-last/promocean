@@ -1,36 +1,16 @@
-'use client';
-
 // frontend/src/components/section/CommunityBoardFilterSection.tsx
 
-import ComboBox from "@/components/filter/ComboBox";
-import SearchBar from "@/components/filter/SearchBar";
-import { useRouter } from "next/navigation";
+import CombinedSearchFilter from "@/components/filter/CombinedSearchFilter";
 
 /**
  * CommunityBoardFilterSection component
- * @description CommunityBoardFilterSection component is a community board filter section component that displays the community board filter section content
+ * @description 커뮤니티 게시글 검색 필터 컴포넌트
  * @returns {React.ReactNode}
  */
 export default function CommunityBoardFilterSection() {
-
-  const router = useRouter();
-  const handleWritePost = () => {
-    router.push("/post?type=community");
-  }
-
   return (
     <div className="flex flex-row items-center justify-end gap-3 w-full px-4 py-4 bg-gray-50 border-gray-200">
-      <ComboBox />
-      <SearchBar />
-
-      {/* Todo: 게시글 작성 컴포넌트 분리 */}
-      <button
-        type="button"
-        className="px-4 py-2 rounded-md bg-primary text-white font-medium hover:brightness-110 active:brightness-95 transition-colors"
-        onClick={handleWritePost}
-      >
-        게시글 작성
-      </button>
+      <CombinedSearchFilter />
     </div>
   );
 }

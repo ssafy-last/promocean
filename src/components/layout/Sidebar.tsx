@@ -21,8 +21,9 @@ import { useAuthStore } from '@/store/authStore'
  * @returns {React.ReactNode}
  */
 export default function Sidebar() {
-  const { isCollapsed } = useSidebar();
+  const { isCollapsed, onTransitionEnd } = useSidebar();
   const { isLoggedIn } = useAuthStore();
+  const sidebarRef = React.useRef<HTMLDivElement>(null);
   
   // 커뮤니티 섹션
   const communityItems: SidebarItemProps[] = [{
@@ -55,8 +56,31 @@ export default function Sidebar() {
   },
 ]
 
+  React.useEffect(() => {
+    const sidebar = sidebarRef.current;
+    if (!sidebar) return;
+
+    const handleTransitionEnd = (e: TransitionEvent) => {
+      // width transition만 처리
+      if (e.propertyName === 'width') {
+        onTransitionEnd();
+      }
+    };
+
+    sidebar.addEventListener('transitionend', handleTransitionEnd);
+    return () => {
+      sidebar.removeEventListener('transitionend', handleTransitionEnd);
+    };
+  }, [onTransitionEnd]);
+
   return (
-    <div className={`fixed left-0 top-0 ${isCollapsed ? 'w-16' : 'w-64'} h-screen p-4 border-r border-gray-200 flex flex-col transition-all duration-300`} style={{backgroundColor: '#fdfdfc', color: '#343434'}}>
+    <div
+      ref={sidebarRef}
+      className={`fixed left-0 top-0 ${
+        isCollapsed ? 'w-16' : 'w-64'
+      } h-screen p-4 border-r border-gray-200 flex flex-col transition-[width] duration-200 overflow-hidden shrink-0`}
+      style={{ backgroundColor: '#fdfdfc', color: '#343434' }}
+    >
       <div className="flex-1">
         <SidebarHeader />
         
