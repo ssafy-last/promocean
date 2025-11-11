@@ -182,7 +182,7 @@ public class ScrapService {
                     return ScrapPostListItemDto.builder()
                             .postId(projection.getPostId())
                             .author(projection.getAuthorNickname())
-                            .profile(profileUrl)
+                            .profileUrl(profileUrl)
                             .title(projection.getTitle())
                             .type(projection.getType().getName())
                             .category(projection.getCategory().getName())
