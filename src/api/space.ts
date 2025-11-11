@@ -54,6 +54,7 @@ export interface PostTeamSpaceCreateRequest{
 export interface PostTeamSpaceCreateResponse{
     spaceId : number;
     name : string;
+    participantsCnt : number;
     spaceCoverUrl : string;
 }
 

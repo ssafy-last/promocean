@@ -5,6 +5,7 @@ import TeamSpaceAddMemberList from "../list/TeamSpaceAddMemberList";
 import TeamSpaceTeamChoiceLabelList from "../list/TeamSpaceTeamChoiceLabelList";
 import { TeamSpaceChoiceItemProps } from "../item/TeamSpaceTeamChoiceItem";
 import { TeamSpaceRole } from "../item/TeamSpaceRoleItem";
+import SpaceAPI from "@/api/space";
 
 export interface SelectedMember {
     name: string;
@@ -33,20 +34,6 @@ export default function TeamSpaceAddModal({isModalState, setIsModalState, teamSp
     const [spaceImageState, setSpaceImageState] = useState<File | null>(null);
     const [spaceImagePreviewState, setSpaceImagePreviewState] = useState<string | null>(null);
     
-    const mockMemberList : SpaceAddMemberItemProps[] =[
-        {name : "홍길동", email : "hong@example.com"},
-        {name : "김철수", email : "kim@example.com"},
-        {name : "이영희", email : "lee@example.com"},
-        {name : "박영수", email : "park@example.com"},
-        {name : "정민수", email : "choi@example.com"},
-        {name : "장미란", email : "jang@example.com"},
-        {name : "오세훈", email : "oh@example.com"},
-        {name : "한지민", email : "han@example.com"},
-        {name : "서강준", email : "seo@example.com"},
-        {name : "정우성", email : "jung@example.com"},
-    ]
-
-
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
@@ -59,7 +46,7 @@ export default function TeamSpaceAddModal({isModalState, setIsModalState, teamSp
         }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         if(spaceNameState.trim() === ""){
@@ -73,13 +60,26 @@ export default function TeamSpaceAddModal({isModalState, setIsModalState, teamSp
             members: Array.from(selectedMembersState.values())
         });
 
+        
+
+        const res = await SpaceAPI.postTeamSpaceCreate({
+            name: spaceNameState,
+            participants: [...Array.from(selectedMembersState.values()).map((member) => ({
+                email: member.email,
+                role: member.role
+            }))]
+        })
+
+
         setTeamSpaceTeamChoiceList([
             ...teamSpaceTeamChoiceList!,
             {
-            image : spaceImagePreviewState || "/images/default_space_image.png",
-            title : spaceNameState,
-            description : "새로 생성된 팀 스페이스입니다."
-            }])
+                name: res!.name,
+                participantCnt: res!.participantsCnt,
+                spaceCoverUrl: res!.spaceCoverUrl,
+                spaceId: res!.spaceId
+            }
+        ])
 
         // 생성 후 모달 닫기
         setIsModalState(false);
@@ -94,7 +94,7 @@ export default function TeamSpaceAddModal({isModalState, setIsModalState, teamSp
                 >
                     <form 
                         onSubmit={handleSubmit} 
-                        className={`flex flex-col bg-white p-10 rounded-lg w-1/3 justify-between h-[680px]
+                        className={`flex flex-col bg-white p-10 rounded-lg w-[450px]  h-[680px] justify-between
                             transition-all duration-300 ease-out
                             ${isModalState ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 -translate-y-4'}`}
                         onClick={(e) => e.stopPropagation()}
