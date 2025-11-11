@@ -26,7 +26,7 @@ export default function MySpacePage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await SpaceAPI.getMySpaceArchiveFoldersData(personalSpaceIdState);
+        const res = await SpaceAPI.getSpaceArchiveFoldersData(personalSpaceIdState);
 
         if(!res){ 
           return;

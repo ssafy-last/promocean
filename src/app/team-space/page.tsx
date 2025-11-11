@@ -15,7 +15,7 @@ export default async function TeamSpacePage() {
   return (
     <div>
         <SpaceHeader nickname="홍길동" isTeamSpace={true}/>
-        <TeamSpaceChoiceSection teamSpaceChoiceList={teamSpaceChoiceList}/>
+        <TeamSpaceChoiceSection/>
     </div>
   );
 }
