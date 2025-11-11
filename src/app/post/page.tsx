@@ -242,60 +242,46 @@ function PostPageContent() {
           {/* 글 작성 컨테이너 (8 비율) */}
           <div className="lg:col-span-4 space-y-4">
 
-            {/* 아카이브 타입일 때는 간단한 에디터만 표시 */}
-            {isArchiveType ? (
-              <PostingWriteSection
-                title="내용"
-                placeholder="내용을 입력하세요..."
-                onChange={setUsedPrompt}
-                isSubmitButton={false}
-              />
-            ) : (
-              // 커뮤니티 타입일 때는 기존 프롬프트 섹션 표시
-              <>
-                {/* 사용 프롬프트 */}
-                <PostingWriteSection
-                  title="사용 프롬프트"
-                  placeholder="사용한 프롬프트를 입력하세요..."
-                  onChange={setUsedPrompt}
-                  isSubmitButton={selectedPromptType === 'image'}
-                />
+            {/* 사용 프롬프트 */}
+            <PostingWriteSection
+              title="사용 프롬프트"
+              placeholder="사용한 프롬프트를 입력하세요..."
+              onChange={setUsedPrompt}
+              isSubmitButton={selectedPromptType === 'image'}
+            />
 
-                {
-                  selectedPromptType === 'text' ? (
-                    <div>
-                          {/* 예시 질문 프롬프트 */}
-                          <PostingWriteSection
-                            title="예시 질문 프롬프트"
-                            placeholder="예시 질문을 입력하세요..."
-                            onChange={setExamplePrompt}
-                            isSubmitButton={true}
-                            onSubmit={()=>
-                              handleAISubmit(usedPrompt)
-                            }
-                          />
+            {
+              selectedPromptType === 'text' ? (
+                <div>
+                      {/* 예시 질문 프롬프트 */}
+                      <PostingWriteSection
+                        title="예시 질문 프롬프트"
+                        placeholder="예시 질문을 입력하세요..."
+                        onChange={setExamplePrompt}
+                        isSubmitButton={true}
+                        onSubmit={()=>
+                          handleAISubmit(usedPrompt)
+                        }
+                      />
 
-                          {/* 답변 프롬프트 */}
-                          <PostingWriteSection
-                            title="답변 프롬프트"
-                            placeholder="답변을 입력하세요..."
-                            onChange={setAnswerPrompt}
-                          />
-                      </div>
-                  ) : (
-                    <div>
-                          {/* 답변 프롬프트 */}
-                          <PostingWriteSection
-                            title="결과 사진"
-                            placeholder="결과 사진을 첨부하세요..."
-                            onChange={setAnswerPrompt}
-                          />
-                      </div>
-                  )
-                }
-              </>
-            )}
-
+                      {/* 답변 프롬프트 */}
+                      <PostingWriteSection
+                        title="답변 프롬프트"
+                        placeholder="답변을 입력하세요..."
+                        onChange={setAnswerPrompt}
+                      />
+                  </div>
+              ) : (
+                <div>
+                      {/* 답변 프롬프트 */}
+                      <PostingWriteSection
+                        title="결과 사진"
+                        placeholder="결과 사진을 첨부하세요..."
+                        onChange={setAnswerPrompt}
+                      />
+                  </div>
+              )
+            }
 
             {/* 프롬프트 작성 완료 버튼 */}
             <PostingFooter onSubmit={handleSubmit} />
@@ -304,16 +290,14 @@ function PostPageContent() {
           {/* 플로팅 컨테이너 (2 비율) */}
           <div className="lg:col-span-1 space-y-4">
 
-            {/* 카테고리 선택 - 커뮤니티 타입일 때만 표시 */}
-            {!isArchiveType && (
-              <PostingFloatingSection
-                title="카테고리"
-                items={categoryItems}
-                selectedValue={selectedCategory}
-                onSelect={setSelectedCategory}
-                name="category"
-              />
-            )}
+            {/* 카테고리 선택 */}
+            <PostingFloatingSection
+              title="카테고리"
+              items={categoryItems}
+              selectedValue={selectedCategory}
+              onSelect={setSelectedCategory}
+              name="category"
+            />
 
             {/* 아카이브 폴더 선택 - 아카이브 타입일 때만 표시 */}
             {isArchiveType && (
@@ -331,16 +315,14 @@ function PostPageContent() {
               )
             )}
 
-            {/* 프롬프트 타입 - 커뮤니티 타입일 때만 표시 */}
-            {!isArchiveType && (
-              <PostingFloatingSection
-                title="프롬프트 타입"
-                items={promptTypeItems}
-                selectedValue={selectedPromptType}
-                onSelect={setSelectedPromptType}
-                name="promptType"
-              />
-            )}
+            {/* 프롬프트 타입 */}
+            <PostingFloatingSection
+              title="프롬프트 타입"
+              items={promptTypeItems}
+              selectedValue={selectedPromptType}
+              onSelect={setSelectedPromptType}
+              name="promptType"
+            />
           </div>
         </div>
 
