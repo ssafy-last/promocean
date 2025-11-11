@@ -51,8 +51,9 @@ export default function TeamSpaceChoiceItem({
                 {name}
                 </div>
                 <div className = "flex-1"></div>
-                <div className="flex justify-end text-xs leading-tight line-clamp-2 w-full wrap-break-words transition-opacity group-hover:opacity-0">
+                <div className="flex justify-between flex-row-reverse items-center text-xs leading-tight line-clamp-2 w-full wrap-break-words transition-opacity group-hover:opacity-0">
                     <span className = "flex gap-1 justify-center items-center"><UserGroup />    {participantCnt}</span>
+                    <span className = "w-14 text-center bg-gray-200 rounded-3xl p-2"> 권한 </span>
                 </div>
             </div>
     </button>
