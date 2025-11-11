@@ -1,10 +1,11 @@
 'use client';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TeamSpaceAddButton from "../button/TeamSpaceAddButton";
 import SearchBar from "../filter/SearchBar";
 import { TeamSpaceTeamChoiceItemProps } from "../item/TeamSpaceTeamChoiceItem"
 import TeamSpaceTeamChoiceList from "../list/TeamSpaceTeamChoiceLlist"
 import TeamSpaceAddModal from "../modal/TeamSpaceAddModal";
+import { SpaceAPI } from "@/api/space";
 
 export interface TeamSpaceChoiceSectionProps {
     teamSpaceTeamChoiceList : TeamSpaceTeamChoiceItemProps[];
@@ -12,6 +13,23 @@ export interface TeamSpaceChoiceSectionProps {
 
 
 export default function TeamSpaceChoiceSection({teamSpaceTeamChoiceList}: TeamSpaceChoiceSectionProps){
+    
+    useEffect(()=>{
+        console.log("팀 스페이스 리스트 ", teamSpaceTeamChoiceList);
+        const fetchData = async () => {
+            try {
+                const res = await SpaceAPI.getTeamSpaceList();
+                console.log("팀 스페이스 리스트 재조회 ", res);
+            } catch (error) {
+                console.error("Failed to fetch data:", error);
+            }
+
+        };
+        fetchData();
+    }, []);
+
+
+
 
     const [isModalOpenState, setIsModalOpenState] = useState(false);
     const [shouldRenderModalState, setShouldRenderModalState] = useState(false);
