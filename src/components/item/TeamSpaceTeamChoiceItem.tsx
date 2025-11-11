@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-export interface TeamSpaceTeamChoiceItemProps {
+export interface TeamSpaceChoiceItemProps {
     // Define props here if needed in the future
     image?: string;
     title?: string;
@@ -12,11 +12,11 @@ export interface TeamSpaceTeamChoiceItemProps {
 }
 
 
-export default function TeamSpaceTeamChoiceItem({
+export default function TeamSpaceChoiceItem({
     image,
     title,
     description
-} : TeamSpaceTeamChoiceItemProps) {
+} : TeamSpaceChoiceItemProps) {
 
     const router = useRouter();
     const handleClick = () => {

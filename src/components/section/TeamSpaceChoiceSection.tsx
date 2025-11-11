@@ -2,20 +2,20 @@
 import { useEffect, useState } from "react";
 import TeamSpaceAddButton from "../button/TeamSpaceAddButton";
 import SearchBar from "../filter/SearchBar";
-import { TeamSpaceTeamChoiceItemProps } from "../item/TeamSpaceTeamChoiceItem"
+import { TeamSpaceChoiceItemProps } from "../item/TeamSpaceTeamChoiceItem"
 import TeamSpaceTeamChoiceList from "../list/TeamSpaceTeamChoiceLlist"
 import TeamSpaceAddModal from "../modal/TeamSpaceAddModal";
 import { SpaceAPI } from "@/api/space";
 
 export interface TeamSpaceChoiceSectionProps {
-    teamSpaceTeamChoiceList : TeamSpaceTeamChoiceItemProps[];
+    teamSpaceChoiceList : TeamSpaceChoiceItemProps[];
 }
 
 
-export default function TeamSpaceChoiceSection({teamSpaceTeamChoiceList}: TeamSpaceChoiceSectionProps){
+export default function TeamSpaceChoiceSection({teamSpaceChoiceList}: TeamSpaceChoiceSectionProps){
     
     useEffect(()=>{
-        console.log("팀 스페이스 리스트 ", teamSpaceTeamChoiceList);
+        console.log("팀 스페이스 리스트 ", teamSpaceChoiceList);
         const fetchData = async () => {
             try {
                 const res = await SpaceAPI.getTeamSpaceList();
@@ -34,7 +34,7 @@ export default function TeamSpaceChoiceSection({teamSpaceTeamChoiceList}: TeamSp
     const [isModalOpenState, setIsModalOpenState] = useState(false);
     const [shouldRenderModalState, setShouldRenderModalState] = useState(false);
 
-    const [teamSpaceTeamChoiceListState, setTeamSpaceTeamChoiceListState] = useState<TeamSpaceTeamChoiceItemProps[]>(teamSpaceTeamChoiceList);
+    const [teamSpaceTeamChoiceListState, setTeamSpaceTeamChoiceListState] = useState<TeamSpaceChoiceItemProps[]>(teamSpaceChoiceList);
 
     const onOpenModal = () => {
         setShouldRenderModalState(true);
