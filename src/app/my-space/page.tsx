@@ -80,6 +80,7 @@ export default function MySpacePage() {
           <SpaceArchiveList 
             isPinnedList={true}
             isTeamSpace={false}
+            spaceId={personalSpaceIdState!}
             archiveItemListState={archiveItemListState}
             setArchiveItemListState={setArchiveItemListState}
             pinnedItemListState={pinnedItemListState}
@@ -94,6 +95,7 @@ export default function MySpacePage() {
           <SpaceArchiveList 
             isPinnedList={false}
             isTeamSpace={false}
+            spaceId={personalSpaceIdState!}
             archiveItemListState={archiveItemListState}
             setArchiveItemListState={setArchiveItemListState}
             pinnedItemListState={pinnedItemListState}

@@ -6,6 +6,8 @@ import { SpaceArchiveData } from "@/app/my-space/page";
 import Pin from "../icon/Pin";
 import SpaceArchiveDeleteModal from "../modal/SpaceArchiveDeleteModal";
 import SpaceArchiveEditModal from "../modal/SpaceArchiveEditModal";
+import SpaceAPI from "@/api/space";
+import { colorCodeFrontToBack } from "@/utils/colorController";
 
 export interface SpaceArchiveItemProps {
     folderId : number;
@@ -14,17 +16,41 @@ export interface SpaceArchiveItemProps {
     isPinned: boolean;
     isTeamSpace :boolean;
     teamName?: string;
+    spaceId : number;
     archiveItemListState: SpaceArchiveData[];
     setArchiveItemListState: (newState: SpaceArchiveData[]) => void;
     pinnedItemListState: SpaceArchiveData[];
     setPinnedItemListState: (newState: SpaceArchiveData[]) => void;
 }
 
+
+/**
+ * Space Archive의 Folder 아이템 컴포넌트
+ * 
+ * 
+ * @param param0 SpaceArchiveItemProps
+ * - folderId : 폴더 ID
+ * - name : 폴더 이름
+ * - color : 폴더 배경색
+ * - isPinned : 폴더 pinned 상태
+ * - isTeamSpace : 팀 스페이스 여부
+ * - teamName : 팀 스페이스 이름 (팀 스페이스인 경우에만 필요)
+ * - spaceId : 스페이스 ID (수정, 삭제 필요 시 선택)
+ * - archiveItemListState : 아카이브 일반 폴더 리스트 상태
+ * - setArchiveItemListState : 아카이브 일반 폴더 리스트 상태 업데이트 함수
+ * - pinnedItemListState : 아카이브 pinned 폴더 리스트 상태
+ * - setPinnedItemListState : 아카이브 pinned 폴더 리스트 상태 업데이트 함수
+ * 
+ * 
+ * @returns 
+ */
+
 export default function SpaceArchiveItem({
     folderId,
     name,
     color,
     isPinned,
+    spaceId,
     isTeamSpace,
     teamName,
     archiveItemListState,
@@ -75,7 +101,7 @@ export default function SpaceArchiveItem({
         console.log(`${name} 아카이브 폴더 pinned ${newPinnedState ? '설정' : '해제'}됨`);
     }
 
-    const handleDelete = () => {
+    const handleDelete = async() => {
         // Pinned 상태에 따라 해당 리스트에서 삭제
         if (isPinnedState) {
             const updatedPinnedList = pinnedItemListState.filter(item => item.name !== name);
@@ -84,10 +110,21 @@ export default function SpaceArchiveItem({
             const updatedArchiveList = archiveItemListState.filter(item => item.name !== name);
             setArchiveItemListState(updatedArchiveList);
         }
+        
+        const res = await SpaceAPI.deleteMySpaceArchiveFolderData(spaceId!, folderId);
+
+
+
         console.log(`${name} 아카이브 폴더 삭제됨`);
     }
 
-    const handleEdit = (newTitle: string, newBgColor: string) => {
+    const handleEdit = async (newTitle: string, newBgColor: string) => {
+        console.log("id ",spaceId, folderId)
+        const res = await SpaceAPI.patchMySpaceArchiveFolderData(spaceId!, folderId, {
+            name: newTitle,
+            color: colorCodeFrontToBack(newBgColor),
+        });
+
         // Pinned 상태에 따라 해당 리스트에서 업데이트
         if (isPinnedState) {
             const updatedPinnedList = pinnedItemListState.map(item =>
@@ -100,6 +137,7 @@ export default function SpaceArchiveItem({
             );
             setArchiveItemListState(updatedArchiveList);
         }
+
         console.log(`${name} 아카이브 폴더 수정됨:`, { newTitle, newBgColor });
     }
 

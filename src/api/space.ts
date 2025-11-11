@@ -200,7 +200,7 @@ export const SpaceAPI = {
         if(!personalSpaceId || !folderId) {
             return null;
         }
-
+        console.log("폴더 수정 시도 ", folderData)
         const res = await apiFetch<NoArgsResponse>(`/api/v1/spaces/${personalSpaceId}/folders/${folderId}`, {
             method: "PATCH",
             body: JSON.stringify(folderData),
