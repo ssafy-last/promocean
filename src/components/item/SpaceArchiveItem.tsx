@@ -107,7 +107,7 @@ export default function SpaceArchiveItem({
 
         console.log("pin res " ,res);
         console.log(`${name} 아카이브 폴더 pinned ${newPinnedState ? '설정' : '해제'}됨`);
-        const res2 = await SpaceAPI.getMySpaceArchiveFoldersData(spaceId!);
+        const res2 = await SpaceAPI.getSpaceArchiveFoldersData(spaceId!);
 
     console.log("폴더 데이터 재조회 ",res2);
     }

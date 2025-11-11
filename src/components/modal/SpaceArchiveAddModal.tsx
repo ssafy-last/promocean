@@ -9,19 +9,19 @@ import { Space } from "lucide-react";
 
 export interface SpaceArchiveAddModalProps{
     isOpen : boolean,
+    spaceId : number,
     onCloseAddModal : () => void
     archiveItemListState: SpaceArchiveData[];
     setArchiveItemListState: (newState: SpaceArchiveData[]) => void;
 }
 
-export default function SpaceArchiveAddModal({ isOpen, onCloseAddModal, archiveItemListState, setArchiveItemListState }: SpaceArchiveAddModalProps) {
+export default function SpaceArchiveAddModal({ isOpen, spaceId, onCloseAddModal, archiveItemListState, setArchiveItemListState }: SpaceArchiveAddModalProps) {
     
     const [selectedColorState, setSelectedColorState] = useState("#000000")
     const [showColorPickerState, setShowColorPickerState] = useState(false);
     const [titleState, setTitleState] = useState("");
     const [titleErrorState, setTitleErrorState] = useState(false);
     const [descriptionState, setDescriptionState] = useState("");
-    const personalSpaceId = useAuthStore((state)=>state.user?.personalSpaceId);
 
 
     const onToggleColorPicker = () => {
@@ -53,7 +53,7 @@ export default function SpaceArchiveAddModal({ isOpen, onCloseAddModal, archiveI
             isPinned: false
          };
 
-         const res = await SpaceAPI.postMySpaceArchiveFolderData(personalSpaceId, req);
+         const res = await SpaceAPI.postMySpaceArchiveFolderData(spaceId, req);
             if(!res){
                 console.error("Failed to add new archive folder");
                 return;
