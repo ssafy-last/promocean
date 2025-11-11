@@ -3,6 +3,7 @@ package com.ssafy.a208.domain.tag.service;
 import com.ssafy.a208.domain.board.entity.Post;
 import com.ssafy.a208.domain.tag.entity.PostTag;
 import com.ssafy.a208.domain.tag.entity.Tag;
+import com.ssafy.a208.domain.tag.exception.TagLimitExceededException;
 import com.ssafy.a208.domain.tag.reader.PostTagReader;
 import com.ssafy.a208.domain.tag.reader.TagReader;
 import com.ssafy.a208.domain.tag.repository.PostTagRepository;
@@ -39,6 +40,11 @@ public class PostTagService {
     public void createTags(List<String> tags, Post post) {
         if (tags == null || tags.isEmpty()) {
             return;
+        }
+
+        // 태그 개수 제한 검증 - 하나의 게시글 당 최대 5개까지 등록 가능
+        if (tags.size() > 5) {
+            throw new TagLimitExceededException();
         }
 
         // 기존 매핑 정보 제거 (소프트 딜리트)
