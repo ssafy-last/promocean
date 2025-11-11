@@ -19,7 +19,6 @@ interface SidebarSectionProps {
  * @returns {React.ReactNode}
  */
 export default function SidebarSection({title, sidebarList}: SidebarSectionProps) {
-  const { showText } = useSidebar();
   const { isCollapsed } = useSidebar();
 
   return (
