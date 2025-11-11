@@ -29,11 +29,14 @@ public record PostListQueryDto(
         @Schema(description = "태그 검색어", example = "일상")
         String tag,
 
-        @AllowedStringValues(value = {"latest", "popular"}, message = "정렬 기준은 latest 또는 popular만 가능합니다.")
-        @Schema(description = "정렬 기준 (latest: 최신순, popular: 인기순)",
+        @AllowedStringValues(
+                value = {"latest", "popular", "oldest"},
+                message = "정렬 기준은 latest, popular, oldest 중 하나만 가능합니다."
+        )
+        @Schema(description = "정렬 기준 (latest: 최신순, popular: 인기순, oldest: 오래된순)",
                 example = "latest",
                 defaultValue = "latest",
-                allowableValues = {"latest", "popular"})
+                allowableValues = {"latest", "popular", "oldest"})
         String sorter,
 
         @AllowedValues(value = {100, 200, 300, 400, 500, 600, 700}, allowNull = true, message = "유효하지 않은 카테고리입니다")
