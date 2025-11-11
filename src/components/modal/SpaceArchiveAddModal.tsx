@@ -40,24 +40,6 @@ export default function SpaceArchiveAddModal({ isOpen, onCloseAddModal, archiveI
             return;
         }
 
-        // 여기에 카테고리 추가 로직 추가
-        // console.log("카테고리 추가:", {
-        //     title: titleState,
-        //     description: descriptionState,
-        //     bgColor: selectedColorState
-        // });
-
-        // // 새로운 카테고리 데이터를 기존 리스트에 추가
-        // const newCategory: SpaceArchiveData = {
-        //     title: titleState,
-        //     bgColor: selectedColorState,
-        //     isPinned: false
-        // };
-
-
-        
-
-
         const req : PostMySpaceArchiveFolderRequest={
             name : titleState,
             color : selectedColorState.replace("#","")
@@ -84,6 +66,7 @@ export default function SpaceArchiveAddModal({ isOpen, onCloseAddModal, archiveI
 
         setArchiveItemListState([...archiveItemListState, newArchiveData]);
 
+        // setArchiveItemListState([]);
         // 추가 후 모달 닫기 및 상태 초기화
         setTitleState("");
         setDescriptionState("");

@@ -21,7 +21,7 @@ export default function MySpacePage() {
 
   //부분적 구독을 하고 싶으면 이런 구문을 쓰자.
   const personalSpaceIdState = useAuthStore((state)=>state.user?.personalSpaceId);
-  
+  // console.log("렌더링?")
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,18 +36,21 @@ export default function MySpacePage() {
 
         //TODO :  가져온 response 를 pinned 와 none pinned로 나누어 리스트를 연결해야 합니다.
 
+        const newArchiveItemListState : SpaceArchiveData[] = [];
+        const newPinnedItemListState : SpaceArchiveData[] = [];
+
         for(const folder of res.folders){
           folder.color = `#${folder.color}`;
           if(folder.isPinned){
-            pinnedItemListState.push(folder);
+            newPinnedItemListState.push(folder);
           } else {
-            archiveItemListState.push(folder);
+            newArchiveItemListState.push(folder);
           }
         }
         // const mySpaceData = await mySpaceArchiveRes.json() as MySpaceArchiveDataResponse;
         // console.log("data ", mySpaceData);
-        setPinnedItemListState(pinnedItemListState || []);
-        setArchiveItemListState(archiveItemListState || []);
+        setPinnedItemListState(newPinnedItemListState || []);
+        setArchiveItemListState(newArchiveItemListState || []);
         setIsLoadingState(false);
       } catch (error) {
         console.error("Failed to fetch data:", error);
