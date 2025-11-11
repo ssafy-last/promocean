@@ -7,6 +7,7 @@ import com.ssafy.a208.domain.scrap.dto.ScrapQueryDto;
 import com.ssafy.a208.domain.scrap.entity.Scrap;
 import com.ssafy.a208.domain.scrap.exception.ScrapNotFoundException;
 import com.ssafy.a208.domain.scrap.repository.ScrapRepository;
+import com.ssafy.a208.domain.tag.entity.PostTag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -69,6 +70,16 @@ public class ScrapReader {
      */
     public Page<ScrapPostProjection> getScrapsByMemberWithFilters(Member member, ScrapQueryDto query, Pageable pageable) {
         return scrapRepository.findScrapsByMemberWithFilters(member, query, pageable);
+    }
+
+    /**
+     * 여러 게시글의 태그를 배치로 조회합니다.
+     *
+     * @param postIds 게시글 ID 목록
+     * @return 게시글별 태그 목록
+     */
+    public List<PostTag> getPostTagsByPostIds(List<Long> postIds) {
+        return scrapRepository.findPostTagsByPostIds(postIds);
     }
 
 }

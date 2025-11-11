@@ -12,6 +12,7 @@ import com.ssafy.a208.domain.scrap.entity.Scrap;
 import com.ssafy.a208.domain.scrap.exception.ScrapAlreadyExistsException;
 import com.ssafy.a208.domain.scrap.reader.ScrapReader;
 import com.ssafy.a208.domain.scrap.repository.ScrapRepository;
+import com.ssafy.a208.domain.tag.entity.PostTag;
 import com.ssafy.a208.global.image.service.S3Service;
 import com.ssafy.a208.global.security.dto.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 /**
@@ -142,6 +145,24 @@ public class ScrapService {
         Page<ScrapPostProjection> scrapPage =
                 scrapReader.getScrapsByMemberWithFilters(member, query, pageable);
 
+        // 게시글 ID 목록 추출
+        List<Long> postIds = scrapPage.getContent().stream()
+                .map(ScrapPostProjection::getPostId)
+                .toList();
+
+        // 태그 배치 조회
+        List<PostTag> postTags = scrapReader.getPostTagsByPostIds(postIds);
+
+        // 게시글 ID별 태그 맵 생성
+        Map<Long, List<String>> tagMap = postTags.stream()
+                .collect(Collectors.groupingBy(
+                        pt -> pt.getPost().getId(),
+                        Collectors.mapping(
+                                pt -> pt.getTag().getName(),
+                                Collectors.toList()
+                        )
+                ));
+
         // DTO 변환
         List<ScrapPostListItemDto> posts = scrapPage.getContent().stream()
                 .map(projection -> {
@@ -155,15 +176,18 @@ public class ScrapService {
                             ? s3Service.getCloudFrontUrl(projection.getFilePath())
                             : null;
 
+                    // 태그 목록
+                    List<String> tags = tagMap.getOrDefault(projection.getPostId(), List.of());
+
                     return ScrapPostListItemDto.builder()
                             .postId(projection.getPostId())
                             .author(projection.getAuthorNickname())
                             .profile(profileUrl)
                             .title(projection.getTitle())
-                            .type(projection.getTypeName())
-                            .category(projection.getCategoryName())
+                            .type(projection.getType().getName())
+                            .category(projection.getCategory().getName())
                             .fileUrl(fileUrl)
-                            .tags(List.of()) // 태그는 후처리 필요 시 배치 조회 추가 가능
+                            .tags(tags)
                             .isDeleted(projection.getIsDeleted())
                             .build();
                 })

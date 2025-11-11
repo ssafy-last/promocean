@@ -8,6 +8,7 @@ import com.ssafy.a208.domain.scrap.dto.QScrapPostProjection;
 import com.ssafy.a208.domain.scrap.dto.ScrapPostProjection;
 import com.ssafy.a208.domain.scrap.dto.ScrapQueryDto;
 import com.ssafy.a208.domain.scrap.entity.Scrap;
+import com.ssafy.a208.domain.tag.entity.PostTag;
 import com.ssafy.a208.global.common.enums.PostCategory;
 import com.ssafy.a208.global.common.enums.PromptType;
 import lombok.RequiredArgsConstructor;
@@ -46,8 +47,8 @@ public class ScrapRepositoryImpl implements ScrapRepositoryCustom {
                         post.author.nickname,
                         profile.filePath,
                         post.title,
-                        post.type.stringValue(),
-                        post.category.stringValue(),
+                        post.type,
+                        post.category,
                         postFile.filePath,
                         scrap.createdAt,
                         post.deletedAt.isNotNull()
@@ -149,5 +150,24 @@ public class ScrapRepositoryImpl implements ScrapRepositoryCustom {
             return scrap.createdAt.asc();
         }
         return scrap.createdAt.desc();
+    }
+
+    /**
+     * 태그 배치 처리..
+     * */
+    @Override
+    public List<PostTag> findPostTagsByPostIds(List<Long> postIds) {
+        if (postIds == null || postIds.isEmpty()) {
+            return List.of();
+        }
+
+        return queryFactory
+                .selectFrom(postTag)
+                .join(postTag.tag, tag).fetchJoin()
+                .where(
+                        postTag.post.id.in(postIds),
+                        postTag.deletedAt.isNull()
+                )
+                .fetch();
     }
 }
