@@ -16,7 +16,7 @@ export interface SpaceArchiveItemProps {
     isPinned: boolean;
     isTeamSpace :boolean;
     teamName?: string;
-    spaceId : number;
+    spaceId? : number;
     archiveItemListState: SpaceArchiveData[];
     setArchiveItemListState: (newState: SpaceArchiveData[]) => void;
     pinnedItemListState: SpaceArchiveData[];
