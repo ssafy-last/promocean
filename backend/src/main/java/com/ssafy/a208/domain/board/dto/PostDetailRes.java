@@ -66,6 +66,9 @@ public record PostDetailRes(
     @Schema(description = "댓글 정보")
     @Builder
     public record ReplyDto(
+            @Schema(description = "댓글 ID", example = "1")
+            Long replyId,
+
             @Schema(description = "댓글 작성자 닉네임", example = "이준희")
             String author,
 

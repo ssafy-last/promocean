@@ -1,7 +1,9 @@
 package com.ssafy.a208.domain.board.reader;
 
+import com.ssafy.a208.domain.board.dto.PostDetailProjection;
 import com.ssafy.a208.domain.board.dto.PostListItemProjection;
 import com.ssafy.a208.domain.board.dto.PostListQueryDto;
+import com.ssafy.a208.domain.board.dto.ReplyProjection;
 import com.ssafy.a208.domain.board.entity.Post;
 import com.ssafy.a208.domain.board.exception.PostNotFoundException;
 import com.ssafy.a208.domain.board.repository.PostRepository;
@@ -12,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 게시글 조회 전용 Reader 클래스.
@@ -61,5 +64,25 @@ public class PostReader {
      */
     public List<PostTag> getPostTagsByPostIds(List<Long> postIds) {
         return postRepository.findPostTagsByPostIds(postIds);
+    }
+
+    /**
+     * 게시글 상세 조회
+     *
+     * @param postId 게시글 ID
+     * @return 게시글 상세 Projection
+     */
+    public Optional<PostDetailProjection> getPostDetailById(Long postId) {
+        return postRepository.findPostDetailById(postId);
+    }
+
+    /**
+     * 게시글의 댓글 목록 조회
+     *
+     * @param postId 게시글 ID
+     * @return 댓글 목록 Projection
+     */
+    public List<ReplyProjection> getRepliesByPostId(Long postId) {
+        return postRepository.findRepliesByPostId(postId);
     }
 }
