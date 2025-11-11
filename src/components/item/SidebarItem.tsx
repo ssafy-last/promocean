@@ -14,11 +14,14 @@ import { useSidebar } from '@/contexts/SidebarContext'
  * @returns {React.ReactNode}
  */
 export default function SidebarItem({ icon, title, href, onClick }: SidebarItemProps) {
-  const { isCollapsed } = useSidebar();
+  const { isCollapsed, showText, isCollapsing } = useSidebar();
 
-  const className = `flex items-center py-2 text-sm font-medium rounded-md hover:bg-primary hover:text-white transition-colors text-[#343434] ${
-    isCollapsed ? 'px-2 justify-center' : 'px-4 pr-8'
-  }`;
+  const baseClass =
+    'flex items-center py-2 text-sm font-medium rounded-md hover:bg-primary hover:text-white transition-colors text-[#343434]';
+
+  // transition 완료 후 접는 중이 아닐 때만 justify-center 적용
+  const layoutClass = (isCollapsed && !isCollapsing) ? 'px-2 justify-center' : 'pl-1 pr-8';
+  const className = `${baseClass} ${layoutClass}`;
 
   if (onClick) {
     return (
@@ -28,20 +31,24 @@ export default function SidebarItem({ icon, title, href, onClick }: SidebarItemP
         className={className}
         title={isCollapsed ? title : undefined}
       >
-        <span className={isCollapsed ? '' : 'mr-2'}>{icon}</span>
-        {!isCollapsed && title}
+        <span className="flex-shrink-0">{icon}</span>
+        {showText && (
+          <span className="ml-4 whitespace-nowrap">{title}</span>
+        )}
       </button>
     );
   }
 
   return (
-    <Link 
+    <Link
       href={href ?? ''}
       className={className}
       title={isCollapsed ? title : undefined}
     >
-      <span className={isCollapsed ? '' : 'mr-2'}>{icon}</span>
-      {!isCollapsed && title}
+      <span className="flex-shrink-0">{icon}</span>
+      {showText && (
+        <span className="ml-4 whitespace-nowrap">{title}</span>
+      )}
     </Link>
-  )
+  );
 }
