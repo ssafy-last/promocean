@@ -1,16 +1,24 @@
 import { useState } from "react";
+import Image from "next/image";
 import SpaceAddMemberItem, { SpaceAddMemberItemProps } from "../item/SpaceAddMemberItem";
 import TeamSpaceAddMemberList from "../list/TeamSpaceAddMemberList";
 import TeamSpaceTeamChoiceLabelList from "../list/TeamSpaceTeamChoiceLabelList";
-import { TeamSpaceTeamChoiceItemProps } from "../item/TeamSpaceTeamChoiceItem";
+import { TeamSpaceChoiceItemProps } from "../item/TeamSpaceTeamChoiceItem";
+import { TeamSpaceRole } from "../item/TeamSpaceRoleItem";
+
+export interface SelectedMember {
+    name: string;
+    email: string;
+    role: TeamSpaceRole;
+}
 
 
 export interface TeamSpaceAddModalProps{
     //추가 필요시 여기에 작성
     isModalState: boolean;
     setIsModalState: (state: boolean) => void;
-    teamSpaceTeamChoiceList?: TeamSpaceTeamChoiceItemProps[];
-    setTeamSpaceTeamChoiceList: (list: TeamSpaceTeamChoiceItemProps[]) => void;
+    teamSpaceTeamChoiceList?: TeamSpaceChoiceItemProps[];
+    setTeamSpaceTeamChoiceList: (list: TeamSpaceChoiceItemProps[]) => void;
 }
 
 
@@ -19,9 +27,11 @@ export default function TeamSpaceAddModal({isModalState, setIsModalState, teamSp
 
     const [isMemberExistState, setIsMemberExistState] = useState(false);
     const [searchSpaceMemberListState, setSearchSpaceMemberListState] = useState<SpaceAddMemberItemProps[]>([])
-    const [selectedMemberSetState, setSelectedMemberSetState] = useState<Set<string>>(new Set());
+    const [selectedMembersState, setSelectedMembersState] = useState<Map<string, SelectedMember>>(new Map());
     const [spaceNameState, setSpaceNameState] = useState("");
     const [spaceNameErrorState, setSpaceNameErrorState] = useState(false);
+    const [spaceImageState, setSpaceImageState] = useState<File | null>(null);
+    const [spaceImagePreviewState, setSpaceImagePreviewState] = useState<string | null>(null);
     
     const mockMemberList : SpaceAddMemberItemProps[] =[
         {name : "홍길동", email : "hong@example.com"},
@@ -53,9 +63,21 @@ export default function TeamSpaceAddModal({isModalState, setIsModalState, teamSp
         setSearchSpaceMemberListState([...filteredMembers]);
     }
 
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setSpaceImageState(file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setSpaceImagePreviewState(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         if(spaceNameState.trim() === ""){
             setSpaceNameErrorState(true);
             return;
@@ -63,15 +85,16 @@ export default function TeamSpaceAddModal({isModalState, setIsModalState, teamSp
         // 여기에 팀 스페이스 생성 로직 추가
         console.log("팀 스페이스 생성:", {
             name: spaceNameState,
-            members: Array.from(selectedMemberSetState)
+            image: spaceImageState,
+            members: Array.from(selectedMembersState.values())
         });
-        
+
         setTeamSpaceTeamChoiceList([
             ...teamSpaceTeamChoiceList!,
             {
-            image : "/images/default_space_image.png",
+            image : spaceImagePreviewState || "/images/default_space_image.png",
             title : spaceNameState,
-            description : "새로 생성된 팀 스페이스입니다."        
+            description : "새로 생성된 팀 스페이스입니다."
             }])
 
         // 생성 후 모달 닫기
@@ -96,11 +119,60 @@ export default function TeamSpaceAddModal({isModalState, setIsModalState, teamSp
                         <div className="flex flex-col gap-3">
                             <h2 className="text-4xl font-bold pb-4">팀 스페이스 생성</h2>
                             {/* 팀 스페이스 생성 폼 내용 */}
-                        
+
+
+                            {/* 이미지 첨부 */}
+                            <div className = "w-full">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    팀 스페이스 이미지
+                                </label>
+                                <div className="flex items-center gap-4 w-full">
+                                    <label className="cursor-pointer w-full">
+
+                                    {spaceImagePreviewState ? (
+                                        <div className="relative w-full h-1/4">
+                                            <Image
+                                                src={spaceImagePreviewState}
+                                                alt="Preview"
+                                                width={80}
+                                                height={80}
+                                                className="w-full h-20 rounded-lg object-cover border border-gray-300"
+                                            />
+                                            <button
+                                                type="button"
+                                                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600"
+                                                onClick={() => {
+                                                    setSpaceImageState(null);
+                                                    setSpaceImagePreviewState(null);
+                                                }}
+                                            >
+                                                ×
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <div className="w-full h-20 rounded-lg bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center">
+                                            <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                            </svg>
+                                        </div>
+                                    )}
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            className="hidden"
+                                            onChange={handleImageChange}
+                                        />
+                                    </label>
+                                </div>            
+                            </div>
+
+
+                            {/* 팀 스페이스 이름 및 팀원 추가 */}
+
                             <div>
-                                <input 
-                                    type="text" 
-                                    placeholder="팀 스페이스 이름을 입력하세요" 
+                                <input
+                                    type="text"
+                                    placeholder="팀 스페이스 이름을 입력하세요"
                                     className={`w-full border rounded-[10px] p-3 ${
                                         spaceNameErrorState ? 'border-red-500' : 'border-gray-300'
                                     }`}
@@ -114,40 +186,35 @@ export default function TeamSpaceAddModal({isModalState, setIsModalState, teamSp
                                     <p className="text-red-500 text-sm mt-1">팀 스페이스 이름을 입력해주세요</p>
                                 )}
                             </div>
-                            
-                            <div>
-                         
-                                {
-                                    <TeamSpaceTeamChoiceLabelList
-                                        labelNameList={Array.from(selectedMemberSetState)}
-                                        selectedMemberSetState={selectedMemberSetState}
-                                        setSelectedMemberSetState={setSelectedMemberSetState}
-                                    />
-                                }
-                         
 
+
+                            <div>
                                 <div className="relative">
-                                <input type="text" 
-                                    placeholder="팀원 닉네임 또는 이메일을 입력하세요" 
+                                <input type="text"
+                                    placeholder="팀원 닉네임 또는 이메일을 입력하세요"
                                     className = "w-full border border-gray-300 rounded-[10px] p-3"
                                     onChange={(e) => handleMemberSearch(e.target.value)}
                                 />
-                                
+
                                 {isMemberExistState &&
-                                    <TeamSpaceAddMemberList 
-                                    searchSpaceMemberListState={searchSpaceMemberListState} 
-                                    selectedMemberSetState={selectedMemberSetState} 
-                                    setSelectedMemberSetState={setSelectedMemberSetState} />
+                                    <TeamSpaceAddMemberList
+                                    searchSpaceMemberListState={searchSpaceMemberListState}
+                                    selectedMembersState={selectedMembersState}
+                                    setSelectedMembersState={setSelectedMembersState} />
                                 }
                                 </div>
+
+                                <TeamSpaceTeamChoiceLabelList
+                                    selectedMembersState={selectedMembersState}
+                                    setSelectedMembersState={setSelectedMembersState}
+                                />
                             </div>
+
+
+
                         </div>
 
-                        { !isMemberExistState &&
-                            <div>
-                                <label className="text-3xl text-gray-300 block mb-2 font-medium text-center">아직 검색한 팀원이 없어요</label>
-                            </div>
-                        }
+        
                         
                         <div className="flex flex-row gap-8 justify-center-safe w-full">
                             <button 

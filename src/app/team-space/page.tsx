@@ -1,9 +1,6 @@
-import SpaceAPI, { GetTeamSpaceListResponse } from "@/api/space";
-import TeamSpaceAddButton from "@/components/button/TeamSpaceAddButton";
-import SearchBar from "@/components/filter/SearchBar";
+
 import { TeamSpaceChoiceItemProps } from "@/components/item/TeamSpaceTeamChoiceItem";
 import SpaceHeader from "@/components/layout/SpaceHeader";
-import TeamSpaceTeamChoiceList from "@/components/list/TeamSpaceTeamChoiceLlist";
 import TeamSpaceChoiceSection from "@/components/section/TeamSpaceChoiceSection";
 
 
