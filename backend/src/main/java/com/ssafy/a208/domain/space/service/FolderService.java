@@ -53,6 +53,7 @@ public class FolderService {
                         .folderId(folder.getId())
                         .name(folder.getName())
                         .color(folder.getColor())
+                        .isPinned(folder.isPinned())
                         .build())
                 .toList();
         return FolderInfoListRes.builder()
