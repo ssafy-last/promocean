@@ -167,13 +167,13 @@ export const SpaceAPI = {
             return null;
         }
         console.log("폴더 데이터!! ", folderData)
-        const res = await apiFetch<PostMySpaceArchiveFolderResponse>(`/api/v1/spaces/${personalSpaceId}/folders`, {
+        const res = await apiFetch<ApiResponse<PostMySpaceArchiveFolderResponse>>(`/api/v1/spaces/${personalSpaceId}/folders`, {
             method: "POST",
             body: JSON.stringify(folderData),
         });
 
         console.log("API Res ",res);
-        return res;
+        return res.data;
     },
 
 
