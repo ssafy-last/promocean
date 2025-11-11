@@ -23,12 +23,10 @@ export default function SidebarSection({title, sidebarList}: SidebarSectionProps
 
   return (
     <div className="mb-6">
-      {!isCollapsed && (
-        <h2 className="text-lg font-semibold uppercase tracking-wider mb-3">
-          {title}
-        </h2>
-      )}
+      <h2 className="text-lg font-semibold uppercase tracking-wider mb-1 whitespace-nowrap">
+        <span className={isCollapsed ? 'invisible' : ''}>{title}</span>
+      </h2>
       <SidebarList sidebarList={sidebarList} />
     </div>
-  )
+  );
 }
