@@ -3,6 +3,7 @@ import { apiFetch } from "./fetcher";
 import { ApiResponse } from "./common";
 import { TeamSpaceChoiceItemProps } from "@/components/item/TeamSpaceTeamChoiceItem";
 import { TeamSpaceRole } from "@/components/item/TeamSpaceRoleItem";
+import { useSearchParams } from "next/navigation";
 
 export interface NoArgsResponse{
     message : string;
@@ -110,23 +111,17 @@ export interface PostArchiveArticleCreateResponse{
 
 
 export interface ArticleData{
-    postId : number;
-    author : string;
-    profile : string;
+    articleId : number;
     title : string;
-    description : string;
-    type : string;
-    category : string;
-    tags : string[];
-    likeCnt : number;
-    replyCnt : number;
     fileUrl : string;
-    createdAt : string;
+    type : string;
+    updatedAt : string;
+    tags : string[];
 }
 
 
 export interface GetArchiveArticlesResponse{
-    posts : ArticleData[];
+    articles : ArticleData[];
     itemCnt : number;
     totalCnt : number;
     totalPages : number;
@@ -329,10 +324,26 @@ export const SpaceAPI = {
     /*
         * 아카이브 아티클 목록을 조회하는 API입니다.
     */
-    async getArchiveArticles(spaceId : number, folderId : number, type : number, tag : string, title: string, page : number, size : number, sort : string) : Promise<GetArchiveArticlesResponse | null> {
-        const res = await apiFetch<ApiResponse<GetArchiveArticlesResponse>>(`/api/v1/spaces/${spaceId}/folders/${folderId}/articles?type=${type}&tag=${tag}&title=${title}&page=${page}&size=${size}&sort=${sort}`, {
+    async getArchiveArticles(spaceId : number, folderId : number, type? : number, tag? : string, title? : string, page : number=1, size : number=10, sort : "latest"|"oldest" ="latest") : Promise<GetArchiveArticlesResponse | null> {
+       
+       const params=  new URLSearchParams();
+        params.append("folderId", folderId.toString());
+        if(type) params.append("type", type.toString());
+        if(tag) params.append("tag", tag);
+        if(title) params.append("title", title);
+        params.append("page", page.toString());
+        params.append("size", size.toString());
+        params.append("sort", sort);
+
+        console.log(`/api/v1/spaces/${spaceId}/articles?${params.toString()}`)
+
+    //    ?type=${type}&tag=${tag}&title=${title}&page=${page}&size=${size}&sort=${sort}
+    //    folders/${folderId}/
+
+       const res = await apiFetch<ApiResponse<GetArchiveArticlesResponse>>(`/api/v1/spaces/${spaceId}/articles?${params.toString()}`, {
             method: "GET",
         });
+
 
         return res.data;
     },
