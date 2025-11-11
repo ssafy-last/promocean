@@ -1,7 +1,7 @@
 import {  SpaceArchiveData } from "@/app/my-space/page";
 import { apiFetch } from "./fetcher";
 import { ApiResponse } from "./common";
-import { TeamSpaceTeamChoiceItemProps } from "@/components/item/TeamSpaceTeamChoiceItem";
+import { TeamSpaceChoiceItemProps } from "@/components/item/TeamSpaceTeamChoiceItem";
 import { TeamSpaceRole } from "@/components/item/TeamSpaceRoleItem";
 
 export interface NoArgsResponse{
@@ -38,7 +38,7 @@ export interface PatchMySpaceArchiveFolderPinStatusRequest {
 }
 
 export interface GetTeamSpaceListResponse{
-    spaces : TeamSpaceTeamChoiceItemProps[];
+    spaces : TeamSpaceChoiceItemProps[];
 }
 
 export interface Participants{
