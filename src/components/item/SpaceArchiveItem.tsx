@@ -67,7 +67,7 @@ export default function SpaceArchiveItem({
     const handleArchiveRoute = () => {
         console.log(`${name} 아카이브 아이템 클릭됨`);
         if(isTeamSpace && teamName) {
-          router.push(`/team-space/${encodeURIComponent(teamName)}/archive/${folderId}`);
+          router.push(`/team-space/${spaceId}/archive/${folderId}`);
         } else {
           router.push('/my-space/archive/' + folderId);
         }
