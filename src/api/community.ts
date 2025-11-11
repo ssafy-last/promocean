@@ -28,7 +28,7 @@ export const CommunityAPI = {
   },
 
   /**
-   * 커뮤니티 게시판 데이터 조회하는 API입니다.
+   * 커뮤니티 게시판 목록 조회하는 API입니다.
    * @page /community
    * @endpoint /api/v1/posts?page={page}&size={size}&author={author}&title={title}&tag={tag}&sorter={sorter}&category={category}&type={type}
    * @description 커뮤니티 게시판 데이터를 조회하는 API입니다.
@@ -44,21 +44,25 @@ export const CommunityAPI = {
     category?: string;
     type?: string;
   }) {
-    // 쿼리 파라미터 생성
+    // 쿼리 파라미터 생성 (값이 있는 파라미터만 추가)
     const queryParams = new URLSearchParams();
-    if (params?.page) queryParams.set('page', params.page.toString());
-    if (params?.size) queryParams.set('size', params.size.toString());
+    
+    // 디폴트값 설정
+    const defaultParams = {
+      page: params?.page || 1,
+      size: 10, // 응답이 10개보다 적더라도 항상 10으로 요청
+    };
+    
+    // 디폴트값 추가
+    queryParams.set('page', defaultParams.page.toString());
+    queryParams.set('size', defaultParams.size.toString());
+    
+    // 나머지 파라미터는 값이 있을 때만 추가
     if (params?.author) queryParams.set('author', params.author);
     if (params?.title) queryParams.set('title', params.title);
     if (params?.tag) queryParams.set('tag', params.tag);
     if (params?.sorter) queryParams.set('sorter', params.sorter);
     if (params?.category) queryParams.set('category', params.category);
-    if (params?.type) queryParams.set('type', params.type);
-
-    if (queryParams.toString() === '') {
-      queryParams.set('page', '1');
-      queryParams.set('size', '10');
-    }
 
     interface ApiResponse {
       message: string | null;
