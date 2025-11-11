@@ -1,8 +1,5 @@
-'use client';
-
 // frontend/src/components/section/CommunityBoardSection.tsx
 
-import { useState } from "react";
 import CommunityBoardFilterSection from "@/components/section/CommunityBoardFilterSection";
 import CommunityBoardList from '@/components/list/CommunityBoardList'
 import { CommunityBoardItemProps } from '@/types/itemType'
@@ -17,12 +14,7 @@ interface CommunityBoardSectionProps {
  * @param {CommunityBoardSectionProps} props - The props for the CommunityBoardSection component
  * @returns {React.ReactNode}
  */
-export default function CommunityBoardSection({ communityBoardList: initialCommunityBoardList }: CommunityBoardSectionProps) {
-  const [communityBoardList, setCommunityBoardList] = useState<CommunityBoardItemProps[]>(initialCommunityBoardList);
-
-  const handleSearchResult = (result: CommunityBoardItemProps[]) => {
-    setCommunityBoardList(result);
-  }
+export default function CommunityBoardSection({ communityBoardList }: CommunityBoardSectionProps) {
 
   return (
   <div className="py-8">
@@ -36,7 +28,7 @@ export default function CommunityBoardSection({ communityBoardList: initialCommu
 
           {/* 필터/검색*/}
           <div className="flex-shrink-0 min-w-[380px]">
-            <CommunityBoardFilterSection onSearchResult={handleSearchResult} />
+            <CommunityBoardFilterSection />
           </div>
         </div>
         
