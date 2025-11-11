@@ -3,16 +3,10 @@
 // frontend/src/components/filter/CombinedSearchFilter.tsx
 
 import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import ChevronDown from "@/components/icon/ChevronDown";
 import MagnifyingGlass from "@/components/icon/MagnifyingGlass";
 import Funnel from "@/components/icon/Funnel";
-import { CommunityAPI } from "@/api/community";
-import { useSearchParams } from "next/navigation";
-import { CommunityBoardItemProps } from "@/types/itemType";
-
-interface CombinedSearchFilterProps {
-  onSearchResult?: (result: CommunityBoardItemProps[]) => void;
-}
 
 /**
  * CombinedSearchFilter component
@@ -20,13 +14,13 @@ interface CombinedSearchFilterProps {
  * @param {CombinedSearchFilterProps} props - The props for the CombinedSearchFilter component
  * @returns {React.ReactNode}
 */
-export default function CombinedSearchFilter({ onSearchResult }: CombinedSearchFilterProps) {
+export default function CombinedSearchFilter() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
   // search Parmas, sorter Parmas
   const searchOptions = ["전체", "제목", "작성자", "내용", "태그"];
   const sorterOptions = {"latest": "최신순", "oldest": "오래된 순", "popular": "인기순"};
-  const searchParams = useSearchParams();
-
 
   const [selectedSorter, setSelectedSorter] = useState(searchParams.get("sorter") || "latest");
   const [isSorterOpen, setIsSorterOpen] = useState(false);
@@ -34,52 +28,45 @@ export default function CombinedSearchFilter({ onSearchResult }: CombinedSearchF
   const [isOpen, setIsOpen] = useState(false);
   const [keyword, setKeyword] = useState("");
 
-  // 전체 -> author title tag 적용 x
+  // 쿼리 파라미터로 라우팅
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // 쿼리 파라미터에서 category 가져오기
-    const category = searchParams.get("category") || undefined;
-
-    // API 호출 파라미터 구성 (page, size는 API에서 디폴트값으로 처리)
-    const params: {
-      category?: string;
-      sorter?: string;
-      author?: string;
-      title?: string;
-      tag?: string;
-    } = {};
-
-    // category가 있으면 추가
+    // 기존 쿼리 파라미터 가져오기
+    const category = searchParams.get("category");
+    
+    // 새로운 쿼리 파라미터 구성
+    const params = new URLSearchParams();
+    
+    // category 유지
     if (category) {
-      params.category = category;
+      params.set("category", category);
     }
-
-    // sorter가 선택되어 있으면 추가
+    
+    // sorter 추가
     if (selectedSorter) {
-      params.sorter = selectedSorter;
+      params.set("sorter", selectedSorter);
     }
-
-    // 전체 조회가 아닐 때만 검색 파라미터 추가
+    
+    // 검색 파라미터 추가 (전체가 아닐 때만)
     if (selected !== "전체" && keyword.trim()) {
       switch (selected) {
         case "제목":
-          params.title = keyword.trim();
+          params.set("title", keyword.trim());
           break;
         case "작성자":
-          params.author = keyword.trim();
+          params.set("author", keyword.trim());
           break;
         case "태그":
-          params.tag = keyword.trim();
+          params.set("tag", keyword.trim());
           break;
       }
     }
 
-    CommunityAPI.getCommunityBoardList(params).then((res) => {
-      if (onSearchResult) {
-        onSearchResult(res.communityBoardList);
-      }
-    });
+    // page는 1로 리셋 (검색 시 첫 페이지로)
+    params.set("page", "1");
+
+    router.push(`/community?${params.toString()}`);
   };
 
   return (
@@ -139,6 +126,13 @@ export default function CombinedSearchFilter({ onSearchResult }: CombinedSearchF
               onClick={() => {
                 setSelectedSorter(key);
                 setIsSorterOpen(false);
+                // 정렬 변경 시 즉시 라우팅
+                const params = new URLSearchParams();
+                const category = searchParams.get("category");
+                if (category) params.set("category", category);
+                params.set("sorter", key);
+                params.set("page", "1");
+                router.push(`/community?${params.toString()}`);
               }}
               className={`px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 ${
                 key === selectedSorter ? "text-primary" : "text-gray-700"
