@@ -9,7 +9,7 @@ export interface NoArgsResponse{
 }
 
 
-export interface GetMySpaceArchiveFoldersResponse{
+export interface GetSpaceArchiveFoldersResponse{
      folders : SpaceArchiveData[];
 }
 
@@ -144,13 +144,13 @@ export const SpaceAPI = {
     // 마이스페이스
 
     /**
-     * 마이스페이스의 아카이브 폴더 데이터를 조회하는 API입니다.
+     * 스페이스의 아카이브 폴더 데이터를 조회하는 API입니다.
      */
-    async getMySpaceArchiveFoldersData(personalSpaceId : number | undefined) : Promise<GetMySpaceArchiveFoldersResponse | null> {
-        if(!personalSpaceId){ return null;}
-        
-        console.log("API personalSpaceId ", personalSpaceId);
-        const res = await apiFetch <ApiResponse<GetMySpaceArchiveFoldersResponse>>(`/api/v1/spaces/${personalSpaceId}/folders`, {
+    async getSpaceArchiveFoldersData(spaceId : number | undefined) : Promise<GetSpaceArchiveFoldersResponse | null> {
+        if(!spaceId){ return null;}
+
+        console.log("API spaceId ", spaceId);
+        const res = await apiFetch <ApiResponse<GetSpaceArchiveFoldersResponse>>(`/api/v1/spaces/${spaceId}/folders`, {
             method: "GET",
         });
 
