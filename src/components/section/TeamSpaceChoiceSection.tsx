@@ -7,19 +7,14 @@ import TeamSpaceTeamChoiceList from "../list/TeamSpaceTeamChoiceLlist"
 import TeamSpaceAddModal from "../modal/TeamSpaceAddModal";
 import { SpaceAPI } from "@/api/space";
 
-export interface TeamSpaceChoiceSectionProps {
-    teamSpaceChoiceList : TeamSpaceChoiceItemProps[];
-}
-
-
-export default function TeamSpaceChoiceSection({teamSpaceChoiceList}: TeamSpaceChoiceSectionProps){
+export default function TeamSpaceChoiceSection(){
     
     const [isModalOpenState, setIsModalOpenState] = useState(false);
     const [shouldRenderModalState, setShouldRenderModalState] = useState(false);
-    const [teamSpaceTeamChoiceListState, setTeamSpaceTeamChoiceListState] = useState<TeamSpaceChoiceItemProps[]>(teamSpaceChoiceList);
+    const [teamSpaceTeamChoiceListState, setTeamSpaceTeamChoiceListState] = useState<TeamSpaceChoiceItemProps[]>([]);
 
     useEffect(()=>{
-        console.log("팀 스페이스 리스트 ", teamSpaceChoiceList);
+        console.log("팀 스페이스 리스트 ", teamSpaceTeamChoiceListState);
         const fetchData = async () => {
             try {
                 const res = await SpaceAPI.getTeamSpaceList();
@@ -28,8 +23,8 @@ export default function TeamSpaceChoiceSection({teamSpaceChoiceList}: TeamSpaceC
             } catch (error) {
                 console.error("Failed to fetch data:", error);
             }
-
         };
+
         fetchData();
     }, []);
 
