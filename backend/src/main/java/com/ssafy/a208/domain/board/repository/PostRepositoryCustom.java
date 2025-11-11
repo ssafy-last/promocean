@@ -1,7 +1,9 @@
 package com.ssafy.a208.domain.board.repository;
 
+import com.ssafy.a208.domain.board.dto.PostDetailProjection;
 import com.ssafy.a208.domain.board.dto.PostListItemProjection;
 import com.ssafy.a208.domain.board.dto.PostListQueryDto;
+import com.ssafy.a208.domain.board.dto.ReplyProjection;
 import com.ssafy.a208.domain.board.entity.Post;
 import com.ssafy.a208.domain.board.entity.Reply;
 import com.ssafy.a208.domain.tag.entity.PostTag;
@@ -24,7 +26,12 @@ public interface PostRepositoryCustom {
     @Deprecated
     Page<Post> findPostsWithFiltersV2(PostListQueryDto query, Pageable pageable);
 
+
     Page<PostListItemProjection> findPostsWithFiltersV3(PostListQueryDto query, Pageable pageable);
 
     List<PostTag> findPostTagsByPostIds(List<Long> postIds);
+
+    Optional<PostDetailProjection> findPostDetailById(Long postId);
+
+    List<ReplyProjection> findRepliesByPostId(Long postId);
 }

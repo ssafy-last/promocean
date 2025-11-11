@@ -1,12 +1,12 @@
 package com.ssafy.a208.domain.board.repository;
 
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.ssafy.a208.domain.board.dto.PostListItemProjection;
-import com.ssafy.a208.domain.board.dto.PostListQueryDto;
-import com.ssafy.a208.domain.board.dto.QPostListItemProjection;
+import com.ssafy.a208.domain.board.dto.*;
 import com.ssafy.a208.domain.board.entity.*;
 import com.ssafy.a208.domain.member.entity.QMember;
 import com.ssafy.a208.domain.member.entity.QProfile;
@@ -44,41 +44,78 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     /**
-     * 게시글 상세 조회 (모든 연관 엔티티 포함)
+     * 게시글 상세 조회
      */
-    public Optional<Post> findByIdWithAllDetails(Long postId) {
-        Post post = queryFactory
-                .selectFrom(QPost.post)
-                .distinct()
-                .join(QPost.post.author, QMember.member).fetchJoin()
-                .leftJoin(QMember.member.profile, QProfile.profile).fetchJoin()
-                .leftJoin(QPost.post.postFile, QPostFile.postFile).fetchJoin()
-                .leftJoin(QPost.post.postTags, QPostTag.postTag).fetchJoin()
-                .leftJoin(QPostTag.postTag.tag, QTag.tag).fetchJoin()
+    @Override
+    public Optional<PostDetailProjection> findPostDetailById(Long postId) {
+        PostDetailProjection result = queryFactory
+                .select(new QPostDetailProjection(
+                        post.id,
+                        post.title,
+                        post.description,
+                        post.category,
+                        post.prompt,
+                        post.type,
+                        post.exampleQuestion,
+                        post.exampleAnswer,
+                        post.createdAt,
+                        member.nickname,
+                        profile.filePath,
+                        postFile.filePath,
+                        JPAExpressions
+                                .select(postLike.count())
+                                .from(postLike)
+                                .where(
+                                        postLike.post.eq(post),
+                                        postLike.deletedAt.isNull()
+                                ),
+                        // 댓글 수 서브쿼리
+                        JPAExpressions
+                                .select(reply.count())
+                                .from(reply)
+                                .where(
+                                        reply.post.eq(post),
+                                        reply.deletedAt.isNull()
+                                )
+                ))
+                .from(post)
+                .leftJoin(post.author, member)
+                .leftJoin(member.profile, profile)
+                .leftJoin(post.postFile, postFile)
                 .where(
-                        QPost.post.id.eq(postId),
-                        QPost.post.deletedAt.isNull()
+                        post.id.eq(postId),
+                        post.deletedAt.isNull()
                 )
                 .fetchOne();
 
-        return Optional.ofNullable(post);
+        return Optional.ofNullable(result);
     }
 
     /**
-     * 게시글의 댓글 목록 조회 (작성자 정보 포함)
+     * 게시글의 댓글 목록 조회
      */
-    public List<Reply> findRepliesWithAuthorByPost(Long postId) {
+    @Override
+    public List<ReplyProjection> findRepliesByPostId(Long postId) {
         return queryFactory
-                .selectFrom(QReply.reply)
-                .join(QReply.reply.author, QMember.member).fetchJoin()
-                .leftJoin(QMember.member.profile, QProfile.profile).fetchJoin()
+                .select(new QReplyProjection(
+                        reply.id,
+                        member.nickname,
+                        profile.filePath,
+                        reply.content,
+                        reply.createdAt,
+                        reply.updatedAt
+                ))
+                .from(reply)
+                .join(reply.author, member)
+                .leftJoin(member.profile, profile)
                 .where(
-                        QReply.reply.post.id.eq(postId),
-                        QReply.reply.deletedAt.isNull()
+                        reply.post.id.eq(postId),
+                        reply.deletedAt.isNull()
                 )
-                .orderBy(QReply.reply.createdAt.asc())
+                .orderBy(reply.createdAt.asc())
                 .fetch();
     }
+
     /**
      * V1: 개선 전 - fetchJoin 없이 조회 (N+1 문제 발생)
      */
