@@ -41,4 +41,16 @@ public class PostLikeReader {
     public List<PostLike> getPostLikesByPost(Post post) {
         return postLikeRepository.findByPostAndDeletedAtIsNull(post);
     }
+
+    /**
+     * 특정 게시글 ID와 멤버의 좋아요 존재 여부 확인
+     * (Post 엔티티를 조회하지 않고 존재 여부만 확인)
+     *
+     * @param postId 게시글 ID
+     * @param member 멤버 엔티티
+     * @return 좋아요 존재 여부
+     */
+    public boolean existsByPostIdAndMember(Long postId, Member member) {
+        return postLikeRepository.existsByPostIdAndMemberAndDeletedAtIsNull(postId, member);
+    }
 }
