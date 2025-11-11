@@ -5,7 +5,8 @@ import com.ssafy.a208.domain.board.reader.PostReader;
 import com.ssafy.a208.domain.member.entity.Member;
 import com.ssafy.a208.domain.member.reader.MemberReader;
 import com.ssafy.a208.domain.scrap.dto.ScrapListRes;
-import com.ssafy.a208.domain.scrap.dto.ScrapPostDto;
+import com.ssafy.a208.domain.scrap.dto.ScrapPostListItemDto;
+import com.ssafy.a208.domain.scrap.dto.ScrapPostProjection;
 import com.ssafy.a208.domain.scrap.dto.ScrapQueryDto;
 import com.ssafy.a208.domain.scrap.entity.Scrap;
 import com.ssafy.a208.domain.scrap.exception.ScrapAlreadyExistsException;
@@ -23,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 /**
@@ -138,34 +138,36 @@ public class ScrapService {
         // 페이징 설정
         Pageable pageable = PageRequest.of(query.page() - 1, query.size());
 
-        // QueryDSL을 통한 동적 쿼리 실행
-        Page<Scrap> scrapPage = scrapReader.getScrapsByMemberWithFilters(member, query, pageable);
+        // Projection 기반 조회
+        Page<ScrapPostProjection> scrapPage =
+                scrapReader.getScrapsByMemberWithFilters(member, query, pageable);
 
         // DTO 변환
-        List<ScrapPostDto> posts = scrapPage.getContent().stream()
-                .map(scrap -> {
-                    Post post = scrap.getPost();
+        List<ScrapPostListItemDto> posts = scrapPage.getContent().stream()
+                .map(projection -> {
+                    // 프로필 이미지 URL 변환
+                    String profileUrl = projection.getProfilePath() != null
+                            ? s3Service.getCloudFrontUrl(projection.getProfilePath())
+                            : null;
 
-                    // 프로필 사진
-                    String profileKey = post.getAuthor().getProfileImage();
-                    String profileUrl = profileKey != null ?
-                            s3Service.getCloudFrontUrl(profileKey) : null;
+                    // 썸네일 URL 변환
+                    String fileUrl = projection.getFilePath() != null
+                            ? s3Service.getCloudFrontUrl(projection.getFilePath())
+                            : null;
 
-                    return ScrapPostDto.builder()
-                            .postId(post.getId())
-                            .author(post.getAuthor().getNickname())
+                    return ScrapPostListItemDto.builder()
+                            .postId(projection.getPostId())
+                            .author(projection.getAuthorNickname())
                             .profile(profileUrl)
-                            .title(post.getTitle())
-                            .type(post.getType().getName())
-                            .category(post.getCategory().getName())
-                            .tags(post.getPostTags().stream()
-                                    .filter(postTag -> postTag.getDeletedAt() == null)
-                                    .map(postTag -> postTag.getTag().getName())
-                                    .collect(Collectors.toList()))
-                            .isDeleted(post.getDeletedAt() != null)
+                            .title(projection.getTitle())
+                            .type(projection.getTypeName())
+                            .category(projection.getCategoryName())
+                            .fileUrl(fileUrl)
+                            .tags(List.of()) // 태그는 후처리 필요 시 배치 조회 추가 가능
+                            .isDeleted(projection.getIsDeleted())
                             .build();
                 })
-                .collect(Collectors.toList());
+                .toList();
 
         log.info("스크랩 목록 조회 완료 - memberId: {}, page: {}, size: {}, totalCount: {}",
                 member.getId(), query.page(), query.size(), scrapPage.getTotalElements());
