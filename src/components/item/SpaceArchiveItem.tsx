@@ -73,7 +73,7 @@ export default function SpaceArchiveItem({
         }
     }
 
-    const handlePinnedClick = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handlePinnedClick = async (e: React.ChangeEvent<HTMLInputElement>) => {
         e.stopPropagation();
 
         const newPinnedState = !isPinnedState;
@@ -98,7 +98,18 @@ export default function SpaceArchiveItem({
             setArchiveItemListState([...archiveItemListState, { folderId, name, color, isPinned: false }]);
         }
 
+        const res = await SpaceAPI.patchMySpaceArchiveFolderPinStatus(spaceId!, folderId);
+
+
+        
+        // setArchiveItemListState([]);
+        // setPinnedItemListState([]);
+
+        console.log("pin res " ,res);
         console.log(`${name} 아카이브 폴더 pinned ${newPinnedState ? '설정' : '해제'}됨`);
+        const res2 = await SpaceAPI.getMySpaceArchiveFoldersData(spaceId!);
+
+    console.log("폴더 데이터 재조회 ",res2);
     }
 
     const handleDelete = async() => {
@@ -113,6 +124,8 @@ export default function SpaceArchiveItem({
         
         const res = await SpaceAPI.deleteMySpaceArchiveFolderData(spaceId!, folderId);
 
+    //   setArchiveItemListState([]);
+    //     setPinnedItemListState([]);
 
 
         console.log(`${name} 아카이브 폴더 삭제됨`);
@@ -120,6 +133,7 @@ export default function SpaceArchiveItem({
 
     const handleEdit = async (newTitle: string, newBgColor: string) => {
         console.log("id ",spaceId, folderId)
+
         const res = await SpaceAPI.patchMySpaceArchiveFolderData(spaceId!, folderId, {
             name: newTitle,
             color: colorCodeFrontToBack(newBgColor),
@@ -137,6 +151,10 @@ export default function SpaceArchiveItem({
             );
             setArchiveItemListState(updatedArchiveList);
         }
+
+
+        // setArchiveItemListState([]);
+        // setPinnedItemListState([]);
 
         console.log(`${name} 아카이브 폴더 수정됨:`, { newTitle, newBgColor });
     }
