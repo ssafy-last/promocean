@@ -2,7 +2,9 @@
 
 import CommunityHeader from "@/components/layout/CommunityHeader";
 import CommunityFloatingSection from "@/components/section/CommunityFloatingSection";
+import CommunityTabs from "@/components/filter/CommunityTabs";
 import { CommunityAPI } from "@/api/community";
+import { Suspense } from "react";
 
 /**
  * CommunityLayout component
@@ -20,8 +22,11 @@ export default async function CommunityLayout({
   return (
     <div className="min-h-screen bg-gray-50">
       <CommunityHeader />
+      <Suspense fallback={<div>Loading...</div>}>
+        <CommunityTabs />
+      </Suspense>
       
-      <div className="max-w-7xl pl-8 pr-4 py-8 flex flex-row gap-6 relative">
+      <div className="max-w-7xl pl-8 pr-4 pt-8 pb-8 flex flex-row gap-6 relative">
         {/* 왼쪽: 페이지 컨텐츠 */}
         <div className="flex-1 flex flex-col gap-6">
           {children}
