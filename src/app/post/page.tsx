@@ -296,7 +296,7 @@ function PostPageContent() {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4">
         <div className="mb-4">
-          <TitleInput value={title} onChange={setTitle} placeholder="제목을 입력하세요" />
+          <TitleInput value={title} onChange={setTitle} placeholder="제목을 입력하세요"/>
         </div>
         <div className="mb-4">
           <HashtagInput tags={tags} onTagsChange={setTags} />
@@ -314,9 +314,6 @@ function PostPageContent() {
               onChange={setDescriptionState}
               isSubmitButton={selectedPromptType === 'image'}
             />
-
-
-
 
             {/* 사용 프롬프트 */}
             <PostingWriteSection
