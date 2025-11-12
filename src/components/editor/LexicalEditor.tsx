@@ -53,13 +53,31 @@ function EditorErrorBoundary({ children }: { children: React.ReactNode }) {
 // 외부에서 에디터 상태를 업데이트하는 플러그인
 function UpdateEditorPlugin({ value }: { value?: string }) {
   const [editor] = useLexicalComposerContext();
+  const prevValueRef = React.useRef<string | undefined>(undefined);
 
   React.useEffect(() => {
+    // value가 없으면 아무것도 하지 않음
     if (!value) return;
 
+    // 이전 값과 같으면 업데이트하지 않음 (onChange로 인한 업데이트 방지)
+    if (prevValueRef.current === value) {
+      return;
+    }
+
+    // 현재 에디터 상태와 비교
+    const currentEditorState = JSON.stringify(editor.getEditorState().toJSON());
+
+    // 현재 에디터 상태와 동일하면 업데이트하지 않음 (포커스 유지)
+    if (currentEditorState === value) {
+      prevValueRef.current = value;
+      return;
+    }
+
+    // 외부에서 값이 변경된 경우에만 업데이트
     try {
       const editorState = editor.parseEditorState(value);
       editor.setEditorState(editorState);
+      prevValueRef.current = value;
     } catch (error) {
       console.error('Failed to parse editor state:', error);
     }
