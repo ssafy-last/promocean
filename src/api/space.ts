@@ -273,7 +273,7 @@ export const SpaceAPI = {
         * 팀 스페이스를 수정하는 API입니다.
     */
     async patchTeamSpace(teamSpaceId : number, teamSpaceData : PatchTeamSpaceRequest) : Promise<NoArgsResponse | null> {
-        const res = await apiFetch<NoArgsResponse>(`/api/v1/spaces/team/${teamSpaceId}`, {
+        const res = await apiFetch<NoArgsResponse>(`/api/v1/spaces/${teamSpaceId}`, {
             method: "PATCH",
             body: JSON.stringify(teamSpaceData),
         });
