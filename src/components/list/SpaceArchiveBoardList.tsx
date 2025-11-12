@@ -3,42 +3,31 @@ import { useAuthStore } from "@/store/authStore";
 import SpaceArchiveBoardItem, { SpaceArchiveBoardItemProps } from "../item/SpaceArchiveBoardItem"
 import { useEffect, useState } from "react";
 import SpaceAPI, { ArticleData } from "@/api/space";
+import { useArchiveFolderStore } from "@/store/archiveFolderStore";
+import { useSpaceStore } from "@/store/spaceStore";
 
 
-
-export interface SpaceArchiveBoardListProps{
-    //  mySpaceBoardList : SpaceArchiveBoardItemProps[]
-    spaceId? : number;
-    folderId : number
-}
-
-
-
-export default function SpaceArchiveBoardList({
-    // mySpaceBoardList
-    spaceId,
-    folderId
-}: SpaceArchiveBoardListProps){
-        const [mySpaceBoardList, setMySpaceBoardList] =  useState<SpaceArchiveBoardItemProps[] | null>([]);
+export default function SpaceArchiveBoardList(
+){
+        const [mySpaceBoardList, setMySpaceBoardList] =  useState<SpaceArchiveBoardItemProps[] | null>([]);        
+        const spaceStore = useSpaceStore();
+        const currentSpace = spaceStore.currentSpace;
+        const spaceId = currentSpace?.spaceId;
+        const folderStore = useArchiveFolderStore();
+        const folderId = folderStore.currentFolder?.folderId;
         
-        const authStore = useAuthStore();
-
-        console.log("SpaceArchiveBoardList 폴더 아이디 ", spaceId);
+        console.log("SpaceArchiveBoardList 폴더 아이디 ", folderId);
         //개인 스페이스의 경우 직접 authStore에서 가져와야 합니다.
-        if(spaceId === undefined){
-            
-            spaceId = authStore.user?.personalSpaceId;
-        }
 
         useEffect(()=>{
-            if(!spaceId) return;
+            if(!currentSpace) return;
 
             console.log("개인 스페이스 아이디 in useEffect ", spaceId);
             // spaceId를 사용하여 필요한 작업 수행
             const fetcher = async () =>
                 {
-                    console.log("??!!");
-                    const res = await SpaceAPI.getArchiveArticles(spaceId, folderId);
+                    console.log("api ",spaceId, folderId);
+                    const res = await SpaceAPI.getArchiveArticles(spaceId||-1, folderId||-1);
                     const articles : ArticleData[] = res?.articles|| [];
                     console.log("가져온 아카이브 글들 ", res?.articles);
                     
@@ -61,7 +50,7 @@ export default function SpaceArchiveBoardList({
                 }
 
             fetcher();
-        },[spaceId])
+        },[currentSpace])
 
         return(
         <div className="flex flex-col px-4 gap-2">
