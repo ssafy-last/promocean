@@ -17,7 +17,7 @@ public record PostListItemDto(
         String author,
 
         @Schema(description = "작성자 프로필 이미지 URL", example = "https://cloudfront.url/profile.jpg")
-        String profile,
+        String profileUrl,
 
         @Schema(description = "게시글 제목", example = "고라파덕 말투 프롬프트")
         String title,
