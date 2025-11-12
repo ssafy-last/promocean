@@ -15,18 +15,18 @@ import { ContestSubmissionDetailData } from "@/types/itemType";
  * @description 대회 상세 페이지에서 산출물을 조회하는 경우 나오는 모달입니다.
  * @returns {React.ReactNode}
  */
-export default function ContestSubmissionModal({ params }: { params: Promise<{ submissionId: number }> }) {
+export default function ContestSubmissionModal({ params }: { params: Promise<{ contestId: number, submissionId: number }> }) {
   const router = useRouter();
-  const { submissionId } = use(params);
+  const { contestId, submissionId } = use(params);
   const [submissionData, setSubmissionData] = useState<ContestSubmissionDetailData | null>(null);
 
   useEffect(() => {
     const fetchSubmissionDetail = async () => {
-      const { submissionData } = await ContestAPI.getContestSubmissionDetailData(submissionId);
+      const { submissionData } = await ContestAPI.getContestSubmissionDetailData(contestId, submissionId);
       setSubmissionData(submissionData);
     };
     fetchSubmissionDetail();
-  }, [submissionId]);
+  }, [contestId, submissionId]);
 
   const isText = submissionData?.type === "텍스트" ? true : false;
 
