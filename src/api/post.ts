@@ -1,14 +1,16 @@
 import { ApiResponse } from "./common";
 import { apiFetch } from "./fetcher";
+import { PostCategory, PromptType } from "@/types/postEnum";
 
 export interface PostArticleRequest {
     title: string;
     description: string;
-    category : number;
+    category : PostCategory;
     prompt : string;
-    promptType : number;
+    promptType : PromptType;
     sampleQuestion : string;
     sampleAnswer : string;
+    filePath? : string;
     tags : string[];
 }
 
@@ -24,6 +26,8 @@ export const PostAPI = {
             method: 'POST',
             body: JSON.stringify(data)
         });
+
+        return res.data;
     }
 
 }

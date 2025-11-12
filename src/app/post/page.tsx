@@ -10,11 +10,12 @@ import PostingFooter from "@/components/layout/PostingFooter";
 import PostingMetaFormSection from "@/components/section/PostingMetaFormSection";
 import PostingArchiveFolderSection, { ArchiveFolderItem } from "@/components/section/PostingArchiveFolderSection";
 import { PostingFloatingItemProps } from "@/types/itemType";
-import { PostFormData, PostSubmitData } from "@/types/postType";
 import TitleInput from "@/components/editor/TitleInput";
 import HashtagInput from "@/components/editor/HashtagInput";
-import { buildPromptFromLexical } from "@/utils/lexicalUtils";
+import { buildPromptFromLexical, extractTextFromLexical } from "@/utils/lexicalUtils";
 import { PromptAPI } from "@/api/prompt";
+import { PostAPI, PostArticleRequest } from "@/api/post";
+import { categoryStringToEnum, promptTypeStringToEnum } from "@/types/postEnum";
 
 /**
  * PostPageContent component (useSearchParams를 사용하는 내부 컴포넌트)
@@ -24,11 +25,9 @@ function PostPageContent() {
   const searchParams = useSearchParams();
   const postType = searchParams.get("type"); // community, my-space, team-space
   const folderName = searchParams.get("folder"); // 아카이브 폴더 이름
-  const teamName = searchParams.get("name"); // 팀 스페이스 이름
 
   // 폼 상태 관리
   const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("community");
   const [tags, setTags] = useState<string[]>([]); // 배열로 변경
   const [descriptionState, setDescriptionState] = useState("");
   const [usedPrompt, setUsedPrompt] = useState("");
@@ -87,56 +86,85 @@ function PostPageContent() {
   };
 
   // 제출 핸들러
-  const handleSubmit = () => {
-    // 아카이브 타입인 경우 폴더 선택 확인
-    if ((postType === 'my-space' || postType === 'team-space') && !selectedFolder) {
-      alert('아카이브 폴더를 선택해주세요.');
+  const handleSubmit = async () => {
+    // 필수 입력 검증
+    if (!title.trim()) {
+      alert('제목을 입력해주세요.');
       return;
     }
 
-    // 폼 데이터 수집
-    const formData: PostFormData = {
-      title,
-      category,
-      tags,
-      usedPrompt,
-      examplePrompt,
-      answerPrompt,
-      selectedCategory,
-      selectedPromptType,
-    };
+    if (!descriptionState.trim()) {
+      alert('설명을 입력해주세요.');
+      return;
+    }
 
-    // API 제출용 데이터로 변환
-    const submitData: PostSubmitData = {
-      title: formData.title,
-      category: formData.category,
-      tags: formData.tags, // 이미 배열이므로 그대로 사용
-      content: {
-        usedPrompt: formData.usedPrompt,
-        examplePrompt: formData.examplePrompt,
-        answerPrompt: formData.answerPrompt,
-      },
-      metadata: {
-        category: formData.selectedCategory,
-        promptType: formData.selectedPromptType,
-      },
-    };
+    if (!usedPrompt.trim()) {
+      alert('사용 프롬프트를 입력해주세요.');
+      return;
+    }
 
-    // 아카이브 정보 추가
-    if (postType === 'my-space' || postType === 'team-space') {
-      submitData.archiveFolder = selectedFolder;
-      if (postType === 'team-space' && teamName) {
-        submitData.teamName = teamName;
+    if (selectedPromptType === 'text') {
+      if (!examplePrompt.trim()) {
+        alert('예시 질문 프롬프트를 입력해주세요.');
+        return;
+      }
+
+      if (!answerPrompt.trim()) {
+        alert('답변 프롬프트를 입력해주세요.');
+        return;
       }
     }
 
-    // TODO: API 호출
-    console.log('제출 데이터:', submitData);
-    console.log('게시글 타입:', postType);
-    alert('게시글이 제출되었습니다!\n콘솔을 확인하세요.');
+    try {
+      // Lexical JSON에서 텍스트 추출
+      const description = extractTextFromLexical(descriptionState);
+      const prompt = extractTextFromLexical(usedPrompt);
+      const sampleQuestion = extractTextFromLexical(examplePrompt);
+      const sampleAnswer = extractTextFromLexical(answerPrompt);
 
-    // 나중에 여기서 API 호출
-    // await postApi.createPost(submitData);
+      // 길이 검증
+      if (title.length > 100) {
+        alert('제목은 100자 이하로 입력해주세요.');
+        return;
+      }
+
+      if (description.length > 300) {
+        alert('설명은 300자 이하로 입력해주세요.');
+        return;
+      }
+
+      if (sampleQuestion.length > 200) {
+        alert('예시 질문은 200자 이하로 입력해주세요.');
+        return;
+      }
+
+      // API 요청 데이터 구성
+      const requestData: PostArticleRequest = {
+        title: title.trim(),
+        description: description.trim(),
+        category: categoryStringToEnum(selectedCategory),
+        prompt: prompt.trim(),
+        promptType: promptTypeStringToEnum(selectedPromptType),
+        sampleQuestion: sampleQuestion.trim(),
+        sampleAnswer: sampleAnswer.trim(),
+        tags: tags,
+      };
+
+      console.log('제출 데이터:', requestData);
+
+      // API 호출
+      const response = await PostAPI.postArticlePost(requestData);
+
+      console.log('게시글 생성 성공:', response);
+      alert(`게시글이 성공적으로 등록되었습니다!\n게시글 ID: ${response.postId}`);
+
+      // 성공 후 이동 (커뮤니티 페이지 또는 상세 페이지로)
+      router.push(`/community/${response.postId}`);
+
+    } catch (error) {
+      console.error('게시글 등록 실패:', error);
+      alert('게시글 등록에 실패했습니다. 다시 시도해주세요.');
+    }
   };
 
   const handleAISubmit = async () => {
