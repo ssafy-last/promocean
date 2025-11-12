@@ -30,7 +30,7 @@ export default function TeamSpaceHeader(
   {nickname, description, spaceId}: TeamSpaceHeaderProps) {
 
   const [isModalOpenState, setIsModalOpenState] = useState(false);
-  const [modalTabState, setModalTabState] = useState<"권한" | "초대" | "삭제">("권한");
+  const [modalTabState, setModalTabState] = useState<"권한" | "초대" | "수정" | "삭제">("권한");
   const [memberListState, setMemberListState] = useState<string[]>([
     "김철수",
     "이영희",
@@ -40,7 +40,7 @@ export default function TeamSpaceHeader(
     "이수민",
     "홍길동"
   ]);
-  console.log("spaceId in TeamSpaceHeader:", spaceId);
+  // console.log("spaceId in TeamSpaceHeader:", spaceId);
   const handleModalOpen = () => {
     setIsModalOpenState(!isModalOpenState);
   }
