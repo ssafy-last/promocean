@@ -4,8 +4,10 @@ import TeamSpaceInsertionModalTabs from "../filter/TeamSpaceInsertionModalTabs";
 import SpaceAddMemberItem from "../item/SpaceAddMemberItem";
 import TeamSpaceRoleItem from "../item/TeamSpaceRoleItem";
 import TeamSpaceRoleList from "../list/TeamSpaceRoleList";
+import SpaceAPI from "@/api/space";
 
 export interface TeamSpacePageProps {
+    spaceId? : number;
     isModalOpenState: boolean;
     handleModalClose: () => void;
     modalTabState: "권한" | "초대" | "삭제";
@@ -13,12 +15,13 @@ export interface TeamSpacePageProps {
     memberListState: string[];
     setMemberListState: (members: string[]) => void;
     teamName?: string;
+
 }
 
 
 
-export default function TeamSpaceManageModal( { isModalOpenState, handleModalClose, modalTabState, setModalTabState, memberListState, setMemberListState, teamName = "팀 스페이스"}: TeamSpacePageProps) {
-
+export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handleModalClose, modalTabState, setModalTabState, memberListState, setMemberListState, teamName = "팀 스페이스"}: TeamSpacePageProps) {
+    console.log("spaceId in TeamSpaceManageModal:", spaceId);
     const router = useRouter();
     const [addMemberListState, setAddMemberListState] = useState<string[]>([
         "정태승",
@@ -29,13 +32,18 @@ export default function TeamSpaceManageModal( { isModalOpenState, handleModalClo
     ]);
 
     const [deleteInputState, setDeleteInputState] = useState("");
-    const deleteConfirmText = `${teamName}을 삭제 하겠습니다`;
+    const deleteConfirmText = `${teamName}를 삭제 하겠습니다`;
     const isDeleteValid = deleteInputState === deleteConfirmText;
-
-    const handleDeleteTeam = () => {
+    
+    const handleDeleteTeam = async () => {
+        console.log("handle " ,spaceId);
         if (isDeleteValid) {
-            alert(`${teamName}이 삭제되었습니다`);
-            handleModalClose();
+   
+            const res = await SpaceAPI.deleteTeamSpace(spaceId!);
+            console.log("Res ",res);
+            //handleModalClose();
+                     alert(`${teamName}이 삭제되었습니다`);
+
             router.push('/team-space');
         }
     };
