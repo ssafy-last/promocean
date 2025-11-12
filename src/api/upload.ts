@@ -1,7 +1,5 @@
 import { ApiResponse } from "./common";
 import { apiFetch } from "./fetcher";
-import { NoArgsResponse } from "./space";
-
 
 export interface getImagesS3UploadResponse{
     presignedUrl : string;
