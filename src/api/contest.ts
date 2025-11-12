@@ -243,4 +243,50 @@ export const ContestAPI = {
       data: response.data,
     }
   },
+
+  /**
+   * 대회 산출물 삭제하는 API입니다.
+   * @page /contest/[contestId]/submission/[submissionId]
+   * @endpoint /api/v1/contests/{contestId}/submissions/{submissionId}
+   * @description 대회 산출물 삭제하는 API입니다.
+   * @param {number} contestId - 대회 ID (contestId)
+   * @param {number} submissionId - 산출물 ID
+   * @returns {Promise<{ message: string | null, data: null }>}
+   */
+  async deleteContestSubmission(contestId: number, submissionId: number) {
+    interface ApiResponse {
+      message: string | null;
+      data: null;
+    }
+    const response = await apiFetch<ApiResponse>(`/api/v1/contests/${contestId}/submissions/${submissionId}`, {
+      method: 'DELETE',
+    });
+    return {
+      message: response.message,
+      data: response.data,
+    }
+  },
+
+  /**
+   * 대회 산출물 수정하는 API입니다.
+   * @page /contest/[contestId]/submission/[submissionId]
+   * @endpoint /api/v1/contests/{contestId}/submissions/{submissionId}
+   * @description 대회 산출물 수정하는 API입니다.
+   * @param {number} contestId - 대회 ID (contestId)
+   * @param {number} submissionId - 산출물 ID
+   * @returns {Promise<{ message: string | null, data: null }>}
+   */
+  async updateContestSubmission(contestId: number, submissionId: number) {
+    interface ApiResponse {
+      message: string | null;
+      data: null;
+    }
+    const response = await apiFetch<ApiResponse>(`/api/v1/contests/${contestId}/submissions/${submissionId}`, {
+      method: 'PUT',
+    });
+    return {
+      message: response.message,
+      data: response.data,
+    }
+  },
 };
