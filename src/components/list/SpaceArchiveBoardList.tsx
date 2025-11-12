@@ -5,14 +5,19 @@ import { useEffect, useState } from "react";
 import SpaceAPI, { ArticleData } from "@/api/space";
 import { useArchiveFolderStore } from "@/store/archiveFolderStore";
 import { useSpaceStore } from "@/store/spaceStore";
+import { CommunityAPI } from "@/api/community";
 
 
 export default function SpaceArchiveBoardList(
+
 ){
-        const [mySpaceBoardList, setMySpaceBoardList] =  useState<SpaceArchiveBoardItemProps[] | null>([]);        
+        const [mySpaceBoardList, setMySpaceBoardList] =  useState<SpaceArchiveBoardItemProps[] | null>([]);   
+        const authStore = useAuthStore();    
         const spaceStore = useSpaceStore();
+        const user = authStore.user;
         const currentSpace = spaceStore.currentSpace;
         const spaceId = currentSpace?.spaceId;
+        const name = user?.nickname || "나의 스페이스";
         const folderStore = useArchiveFolderStore();
         const folderId = folderStore.currentFolder?.folderId;
         
@@ -28,6 +33,11 @@ export default function SpaceArchiveBoardList(
                 {
                     console.log("api ",spaceId, folderId);
                     const res = await SpaceAPI.getArchiveArticles(spaceId||-1, folderId||-1);
+
+                    const res2 = await CommunityAPI.getCommunityBoardList({
+                        author : name
+                    });
+
                     const articles : ArticleData[] = res?.articles|| [];
                     console.log("가져온 아카이브 글들 ", res?.articles);
                     
