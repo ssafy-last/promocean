@@ -22,9 +22,9 @@ export const ContestAPI = {
 
   /**
    * 대회 페이지 조회 시 필요한 데이터 조회하는 API입니다.
-   * @page /contest/[postId]
+   * @page /contest/[contestId]
    * @description 대회 상세 페이지 데이터를 조회하는 API입니다.
-   * @param {number} contestId - 대회 ID (postId)
+   * @param {number} contestId - 대회 ID (contestId)
    * @returns {Promise<{ contestPostData: ContestPostItemProps, contestInfoData: ContestInfoItemProps[], contestInfoTitles: string[], contestNoticeList: ContestNoticeItemProps[], contestSubmissionList: ContestSubmissionItemProps[] }>}
   //  * @returns {Promise<{ contestPostData: ContestPostItemProps, leaderboardList: LeaderboardItemProps[], contestInfoData: ContestInfoItemProps[], contestInfoTitles: string[], contestNoticeList: ContestNoticeItemProps[], contestSubmissionList: ContestSubmissionItemProps[] }>}
    */
@@ -35,6 +35,7 @@ export const ContestAPI = {
       { contestInfoData },
       { contestNoticeList },
       { contestSubmissionList },
+      { contestMySubmissionList },
     ] = await Promise.all([
 
       ContestAPI.getContestDetailData(contestId),
@@ -42,6 +43,7 @@ export const ContestAPI = {
       ContestAPI.getContestInfoData(contestId),
       ContestAPI.getContestNoticeList(contestId),
       ContestAPI.getContestSubmissionList(contestId),
+      ContestAPI.getContestMySubmissionList(contestId),
     ]);
 
     return {
@@ -51,6 +53,7 @@ export const ContestAPI = {
       contestInfoTitles: ["대회 정보", "상금 유형", "참여 통계", "해시태그"],
       contestNoticeList: contestNoticeList || [],
       contestSubmissionList: contestSubmissionList || [],
+      contestMySubmissionList: contestMySubmissionList || [],
     };
   },
 
@@ -287,6 +290,31 @@ export const ContestAPI = {
     return {
       message: response.message,
       data: response.data,
+    }
+  },
+
+  /**
+   * 대회 내 산출물 목록 데이터 조회하는 API입니다.
+   * @page /contest/[contestId]?tab=my-submission
+   * @endpoint /api/v1/contests/{contestId}/submissions/me
+   * @description 대회 내 산출물 목록 데이터를 조회하는 API입니다.
+   * @param {number} contestId - 대회 ID (contestId)
+   * @returns {Promise<{ contestMySubmissionList: ContestSubmissionItemProps[] }>}
+   */
+  async getContestMySubmissionList(contestId: number) {
+    try {
+      const response = await apiFetch<ContestSubmissionItemProps[]>(`/api/v1/contests/${contestId}/submissions/me`);
+      // const response = await fetch(`/mock/ContestMySubmissionData.json`, {
+      //   cache: "no-store",
+      // }).then(res => res.json());
+      return {
+        contestMySubmissionList: response || [],
+      };
+    } catch (error) {
+      console.error('내 산출물 조회 실패:', error);
+      return {
+        contestMySubmissionList: [],
+      };
     }
   },
 };

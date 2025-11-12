@@ -16,16 +16,17 @@ interface ContestPostPageProps {
  */
 export default async function ContestPostPage({ params }: ContestPostPageProps) {
   const { contestId: contestIdStr } = await params;
-  const postId = parseInt(contestIdStr, 10);
+  const contestId = parseInt(contestIdStr, 10);
 
   const {
     contestPostData,
-    leaderboardList,
+    // leaderboardList,
     contestInfoData,
     contestInfoTitles,
     contestNoticeList,
     contestSubmissionList,
-  } = await ContestAPI.getContestPostPageData(postId);
+    contestMySubmissionList,
+  } = await ContestAPI.getContestPostPageData(contestId);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -38,9 +39,10 @@ export default async function ContestPostPage({ params }: ContestPostPageProps) 
         <div className="flex-1 flex flex-col gap-6 bg-white rounded-lg shadow-md">
           <ContestPostSection
             contestPostData={contestPostData}
-            leaderboardList={leaderboardList}
+            // leaderboardList={leaderboardList} TODO : 삭제
             ContestNoticeList={contestNoticeList}
             contestSubmissionList={contestSubmissionList}
+            contestMySubmissionList={contestMySubmissionList}
           />
         </div>
 
