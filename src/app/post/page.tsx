@@ -30,6 +30,7 @@ function PostPageContent() {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("community");
   const [tags, setTags] = useState<string[]>([]); // 배열로 변경
+  const [descriptionState, setDescriptionState] = useState("");
   const [usedPrompt, setUsedPrompt] = useState("");
   const [examplePrompt, setExamplePrompt] = useState("");
   const [answerPrompt, setAnswerPrompt] = useState("");
@@ -306,6 +307,16 @@ function PostPageContent() {
 
           {/* 글 작성 컨테이너 (8 비율) */}
           <div className="lg:col-span-4 space-y-4">
+            {/* 사용 프롬프트 */}
+            <PostingWriteSection
+              title="설명"
+              placeholder="텍스트를 입력하세요..."
+              onChange={setDescriptionState}
+              isSubmitButton={selectedPromptType === 'image'}
+            />
+
+
+
 
             {/* 사용 프롬프트 */}
             <PostingWriteSection
