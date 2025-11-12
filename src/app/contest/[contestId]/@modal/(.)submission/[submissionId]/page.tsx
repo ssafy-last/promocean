@@ -10,6 +10,7 @@ import Heart from "@/components/icon/Heart";
 import { ContestAPI } from "@/api/contest";
 import { ContestSubmissionDetailData } from "@/types/itemType";
 import { useAuthStore } from "@/store/authStore";
+
 /**
  * 대회 상세 페이지 산출물 모달
  * @description 대회 상세 페이지에서 산출물을 조회하는 경우 나오는 모달입니다.
@@ -19,11 +20,18 @@ export default function ContestSubmissionModal({ params }: { params: Promise<{ c
   const router = useRouter();
   const { contestId, submissionId } = use(params);
   const [submissionData, setSubmissionData] = useState<ContestSubmissionDetailData | null>(null);
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     const fetchSubmissionDetail = async () => {
-      const { submissionData } = await ContestAPI.getContestSubmissionDetailData(contestId, submissionId);
-      setSubmissionData(submissionData);
+      try {
+        setError(null);
+        const { submissionData } = await ContestAPI.getContestSubmissionDetailData(contestId, submissionId);
+        setSubmissionData(submissionData);
+      } catch (err) {
+        console.error('산출물 조회 실패:', err);
+        setError(err instanceof Error ? err : new Error('산출물을 불러올 수 없습니다.'));
+      }
     };
     fetchSubmissionDetail();
   }, [contestId, submissionId]);
@@ -159,8 +167,9 @@ export default function ContestSubmissionModal({ params }: { params: Promise<{ c
         )}
 
         {/* 투표하기 버튼 or [수정하기, 삭제하기] 버튼 */}
-        {useAuthStore.getState().user?.nickname === submissionData?.author ? (
-          <div className="flex flex-row items-center justify-center gap-2 w-full">
+        {!error && submissionData && (
+          useAuthStore.getState().user?.nickname === submissionData.author ? (
+            <div className="flex flex-row items-center justify-center gap-2 w-full">
               <button
                 className="bg-primary text-white px-4 py-2 rounded-md"
                 // onClick={handleUpdateSubmission} TODO: 수정 구현하기
@@ -173,16 +182,17 @@ export default function ContestSubmissionModal({ params }: { params: Promise<{ c
               >
                 삭제하기
               </button>
-          </div>
-        ) : (
-          <div className="flex flex-row items-center justify-end gap-2 w-full">
-            <button
-              className="bg-primary text-white px-4 py-2 rounded-md"
-              onClick={handleVoteSubmission}
-            >
-              투표하기
-            </button>
-          </div>
+            </div>
+          ) : (
+            <div className="flex flex-row items-center justify-end gap-2 w-full">
+              <button
+                className="bg-primary text-white px-4 py-2 rounded-md"
+                onClick={handleVoteSubmission}
+              >
+                투표하기
+              </button>
+            </div>
+          )
         )}
       </div>
     </div>
