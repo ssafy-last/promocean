@@ -13,11 +13,11 @@ export default async function TeamSpaceArchiveLayout({
 }: Readonly<TeamDetailLayoutProps>){
 
     const resolvedParams = await params;
-    const teamName = decodeURIComponent(resolvedParams['team-archive']);
-
+    const spaceId = Number(resolvedParams['team-archive']);
+    console.log("teamName in layout:", spaceId);
         return(
             <div>
-             <TeamSpaceHeader nickname={teamName}/>
+             <TeamSpaceHeader nickname={"팀 네임"} spaceId={spaceId}/>
              {children}
             </div>
         )
