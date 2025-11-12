@@ -22,7 +22,7 @@ export interface ContestPostSectionProps {
   // leaderboardList: LeaderboardItemProps[]
   ContestNoticeList: ContestNoticeItemProps[]
   contestSubmissionList: ContestSubmissionItemProps[]
-  contestMySubmissionList: ContestSubmissionItemProps[]
+  // contestMySubmissionList: ContestSubmissionItemProps[]
 }
 
 /**
@@ -31,7 +31,7 @@ export interface ContestPostSectionProps {
  * @returns {React.ReactNode}
  */
 // export default function ContestPostSection({ contestPostData, leaderboardList, ContestNoticeList, contestSubmissionList }: ContestPostSectionProps) {
-export default function ContestPostSection({ contestPostData, ContestNoticeList, contestSubmissionList, contestMySubmissionList }: ContestPostSectionProps) {
+export default function ContestPostSection({ contestPostData, ContestNoticeList, contestSubmissionList }: ContestPostSectionProps) {
   const searchParams = useSearchParams();
   const currentTab = searchParams.get('tab') || 'detail';
   return (
@@ -118,9 +118,9 @@ export default function ContestPostSection({ contestPostData, ContestNoticeList,
           <ContestSubmissionSection contestSubmissionList={contestSubmissionList} />
         )}
         
-        {currentTab === 'my-submission' && (
+        {/* {currentTab === 'my-submission' && (
           <ContestSubmissionSection contestSubmissionList={contestMySubmissionList} />
-        )}
+        )} */}
       </div>
     </div>
   );

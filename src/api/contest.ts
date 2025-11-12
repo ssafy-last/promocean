@@ -32,28 +32,28 @@ export const ContestAPI = {
     const [
       { contestData: contestPostData },
       // { leaderboardList },
-      { contestInfoData },
+      // { contestInfoData },
       { contestNoticeList },
       { contestSubmissionList },
-      { contestMySubmissionList },
+      // { contestMySubmissionList },
     ] = await Promise.all([
 
       ContestAPI.getContestDetailData(contestId),
       // ContestAPI.getContestLeaderboardList(contestId),
-      ContestAPI.getContestInfoData(contestId),
+      // ContestAPI.getContestInfoData(contestId),
       ContestAPI.getContestNoticeList(contestId),
       ContestAPI.getContestSubmissionList(contestId),
-      ContestAPI.getContestMySubmissionList(contestId),
+      // ContestAPI.getContestMySubmissionItem(contestId),
     ]);
 
     return {
       contestPostData,
       // leaderboardList: leaderboardList || [],
-      contestInfoData: contestInfoData || [],
+      // contestInfoData: contestInfoData || [],
       contestInfoTitles: ["대회 정보", "상금 유형", "참여 통계", "해시태그"],
       contestNoticeList: contestNoticeList || [],
       contestSubmissionList: contestSubmissionList || [],
-      contestMySubmissionList: contestMySubmissionList || [],
+      // contestMySubmissionList: contestMySubmissionList || [],
     };
   },
 
@@ -91,33 +91,53 @@ export const ContestAPI = {
     if (params?.title) queryParams.set('title', params.title);
     if (params?.tag) queryParams.set('tag', params.tag);
 
-    // interface ApiResponse {
-    //   message: string | null;
-    //   data: ContestCardItemProps[];
-    // }
-    // const response = await apiFetch<ApiResponse>(`/api/v1/contests?${queryParams.toString()}`);
     const response = await fetch(`http://localhost:3000/mock/ContestCardList.json`, {
       cache: "no-store", // mock 데이터는 캐싱하지 않게
     }).then(res => res.json());
     return {
-      contestCardList: response.data,
+      contestCardList: response.contests || [],
     };
+    // interface ApiResponse {
+    //   message: string | null;
+    //   data: {
+    //     contests: ContestCardItemProps[];
+    //   };
+    // }
+    // try {
+    //   const response = await apiFetch<ApiResponse>(`/api/v1/contests?${queryParams.toString()}`);
+    //   return {
+    //     contestCardList: response.data.contests || [],
+    //   };
+    // } catch (error) {
+    //   console.error('대회 목록 조회 실패:', error);
+    //   return {
+    //     contestCardList: [],
+    //   };
+    // }
   },
 
   /**
    * 대회 추가 요약 정보를 데이터 조회하는 API입니다.
-   * @page /contest/[postId]
+   * @page /contest/[contestId]
    * @endpoint 목 데이터 사용중입니다. TODO : 삭제 예정?
    * @description 대회 정보를 데이터를 조회하는 API입니다.
-   * @param {number} contestId - 대회 ID (postId)
+   * @param {number} contestId - 대회 ID (contestId)
    * @returns {Promise<{ contestInfoData: ContestInfoItemProps[] }>}
    */
-  async getContestInfoData(contestId: number) {
-    const response = await apiFetch<ContestInfoItemProps[]>(`/mock/ContestInfoItem.json?contestId=${contestId}`);
-    return {
-      contestInfoData: response,
-    };
-  },
+  // async getContestInfoData(contestId: number) {
+  //   interface ApiResponse {
+  //     message: string | null;
+  //     data: ContestInfoItemProps[];
+  //   }
+  //   const response = await apiFetch<ApiResponse>(`/api/v1/contests/${contestId}/info`);
+  //   // const response = await fetch(`/mock/ContestInfoItem.json?contestId=${contestId}`, {
+  //   //     cache: "no-store",
+  //   //   }
+  //   // ).then(res => res.json());
+  //   return {
+  //     contestInfoData: response,
+  //   };
+  // },
   
   /**
    * 대회 상세 페이지를 조회하는 API입니다.
@@ -128,10 +148,23 @@ export const ContestAPI = {
    * @returns {Promise<{ contestData: ContestPostItemProps }>}
    */
   async getContestDetailData(contestId: number) {
-    const response = await apiFetch<ContestPostItemProps>(`/mock/ContestPostDetail.json?contestId=${contestId}`);
-    return {
-      contestData: response,
-    };
+
+    try {
+      interface ApiResponse {
+      message: string | null;
+      data: ContestPostItemProps;
+    }
+    const response = await apiFetch<ApiResponse>(`/api/v1/contests/${contestId}`);
+      return {
+        contestData: response.data,
+      };
+    } catch (error) {
+      console.error('대회 상세 페이지 데이터 조회 실패:', error);
+      throw new Error('대회를 찾을 수 없습니다');
+    }
+    // const response = await fetch(`http://localhost:3000/mock/ContestPostDetail.json`, {
+    //   cache: "no-store",
+    // }).then(res => res.json());
   },
 
   // /**
@@ -161,14 +194,28 @@ export const ContestAPI = {
    * @returns {Promise<{ contestNoticeList: ContestNoticeItemProps[] }>}
    */
   async getContestNoticeList(contestId: number) {
-    // const response = await apiFetch<ContestNoticeItemProps[]>(`/api/v1/contests/${contestId}/notices`);
-    const response = await fetch(`http://localhost:3000/mock/ContestNoticeData.json`, {
-        cache: "no-store",
+
+    try {
+      interface ApiResponse {
+        message: string | null;
+        data: {
+          notices: ContestNoticeItemProps[];
+        };
       }
-    ).then(res => res.json());
-    return {
-      contestNoticeList: response.data.notices,
-    };
+      const response = await apiFetch<ApiResponse>(`/api/v1/contests/${contestId}/notices`);
+      return {
+        contestNoticeList: response.data.notices,
+      };
+    } catch (error) {
+      console.error('공지사항 목록 조회 실패:', error);
+      return {
+        contestNoticeList: [],
+      };
+    }
+    // const response = await fetch(`http://localhost:3000/mock/ContestNoticeData.json`, {
+    //     cache: "no-store",
+    //   }
+    // ).then(res => res.json());
   },
   
   /**
@@ -180,10 +227,14 @@ export const ContestAPI = {
    * @returns {Promise<{ noticeData: ContestNoticeDetailData }>}
    */
   async getContestNoticeDetailData(contestId: number, noticeId: number) {
-    // const response = await apiFetch<ContestNoticeDetailData>(`/api/v1/contests/{contestId}/notices/{noticeId}`)
-    const response = await fetch(`/mock/ContestNoticeDetailData.json`, {
-      cache: "no-store",
-    }).then(res => res.json());
+    interface ApiResponse {
+      message: string | null;
+      data: ContestNoticeDetailData;
+    }
+    const response = await apiFetch<ApiResponse>(`/api/v1/contests/${contestId}/notices/${noticeId}`);
+    // const response = await fetch(`/mock/ContestNoticeDetailData.json`, {
+    //   cache: "no-store",
+    // }).then(res => res.json());
     return {
       noticeData: response.data,
     };
@@ -198,27 +249,49 @@ export const ContestAPI = {
    * @returns {Promise<{ contestSubmissionList: ContestSubmissionItemProps[] }>}
   */
   async getContestSubmissionList(contestId: number) {
-    const response = await apiFetch<ContestSubmissionItemProps[]>(`/mock/ContestSubmissionData.json?contestId=${contestId}`);
-    return {
-      contestSubmissionList: response,
-    };
+    try {
+      interface ApiResponse {
+        message: string | null;
+        data: {
+          submissions: ContestSubmissionItemProps[];
+        };
+      }
+      const response = await apiFetch<ApiResponse>(`/api/v1/contests/${contestId}/submissions`);
+      // const response = await fetch(`http://localhost:3000/mock/ContestSubmissionData.json`, {
+      //   cache: "no-store",
+      // }).then(res => res.json());
+      return {
+        contestSubmissionList: response.data.submissions,
+      };
+    } catch (error) {
+      console.error('산출물 목록 조회 실패:', error);
+      return {
+        contestSubmissionList: [],
+      };
+    }
   },
-
 
   /**
    * 대회 상세 페이지 산출물 데이터 조회
    * @page /contest/[contestId]/submission/[submissionId]
    * @endpoint /api/v1/contests/{contestId}/submissions/{submissionId}
    * @description 대회 상세 페이지 산출물 데이터를 조회하는 API입니다.
-   * @param {number} submissionId - 산출물 ID
+   * @param {number} contestId - 대회 ID (contestId)
+   * @param {number} submissionId - 산출물 ID (submissionId)
    * @returns {Promise<{ submissionData: ContestSubmissionDetailData }>}
    */
   async getContestSubmissionDetailData(contestId: number, submissionId: number) {
-    // const response = await apiFetch<ContestSubmissionDetailData>(`/mock/ContestSubmissionDetailData.json?submissionId=${submissionId}`);
-    const response = await fetch(`/mock/ContestSubmissionDetailData.json`, {
-        cache: "no-store",
-      }
-    ).then(res => res.json());
+
+    interface ApiResponse {
+      message: string | null;
+      data: ContestSubmissionDetailData;
+    }
+    
+    const response = await apiFetch<ApiResponse>(`/api/v1/contests/${contestId}/submissions/${submissionId}`);
+    // const response = await fetch(`/mock/ContestSubmissionDetailData.json`, {
+    //     cache: "no-store",
+    //   }
+    // ).then(res => res.json());
     return {
       submissionData: response.data,
     };
@@ -299,22 +372,19 @@ export const ContestAPI = {
    * @endpoint /api/v1/contests/{contestId}/submissions/me
    * @description 대회 내 산출물 목록 데이터를 조회하는 API입니다.
    * @param {number} contestId - 대회 ID (contestId)
-   * @returns {Promise<{ contestMySubmissionList: ContestSubmissionItemProps[] }>}
+   * @returns {Promise<{ contestMySubmissionItem: ContestSubmissionItemProps }>}
    */
-  async getContestMySubmissionList(contestId: number) {
-    try {
-      const response = await apiFetch<ContestSubmissionItemProps[]>(`/api/v1/contests/${contestId}/submissions/me`);
-      // const response = await fetch(`/mock/ContestMySubmissionData.json`, {
-      //   cache: "no-store",
-      // }).then(res => res.json());
-      return {
-        contestMySubmissionList: response || [],
-      };
-    } catch (error) {
-      console.error('내 산출물 조회 실패:', error);
-      return {
-        contestMySubmissionList: [],
-      };
+  async getContestMySubmissionItem(contestId: number) {
+    interface ApiResponse {
+      message: string | null;
+      data: ContestSubmissionItemProps;
     }
+    const response = await apiFetch<ApiResponse>(`/api/v1/contests/${contestId}/submissions/me`);
+    // const response = await fetch(`http://localhost:3000/mock/ContestMySubmissionData.json`, {
+    //   cache: "no-store",
+    // }).then(res => res.json());  
+    return {
+      contestMySubmissionItem: response.data,
+    };
   },
 };

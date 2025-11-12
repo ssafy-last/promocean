@@ -2,8 +2,8 @@
 
 import ContestHeader from "@/components/layout/ContestHeader";
 import ContestPostSection from "@/components/section/ContestPostSection";
-import ContestInfoSection from "@/components/section/ContestInfoSection";
-import { ContestAPI } from "@/api/contest";
+// import ContestInfoSection from "@/components/section/ContestInfoSection";
+import { ContestAPI } from "@/api/contest"; 
 
 interface ContestPostPageProps {
   params: Promise<{ contestId: string }>;
@@ -21,11 +21,11 @@ export default async function ContestPostPage({ params }: ContestPostPageProps) 
   const {
     contestPostData,
     // leaderboardList,
-    contestInfoData,
-    contestInfoTitles,
+    // contestInfoData,
+    // contestInfoTitles,
     contestNoticeList,
     contestSubmissionList,
-    contestMySubmissionList,
+    // contestMySubmissionList,
   } = await ContestAPI.getContestPostPageData(contestId);
 
   return (
@@ -42,17 +42,17 @@ export default async function ContestPostPage({ params }: ContestPostPageProps) 
             // leaderboardList={leaderboardList} TODO : 삭제
             ContestNoticeList={contestNoticeList}
             contestSubmissionList={contestSubmissionList}
-            contestMySubmissionList={contestMySubmissionList}
+            // contestMySubmissionList={contestMySubmissionList}
           />
         </div>
 
         {/* 오른쪽: 플로팅 정보 섹션 */}
-        <div className="hidden lg:block w-64 flex-shrink-0">
+        {/* <div className="hidden lg:block w-64 flex-shrink-0">
           <ContestInfoSection
             titles={contestInfoTitles}
             items={contestInfoData}
           />
-        </div>
+        </div> */}
       </div>
     </div>
   );
