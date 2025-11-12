@@ -25,8 +25,7 @@ export const UploadAPI = {
     },
 
     async uploadImageToS3(req: uploadImageToS3Request) : Promise<Response | null>{
-        console.log("Uploading file to S3:", req.file);
-        console.log("로그으으으으!!!!!!!!!! ",req.file.name, req.file.type);
+     
         const res = await fetch(req.presignedUrl, {
             method : 'PUT',
             body : req.file,
@@ -35,7 +34,6 @@ export const UploadAPI = {
             },
             
         })
-        console.log("S3 upload response1 :", res);
 
         
         return res;
