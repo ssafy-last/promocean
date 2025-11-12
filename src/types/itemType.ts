@@ -99,13 +99,14 @@ export interface PostingFloatingItemProps {
  */
 export interface ContestCardItemProps {
   contestId: number
+  host: string
+  profileUrl: string
   title: string
-  image: string
-  participantCount: number
-  deadline?: string
-  status: 'SCHEDULED' | 'ONGOING' | 'VOTING' | 'FINISHED' // 백엔드 ENUM과 동일하게
-  tags: string[]
-  startDate: string
+  startAt: string
+  endAt: string
+  status: string // "개최전", "종료" 등 한글
+  createdAt: string
+  updatedAt: string
 }
 
 // TODO : 삭제 예정입니다.

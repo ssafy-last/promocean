@@ -91,29 +91,57 @@ export const ContestAPI = {
     if (params?.title) queryParams.set('title', params.title);
     if (params?.tag) queryParams.set('tag', params.tag);
 
+    interface ContestApiResponse {
+      contestId: number;
+      host: string;
+      profileUrl: string;
+      title: string;
+      startAt: string;
+      endAt: string;
+      status: string; // "개최전", "종료" 등 한글
+      createdAt: string;
+      updatedAt: string;
+    }
+
+    interface ApiResponse {
+      message: string | null;
+      data: {
+        contests: ContestApiResponse[];
+      };
+    }
+
     const response = await fetch(`http://localhost:3000/mock/ContestCardList.json`, {
-      cache: "no-store", // mock 데이터는 캐싱하지 않게
+      cache: "no-store",
     }).then(res => res.json());
     return {
-      contestCardList: response.contests || [],
+      contestCardList: response.data.contests,
     };
-    // interface ApiResponse {
-    //   message: string | null;
-    //   data: {
-    //     contests: ContestCardItemProps[];
-    //   };
-    // }
-    // try {
-    //   const response = await apiFetch<ApiResponse>(`/api/v1/contests?${queryParams.toString()}`);
-    //   return {
-    //     contestCardList: response.data.contests || [],
-    //   };
-    // } catch (error) {
-    //   console.error('대회 목록 조회 실패:', error);
-    //   return {
-    //     contestCardList: [],
-    //   };
-    // }
+
+    try {
+      const response = await apiFetch<ApiResponse>(`/api/v1/contests?${queryParams.toString()}`);
+      
+      // API 응답을 그대로 반환 (필드명 변경 없이)
+      const contestCardList: ContestCardItemProps[] = (response.data.contests || []).map((contest) => ({
+        contestId: contest.contestId,
+        host: contest.host,
+        profileUrl: contest.profileUrl,
+        title: contest.title,
+        startAt: contest.startAt,
+        endAt: contest.endAt,
+        status: contest.status,
+        createdAt: contest.createdAt,
+        updatedAt: contest.updatedAt,
+      }));
+
+      return {
+        contestCardList,
+      };
+    } catch (error) {
+      console.error('대회 목록 조회 실패:', error);
+      return {
+        contestCardList: [],
+      };
+    }
   },
 
   /**
