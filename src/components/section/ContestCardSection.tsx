@@ -31,7 +31,7 @@ export default function ContestCardSection({ contestCardList }: ContestCardSecti
         </div>
         
         {/* Contest Cards Grid */}
-        <ContestCardList contestCards={contestCardList} />
+        <ContestCardList contestCards={contestCardList || []} />
       </div>
     </div>
   )
