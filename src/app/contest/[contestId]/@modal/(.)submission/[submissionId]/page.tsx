@@ -1,6 +1,6 @@
 "use client";
 
-// frontend/src/app/contest/[postId]/@modal/(.)submission/[submissionId]/page.tsx
+// frontend/src/app/contest/[contestId]/@modal/(.)submission/[submissionId]/page.tsx
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState, use } from "react";

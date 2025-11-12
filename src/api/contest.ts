@@ -200,9 +200,12 @@ export const ContestAPI = {
    */
   async getContestSubmissionDetailData(submissionId: number) {
     // const response = await apiFetch<ContestSubmissionDetailData>(`/mock/ContestSubmissionDetailData.json?submissionId=${submissionId}`);
-    const response = await fetch(`/mock/ContestSubmissionDetailData.json`);
+    const response = await fetch(`/mock/ContestSubmissionDetailData.json`, {
+        cache: "no-store",
+      }
+    ).then(res => res.json());
     return {
-      submissionData: response,
+      submissionData: response.data,
     };
   },
 
