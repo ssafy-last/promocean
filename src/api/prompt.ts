@@ -27,18 +27,19 @@ export const PromptAPI = {
      * @returns 
      */
   async postTextPrompt(req : PostTextPromptRequest) : Promise<PostTextPromptResponse> {
-    const res  = await apiFetch<ApiResponse<PostTextPromptResponse>>(`/api/v1/prompts/text`, {
+    console.log("prompt req " ,req);
+    const res  = await apiFetch<ApiResponse<PostTextPromptResponse>>(`/api/v1/prompt/text`, {
       method: 'POST',
       body: JSON.stringify(req)
     });
 
-    console.log(res.data);
+    console.log("prompt res " ,res.data);
     return res.data;
   },
 
 
   async postImagePrompt(req : PostImagePromptRequest) : Promise<PostImamgePromptResponse> {
-    const res  = await apiFetch<ApiResponse<PostImamgePromptResponse>>(`/api/v1/prompts/image`, {
+    const res  = await apiFetch<ApiResponse<PostImamgePromptResponse>>(`/api/v1/prompt/image`, {
       method: 'POST',
       body: JSON.stringify(req)
     });

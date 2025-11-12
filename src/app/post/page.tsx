@@ -3,7 +3,7 @@
 // frontend/src/app/post/page.tsx
 
 import { useSearchParams, useRouter } from "next/navigation";
-import { useRef, useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import PostingFloatingSection from "@/components/section/PostingFloatingSection";
 import PostingWriteSection from "@/components/section/PostingWriteSection";
 import PostingFooter from "@/components/layout/PostingFooter";
@@ -13,6 +13,8 @@ import { PostingFloatingItemProps } from "@/types/itemType";
 import { PostFormData, PostSubmitData } from "@/types/postType";
 import TitleInput from "@/components/editor/TitleInput";
 import HashtagInput from "@/components/editor/HashtagInput";
+import { buildPromptFromLexical } from "@/utils/lexicalUtils";
+import { PromptAPI } from "@/api/prompt";
 
 /**
  * PostPageContent component (useSearchParams를 사용하는 내부 컴포넌트)
@@ -40,8 +42,8 @@ function PostPageContent() {
   const [normalFolders, setNormalFolders] = useState<ArchiveFolderItem[]>([]);
   const [isLoadingFolders, setIsLoadingFolders] = useState(false);
 
-  //최종 gpt API로 제출할 prompt 저장용 ref 변수
-  const submitPrompt = useRef("");
+  // AI 답변 생성 로딩 상태
+  const [isGeneratingAnswer, setIsGeneratingAnswer] = useState(false);
 
   // 아카이브 타입인지 확인
   const isArchiveType = postType === 'my-space' || postType === 'team-space';
@@ -54,14 +56,14 @@ function PostPageContent() {
       setIsLoadingFolders(true);
       try {
         // TODO: 백엔드 API 연결 후 수정 필요
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/mock/MySpaceArchiveData.json`,
-          { cache: "no-store" }
-        );
-        const data = await response.json();
+        // const response = await fetch(
+        //   `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/mock/MySpaceArchiveData.json`,
+        //   { cache: "no-store" }
+        // );
+        // const data = await response.json();
 
-        setPinnedFolders(data.pinned || []);
-        setNormalFolders(data.normal || []);
+        setPinnedFolders([]);
+        setNormalFolders([]);
       } catch (error) {
         console.error("Failed to fetch archive folders:", error);
       } finally {
@@ -136,10 +138,73 @@ function PostPageContent() {
     // await postApi.createPost(submitData);
   };
 
-  const handleAISubmit = (s : string) =>{
-    submitPrompt.current = s
-    console.log('AI 생성 요청:', submitPrompt.current);
-    alert('AI 생성 요청이 제출되었습니다!\n콘솔을 확인하세요.');
+  const handleAISubmit = async () => {
+    // 입력 검증
+    if (!usedPrompt || !examplePrompt) {
+      alert('사용 프롬프트와 예시 질문을 모두 입력해주세요.');
+      return;
+    }
+
+    setIsGeneratingAnswer(true);
+
+    try {
+      // Lexical JSON에서 텍스트 추출
+      const { systemMessage, userMessage } = buildPromptFromLexical(usedPrompt, examplePrompt);
+
+      console.log('추출된 텍스트:');
+      console.log('사용 프롬프트:', systemMessage);
+      console.log('예시 질문:', userMessage);
+
+      // PromptAPI를 통해 백엔드 호출
+      const response = await PromptAPI.postTextPrompt({
+        prompt: systemMessage,
+        exampleQuestion: userMessage,
+      });
+
+      console.log('AI 응답:', response.exampleAnswer);
+
+      // 응답을 answerPrompt에 설정 (Lexical JSON 형식으로 변환)
+      const lexicalAnswer = {
+        root: {
+          children: [
+            {
+              children: [
+                {
+                  detail: 0,
+                  format: 0,
+                  mode: 'normal',
+                  style: '',
+                  text: response.exampleAnswer || '',
+                  type: 'text',
+                  version: 1,
+                },
+              ],
+              direction: null,
+              format: '',
+              indent: 0,
+              type: 'paragraph',
+              version: 1,
+              textFormat: 0,
+              textStyle: '',
+            },
+          ],
+          direction: null,
+          format: '',
+          indent: 0,
+          type: 'root',
+          version: 1,
+        },
+      };
+
+      setAnswerPrompt(JSON.stringify(lexicalAnswer));
+      alert('AI 응답이 생성되었습니다!');
+
+    } catch (error) {
+      console.error('AI 생성 요청 실패:', error);
+      alert('AI 응답 생성에 실패했습니다. 콘솔을 확인하세요.');
+    } finally {
+      setIsGeneratingAnswer(false);
+    }
   }
 
 
@@ -259,9 +324,8 @@ function PostPageContent() {
                         placeholder="예시 질문을 입력하세요..."
                         onChange={setExamplePrompt}
                         isSubmitButton={true}
-                        onSubmit={()=>
-                          handleAISubmit(usedPrompt)
-                        }
+                        onSubmit={handleAISubmit}
+                        isLoading={isGeneratingAnswer}
                       />
 
                       {/* 답변 프롬프트 */}
@@ -269,6 +333,7 @@ function PostPageContent() {
                         title="답변 프롬프트"
                         placeholder="답변을 입력하세요..."
                         onChange={setAnswerPrompt}
+                        value={answerPrompt}
                       />
                   </div>
               ) : (
