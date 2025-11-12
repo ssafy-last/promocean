@@ -15,7 +15,8 @@ import {
 /**
  * ContestAPI
  * @description 컨테스트 페이지에서 사용되는 API입니다.
- * @returns {Promise<{ contestPostData: ContestPostItemProps, leaderboardList: LeaderboardItemProps[], contestInfoData: ContestInfoItemProps[], contestInfoTitles: string[], contestNoticeList: ContestNoticeItemProps[], contestSubmissionList: ContestSubmissionItemProps[] }>}
+ * @returns {Promise<{ contestPostData: ContestPostItemProps, contestInfoData: ContestInfoItemProps[], contestInfoTitles: string[], contestNoticeList: ContestNoticeItemProps[], contestSubmissionList: ContestSubmissionItemProps[] }>}
+//  * @returns {Promise<{ contestPostData: ContestPostItemProps, leaderboardList: LeaderboardItemProps[], contestInfoData: ContestInfoItemProps[], contestInfoTitles: string[], contestNoticeList: ContestNoticeItemProps[], contestSubmissionList: ContestSubmissionItemProps[] }>}
  */
 export const ContestAPI = {
 
@@ -24,19 +25,20 @@ export const ContestAPI = {
    * @page /contest/[postId]
    * @description 대회 상세 페이지 데이터를 조회하는 API입니다.
    * @param {number} contestId - 대회 ID (postId)
-   * @returns {Promise<{ contestPostData: ContestPostItemProps, leaderboardList: LeaderboardItemProps[], contestInfoData: ContestInfoItemProps[], contestInfoTitles: string[], contestNoticeList: ContestNoticeItemProps[], contestSubmissionList: ContestSubmissionItemProps[] }>}
+   * @returns {Promise<{ contestPostData: ContestPostItemProps, contestInfoData: ContestInfoItemProps[], contestInfoTitles: string[], contestNoticeList: ContestNoticeItemProps[], contestSubmissionList: ContestSubmissionItemProps[] }>}
+  //  * @returns {Promise<{ contestPostData: ContestPostItemProps, leaderboardList: LeaderboardItemProps[], contestInfoData: ContestInfoItemProps[], contestInfoTitles: string[], contestNoticeList: ContestNoticeItemProps[], contestSubmissionList: ContestSubmissionItemProps[] }>}
    */
   async getContestPostPageData(contestId: number) {
     const [
       { contestData: contestPostData },
-      { leaderboardList },
+      // { leaderboardList },
       { contestInfoData },
       { contestNoticeList },
       { contestSubmissionList },
     ] = await Promise.all([
 
       ContestAPI.getContestDetailData(contestId),
-      ContestAPI.getContestLeaderboardList(contestId),
+      // ContestAPI.getContestLeaderboardList(contestId),
       ContestAPI.getContestInfoData(contestId),
       ContestAPI.getContestNoticeList(contestId),
       ContestAPI.getContestSubmissionList(contestId),
@@ -44,7 +46,7 @@ export const ContestAPI = {
 
     return {
       contestPostData,
-      leaderboardList: leaderboardList || [],
+      // leaderboardList: leaderboardList || [],
       contestInfoData: contestInfoData || [],
       contestInfoTitles: ["대회 정보", "상금 유형", "참여 통계", "해시태그"],
       contestNoticeList: contestNoticeList || [],
@@ -116,7 +118,7 @@ export const ContestAPI = {
   
   /**
    * 대회 상세 페이지를 조회하는 API입니다.
-   * @page /contest/[contestId
+   * @page /contest/[contestId]
    * @endpoint /api/v1/contests/{contestId}
    * @description 대회 상세 페이지를 조회하는 API입니다.
    * @param {number} contestId - 대회 ID (contestId)
@@ -129,20 +131,23 @@ export const ContestAPI = {
     };
   },
 
-  /**
-   * 대회 상세 페이지 리더보드 목록 데이터 조회하는 API입니다.
-   * @page /contest/[contestId]?tab=leaderboard
-   * @endpoint 목 데이터 사용중입니다. TODO : 삭제 예정?
-   * @description 대회 상세 페이지 리더보드 목록 데이터를 조회하는 API입니다.
-   * @param {number} contestId - 대회 ID (contestId)
-   * @returns {Promise<{ leaderboardList: LeaderboardItemProps[] }>}
-   */
-  async getContestLeaderboardList(contestId: number) {
-    const response = await apiFetch<LeaderboardItemProps[]>(`/mock/ContestLeaderboardItem.json?contestId=${contestId}`);
-    return {
-      leaderboardList: response,
-    };
-  },
+  // /**
+  //  * 대회 상세 페이지 리더보드 목록 데이터 조회하는 API입니다.
+  //  * @page /contest/[contestId]?tab=leaderboard
+  //  * @endpoint 목 데이터 사용중입니다. TODO : 삭제 예정?
+  //  * @description 대회 상세 페이지 리더보드 목록 데이터를 조회하는 API입니다.
+  //  * @param {number} contestId - 대회 ID (contestId)
+  //  * @returns {Promise<{ leaderboardList: LeaderboardItemProps[] }>}
+  //  */
+  // async getContestLeaderboardList(contestId: number) {
+  //   // const response = await apiFetch<LeaderboardItemProps[]>(`/api/v1/contests/${contestId}/leaderboards`);
+  //   const response = await fetch(`/mock/ContestLeaderboardItem.json`, {
+  //     cache: "no-store",
+  //   }).then(res => res.json());
+  //   return {
+  //     leaderboardList: response.Leaderboard,
+  //   };
+  // },
 
   /**
    * 대회 상세 페이지 공지사항 목록 데이터 조회하는 API입니다.
@@ -153,9 +158,13 @@ export const ContestAPI = {
    * @returns {Promise<{ contestNoticeList: ContestNoticeItemProps[] }>}
    */
   async getContestNoticeList(contestId: number) {
-    const response = await apiFetch<ContestNoticeItemProps[]>(`/mock/ContestNoticeData.json?contestId=${contestId}`);
+    // const response = await apiFetch<ContestNoticeItemProps[]>(`/api/v1/contests/${contestId}/notices`);
+    const response = await fetch(`http://localhost:3000/mock/ContestNoticeData.json`, {
+        cache: "no-store",
+      }
+    ).then(res => res.json());
     return {
-      contestNoticeList: response,
+      contestNoticeList: response.data.notices,
     };
   },
   
@@ -167,10 +176,13 @@ export const ContestAPI = {
    * @param {number} noticeId - 공지사항 ID
    * @returns {Promise<{ noticeData: ContestNoticeDetailData }>}
    */
-  async getContestNoticeDetailData(noticeId: number) {
-    const response = await apiFetch<ContestNoticeDetailData>(`/mock/ContestNoticeDetailData.json?noticeId=${noticeId}`);
+  async getContestNoticeDetailData(contestId: number, noticeId: number) {
+    // const response = await apiFetch<ContestNoticeDetailData>(`/api/v1/contests/{contestId}/notices/{noticeId}`)
+    const response = await fetch(`/mock/ContestNoticeDetailData.json`, {
+      cache: "no-store",
+    }).then(res => res.json());
     return {
-      noticeData: response,
+      noticeData: response.data,
     };
   },
 
@@ -198,7 +210,7 @@ export const ContestAPI = {
    * @param {number} submissionId - 산출물 ID
    * @returns {Promise<{ submissionData: ContestSubmissionDetailData }>}
    */
-  async getContestSubmissionDetailData(submissionId: number) {
+  async getContestSubmissionDetailData(contestId: number, submissionId: number) {
     // const response = await apiFetch<ContestSubmissionDetailData>(`/mock/ContestSubmissionDetailData.json?submissionId=${submissionId}`);
     const response = await fetch(`/mock/ContestSubmissionDetailData.json`, {
         cache: "no-store",
