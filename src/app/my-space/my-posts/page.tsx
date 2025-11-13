@@ -2,6 +2,7 @@
 import { SpaceBoardHeader } from "@/components/layout/SpaceBoardHeader";
 import SpaceArchiveBoardList from "@/components/list/SpaceArchiveBoardList";
 import MySpaceArchiveFilterSection from "@/components/section/MySpaceArchiveFilterSection";
+import MySpaceMyPostSection from "@/components/section/MySpaceMyPostSection";
 
 
 export default async function MySpaceMyPostPage() {
@@ -14,7 +15,7 @@ export default async function MySpaceMyPostPage() {
 
       <MySpaceArchiveFilterSection buttonMode="write"/>
 
-      <SpaceArchiveBoardList />
+      <MySpaceMyPostSection />
 
     </div>
 
