@@ -95,7 +95,7 @@ export default function TeamSpaceHeader(
       />
       <div className="absolute w-full h-full backdrop-blur-none group-hover:backdrop-blur-xs transition-all duration-300"/>
 
-      <div className ="flex flex-row justify-between items-center text-white px-8 py-12 w-full h-full group-hover:py-15 transition-all ">
+      <div className ="flex flex-row justify-between items-center text-white px-8 py-15 w-full h-full ">
         <div className = "z-1">
             <h1 className="flex text-4xl font-semibold">{nickname}의 팀 스페이스</h1>
             <p className="text-white/80 text-sm">{description}</p>
