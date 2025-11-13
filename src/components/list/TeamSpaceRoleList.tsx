@@ -43,7 +43,7 @@ export default function TeamSpaceRoleList({ memberListState }: TeamSpaceRoleList
                 overflow-y-scroll max-h-60">
 
                     {memberListState.map((member, index) => (
-                        <TeamSpaceRoleItem key={index} member={member.nickname} index={index} />
+                        <TeamSpaceRoleItem key={index} member={member} index={index} />
                     ))}
 
                 </ul>
