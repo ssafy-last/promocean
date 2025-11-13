@@ -1,6 +1,6 @@
-import { ApiResponse } from "@/types/apiTypes/common";
+import { ApiResponse, NoArgsResponse } from "@/types/apiTypes/common";
 import { apiFetch } from "./fetcher";
-import { ArticleData, DeleteTeamSpaceResponse, GetArchiveArticlesResponse, GetSpaceArchiveFoldersResponse, GetTeamSpaceListResponse, NoArgsResponse, PatchMySpaceArchiveFolderDataRequest, PatchMySpaceArchiveFolderPinStatusRequest, PatchTeamSpaceRequest, PostArchiveArticleCreateRequest, PostArchiveArticleCreateResponse, PostMySpaceArchiveFolderRequest, PostMySpaceArchiveFolderResponse, PostTeamSpaceCreateRequest, PostTeamSpaceCreateResponse, PutArchiveArticleRequest } from "@/types/apiTypes/spaceAPI";
+import { ArticleData, DeleteTeamSpaceResponse, GetArchiveArticlesResponse, GetSpaceArchiveFoldersResponse, GetTeamSpaceListResponse, PatchMySpaceArchiveFolderDataRequest, PatchMySpaceArchiveFolderPinStatusRequest, PatchTeamSpaceRequest, PostArchiveArticleCreateRequest, PostArchiveArticleCreateResponse, PostMySpaceArchiveFolderRequest, PostMySpaceArchiveFolderResponse, PostTeamSpaceCreateRequest, PostTeamSpaceCreateResponse, PutArchiveArticleRequest } from "@/types/apiTypes/spaceAPI";
 
 
 
