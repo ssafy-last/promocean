@@ -73,17 +73,26 @@ export const CommunityAPI = {
     interface ApiResponse {
       message: string | null;
       data: {
-        posts: CommunityBoardItemResponse[];
+        posts: CommunityBoardItemResponse[],
+        itemCnt: number,
+        totalCnt: number,
+        totalPages: number,
+        currentPage: number,
       };
     }
 
     const response = await apiFetch<ApiResponse>(`/api/v1/posts?${queryParams.toString()}`);
     // const response = await apiFetch<ApiResponse>(`/mock/CommunityBoardListResponse.json`);
 
-    const communityBoardList: CommunityBoardItemProps[] = response.data.posts.map((post) => ({ ...post, image: undefined }));
+    const { posts, itemCnt, totalCnt, totalPages, currentPage } = response.data;
+    const communityBoardList: CommunityBoardItemProps[] = posts.map((post) => ({ ...post, image: undefined }));
 
     return {
       communityBoardList,
+      itemCnt,
+      totalCnt,
+      totalPages,
+      currentPage,
     };
   },
 
