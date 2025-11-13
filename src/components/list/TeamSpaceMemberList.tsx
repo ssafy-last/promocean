@@ -1,5 +1,6 @@
 import { SpaceParticipants } from "@/api/space";
 import TeamSpaceMemberItem from "../item/TeamSpaceMemberItem";
+import { TeamSpaceRole } from "@/enum/TeamSpaceRole";
 
 
 
@@ -7,10 +8,11 @@ export interface TeamSpaceMemberListProps {
     memberListState: SpaceParticipants[];
     currentUserEmail?: string;
     onDelete?: (participantId: number) => void;
+    onRoleChange?: (email: string, newRole: TeamSpaceRole) => void;
 }
 
 
-export default function TeamSpaceMemberList({ memberListState, currentUserEmail, onDelete }: TeamSpaceMemberListProps){
+export default function TeamSpaceMemberList({ memberListState, currentUserEmail, onDelete, onRoleChange }: TeamSpaceMemberListProps){
 
     // 팀원이 없는 경우 빈 상태 표시
     if (!memberListState || memberListState.length === 0) {
@@ -51,6 +53,7 @@ export default function TeamSpaceMemberList({ memberListState, currentUserEmail,
                             index={index}
                             currentUserEmail={currentUserEmail}
                             onDelete={onDelete}
+                            onRoleChange={onRoleChange}
                         />
                     ))}
 

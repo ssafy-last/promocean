@@ -1,6 +1,5 @@
-import SpaceAPI, { SpaceParticipants } from "@/api/space";
-import { ChangeSpaceRoleToValue, SpaceRole, TeamSpaceRole } from "@/enum/TeamSpaceRole";
-import { useSpaceStore } from "@/store/spaceStore";
+import { SpaceParticipants } from "@/api/space";
+import { ChangeSpaceRoleToValue, TeamSpaceRole } from "@/enum/TeamSpaceRole";
 import Image from "next/image";
 
 
@@ -9,29 +8,21 @@ export interface TeamSpaceMemberItemProps {
     index: number;
     currentUserEmail?: string;
     onDelete?: (participantId: number) => void;
+    onRoleChange?: (email: string, newRole: TeamSpaceRole) => void;
 }
 
 
 
-export default function TeamSpaceMemberItem({ member, index, currentUserEmail, onDelete }: TeamSpaceMemberItemProps){
-
-    const spaceId = useSpaceStore((state) => state.currentSpace?.spaceId);
-
-    console.log("Rendering TeamSpaceMemberItem for member:", member.role);
+export default function TeamSpaceMemberItem({ member, index, currentUserEmail, onDelete, onRoleChange }: TeamSpaceMemberItemProps){
 
     const handleRoleChange = async(event: React.ChangeEvent<HTMLSelectElement>) => {
-        // Handle role change logic here
-        console.log(`멤버 ${member.nickname}의 역할이 ${event.target.value}로 변경되었습니다.`);
-        
-        const res = await SpaceAPI.patchSpaceParticipantRole(spaceId!, {
-            email: member.email,
-            role : ChangeSpaceRoleToValue(event.target.value as SpaceRole) 
-        });
-        
-        console.log(res?.message);
+        const newRole = Number(event.target.value) as TeamSpaceRole;
+        console.log(`멤버 ${member.nickname}의 역할이 ${newRole}로 변경되었습니다.`);
 
-        
-
+        if (onRoleChange) {
+            // 부모 컴포넌트의 핸들러를 호출 (API 호출 및 state 업데이트 포함)
+            onRoleChange(member.email, newRole);
+        }
     };
 
     const handleDeleteClick = (e: React.MouseEvent) => {
@@ -44,6 +35,17 @@ export default function TeamSpaceMemberItem({ member, index, currentUserEmail, o
 
     // 자기 자신인지 확인
     const isSelf = currentUserEmail && member.email === currentUserEmail;
+
+    // role 값을 숫자로 변환 (안전하게)
+    const getRoleValue = (): number => {
+        const converted = ChangeSpaceRoleToValue(member.role);
+        if (converted !== undefined) {
+            return converted;
+        }
+        // fallback: 기본값으로 READ_ONLY 반환
+        console.warn(`Invalid role value: ${member.role}, defaulting to READ_ONLY`);
+        return TeamSpaceRole.READ_ONLY;
+    };
 
     return(
             <li key={index} className ="flex flex-row justify-between px-2 py-2 items-center">
@@ -65,13 +67,13 @@ export default function TeamSpaceMemberItem({ member, index, currentUserEmail, o
 
                 <div className="flex items-center gap-2">
                     <select name="" id=""
-                    value ={ChangeSpaceRoleToValue(member.role)}
+                    value={getRoleValue()}
                     onChange={handleRoleChange}
                     className ="hover:bg-gray-200 p-1 border-gray-200
                     outline-none
                     rounded-md">
                         <option value={TeamSpaceRole.READ_ONLY}>읽기 허용</option>
-                        <option value={TeamSpaceRole.EDIT}>편집 허용</option>
+                        <option value={TeamSpaceRole.EDITOR}>편집 허용</option>
                         <option value={TeamSpaceRole.OWNER}>소유자</option>
                     </select>
 
