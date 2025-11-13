@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import TeamSpaceInsertionModalTabs from "../filter/TeamSpaceInsertionModalTabs";
 import SpaceAddMemberItem from "../item/SpaceAddMemberItem";
@@ -7,6 +7,8 @@ import TeamSpaceRoleList from "../list/TeamSpaceRoleList";
 import ImageChoiceButton from "../button/ImageChoiceButton";
 import SpaceAPI, { SpaceParticipants } from "@/api/space";
 import { UploadAPI } from "@/api/upload";
+import { SpaceRole, TeamSpaceRole } from "@/enum/TeamSpaceRole";
+import { Space } from "lucide-react";
 
 export interface TeamSpacePageProps {
     spaceId? : number;
@@ -35,6 +37,8 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
     const deleteConfirmText = `${teamName}를 삭제 하겠습니다`;
     const isDeleteValid = deleteInputState === deleteConfirmText;
     
+    const addEmail = useRef("");
+
     const handleDeleteTeam = async () => {
         console.log("handle " ,spaceId);
         if (isDeleteValid) {
@@ -70,16 +74,39 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
                 spaceCoverPath : key!
             });
 
-
             alert(`${teamName}이 수정되었습니다`);
-
             handleModalClose();
         }
         else{
             console.log("No image to upload, just update name");
             handleModalClose();
         }
+    }
 
+    const handleInviteTeamMembers = async (email : string, role : TeamSpaceRole) => {
+        console.log("Inviting member:", email, "with role:", role);
+        
+        const inviteData = {
+            participantReqs : [
+                {
+                    email: email,
+                    role: role
+                }
+            ]
+        };
+
+        const res = await SpaceAPI.postSpaceParticipantInvite(spaceId!, inviteData);
+
+   
+        if(!res){
+            console.error("Failed to invite member");
+            return;
+        }
+        console.log("Invite res ", res);
+        
+        const updateRes2 = await SpaceAPI.getSpaceParticipants(spaceId!);
+        setMemberListState(updateRes2.participants);
+        
     }
 
 
@@ -115,7 +142,7 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
                         <input type="text"
                                 placeholder="초대할 멤버의 닉네임 또는 이메일을 입력하세요."
                                 className = "w-full border border-gray-300 rounded-[10px] px-4 py-2"
-                                onChange={(e) => {}}
+                                onChange={(v)=>{addEmail.current = v.target.value;}}
                             />
 
                         {memberListState && memberListState.length > 0 ? (
@@ -152,7 +179,9 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
                             <button type="button" className="bg-gray-200 px-4 py-2  rounded-md
                             hover:bg-gray-300" onClick={handleModalClose}>취소하기</button>
                             <button type="submit" className ="bg-primary text-white px-4 py-2 rounded-md
-                            hover:bg-primary/80">초대하기</button>
+                            hover:bg-primary/80"
+                            onClick={() => {handleInviteTeamMembers(addEmail.current,TeamSpaceRole.READ_ONLY)}}
+                            >초대하기</button>
                         </div>
 
                     </>
