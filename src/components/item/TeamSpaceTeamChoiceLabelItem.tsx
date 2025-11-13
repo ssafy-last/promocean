@@ -1,5 +1,5 @@
 import { SelectedMember } from "../modal/TeamSpaceAddModal";
-import { TeamSpaceRole } from "./TeamSpaceRoleItem";
+import { TeamSpaceRole } from "@/enum/TeamSpaceRole";
 
 
 export interface TeamSpaceTeamChoiceLabelItemProps{

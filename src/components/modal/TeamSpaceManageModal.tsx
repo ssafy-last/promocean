@@ -2,21 +2,22 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import TeamSpaceInsertionModalTabs from "../filter/TeamSpaceInsertionModalTabs";
 import SpaceAddMemberItem from "../item/SpaceAddMemberItem";
-import TeamSpaceRoleItem from "../item/TeamSpaceRoleItem";
-import TeamSpaceRoleList from "../list/TeamSpaceRoleList";
+import TeamSpaceMemberItem from "../item/TeamSpaceMemberItem";
+import TeamSpaceMemberList from "../list/TeamSpaceMemberList";
 import ImageChoiceButton from "../button/ImageChoiceButton";
 import SpaceAPI, { SpaceParticipants } from "@/api/space";
 import { UploadAPI } from "@/api/upload";
 import { SpaceRole, TeamSpaceRole } from "@/enum/TeamSpaceRole";
 import { Space } from "lucide-react";
 import { authAPI } from "@/api/auth";
+import { useAuthStore } from "@/store/authStore";
 
 export interface TeamSpacePageProps {
     spaceId? : number;
     isModalOpenState: boolean;
     handleModalClose: () => void;
-    modalTabState: "권한" | "초대" | "수정" | "삭제";
-    setModalTabState: (tab: "권한" | "초대" | "수정" | "삭제") => void;
+    modalTabState: "멤버" | "초대" | "수정" | "삭제";
+    setModalTabState: (tab: "멤버" | "초대" | "수정" | "삭제") => void;
     memberListState: SpaceParticipants[];
     ownerMemberState?: SpaceParticipants | null;
     setMemberListState: (members: SpaceParticipants[]) => void;
@@ -29,9 +30,13 @@ export interface TeamSpacePageProps {
 export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handleModalClose, modalTabState, setModalTabState, memberListState, ownerMemberState, setMemberListState, teamName = "팀 스페이스"}: TeamSpacePageProps) {
     console.log("spaceId in TeamSpaceManageModal:", spaceId);
     const router = useRouter();
+    const { user } = useAuthStore();
 
+    const userNickname = useAuthStore((state) => state.user?.nickname);
     const [addMemberListState, setAddMemberListState] = useState<SpaceParticipants[]>([]);
-    const [emailInputState, setEmailInputState] = useState("");
+    const [searchInputState, setSearchInputState] = useState("");
+    const [searchMode, setSearchMode] = useState<"email" | "nickname">("email");
+    const [searchError, setSearchError] = useState("");
     // 수정 탭 state
     const [editSpaceImageState, setEditSpaceImageState] = useState<File | null>(null);
     const [editSpaceNameState, setEditSpaceNameState] = useState(teamName);
@@ -84,47 +89,65 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
         }
     }
 
-    // 이메일 입력 후 엔터 키 처리
-    const handleEmailKeyPress = async (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter' && emailInputState.trim()) {
+    // 검색 입력 후 엔터 키 처리
+    const handleSearchKeyPress = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter' && searchInputState.trim()) {
             e.preventDefault();
+            setSearchError(""); // 에러 메시지 초기화
 
-            const isExistInTeam = memberListState.some(m => m.email === emailInputState.trim());
-            if (isExistInTeam) {
-                alert("이미 팀 스페이스에 존재하는 멤버입니다.");
-                return;
-            }
+            const searchValue = searchInputState.trim();
 
-            // 이미 추가된 이메일인지 확인
-            const isDuplicate = addMemberListState.some(m => m.email === emailInputState.trim());
-            if (isDuplicate) {
-                alert("이미 추가된 이메일입니다.");
-                return;
-            }
-
-            const res = await authAPI.checkDuplicate({
-                email : emailInputState!
-            }
+            // 이미 팀원인지 확인
+            const isExistInTeam = memberListState.some(m =>
+                searchMode === "email"
+                    ? m.email === searchValue
+                    : m.nickname === searchValue
             );
-
-            if(!res?.data?.isDuplicated){
-                alert("존재하지 않는 이메일입니다. 다시 확인해주세요.");
+            if (isExistInTeam) {
+                setSearchError("이미 팀 스페이스에 존재하는 멤버입니다.");
                 return;
             }
 
-            
+            // 이미 추가 목록에 있는지 확인
+            const isDuplicate = addMemberListState.some(m =>
+                searchMode === "email"
+                    ? m.email === searchValue
+                    : m.nickname === searchValue
+            );
+            if (isDuplicate) {
+                setSearchError(`이미 추가된 ${searchMode === "email" ? "이메일" : "닉네임"}입니다.`);
+                return;
+            }
 
-            // 새 멤버 추가 (임시 데이터)
-            const newMember: SpaceParticipants = {
-                participantId: Date.now(), // 임시 ID
-                nickname: "제인도",
-                email: emailInputState.trim(),
-                role: "READ_ONLY",
-                profileUrl: ""
-            };
+            // 사용자 존재 여부 확인
+            try {
+                const res = await authAPI.checkDuplicate(
+                    searchMode === "email"
+                        ? { email: searchValue }
+                        : { nickname: searchValue }
+                );
 
-            setAddMemberListState(prev => [...prev, newMember]);
-            setEmailInputState(""); // 입력창 초기화
+                if (!res?.data?.isDuplicated) {
+                    setSearchError(`존재하지 않는 ${searchMode === "email" ? "이메일" : "닉네임"}입니다. 다시 확인해주세요.`);
+                    return;
+                }
+
+                // 새 멤버 추가 (임시 데이터)
+                const newMember: SpaceParticipants = {
+                    participantId: Date.now(), // 임시 ID
+                    nickname: searchMode === "nickname" ? searchValue : "제인도",
+                    email: searchMode === "email" ? searchValue : `${searchValue}@temp.com`,
+                    role: "READ_ONLY",
+                    profileUrl: ""
+                };
+
+                setAddMemberListState(prev => [...prev, newMember]);
+                setSearchInputState(""); // 입력창 초기화
+                setSearchError(""); // 에러 메시지 초기화
+            } catch (error) {
+                console.error("Error checking duplicate:", error);
+                setSearchError("사용자 확인 중 오류가 발생했습니다.");
+            }
         }
     };
 
@@ -164,28 +187,57 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
         try {
             const res = await SpaceAPI.postSpaceParticipantInvite(spaceId!, inviteData);
 
-            if (!res) {
-                console.error("Failed to invite members");
-                alert("멤버 초대에 실패했습니다.");
-                return;
-            }
+            // if (!res) {
+            //     console.error("Failed to invite members");
+            //     alert("멤버 초대에 실패했습니다.");
+            //     return;
+            // }
 
             console.log("Invite res", res);
             alert("멤버 초대가 완료되었습니다.");
 
             // 멤버 목록 업데이트
             const updateRes = await SpaceAPI.getSpaceParticipants(spaceId!);
-            setMemberListState(updateRes.participants);
+            const participants = updateRes.participants;
+            const owner = participants.find(participant => participant.nickname === userNickname) || null;
+            if (owner) {
+            participants.splice(participants.indexOf(owner), 1); // 소유자 제외
+            }
 
+            setMemberListState(participants);
+
+
+            
             // 초대 목록 초기화 및 모달 닫기
             setAddMemberListState([]);
-            setEmailInputState("");
-            handleModalClose();
+            setSearchInputState("");
+            setSearchError("");
         } catch (error) {
             console.error("Error inviting members:", error);
             alert("멤버 초대 중 오류가 발생했습니다.");
         }
     }
+
+    // 멤버 삭제 핸들러
+    const handleDeleteMember = async (participantId: number) => {
+        console.log("Delete member with participantId:", participantId);
+
+        const res = await SpaceAPI.deleteSpaceParticipant(spaceId!, participantId);
+        console.log("Delete res:", res);
+
+        // 멤버 목록 업데이트
+        const updateRes = await SpaceAPI.getSpaceParticipants(spaceId!);
+        const participants = updateRes.participants;
+        const owner = participants.find(participant => participant.nickname === userNickname) || null;
+        if (owner) {
+        participants.splice(participants.indexOf(owner), 1); // 소유자 제외
+        }
+
+        setMemberListState(participants);
+
+        // API 연결은 사용자가 별도로 진행
+        // TODO: API 호출 및 멤버 목록 업데이트
+    };
 
 
     return(
@@ -209,25 +261,67 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
                 <div className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-4">
                     <h2 className={`font-semibold text-2xl ${modalTabState === "삭제" ? "text-red-500" : ""}`}>{modalTabState}</h2>
 
-                {modalTabState === "권한" ? (
+                {modalTabState === "멤버" ? (
                     <div className="flex flex-col gap-4 h-full">
                         <span className="text-sm text-gray-500">나의 권한</span>
-                        <TeamSpaceRoleItem member={ownerMemberState!} index={-1}/>
+                        <TeamSpaceMemberItem
+                            member={ownerMemberState!}
+                            index={-1}
+                            currentUserEmail={user?.email}
+                        />
                         <span className="border-b border-gray-300 w-full"></span>
                         <div className="flex-1 overflow-y-auto">
-                            <TeamSpaceRoleList memberListState={memberListState}/>
+                            <TeamSpaceMemberList
+                                memberListState={memberListState}
+                                currentUserEmail={user?.email}
+                                onDelete={handleDeleteMember}
+                            />
                         </div>
                     </div>
                 ) : modalTabState === "초대" ? (
                     <div className="flex flex-col gap-4 h-full">
-                        <input
-                            type="email"
-                            placeholder="초대할 멤버의 이메일을 입력하고 Enter를 누르세요"
-                            className="w-full border border-gray-300 rounded-[10px] px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                            value={emailInputState}
-                            onChange={(e) => setEmailInputState(e.target.value)}
-                            onKeyDown={handleEmailKeyPress}
-                        />
+                        {/* 검색 모드 선택 드롭다운 */}
+                        <div className="flex items-center gap-2">
+                            <label className="text-sm text-gray-600">검색 방식:</label>
+                            <select
+                                value={searchMode}
+                                onChange={(e) => {
+                                    setSearchMode(e.target.value as "email" | "nickname");
+                                    setSearchError("");
+                                    setSearchInputState("");
+                                }}
+                                className="px-3 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                            >
+                                <option value="email">이메일</option>
+                                <option value="nickname">닉네임</option>
+                            </select>
+                        </div>
+
+                        {/* 검색 입력 필드 */}
+                        <div className="flex flex-col gap-1">
+                            <input
+                                type={searchMode === "email" ? "email" : "text"}
+                                placeholder={searchMode === "email"
+                                    ? "초대할 멤버의 이메일을 입력하고 Enter를 누르세요"
+                                    : "초대할 멤버의 닉네임을 입력하고 Enter를 누르세요"
+                                }
+                                className={`w-full border rounded-[10px] px-4 py-2 focus:outline-none focus:ring-2 transition-all ${
+                                    searchError
+                                        ? "border-red-500 focus:ring-red-500"
+                                        : "border-gray-300 focus:ring-primary"
+                                }`}
+                                value={searchInputState}
+                                onChange={(e) => {
+                                    setSearchInputState(e.target.value);
+                                    setSearchError(""); // 입력 시 에러 메시지 제거
+                                }}
+                                onKeyDown={handleSearchKeyPress}
+                            />
+                            {/* 인라인 에러 메시지 */}
+                            {searchError && (
+                                <p className="text-red-500 text-sm px-1">{searchError}</p>
+                            )}
+                        </div>
 
                         <div className="flex-1 overflow-y-auto">
                             {addMemberListState && addMemberListState.length > 0 ? (

@@ -12,7 +12,6 @@ export interface SpaceAddMemberItemProps {
 
 export default function SpaceAddMemberItem({
     member,
-    handleMemberClick,
     isMinusButton=true,
     onRoleChange,
     onRemove,

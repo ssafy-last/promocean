@@ -32,7 +32,7 @@ export default function TeamSpaceHeader(
   {nickname, description, spaceId}: TeamSpaceHeaderProps) {
 
   const [isModalOpenState, setIsModalOpenState] = useState(false);
-  const [modalTabState, setModalTabState] = useState<"권한" | "초대" | "수정" | "삭제">("권한");
+  const [modalTabState, setModalTabState] = useState<"멤버" | "초대" | "수정" | "삭제">("멤버");
   const [memberListState, setMemberListState] = useState<SpaceParticipants[]>([]);
   const [ownerMemberState, setOwnerMemberState] = useState<SpaceParticipants | null>(null);
   const authStore = useAuthStore();

@@ -1,5 +1,5 @@
 import { SpaceParticipants } from "@/api/space";
-import TeamSpaceRoleItem from "../item/TeamSpaceRoleItem";
+import TeamSpaceMemberItem from "../item/TeamSpaceMemberItem";
 
 
 
@@ -43,7 +43,7 @@ export default function TeamSpaceRoleList({ memberListState }: TeamSpaceRoleList
                 overflow-y-scroll max-h-60">
 
                     {memberListState.map((member, index) => (
-                        <TeamSpaceRoleItem key={index} member={member} index={index} />
+                        <TeamSpaceMemberItem key={index} member={member} index={index} />
                     ))}
 
                 </ul>
