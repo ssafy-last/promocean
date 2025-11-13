@@ -13,7 +13,7 @@ export default function CommunityHashtagSection( { hashtagList }: { hashtagList:
   
   return (
     <div className="flex flex-row items-center gap-4">
-      <div className="flex flex-row items-center gap-1">
+      <div className="flex flex-row items-center gap-2">
         <Tag />
         <span className="text">해시태그</span>
       </div>
