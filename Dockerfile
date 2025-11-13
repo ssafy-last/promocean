@@ -19,6 +19,7 @@ RUN npm run build
 FROM node:20-alpine
 WORKDIR /app
 
+# 런타임때 쓸 환경 변수수
 ENV NODE_ENV=production
 ENV NEXT_PUBLIC_BASE_URL=https://promocean.co.kr
 
