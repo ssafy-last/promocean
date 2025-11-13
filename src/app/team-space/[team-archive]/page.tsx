@@ -21,6 +21,7 @@ export default function TeamSpaceArchivePage() {
   const currentSpace = spaceStore.currentSpace;
   const spaceId = currentSpace?.spaceId;
   const name  = currentSpace?.name;
+  const coverImageUrl = currentSpace?.spaceCoverUrl;
 
   console.log("스페이스 ",currentSpace);
 
@@ -71,7 +72,7 @@ export default function TeamSpaceArchivePage() {
 
   return (
     <>
-    <TeamSpaceHeader nickname={name||"팀 이름"} spaceId={spaceId}/>
+    <TeamSpaceHeader nickname={name||"팀 이름"} coverImageUrl={coverImageUrl} spaceId={spaceId}/>
     <div className="min-h-screen bg-gray-50">
       <div className="flex justify-end-safe">
         <div className="shrink-0 min-w-[380px]">

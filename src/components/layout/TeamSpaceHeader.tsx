@@ -7,6 +7,7 @@ import TeamSpaceManageModal from "../modal/TeamSpaceManageModal";
 import TeamSpaceMyMenuModal from "../modal/TeamSpaceMyMenuModal";
 import SpaceAPI, { SpaceParticipants } from "@/api/space";
 import { useAuthStore } from "@/store/authStore";
+import Image from "next/image";
 
 /**
  * TeamSpaceHeaderProps 인터페이스
@@ -17,6 +18,7 @@ export interface TeamSpaceHeaderProps {
     nickname: string;
     description?: string;
     spaceId? : number;
+    coverImageUrl? :string;
 }
 
 /**
@@ -30,8 +32,9 @@ export interface TeamSpaceHeaderProps {
  * @returns {JSX.Element} 팀 스페이스 헤더 컴포넌트
  */
 export default function TeamSpaceHeader(
-  {nickname, description, spaceId}: TeamSpaceHeaderProps) {
+  {nickname, description, spaceId, coverImageUrl}: TeamSpaceHeaderProps) {
 
+  console.log("coverImageUrl", coverImageUrl);  
   const [isModalOpenState, setIsModalOpenState] = useState(false);
   const [isMyMenuModalOpen, setIsMyMenuModalOpen] = useState(false);
   const [modalTabState, setModalTabState] = useState<"멤버" | "초대" | "수정" | "삭제">("멤버");
@@ -85,17 +88,22 @@ export default function TeamSpaceHeader(
 
 
   return (
-    <header className="w-full">
+    <header className="relative w-full">
       {/* 상단 영역 - 전체 너비 */}
-      <div className="flex flex-row justify-between items-center bg-primary text-white px-8 py-6 w-full">
-        <div>
-          <h1 className="text-3xl font-semibold">{nickname} 님의 팀 스페이스</h1>
-          <p className="text-white/80 text-sm">{description}</p>
+      <div className="absolute bg-cover bg-center bg-no-repeat w-full h-full opacity-90"
+          style={{backgroundImage: `url(${coverImageUrl})`}}
+      />
+      <div className="absolute w-full h-full backdrop-blur-none hover:backdrop-blur-xs transition-all duration-300"/>
+
+      <div className ="flex flex-row justify-between items-center text-white px-8 py-12 w-full h-full">
+        <div className = "z-1">
+            <h1 className="flex text-4xl font-semibold">{nickname}의 팀 스페이스</h1>
+            <p className="text-white/80 text-sm">{description}</p>
         </div>
 
         <div className="relative flex flex-row gap-3">
-          <button className="cursor-pointer p-2 rounded-md hover:bg-primary/40" onClick={handleMyMenuOpen}>내 메뉴</button>
-          <button className="cursor-pointer p-2 rounded-md hover:bg-primary/40" onClick={handleModalOpen}>팀 관리</button>
+          <button className="cursor-pointer p-2 rounded-md bg-primary hover:bg-primary/40" onClick={handleMyMenuOpen}>내 메뉴</button>
+          <button className="cursor-pointer p-2 rounded-md bg-primary hover:bg-primary/40" onClick={handleModalOpen}>팀 관리</button>
 
           {isMyMenuModalOpen && (
             <TeamSpaceMyMenuModal
