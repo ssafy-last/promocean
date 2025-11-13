@@ -244,15 +244,16 @@ export const SpaceAPI = {
     /*
         * 스페이스 참가자를 초대하는 API입니다.
     */
-    async postSpaceParticipantInvite(spaceId : number, inviteData : SimpleSpaceParticipant) : Promise<NoArgsResponse | null> {
+    async postSpaceParticipantInvite(spaceId : number, inviteData : ParticipantReqs) : Promise<NoArgsResponse | null> {
 
+        console.log("data ", inviteData, spaceId)
         const res = await apiFetch<ApiResponse<NoArgsResponse>>(`/api/v1/spaces/${spaceId}/participants`,
             {
                 method : "POST",
                 body : JSON.stringify(inviteData),
             }
         )
-
+        console.log(res);
         return res.data;
     },
 
@@ -316,6 +317,11 @@ export interface SimpleSpaceParticipant{
     email:string;
     role : TeamSpaceRole;
 }
+
+export interface ParticipantReqs{
+    participantReqs : SimpleSpaceParticipant[];
+}
+
 
 export interface PatchSpaceParticipantMyNameRequest{
     nickname : string;
