@@ -64,7 +64,7 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
     };
 
     const handleInsertionTeam = async () => {
-
+        
         const s3res =await UploadAPI.getImagesS3Upload(editSpaceImageState ? editSpaceImageState.name : "default.png");
         const presignedUrl = s3res?.presignedUrl;
         const key = s3res?.key;
@@ -90,6 +90,7 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
                 reader.onloadend = () => {
                     setCurrentSpace({
                         ...currentSpace!,
+                        name : editSpaceNameState,
                         spaceCoverUrl :reader.result as string
                     })
                 };
@@ -98,6 +99,11 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
             handleModalClose();
         }
         else{
+            setCurrentSpace({
+                ...currentSpace!,
+                name : editSpaceNameState,
+            })
+            alert(`${teamName}이 수정되었습니다`);
             console.log("No image to upload, just update name");
             handleModalClose();
         }

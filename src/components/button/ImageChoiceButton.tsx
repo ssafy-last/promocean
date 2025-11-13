@@ -15,11 +15,10 @@ export interface ImageChoiceButtonProps{
  * @returns 
  */
 export default function ImageChoiceButton({ setSpaceImageState }: ImageChoiceButtonProps){
-
-    const [spaceImagePreviewState, setSpaceImagePreviewState] = useState<string | null>(null);
     const spaceStore = useSpaceStore();
     const currentSpace = spaceStore.currentSpace;
-    const setCurrentSpace = spaceStore.setCurrentSpace;
+    const coverImageUrl = currentSpace?.spaceCoverUrl;
+    const [spaceImagePreviewState, setSpaceImagePreviewState] = useState<string | null>(coverImageUrl || null);
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
