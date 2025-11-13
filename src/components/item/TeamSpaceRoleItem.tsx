@@ -43,7 +43,7 @@ export default function TeamSpaceRoleItem({ member, index }: TeamSpaceRoleItemPr
                 outline-none
                 rounded-md">
                     <option value={TeamSpaceRole.READ_ONLY}>읽기 허용</option>
-                    <option value={TeamSpaceRole.EDIT}>편집 허용</option>
+                    <option value={TeamSpaceRole.EDITOR}>편집 허용</option>
                     <option value={TeamSpaceRole.OWNER}>소유자</option>
                 </select>
             </li>

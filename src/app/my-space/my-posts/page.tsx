@@ -1,11 +1,11 @@
 // frontend/src/app/my-space/archive/[folder]/page.tsx
 import { SpaceBoardHeader } from "@/components/layout/SpaceBoardHeader";
-import SpaceArchiveBoardList from "@/components/list/SpaceArchiveBoardList";
 import MySpaceArchiveFilterSection from "@/components/section/MySpaceArchiveFilterSection";
 import MySpaceMyPostSection from "@/components/section/MySpaceMyPostSection";
+import { Suspense } from "react";
 
 
-export default async function MySpaceMyPostPage() {
+export default  function MySpaceMyPostPage() {
   
   return (
 
@@ -15,7 +15,9 @@ export default async function MySpaceMyPostPage() {
 
       <MySpaceArchiveFilterSection buttonMode="write"/>
 
-      <MySpaceMyPostSection />
+      <Suspense>
+        <MySpaceMyPostSection />
+      </Suspense>
 
     </div>
 

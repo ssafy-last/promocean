@@ -21,7 +21,7 @@ export default function TeamSpaceAddMemberList({ searchSpaceMemberListState, sel
             updatedMap.set(member.member.email, {
                 name: member.member.nickname,
                 email: member.member.email,
-                role: TeamSpaceRole.EDIT // 기본값은 편집 허용
+                role: TeamSpaceRole.EDITOR // 기본값은 편집 허용
             });    //새로 선택된 항목이면 당연히 추가
         }
         setSelectedMembersState(updatedMap);
