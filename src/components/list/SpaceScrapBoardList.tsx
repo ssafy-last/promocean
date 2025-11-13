@@ -43,9 +43,9 @@ export default function SpaceScrapBoardList(){
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-8 py-6">
           {
-            scrapList?.map((item, index) => (
+            scrapList?.map((item) => (
                 <SpaceScrapItem
-                    key={index}
+                    key={item.postId}
                     postId={item.postId}
                     title={item.title}
                     profileUrl={item.profileUrl}
