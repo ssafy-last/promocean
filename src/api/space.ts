@@ -1,133 +1,11 @@
-import {  SpaceArchiveData } from "@/app/my-space/page";
+import { ApiResponse } from "@/types/apiTypes/common";
 import { apiFetch } from "./fetcher";
-import { ApiResponse } from "./common";
-import { TeamSpaceChoiceItemProps } from "@/components/item/TeamSpaceTeamChoiceItem";
-import { TeamSpaceRole } from "@/components/item/TeamSpaceRoleItem";
-import { useSearchParams } from "next/navigation";
+import { ArticleData, DeleteTeamSpaceResponse, GetArchiveArticlesResponse, GetSpaceArchiveFoldersResponse, GetTeamSpaceListResponse, NoArgsResponse, PatchMySpaceArchiveFolderDataRequest, PatchMySpaceArchiveFolderPinStatusRequest, PatchTeamSpaceRequest, PostArchiveArticleCreateRequest, PostArchiveArticleCreateResponse, PostMySpaceArchiveFolderRequest, PostMySpaceArchiveFolderResponse, PostTeamSpaceCreateRequest, PostTeamSpaceCreateResponse, PutArchiveArticleRequest } from "@/types/apiTypes/spaceAPI";
 
-export interface NoArgsResponse{
-    message : string;
-}
-
-
-export interface GetSpaceArchiveFoldersResponse{
-     folders : SpaceArchiveData[];
-}
-
-export interface PostMySpaceArchiveFolderRequest {
-    name :string;
-    color:string;
-}
-
-export interface PostMySpaceArchiveFolderResponse {
-    folderId : number;
-    name :string;
-    color:string;
-    isPinned : boolean;
-}
-
-export interface PatchMySpaceArchiveFolderDataRequest {
-    name : string;
-    color : string;
-}
-
-export interface PatchMySpaceArchiveFolderPinStatusRequest {
-    folderId : number;
-    name : string;
-    color : string;
-    isPinned : boolean;
-}
-
-export interface GetTeamSpaceListResponse{
-    spaces : TeamSpaceChoiceItemProps[];
-}
-
-export interface Participants{
-    email : string;
-    role : TeamSpaceRole;
-}
-
-export interface PostTeamSpaceCreateRequest{
-    name : string;
-    participants : Participants[];
-}
-
-export interface PostTeamSpaceCreateResponse{
-    spaceId : number;
-    name : string;
-    participantsCnt : number;
-    spaceCoverUrl : string;
-}
-
-export interface DeleteTeamSpaceResponse{
-    folders : SpaceArchiveData[];
-}
-
-export interface PatchTeamSpaceRequest{
-    name : string;
-    spaceCoverPath : string;
-}
-
-export interface PutArchiveArticleRequest{
-    title : string;
-    description : string;
-    prompt : string;
-    type : number;
-    exampleQuestion : string;
-    exampleAnswer : string;
-    filePath : string;
-    tags : string[];
-}
-
-
-export interface PostArchiveArticleCreateRequest{
-    title : string;
-    description : string;
-    prompt : string;
-    type : number;
-    exampleQuestion : string;
-    exampleAnswer : string;
-    filePath : string;
-    tags : string[];
-}
-
-export interface PostArchiveArticleCreateResponse{
-    articleId : number;
-    title : string;
-    description : string;
-    prompt : string;
-    type : string;
-    exampleQuestion : string;
-    exampleAnswer : string;
-    filePath : string;
-    updatedAt : string;
-    tags : string[];
-}
-
-
-export interface ArticleData{
-    articleId : number;
-    title : string;
-    fileUrl : string;
-    type : string;
-    updatedAt : string;
-    tags : string[];
-}
-
-
-export interface GetArchiveArticlesResponse{
-    articles : ArticleData[];
-    itemCnt : number;
-    totalCnt : number;
-    totalPages : number;
-    currentPage : number;
-}
 
 
 
 export const SpaceAPI = {
-
-    // 마이스페이스
 
     /**
      * 스페이스의 아카이브 폴더 데이터를 조회하는 API입니다.
@@ -171,13 +49,13 @@ export const SpaceAPI = {
             return null;
         }
 
-        const res = await apiFetch<NoArgsResponse>(`/api/v1/spaces/${personalSpaceId}/folders/${folderId}`, {
+        const res = await apiFetch<ApiResponse<NoArgsResponse>>(`/api/v1/spaces/${personalSpaceId}/folders/${folderId}`, {
             method: "DELETE",
         });
 
         console.log("Delete API Res ",res);
 
-        return res;
+        return res.data;
     },
 
     /*
