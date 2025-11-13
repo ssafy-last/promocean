@@ -16,7 +16,6 @@ import UserSimpleProfile from "@/components/etc/UserSimpleProfile";
 export default function CommunityBoardItem({ postId, author, profileUrl, title, category, tags, likeCnt, replyCnt, image }: CommunityBoardItemProps) {
 
   // TODO : 이미지 추가를 고려해서 상수 대신 변수 관리
-  console.log(likeCnt, replyCnt);
   const imgUrl = image || `/assets/img_random${postId % 21}.png`;
 
   return (
