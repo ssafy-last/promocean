@@ -2,10 +2,11 @@
 import { useAuthStore } from "@/store/authStore";
 import SpaceArchiveBoardItem, { SpaceArchiveBoardItemProps } from "../item/SpaceArchiveBoardItem"
 import { useEffect, useState } from "react";
-import SpaceAPI, { ArticleData } from "@/api/space";
+import SpaceAPI from "@/api/space";
 import { useArchiveFolderStore } from "@/store/archiveFolderStore";
 import { useSpaceStore } from "@/store/spaceStore";
 import { CommunityAPI } from "@/api/community";
+import { ArticleData } from "@/types/apiTypes/space";
 
 
 export default function SpaceArchiveBoardList(
