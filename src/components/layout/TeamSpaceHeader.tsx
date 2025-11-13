@@ -39,6 +39,8 @@ export default function TeamSpaceHeader(
   const [ownerMemberState, setOwnerMemberState] = useState<SpaceParticipants | null>(null);
   const [currentUserSpaceNickname, setCurrentUserSpaceNickname] = useState<string>(nickname);
   const authStore = useAuthStore();
+  const username = authStore.user?.nickname;
+  const userEmail = authStore.user?.email;
   const userNickname = authStore.user?.nickname;
 
 
@@ -63,9 +65,9 @@ export default function TeamSpaceHeader(
       try {
         const res = await SpaceAPI.getSpaceParticipants(spaceId);
         const participants: SpaceParticipants[] =  res.participants;
-        console.log("Space Participants:", participants, "username", userNickname);
 
-        const owner = participants.find(participant => participant.nickname === userNickname) || null;
+
+        const owner = participants.find(participant => participant.email=== userEmail) || null;
         if (owner) {
           participants.splice(participants.indexOf(owner), 1); // 소유자 제외
           setCurrentUserSpaceNickname(owner.nickname); // 현재 사용자의 팀 스페이스 별명 설정
