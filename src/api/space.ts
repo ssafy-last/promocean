@@ -259,6 +259,8 @@ export const SpaceAPI = {
 
 
     async patchSpaceParticipantRole(spaceId:number, patchData : SimpleSpaceParticipant) : Promise<NoArgsResponse | null> {
+        console.log("patchData ", patchData);   
+        
         const res = await apiFetch<ApiResponse<NoArgsResponse>>(`/api/v1/spaces/${spaceId}/participants`,
             {
                 method : "PATCH",

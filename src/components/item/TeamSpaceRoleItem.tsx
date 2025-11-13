@@ -1,13 +1,7 @@
 import { SpaceParticipants } from "@/api/space";
 import { ChangeSpaceRoleToValue } from "@/enum/TeamSpaceRole";
 import Image from "next/image";
-
-
-export enum TeamSpaceRole {
-    READ_ONLY = 10,
-    EDIT = 20,
-    OWNER = 30
-}
+import { TeamSpaceRole } from "@/enum/TeamSpaceRole";
 
 export interface TeamSpaceRoleItemProps {
     member: SpaceParticipants;

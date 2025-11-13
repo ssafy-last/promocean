@@ -1,4 +1,4 @@
-import { TeamSpaceRole } from "@/components/item/TeamSpaceRoleItem";
+import { TeamSpaceRole } from "@/enum/TeamSpaceRole";
 import { TeamSpaceChoiceItemProps } from "@/components/item/TeamSpaceTeamChoiceItem";
 import { SpaceArchiveData } from "@/store/archiveFolderStore";
 
