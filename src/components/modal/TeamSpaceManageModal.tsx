@@ -9,6 +9,7 @@ import SpaceAPI, { SpaceParticipants } from "@/api/space";
 import { UploadAPI } from "@/api/upload";
 import { SpaceRole, TeamSpaceRole } from "@/enum/TeamSpaceRole";
 import { Space } from "lucide-react";
+import { authAPI } from "@/api/auth";
 
 export interface TeamSpacePageProps {
     spaceId? : number;
@@ -84,9 +85,15 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
     }
 
     // 이메일 입력 후 엔터 키 처리
-    const handleEmailKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleEmailKeyPress = async (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter' && emailInputState.trim()) {
             e.preventDefault();
+
+            const isExistInTeam = memberListState.some(m => m.email === emailInputState.trim());
+            if (isExistInTeam) {
+                alert("이미 팀 스페이스에 존재하는 멤버입니다.");
+                return;
+            }
 
             // 이미 추가된 이메일인지 확인
             const isDuplicate = addMemberListState.some(m => m.email === emailInputState.trim());
@@ -94,6 +101,18 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
                 alert("이미 추가된 이메일입니다.");
                 return;
             }
+
+            const res = await authAPI.checkDuplicate({
+                email : emailInputState!
+            }
+            );
+
+            if(!res?.data?.isDuplicated){
+                alert("존재하지 않는 이메일입니다. 다시 확인해주세요.");
+                return;
+            }
+
+            
 
             // 새 멤버 추가 (임시 데이터)
             const newMember: SpaceParticipants = {
@@ -207,7 +226,7 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
                             className="w-full border border-gray-300 rounded-[10px] px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                             value={emailInputState}
                             onChange={(e) => setEmailInputState(e.target.value)}
-                            onKeyPress={handleEmailKeyPress}
+                            onKeyDown={handleEmailKeyPress}
                         />
 
                         <div className="flex-1 overflow-y-auto">
