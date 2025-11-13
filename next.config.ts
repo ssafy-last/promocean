@@ -3,6 +3,7 @@ import webpack from "webpack";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  output: 'standalone',
   experimental: {
     reactCompiler: true,
   },
