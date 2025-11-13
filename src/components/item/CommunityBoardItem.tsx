@@ -49,7 +49,7 @@ export default function CommunityBoardItem({ postId, author, profileUrl, title, 
           {/* 태그들 */}
           <div className="flex flex-wrap gap-1 text-sm text-gray-500 truncate">
             {tags.map((tag, idx) => (
-              <span key={idx} className="hover:text-primary cursor-pointer">
+              <span key={idx} className="hover:text-primary px-0.5">
                 #{tag}
               </span>
             ))}
