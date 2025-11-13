@@ -64,6 +64,30 @@ export const CommunityAPI = {
     if (params?.sorter) queryParams.set('sorter', params.sorter);
     if (params?.category) queryParams.set('category', params.category);
 
+    switch (params?.category) {
+      case 'work':
+        queryParams.set('category', '100');
+        break;
+      case 'dev':
+        queryParams.set('category', '200');
+        break;
+      case 'design':
+        queryParams.set('category', '300');
+        break;
+      case 'job':
+        queryParams.set('category', '400');
+        break;
+      case 'edu':
+        queryParams.set('category', '500');
+        break;
+      case 'life':
+        queryParams.set('category', '600');
+        break;
+      case 'etc':
+        queryParams.set('category', '700');
+        break;
+    }
+    
     interface ApiResponse {
       message: string | null;
       data: {
