@@ -2,7 +2,7 @@
 
 import { apiFetch } from "@/api/fetcher";
 import { CommunityBoardItemProps, CommunityBoardItemResponse, CommunityFloatingItemProps, CommunityPostItemResponse } from "@/types/itemType";
-import { ApiResponse } from "./common";
+import { ApiResponse } from "@/types/apiTypes/common";
 import { SpaceScrapBoardItemProps } from "@/components/item/SpaceScrapBoardItem";
 
 
@@ -100,7 +100,7 @@ export const CommunityAPI = {
     // const response = await apiFetch<ApiResponse>(`/mock/CommunityBoardListResponse.json`);
 
     const communityBoardList: CommunityBoardItemProps[] = response.data.posts.map((post) => ({ ...post, image: undefined }));
-
+    console.log("board " ,communityBoardList)
     return {
       communityBoardList,
       totalPages: response.data.totalPages,
