@@ -2,6 +2,7 @@
 
 import { apiFetch } from "@/api/fetcher";
 import { CommunityBoardItemProps, CommunityBoardItemResponse, CommunityFloatingItemProps, CommunityPostItemResponse } from "@/types/itemType";
+import { convertCategoryToApiCode } from "@/utils/categoryConvert";
 
 
 /**
@@ -62,30 +63,11 @@ export const CommunityAPI = {
     if (params?.title) queryParams.set('title', params.title);
     if (params?.tag) queryParams.set('tag', params.tag);
     if (params?.sorter) queryParams.set('sorter', params.sorter);
-    if (params?.category) queryParams.set('category', params.category);
-
-    switch (params?.category) {
-      case 'work':
-        queryParams.set('category', '100');
-        break;
-      case 'dev':
-        queryParams.set('category', '200');
-        break;
-      case 'design':
-        queryParams.set('category', '300');
-        break;
-      case 'job':
-        queryParams.set('category', '400');
-        break;
-      case 'edu':
-        queryParams.set('category', '500');
-        break;
-      case 'life':
-        queryParams.set('category', '600');
-        break;
-      case 'etc':
-        queryParams.set('category', '700');
-        break;
+    
+    // 카테고리 변환 후 추가
+    const convertedCategory = convertCategoryToApiCode(params?.category);
+    if (convertedCategory) {
+      queryParams.set('category', convertedCategory);
     }
     
     interface ApiResponse {

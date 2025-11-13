@@ -4,6 +4,7 @@
 
 import ListBullet from "@/components/icon/ListBullet";
 import { useRouter } from "next/navigation";
+import { convertCategoryToApiCode } from "@/utils/categoryConvert";
 
 interface CommunityPostCategoryTypeBadgesProps {
   category: string;
@@ -19,7 +20,14 @@ export default function CommunityPostCategoryTypeBadges({ category, type }: Comm
 
   const router = useRouter();
   const handleCategoryClick = () => {
-    router.push(`/community?${new URLSearchParams({ category: category }).toString()}`);
+
+    // TODO : undefined 삭제 예정
+    const convertedCategory = convertCategoryToApiCode(category);
+    if (convertedCategory) {
+      router.push(`/community?${new URLSearchParams({ category: convertedCategory }).toString()}`);
+    } else {
+      router.push(`/community`);
+    }
   }
   
   return (
