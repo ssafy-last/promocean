@@ -292,14 +292,14 @@ export const SpaceAPI = {
         return res.data;
     },
 
-    async deleteSpaceParticipantWithDrawal(spaceId:number){
+    async deleteSpaceParticipantWithdrawal(spaceId:number){
         const res = await apiFetch<ApiResponse<NoArgsResponse>>(`/api/v1/spaces/${spaceId}/participants/withdrawal`,
             {
                 method : "DELETE",
             }
         )
         return res.data;
-    }
+    },
 
 };
 
