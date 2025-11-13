@@ -29,15 +29,15 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
     console.log("spaceId in TeamSpaceManageModal:", spaceId);
     const router = useRouter();
 
+    const [addMemberListState, setAddMemberListState] = useState<SpaceParticipants[]>([]);
+    const [emailInputState, setEmailInputState] = useState("");
     // 수정 탭 state
     const [editSpaceImageState, setEditSpaceImageState] = useState<File | null>(null);
     const [editSpaceNameState, setEditSpaceNameState] = useState(teamName);
-
+    // 삭제 탭 state
     const [deleteInputState, setDeleteInputState] = useState("");
     const deleteConfirmText = `${teamName}를 삭제 하겠습니다`;
     const isDeleteValid = deleteInputState === deleteConfirmText;
-    
-    const addEmail = useRef("");
 
     const handleDeleteTeam = async () => {
         console.log("handle " ,spaceId);
@@ -83,30 +83,89 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
         }
     }
 
-    const handleInviteTeamMembers = async (email : string, role : TeamSpaceRole) => {
-        console.log("Inviting member:", email, "with role:", role);
-        
-        const inviteData = {
-            participantReqs : [
-                {
-                    email: email,
-                    role: role
-                }
-            ]
-        };
+    // 이메일 입력 후 엔터 키 처리
+    const handleEmailKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter' && emailInputState.trim()) {
+            e.preventDefault();
 
-        const res = await SpaceAPI.postSpaceParticipantInvite(spaceId!, inviteData);
+            // 이미 추가된 이메일인지 확인
+            const isDuplicate = addMemberListState.some(m => m.email === emailInputState.trim());
+            if (isDuplicate) {
+                alert("이미 추가된 이메일입니다.");
+                return;
+            }
 
-   
-        if(!res){
-            console.error("Failed to invite member");
+            // 새 멤버 추가 (임시 데이터)
+            const newMember: SpaceParticipants = {
+                participantId: Date.now(), // 임시 ID
+                nickname: "제인도",
+                email: emailInputState.trim(),
+                role: "READ_ONLY",
+                profileUrl: ""
+            };
+
+            setAddMemberListState(prev => [...prev, newMember]);
+            setEmailInputState(""); // 입력창 초기화
+        }
+    };
+
+    // 멤버 권한 변경
+    const handleMemberRoleChange = (email: string, newRole: TeamSpaceRole) => {
+        setAddMemberListState(prev =>
+            prev.map(member =>
+                member.email === email
+                    ? { ...member, role: newRole === TeamSpaceRole.READ_ONLY ? "READ_ONLY" : "EDIT" }
+                    : member
+            )
+        );
+    };
+
+    // 멤버 제거
+    const handleRemoveMember = (email: string) => {
+        setAddMemberListState(prev => prev.filter(member => member.email !== email));
+    };
+
+    // 초대하기 버튼 클릭
+    const handleInviteTeamMembers = async () => {
+        if (addMemberListState.length === 0) {
+            alert("초대할 멤버를 추가해주세요.");
             return;
         }
-        console.log("Invite res ", res);
-        
-        const updateRes2 = await SpaceAPI.getSpaceParticipants(spaceId!);
-        setMemberListState(updateRes2.participants);
-        
+
+        console.log("Inviting members:", addMemberListState);
+
+        // ParticipantReqs 형식으로 변환
+        const inviteData = {
+            participantReqs: addMemberListState.map(member => ({
+                email: member.email,
+                role: member.role === "READ_ONLY" ? TeamSpaceRole.READ_ONLY : TeamSpaceRole.EDIT
+            }))
+        };
+
+        try {
+            const res = await SpaceAPI.postSpaceParticipantInvite(spaceId!, inviteData);
+
+            if (!res) {
+                console.error("Failed to invite members");
+                alert("멤버 초대에 실패했습니다.");
+                return;
+            }
+
+            console.log("Invite res", res);
+            alert("멤버 초대가 완료되었습니다.");
+
+            // 멤버 목록 업데이트
+            const updateRes = await SpaceAPI.getSpaceParticipants(spaceId!);
+            setMemberListState(updateRes.participants);
+
+            // 초대 목록 초기화 및 모달 닫기
+            setAddMemberListState([]);
+            setEmailInputState("");
+            handleModalClose();
+        } catch (error) {
+            console.error("Error inviting members:", error);
+            alert("멤버 초대 중 오류가 발생했습니다.");
+        }
     }
 
 
@@ -139,20 +198,31 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
                     </>
                 ) : modalTabState === "초대" ? (
                     <>
-                        <input type="text"
-                                placeholder="초대할 멤버의 닉네임 또는 이메일을 입력하세요."
-                                className = "w-full border border-gray-300 rounded-[10px] px-4 py-2"
-                                onChange={(v)=>{addEmail.current = v.target.value;}}
-                            />
+                        <input
+                            type="email"
+                            placeholder="초대할 멤버의 이메일을 입력하고 Enter를 누르세요"
+                            className="w-full border border-gray-300 rounded-[10px] px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                            value={emailInputState}
+                            onChange={(e) => setEmailInputState(e.target.value)}
+                            onKeyPress={handleEmailKeyPress}
+                        />
 
-                        {memberListState && memberListState.length > 0 ? (
-                            <ul className = "flex flex-col gap-1 max-h-56 overflow-y-scroll">
-                                {memberListState.map((member, index) => (
-                                    <SpaceAddMemberItem
-                                        key={index}
-                                        member={member}/>
-                                ))}
-                            </ul>
+                        {addMemberListState && addMemberListState.length > 0 ? (
+                            <div className="flex flex-col gap-2">
+                                <p className="text-sm text-gray-500">초대 대상 ({addMemberListState.length}명)</p>
+                                <ul className="flex flex-col gap-1 max-h-56 overflow-y-scroll">
+                                    {addMemberListState.map((member) => (
+                                        <SpaceAddMemberItem
+                                            key={member.email}
+                                            member={member}
+                                            isMinusButton={true}
+                                            showRoleDropdown={true}
+                                            onRoleChange={handleMemberRoleChange}
+                                            onRemove={handleRemoveMember}
+                                        />
+                                    ))}
+                                </ul>
+                            </div>
                         ) : (
                             <div className="flex flex-col items-center justify-center py-12 gap-3">
                                 <svg
@@ -165,23 +235,32 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
                                         strokeLinecap="round"
                                         strokeLinejoin="round"
                                         strokeWidth={1.5}
-                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
+                                        d="M12 4v16m8-8H4"
                                     />
                                 </svg>
                                 <div className="text-center">
-                                    <p className="text-gray-600 font-medium mb-1">검색 결과가 없습니다</p>
-                                    <p className="text-gray-400 text-sm">닉네임 또는 이메일로 검색해보세요</p>
+                                    <p className="text-gray-600 font-medium mb-1">초대할 멤버를 추가하세요</p>
+                                    <p className="text-gray-400 text-sm">이메일을 입력하고 Enter를 누르세요</p>
                                 </div>
                             </div>
                         )}
 
                         <div className="flex flex-row justify-center gap-8 py-2 w-full">
-                            <button type="button" className="bg-gray-200 px-4 py-2  rounded-md
-                            hover:bg-gray-300" onClick={handleModalClose}>취소하기</button>
-                            <button type="submit" className ="bg-primary text-white px-4 py-2 rounded-md
-                            hover:bg-primary/80"
-                            onClick={() => {handleInviteTeamMembers(addEmail.current,TeamSpaceRole.READ_ONLY)}}
-                            >초대하기</button>
+                            <button
+                                type="button"
+                                className="bg-gray-200 px-4 py-2 rounded-md hover:bg-gray-300"
+                                onClick={handleModalClose}
+                            >
+                                취소하기
+                            </button>
+                            <button
+                                type="button"
+                                className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/80 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                                onClick={handleInviteTeamMembers}
+                                disabled={addMemberListState.length === 0}
+                            >
+                                초대하기
+                            </button>
                         </div>
 
                     </>
