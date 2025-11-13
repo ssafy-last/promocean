@@ -2,11 +2,6 @@ import { TeamSpaceRole } from "@/components/item/TeamSpaceRoleItem";
 import { TeamSpaceChoiceItemProps } from "@/components/item/TeamSpaceTeamChoiceItem";
 import { SpaceArchiveData } from "@/store/archiveFolderStore";
 
-export interface NoArgsResponse{
-    message : string;
-}
-
-
 export interface GetSpaceArchiveFoldersResponse{
      folders : SpaceArchiveData[];
 }
