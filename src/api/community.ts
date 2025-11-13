@@ -225,6 +225,9 @@ export const CommunityAPI = {
   },
 
 
+  /*
+    * 내가 스크랩한 커뮤니티 게시글 스크랩 목록 조회하는 API입니다.
+    */
   async getPostScraps(params?: GetPostScrapsRequest) : Promise< 
   GetPostScrapsResponse > {
     // 쿼리 파라미터 생성 (값이 있는 파라미터만 추가)
