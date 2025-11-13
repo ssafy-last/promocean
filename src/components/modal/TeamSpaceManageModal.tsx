@@ -178,26 +178,29 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
             />
 
             {/* 모달 */}
-            <div className="absolute w-100 max-h-[90vh] z-20 top-8 right-8 bg-white rounded-md shadow-md text-black flex flex-col">
-                <div className="py-4 px-4">
+            <div className="absolute w-100 h-[600px] z-20 top-8 right-8 bg-white rounded-md shadow-md text-black flex flex-col">
+                {/* 헤더 - 고정 */}
+                <div className="py-4 px-4 border-b border-gray-200">
                     <TeamSpaceInsertionModalTabs
                         modalTabState={modalTabState}
                         setModalTabState={setModalTabState}/>
                 </div>
 
-                <div className=" overflow-y-auto py-1 px-4 flex flex-col gap-2">
-
-                <div className = {`font-semibold text-2xl ${modalTabState === "삭제" ? "text-red-500" : ""}`}>{modalTabState}</div>
+                {/* 컨텐츠 영역 - 스크롤 가능 */}
+                <div className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-4">
+                    <h2 className={`font-semibold text-2xl ${modalTabState === "삭제" ? "text-red-500" : ""}`}>{modalTabState}</h2>
 
                 {modalTabState === "권한" ? (
-                    <>
-                        <span className = "text-sm text-gray-500">나의 권한</span>
+                    <div className="flex flex-col gap-4 h-full">
+                        <span className="text-sm text-gray-500">나의 권한</span>
                         <TeamSpaceRoleItem member={ownerMemberState!} index={-1}/>
-                        <span className = "border-b border-gray-300 w-full"></span>
-                        <TeamSpaceRoleList memberListState={memberListState}/>
-                    </>
+                        <span className="border-b border-gray-300 w-full"></span>
+                        <div className="flex-1 overflow-y-auto">
+                            <TeamSpaceRoleList memberListState={memberListState}/>
+                        </div>
+                    </div>
                 ) : modalTabState === "초대" ? (
-                    <>
+                    <div className="flex flex-col gap-4 h-full">
                         <input
                             type="email"
                             placeholder="초대할 멤버의 이메일을 입력하고 Enter를 누르세요"
@@ -207,116 +210,111 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
                             onKeyPress={handleEmailKeyPress}
                         />
 
-                        {addMemberListState && addMemberListState.length > 0 ? (
-                            <div className="flex flex-col gap-2">
-                                <p className="text-sm text-gray-500">초대 대상 ({addMemberListState.length}명)</p>
-                                <ul className="flex flex-col gap-1 max-h-56 overflow-y-scroll">
-                                    {addMemberListState.map((member) => (
-                                        <SpaceAddMemberItem
-                                            key={member.email}
-                                            member={member}
-                                            isMinusButton={true}
-                                            showRoleDropdown={true}
-                                            onRoleChange={handleMemberRoleChange}
-                                            onRemove={handleRemoveMember}
-                                        />
-                                    ))}
-                                </ul>
-                            </div>
-                        ) : (
-                            <div className="flex flex-col items-center justify-center py-12 gap-3">
-                                <svg
-                                    className="w-14 h-14 text-gray-300"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={1.5}
-                                        d="M12 4v16m8-8H4"
-                                    />
-                                </svg>
-                                <div className="text-center">
-                                    <p className="text-gray-600 font-medium mb-1">초대할 멤버를 추가하세요</p>
-                                    <p className="text-gray-400 text-sm">이메일을 입력하고 Enter를 누르세요</p>
+                        <div className="flex-1 overflow-y-auto">
+                            {addMemberListState && addMemberListState.length > 0 ? (
+                                <div className="flex flex-col gap-2">
+                                    <p className="text-sm text-gray-500">초대 대상 ({addMemberListState.length}명)</p>
+                                    <ul className="flex flex-col gap-1">
+                                        {addMemberListState.map((member) => (
+                                            <SpaceAddMemberItem
+                                                key={member.email}
+                                                member={member}
+                                                isMinusButton={true}
+                                                showRoleDropdown={true}
+                                                onRoleChange={handleMemberRoleChange}
+                                                onRemove={handleRemoveMember}
+                                            />
+                                        ))}
+                                    </ul>
                                 </div>
-                            </div>
-                        )}
+                            ) : (
+                                <div className="flex flex-col items-center justify-center h-full gap-3">
+                                    <svg
+                                        className="w-14 h-14 text-gray-300"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={1.5}
+                                            d="M12 4v16m8-8H4"
+                                        />
+                                    </svg>
+                                    <div className="text-center">
+                                        <p className="text-gray-600 font-medium mb-1">초대할 멤버를 추가하세요</p>
+                                        <p className="text-gray-400 text-sm">이메일을 입력하고 Enter를 누르세요</p>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
 
                         <div className="flex flex-row justify-center gap-8 py-2 w-full">
                             <button
                                 type="button"
-                                className="bg-gray-200 px-4 py-2 rounded-md hover:bg-gray-300"
+                                className="bg-gray-200 px-6 py-2 rounded-md hover:bg-gray-300"
                                 onClick={handleModalClose}
                             >
                                 취소하기
                             </button>
                             <button
                                 type="button"
-                                className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/80 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                                className="bg-primary text-white px-6 py-2 rounded-md hover:bg-primary/80 disabled:bg-gray-300 disabled:cursor-not-allowed"
                                 onClick={handleInviteTeamMembers}
                                 disabled={addMemberListState.length === 0}
                             >
                                 초대하기
                             </button>
                         </div>
-
-                    </>
+                    </div>
                 ) : modalTabState === "수정" ? (
-                    <>
-                        {/* 수정 탭 */}
-                        <div className="flex flex-col gap-4">
-                            {/* 커버 이미지 섹션 */}
-                            <ImageChoiceButton setSpaceImageState={setEditSpaceImageState} />
+                    <div className="flex flex-col gap-4 h-full">
+                        {/* 커버 이미지 섹션 */}
+                        <ImageChoiceButton setSpaceImageState={setEditSpaceImageState} />
 
-                            {/* 팀 스페이스 이름 섹션 */}
-                            <div className="flex flex-col gap-2">
-                                <label className="text-sm font-medium text-gray-700">
-                                    팀 스페이스 이름
-                                </label>
-                                <input
-                                    type="text"
-                                    value={editSpaceNameState}
-                                    onChange={(e) => setEditSpaceNameState(e.target.value)}
-                                    placeholder="팀 스페이스 이름을 입력하세요"
-                                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary transition-all"
-                                />
-                            </div>
-
-                            {/* 버튼 섹션 */}
-                            <div className="flex flex-row justify-center gap-6 py-2 w-full">
-                                <button
-                                    type="button"
-                                    className="bg-gray-200 px-4 py-2 rounded-md hover:bg-gray-300 transition-colors"
-                                    onClick={handleModalClose}
-                                >
-                                    취소하기
-                                </button>
-                                <button
-                                    type="button"
-                                    className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/80 transition-colors"
-                                    onClick={() => {
-                                        // TODO: API 호출하여 팀 스페이스 정보 업데이트
-                                        // console.log("Team space update:", {
-                                        //     spaceId,
-                                        //     name: editSpaceNameState,
-                                        //     image: null
-                                        // });
-                                        handleInsertionTeam();
-                                        handleModalClose();
-                                    }}
-                                >
-                                    저장하기
-                                </button>
-                            </div>
+                        {/* 팀 스페이스 이름 섹션 */}
+                        <div className="flex flex-col gap-2">
+                            <label className="text-sm font-medium text-gray-700">
+                                팀 스페이스 이름
+                            </label>
+                            <input
+                                type="text"
+                                value={editSpaceNameState}
+                                onChange={(e) => setEditSpaceNameState(e.target.value)}
+                                placeholder="팀 스페이스 이름을 입력하세요"
+                                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+                            />
                         </div>
-                    </>
+
+                        {/* 버튼을 하단에 고정하기 위한 spacer */}
+                        <div className="flex-1"></div>
+
+                        {/* 버튼 섹션 */}
+                        <div className="flex flex-row justify-center gap-8 py-2 w-full">
+                            <button
+                                type="button"
+                                className="bg-gray-200 px-6 py-2 rounded-md hover:bg-gray-300 transition-colors"
+                                onClick={handleModalClose}
+                            >
+                                취소하기
+                            </button>
+                            <button
+                                type="button"
+                                className="bg-primary text-white px-6 py-2 rounded-md hover:bg-primary/80 transition-colors"
+                                onClick={() => {
+                                    handleInsertionTeam();
+                                    handleModalClose();
+                                }}
+                            >
+                                저장하기
+                            </button>
+                        </div>
+                    </div>
                 ) : (
                     <>
                         {/* 삭제 탭 */}
-                        <div className="flex flex-col gap-4">
+                        <div className="flex flex-col gap-4 h-full">
                             <div className="bg-red-50 border border-red-200 rounded-lg p-4">
                                 <p className="text-red-700 text-sm font-medium mb-2">⚠️ 경고</p>
                                 <p className="text-red-600 text-sm">
@@ -345,25 +343,28 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
                                     }`}
                             />
 
-                            <div className="flex flex-col gap-2 mt-4">
+                            {/* 버튼을 하단에 고정하기 위한 spacer */}
+                            <div className="flex-1"></div>
+
+                            <div className="flex flex-row justify-center gap-8 py-2 w-full">
+                                <button
+                                    type="button"
+                                    onClick={handleModalClose}
+                                    className="bg-gray-200 px-6 py-2 rounded-md hover:bg-gray-300 transition-colors"
+                                >
+                                    취소하기
+                                </button>
                                 <button
                                     type="button"
                                     onClick={handleDeleteTeam}
                                     disabled={!isDeleteValid}
-                                    className={`w-full px-4 py-3 rounded-lg font-medium transition-all
+                                    className={`px-6 py-2 rounded-md font-medium transition-all
                                         ${isDeleteValid
                                             ? 'bg-red-500 text-white hover:bg-red-600 active:scale-95'
                                             : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                                         }`}
                                 >
-                                    팀 스페이스 삭제
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={handleModalClose}
-                                    className="w-full px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
-                                >
-                                    취소
+                                    삭제하기
                                 </button>
                             </div>
                         </div>
