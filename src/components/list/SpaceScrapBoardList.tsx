@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import SpaceScrapItem from "../item/SpaceScrapItem";
 import { SpaceScrapBoardItemProps } from "../item/SpaceScrapBoardItem";
 import { CommunityAPI } from "@/api/community";
+import SpaceAPI from "@/api/space";
 
 
 

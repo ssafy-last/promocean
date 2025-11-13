@@ -2,8 +2,10 @@
 
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TeamSpaceManageModal from "../modal/TeamSpaceManageModal";
+import SpaceAPI, { SpaceParticipants } from "@/api/space";
+import { useAuthStore } from "@/store/authStore";
 
 /**
  * TeamSpaceHeaderProps 인터페이스
@@ -31,15 +33,12 @@ export default function TeamSpaceHeader(
 
   const [isModalOpenState, setIsModalOpenState] = useState(false);
   const [modalTabState, setModalTabState] = useState<"권한" | "초대" | "수정" | "삭제">("권한");
-  const [memberListState, setMemberListState] = useState<string[]>([
-    "김철수",
-    "이영희",
-    "박민수",
-    "최지우",
-    "강다은",
-    "이수민",
-    "홍길동"
-  ]);
+  const [memberListState, setMemberListState] = useState<SpaceParticipants[]>([]);
+  const [ownerMemberState, setOwnerMemberState] = useState<SpaceParticipants | null>(null);
+  const authStore = useAuthStore();
+  const userNickname = authStore.user?.nickname;  
+
+
   // console.log("spaceId in TeamSpaceHeader:", spaceId);
   const handleModalOpen = () => {
     setIsModalOpenState(!isModalOpenState);
@@ -47,6 +46,30 @@ export default function TeamSpaceHeader(
   const handleModalClose = () => {
     setIsModalOpenState(false);
   }
+
+  useEffect(()=>{
+    const fetchItem = async () =>{  
+      if(!spaceId) return;
+      try {
+        const res = await SpaceAPI.getSpaceParticipants(spaceId);
+        const participants: SpaceParticipants[] =  res.participants;
+        console.log("Space Participants:", participants, "username", userNickname);
+
+        const owner = participants.find(participant => participant.nickname === userNickname) || null;
+        if (owner) {
+          participants.splice(participants.indexOf(owner), 1); // 소유자 제외
+        }
+
+        setOwnerMemberState(owner);
+        setMemberListState(participants);
+     }
+      catch (error) {
+        console.error("Failed to fetch space participants:", error);
+      }
+    }
+    fetchItem();
+  },[spaceId])
+
 
   return (
     <header className="w-full">
@@ -68,6 +91,7 @@ export default function TeamSpaceHeader(
               modalTabState={modalTabState}
               setModalTabState={setModalTabState}
               memberListState={memberListState}
+              ownerMemberState={ownerMemberState}
               setMemberListState={setMemberListState}
             />
           )}

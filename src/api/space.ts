@@ -229,11 +229,72 @@ export const SpaceAPI = {
         return res.data;
     },
 
+    /*
+        * 스페이스 참가자 목록을 조회하는 API입니다.
+    */
     async getSpaceParticipants(spaceId : number){
         const res = await apiFetch<ApiResponse<getSpaceParticipantsResponse>>(`/api/v1/spaces/${spaceId}/participants`, {
             method: "GET",
         });
 
+        return res.data;
+    },
+
+
+    /*
+        * 스페이스 참가자를 초대하는 API입니다.
+    */
+    async postSpaceParticipantInvite(spaceId : number, inviteData : SimpleSpaceParticipant) : Promise<NoArgsResponse | null> {
+
+        const res = await apiFetch<ApiResponse<NoArgsResponse>>(`/api/v1/spaces/${spaceId}/participants`,
+            {
+                method : "POST",
+                body : JSON.stringify(inviteData),
+            }
+        )
+
+        return res.data;
+    },
+
+
+    async patchSpaceParticipantRole(spaceId:number, patchData : SimpleSpaceParticipant) : Promise<NoArgsResponse | null> {
+        const res = await apiFetch<ApiResponse<NoArgsResponse>>(`/api/v1/spaces/${spaceId}/participants`,
+            {
+                method : "PATCH",
+                body : JSON.stringify(patchData),
+            }
+        )
+        return res.data;
+    },
+
+    async patchSpaceParticipantMyName(spaceId: number, patchData: PatchSpaceParticipantMyNameRequest) : Promise<NoArgsResponse | null> {
+        const res = await apiFetch<ApiResponse<NoArgsResponse>>(`/api/v1/spaces/${spaceId}/participants/me`,
+            {
+                method : "PATCH",
+                body : JSON.stringify(patchData),
+            }
+        )
+        return res.data;
+    },
+
+    /*
+        * 스페이스 참가자를 삭제하는 API입니다.
+    */
+    async deleteSpaceParticipant(spaceId:number, participantId:number){
+        const res = await apiFetch<ApiResponse<NoArgsResponse>>(`/api/v1/spaces/${spaceId}/participants/${participantId}`,
+            {
+                method : "DELETE",
+            }
+        )
+        return res.data;
+    },
+
+    async deleteSpaceParticipantWithDrawal(spaceId:number){
+        const res = await apiFetch<ApiResponse<NoArgsResponse>>(`/api/v1/spaces/${spaceId}/participants/withdrawal`,
+            {
+                method : "DELETE",
+            }
+        )
         return res.data;
     }
 
@@ -251,6 +312,13 @@ export interface getSpaceParticipantsResponse{
     participants : SpaceParticipants[];
 }
 
+export interface SimpleSpaceParticipant{
+    email:string;
+    role : TeamSpaceRole;
+}
 
+export interface PatchSpaceParticipantMyNameRequest{
+    nickname : string;
+}
 
 export default SpaceAPI;

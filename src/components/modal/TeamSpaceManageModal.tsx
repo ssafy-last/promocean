@@ -5,7 +5,7 @@ import SpaceAddMemberItem from "../item/SpaceAddMemberItem";
 import TeamSpaceRoleItem from "../item/TeamSpaceRoleItem";
 import TeamSpaceRoleList from "../list/TeamSpaceRoleList";
 import ImageChoiceButton from "../button/ImageChoiceButton";
-import SpaceAPI from "@/api/space";
+import SpaceAPI, { SpaceParticipants } from "@/api/space";
 import { UploadAPI } from "@/api/upload";
 
 export interface TeamSpacePageProps {
@@ -14,15 +14,16 @@ export interface TeamSpacePageProps {
     handleModalClose: () => void;
     modalTabState: "권한" | "초대" | "수정" | "삭제";
     setModalTabState: (tab: "권한" | "초대" | "수정" | "삭제") => void;
-    memberListState: string[];
-    setMemberListState: (members: string[]) => void;
+    memberListState: SpaceParticipants[];
+    ownerMemberState?: SpaceParticipants | null;
+    setMemberListState: (members: SpaceParticipants[]) => void;
     teamName?: string;
 
 }
 
 
 
-export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handleModalClose, modalTabState, setModalTabState, memberListState, setMemberListState, teamName = "팀 스페이스"}: TeamSpacePageProps) {
+export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handleModalClose, modalTabState, setModalTabState, memberListState, ownerMemberState, setMemberListState, teamName = "팀 스페이스"}: TeamSpacePageProps) {
     console.log("spaceId in TeamSpaceManageModal:", spaceId);
     const router = useRouter();
     const [addMemberListState, setAddMemberListState] = useState<string[]>([
@@ -48,7 +49,7 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
             const res = await SpaceAPI.deleteTeamSpace(spaceId!);
             console.log("Res ",res);
             //handleModalClose();
-                     alert(`${teamName}이 삭제되었습니다`);
+            alert(`${teamName}이 삭제되었습니다`);
 
             router.push('/team-space');
         }
@@ -64,19 +65,18 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
 
         if(s3res && editSpaceImageState) {
 
+            // 이미지가 있을 때만 업로드 진행
             const uploadS3Res = await UploadAPI.uploadImageToS3({
                 presignedUrl : presignedUrl!,
                 file : editSpaceImageState
             });
 
-            // console.log("Upload S3 Res ", uploadS3Res);
-
+            // 업로드 성공 시에만 팀 스페이스 정보 업데이트
             const patchRes = await SpaceAPI.patchTeamSpace(spaceId!, {
                 name: editSpaceNameState,
                 spaceCoverPath : key!
             });
 
-            console.log("Patch Res ", patchRes);
 
             alert(`${teamName}이 수정되었습니다`);
 
@@ -113,7 +113,7 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
                 {modalTabState === "권한" ? (
                     <>
                         <span className = "text-sm text-gray-500">나의 권한</span>
-                        <TeamSpaceRoleItem member="정태승" index={-1}/>
+                        <TeamSpaceRoleItem member={ownerMemberState?.nickname || ""} index={-1}/>
                         <span className = "border-b border-gray-300 w-full"></span>
                         <TeamSpaceRoleList memberListState={memberListState}/>
                     </>
