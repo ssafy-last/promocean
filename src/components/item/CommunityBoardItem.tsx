@@ -14,6 +14,10 @@ import UserSimpleProfile from "@/components/etc/UserSimpleProfile";
  * @returns {React.ReactNode}
  */
 export default function CommunityBoardItem({ postId, author, profileUrl, title, category, tags, likeCnt, replyCnt, image }: CommunityBoardItemProps) {
+
+  // TODO : 이미지 추가를 고려해서 상수 대신 변수 관리
+  const imgUrl = image || `/assets/img_random${postId % 21}.png`;
+  
   return (
     <Link
       href={`/community/${postId}`}
@@ -21,16 +25,12 @@ export default function CommunityBoardItem({ postId, author, profileUrl, title, 
     >
       {/* 왼쪽 : 이미지 영역 */}
       <div className="relative flex-shrink-0 w-16 h-16 rounded-md overflow-hidden bg-gray-100">
-        {image ? (
-          <Image
-            src={image}
-            alt={title}
-            fill
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-          />
-        ) : (
-          <div className="w-full h-full bg-gray-200" />
-        )}
+        <Image
+          src={imgUrl}
+          alt={title}
+          fill
+          className="object-cover transition-transform duration-300 group-hover:scale-105"
+        />
       </div>
       
       {/* 중앙 : 게시글 정보 영역 */}
