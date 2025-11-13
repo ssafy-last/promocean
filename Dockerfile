@@ -4,7 +4,6 @@ WORKDIR /app
 
 # 환경 변수 (빌드용)
 ENV NEXT_PUBLIC_BASE_URL=https://promocean.co.kr
-ENV NODE_ENV=production
 
 # 의존성 설치 (devDependencies 포함)
 COPY package*.json ./
