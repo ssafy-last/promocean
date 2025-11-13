@@ -105,11 +105,6 @@ export interface PostArchiveArticleCreateResponse{
 }
 
 
-
-
-
-
-
 export interface ArticleData{
     articleId : number;
     title : string;
@@ -127,10 +122,6 @@ export interface GetArchiveArticlesResponse{
     totalPages : number;
     currentPage : number;
 }
-
-
-
-
 
 
 

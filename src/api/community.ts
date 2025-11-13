@@ -90,6 +90,9 @@ export const CommunityAPI = {
       message: string | null;
       data: {
         posts: CommunityBoardItemResponse[];
+        totalPages?: number;
+        totalElements?: number;
+        currentPage?: number;
       };
     }
 
@@ -100,6 +103,9 @@ export const CommunityAPI = {
 
     return {
       communityBoardList,
+      totalPages: response.data.totalPages,
+      totalElements: response.data.totalElements,
+      currentPage: response.data.currentPage,
     };
   },
 
