@@ -1,5 +1,5 @@
 import { SpaceParticipants } from "@/api/space";
-import { TeamSpaceRole } from "@/enum/TeamSpaceRole";
+import { TeamSpaceRole, ChangeSpaceRoleToValue } from "@/enum/TeamSpaceRole";
 
 export interface SpaceAddMemberItemProps {
     member : SpaceParticipants;
@@ -51,7 +51,7 @@ export default function SpaceAddMemberItem({
             <div className="flex items-center gap-2">
                 {showRoleDropdown && (
                     <select
-                        value={member.role}
+                        value={ChangeSpaceRoleToValue(member.role)}
                         onChange={handleRoleChange}
                         onClick={(e) => e.stopPropagation()}
                         className="px-3 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"

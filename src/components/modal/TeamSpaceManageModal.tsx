@@ -7,7 +7,7 @@ import TeamSpaceMemberList from "../list/TeamSpaceMemberList";
 import ImageChoiceButton from "../button/ImageChoiceButton";
 import SpaceAPI, { SpaceParticipants } from "@/api/space";
 import { UploadAPI } from "@/api/upload";
-import { SpaceRole, TeamSpaceRole } from "@/enum/TeamSpaceRole";
+import { ChangeSpaceRoleToValue, SpaceRole, TeamSpaceRole } from "@/enum/TeamSpaceRole";
 import { Space } from "lucide-react";
 import { authAPI } from "@/api/auth";
 import { useAuthStore } from "@/store/authStore";
@@ -156,7 +156,7 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
         setAddMemberListState(prev =>
             prev.map(member =>
                 member.email === email
-                    ? { ...member, role: newRole === TeamSpaceRole.READ_ONLY ? "READ_ONLY" : "EDIT" }
+                    ? { ...member, role: newRole === TeamSpaceRole.READ_ONLY ? "READ_ONLY" : "EDITOR" }
                     : member
             )
         );
@@ -180,18 +180,12 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
         const inviteData = {
             participantReqs: addMemberListState.map(member => ({
                 email: member.email,
-                role: member.role === "READ_ONLY" ? TeamSpaceRole.READ_ONLY : TeamSpaceRole.EDIT
+                role: ChangeSpaceRoleToValue(member.role)
             }))
         };
 
         try {
             const res = await SpaceAPI.postSpaceParticipantInvite(spaceId!, inviteData);
-
-            // if (!res) {
-            //     console.error("Failed to invite members");
-            //     alert("멤버 초대에 실패했습니다.");
-            //     return;
-            // }
 
             console.log("Invite res", res);
             alert("멤버 초대가 완료되었습니다.");
@@ -200,8 +194,11 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
             const updateRes = await SpaceAPI.getSpaceParticipants(spaceId!);
             const participants = updateRes.participants;
             const owner = participants.find(participant => participant.nickname === userNickname) || null;
+           
+            console.log("새로 추가된 ",participants);
+
             if (owner) {
-            participants.splice(participants.indexOf(owner), 1); // 소유자 제외
+                participants.splice(participants.indexOf(owner), 1); // 소유자 제외
             }
 
             setMemberListState(participants);
@@ -217,6 +214,32 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
             alert("멤버 초대 중 오류가 발생했습니다.");
         }
     }
+
+    // 멤버 role 변경 핸들러
+    const handleMemberRoleChangeInList = async (email: string, newRole: TeamSpaceRole) => {
+        console.log("Change role for email:", email, "to:", newRole);
+
+        try {
+            const res = await SpaceAPI.patchSpaceParticipantRole(spaceId!, {
+                email: email,
+                role: newRole
+            });
+            console.log("Role change res:", res?.message);
+
+            // 멤버 목록 업데이트 - API 재호출하여 최신 데이터 가져오기
+            const updateRes = await SpaceAPI.getSpaceParticipants(spaceId!);
+            const participants = updateRes.participants;
+            const owner = participants.find(participant => participant.nickname === userNickname) || null;
+            if (owner) {
+                participants.splice(participants.indexOf(owner), 1); // 소유자 제외
+            }
+
+            setMemberListState(participants);
+        } catch (error) {
+            console.error("Error changing member role:", error);
+            alert("권한 변경에 실패했습니다.");
+        }
+    };
 
     // 멤버 삭제 핸들러
     const handleDeleteMember = async (participantId: number) => {
@@ -234,9 +257,6 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
         }
 
         setMemberListState(participants);
-
-        // API 연결은 사용자가 별도로 진행
-        // TODO: API 호출 및 멤버 목록 업데이트
     };
 
 
@@ -275,6 +295,7 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
                                 memberListState={memberListState}
                                 currentUserEmail={user?.email}
                                 onDelete={handleDeleteMember}
+                                onRoleChange={handleMemberRoleChangeInList}
                             />
                         </div>
                     </div>
