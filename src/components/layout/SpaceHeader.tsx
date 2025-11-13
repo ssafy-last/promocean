@@ -38,7 +38,7 @@ export default function SpaceHeader(
   return (
     <header className="w-full">
       {/* 상단 영역 - 전체 너비 */}
-      <div className="flex flex-row justify-between items-center bg-primary text-white px-8 py-6 w-full">
+      <div className="flex flex-row justify-between items-center bg-primary text-white px-8 py-12 w-full">
         <div>
           <h1 className="text-3xl font-semibold">{nickname} 님의
             {isTeamSpace ? ' 팀 스페이스' : ' 마이 스페이스'}</h1>
