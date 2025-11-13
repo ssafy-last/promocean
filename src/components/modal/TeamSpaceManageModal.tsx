@@ -113,7 +113,7 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
                 {modalTabState === "권한" ? (
                     <>
                         <span className = "text-sm text-gray-500">나의 권한</span>
-                        <TeamSpaceRoleItem member={ownerMemberState?.nickname || ""} index={-1}/>
+                        <TeamSpaceRoleItem member={ownerMemberState!} index={-1}/>
                         <span className = "border-b border-gray-300 w-full"></span>
                         <TeamSpaceRoleList memberListState={memberListState}/>
                     </>

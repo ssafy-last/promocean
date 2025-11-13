@@ -5,3 +5,7 @@ export enum TeamSpaceRole {
 }
 
 export type SpaceRole = keyof typeof TeamSpaceRole
+
+export const ChangeSpaceRoleToValue = (role: SpaceRole): number => {
+    return TeamSpaceRole[role];
+}
