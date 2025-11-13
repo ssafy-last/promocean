@@ -1,8 +1,7 @@
 import { ApiResponse, NoArgsResponse } from "@/types/apiTypes/common";
 import { apiFetch } from "./fetcher";
 import { ArticleData, DeleteTeamSpaceResponse, GetArchiveArticlesResponse, GetSpaceArchiveFoldersResponse, GetTeamSpaceListResponse, PatchMySpaceArchiveFolderDataRequest, PatchMySpaceArchiveFolderPinStatusRequest, PatchTeamSpaceRequest, PostArchiveArticleCreateRequest, PostArchiveArticleCreateResponse, PostMySpaceArchiveFolderRequest, PostMySpaceArchiveFolderResponse, PostTeamSpaceCreateRequest, PostTeamSpaceCreateResponse, PutArchiveArticleRequest } from "@/types/apiTypes/space";
-
-
+import { SpaceRole, TeamSpaceRole } from "@/enum/TeamSpaceRole";
 
 
 export const SpaceAPI = {
@@ -228,6 +227,30 @@ export const SpaceAPI = {
             method: "GET",
         });
         return res.data;
+    },
+
+    async getSpaceParticipants(spaceId : number){
+        const res = await apiFetch<ApiResponse<getSpaceParticipantsResponse>>(`/api/v1/spaces/${spaceId}/participants`, {
+            method: "GET",
+        });
+
+        return res.data;
     }
+
 };
+
+export interface SpaceParticipants{
+    participantId : number;
+    nickname : string;
+    role : SpaceRole;
+    profileUrl : string;
+    email :string;
+}
+
+export interface getSpaceParticipantsResponse{
+    participants : SpaceParticipants[];
+}
+
+
+
 export default SpaceAPI;
