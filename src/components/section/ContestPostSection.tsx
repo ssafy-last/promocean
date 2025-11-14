@@ -101,10 +101,6 @@ export default function ContestPostSection({ contestPostData, ContestNoticeList,
           </div>
         )}
 
-        {/* {currentTab === 'leaderboard' && (
-          <LeaderboardList leaderboardList={leaderboardList} />
-        )} */}
-
         {currentTab === 'notice' && (
           <ContestNoticeSection ContestNoticeList={ContestNoticeList} />
         )}
@@ -116,9 +112,6 @@ export default function ContestPostSection({ contestPostData, ContestNoticeList,
           />
         )}
         
-        {/* {currentTab === 'my-submission' && (
-          <ContestSubmissionSection contestSubmissionList={contestMySubmissionList} />
-        )} */}
       </div>
     </div>
   );
