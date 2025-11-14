@@ -8,12 +8,6 @@ import CommunityPostCategoryTypeBadges from "@/components/item/CommunityPostCate
 import { ArticleData } from "@/types/apiTypes/space";
 
 
-export interface SpaceArchiveArticleSectionProps {
-    articleData : ArticleData;
-    hashtagList : HashtagItemProps[];
-
-}
-
 
 
 
@@ -22,8 +16,13 @@ export interface SpaceArchiveArticleSectionProps {
  * @description MySpaceArchiveArticleSection component is a my space archive article detail section component that displays the my space archive article detail section content
  * @returns {React.ReactNode}
  */
-export default function MySpaceArchiveArticleSection( { articleData, hashtagList } : SpaceArchiveArticleSectionProps ) {
+export default function MySpaceArchiveArticleSection(  ) {
 
+    const articleData : ArticleData | null=null// = await SpaceAPI.getArchiveArticleDetail(spaceId, articleId);
+
+    const hashtagList: HashtagItemProps[]= [] // = articleData!.tags.map((tag: string) => ({ tag }));
+    
+  
   return (
     <div className="p-8">
       

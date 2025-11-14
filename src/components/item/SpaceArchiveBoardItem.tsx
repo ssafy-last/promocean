@@ -5,7 +5,6 @@ import Link from "next/link";
 
 
 export interface SpaceArchiveBoardItemProps{
-    spaceId?: number;
     articleId: number;
     title: string;
     category: string;
@@ -14,11 +13,8 @@ export interface SpaceArchiveBoardItemProps{
     image?: string;
 }
 
-export default async function SpaceArchiveBoardItem( { spaceId, articleId, title, category, tags, image, folderName }: SpaceArchiveBoardItemProps) {
+export default function SpaceArchiveBoardItem( { articleId, title, category, tags, image, folderName }: SpaceArchiveBoardItemProps) {
   
-  const newCookie = await cookies();
-  newCookie.set("spaceId", String(spaceId || -1));
-
   return (
     <Link
       href={`/my-space/archive/${folderName}/${articleId}`}
