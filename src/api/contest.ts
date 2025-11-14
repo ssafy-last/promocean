@@ -3,8 +3,6 @@
 import { apiFetch } from "@/api/fetcher";
 import {
   ContestCardItemProps,
-  LeaderboardItemProps,
-  ContestInfoItemProps,
   ContestPostItemProps,
   ContestNoticeItemProps,
   ContestSubmissionItemProps,
@@ -31,29 +29,20 @@ export const ContestAPI = {
   async getContestPostPageData(contestId: number) {
     const [
       { contestData: contestPostData },
-      // { leaderboardList },
-      // { contestInfoData },
       { contestNoticeList },
       { contestSubmissionList },
-      // { contestMySubmissionList },
     ] = await Promise.all([
 
       ContestAPI.getContestDetailData(contestId),
-      // ContestAPI.getContestLeaderboardList(contestId),
-      // ContestAPI.getContestInfoData(contestId),
       ContestAPI.getContestNoticeList(contestId),
       ContestAPI.getContestSubmissionList(contestId),
-      // ContestAPI.getContestMySubmissionItem(contestId),
     ]);
 
     return {
       contestPostData,
-      // leaderboardList: leaderboardList || [],
-      // contestInfoData: contestInfoData || [],
       contestInfoTitles: ["대회 정보", "상금 유형", "참여 통계", "해시태그"],
       contestNoticeList: contestNoticeList || [],
       contestSubmissionList: contestSubmissionList || [],
-      // contestMySubmissionList: contestMySubmissionList || [],
     };
   },
 
@@ -133,29 +122,6 @@ export const ContestAPI = {
 
     return { contestCardList, itemCnt, totalCnt, totalPages, currentPage };
   },
-
-  /**
-   * 대회 추가 요약 정보를 데이터 조회하는 API입니다.
-   * @page /contest/[contestId]
-   * @endpoint 목 데이터 사용중입니다. TODO : 삭제 예정?
-   * @description 대회 정보를 데이터를 조회하는 API입니다.
-   * @param {number} contestId - 대회 ID (contestId)
-   * @returns {Promise<{ contestInfoData: ContestInfoItemProps[] }>}
-   */
-  // async getContestInfoData(contestId: number) {
-  //   interface ApiResponse {
-  //     message: string | null;
-  //     data: ContestInfoItemProps[];
-  //   }
-  //   const response = await apiFetch<ApiResponse>(`/api/v1/contests/${contestId}/info`);
-  //   // const response = await fetch(`/mock/ContestInfoItem.json?contestId=${contestId}`, {
-  //   //     cache: "no-store",
-  //   //   }
-  //   // ).then(res => res.json());
-  //   return {
-  //     contestInfoData: response,
-  //   };
-  // },
   
   /**
    * 대회 상세 페이지를 조회하는 API입니다.
@@ -228,24 +194,6 @@ export const ContestAPI = {
     }
   },
 
-  // /**
-  //  * 대회 상세 페이지 리더보드 목록 데이터 조회하는 API입니다.
-  //  * @page /contest/[contestId]?tab=leaderboard
-  //  * @endpoint 목 데이터 사용중입니다. TODO : 삭제 예정?
-  //  * @description 대회 상세 페이지 리더보드 목록 데이터를 조회하는 API입니다.
-  //  * @param {number} contestId - 대회 ID (contestId)
-  //  * @returns {Promise<{ leaderboardList: LeaderboardItemProps[] }>}
-  //  */
-  // async getContestLeaderboardList(contestId: number) {
-  //   // const response = await apiFetch<LeaderboardItemProps[]>(`/api/v1/contests/${contestId}/leaderboards`);
-  //   const response = await fetch(`/mock/ContestLeaderboardItem.json`, {
-  //     cache: "no-store",
-  //   }).then(res => res.json());
-  //   return {
-  //     leaderboardList: response.Leaderboard,
-  //   };
-  // },
-
   /**
    * 대회 상세 페이지 공지사항 목록 데이터 조회하는 API입니다.
    * @page /contest/[contestId]?tab=notice
@@ -255,24 +203,14 @@ export const ContestAPI = {
    * @returns {Promise<{ contestNoticeList: ContestNoticeItemProps[] }>}
    */
   async getContestNoticeList(contestId: number) {
-
-    try {
-      interface ApiResponse {
-        message: string | null;
-        data: {
-          notices: ContestNoticeItemProps[];
-        };
-      }
-      const response = await apiFetch<ApiResponse>(`/api/v1/contests/${contestId}/notices`);
-      return {
-        contestNoticeList: response.data.notices,
-      };
-    } catch (error) {
-      console.error('공지사항 목록 조회 실패:', error);
-      return {
-        contestNoticeList: [],
-      };
+    interface ApiResponse {
+      message: string | null;
+      data: ContestNoticeItemProps[];
     }
+    const response = await apiFetch<ApiResponse>(`/api/v1/contests/${contestId}/notices`);
+    return {
+      contestNoticeList: response.data,
+    };
   },
   
   /**

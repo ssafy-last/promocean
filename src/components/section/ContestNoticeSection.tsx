@@ -2,6 +2,7 @@
 
 import { ContestNoticeItemProps } from "@/types/itemType";
 import ContestNoticeListComponent from "@/components/list/ContestNoticeList";
+import ContestNoticeButtonSection from "@/components/section/ContestNoticeButtonSection";
 
 /**
  * ContestNoticeSection component
@@ -11,7 +12,10 @@ import ContestNoticeListComponent from "@/components/list/ContestNoticeList";
 export default function ContestNoticeSection({ ContestNoticeList }: { ContestNoticeList: ContestNoticeItemProps[] }) {
   return (
     <div>
-      <h2 className="text-xl font-semibold text-gray-900 mb-6">공지사항</h2>
+      <div className="flex flex-row items-center justify-between">
+        <h2 className="text-xl font-semibold text-gray-900">공지사항</h2>
+        <ContestNoticeButtonSection />
+      </div>
       <ContestNoticeListComponent ContestNoticeList={ContestNoticeList} />
     </div>
   )
