@@ -99,7 +99,7 @@ export interface PostingFloatingItemProps {
  */
 export interface ContestCardItemProps {
   contestId: number
-  host: string
+  author: string
   profileUrl: string
   title: string
   startAt: string

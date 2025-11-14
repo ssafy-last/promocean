@@ -93,7 +93,7 @@ export const ContestAPI = {
 
     interface ContestApiResponse {
       contestId: number;
-      host: string;
+      author: string;
       profileUrl: string;
       title: string;
       startAt: string;
@@ -121,7 +121,7 @@ export const ContestAPI = {
 
     const contestCardList: ContestCardItemProps[] = contests.map((contest) => ({
       contestId: contest.contestId,
-      host: contest.host,
+      author: contest.author,
       profileUrl: contest.profileUrl,
       title: contest.title,
       startAt: contest.startAt,
