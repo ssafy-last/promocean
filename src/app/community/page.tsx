@@ -1,7 +1,6 @@
 // frontend/src/app/community/page.tsx
 
 import CommunityBoardSection from "@/components/section/CommunityBoardSection";
-import CommunityFooter from "@/components/layout/CommunityFooter";
 import { CommunityAPI } from "@/api/community";
 
 interface CommunityPageProps {
@@ -37,8 +36,7 @@ export default async function CommunityPage({ searchParams }: CommunityPageProps
 
   return (
     <div className="flex flex-col">
-      <CommunityBoardSection communityBoardList={communityBoardList} />
-      <CommunityFooter itemCnt={itemCnt} totalCnt={totalCnt} totalPages={totalPages} currentPage={currentPage} />
+      <CommunityBoardSection communityBoardList={communityBoardList} itemCnt={itemCnt} totalCnt={totalCnt} totalPages={totalPages} currentPage={currentPage} />
     </div>
   );
 }
