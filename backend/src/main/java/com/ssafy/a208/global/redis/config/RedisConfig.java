@@ -3,34 +3,36 @@ package com.ssafy.a208.global.redis.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.RedisClusterConfiguration;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
-import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-import java.util.List;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 
 @Configuration
 public class RedisConfig {
 
-    @Value("${spring.data.redis.cluster.nodes}")
-    private List<String> clusterNodes;
+    @Value("${spring.data.redis.host}")
+    private String host;
+
+    @Value("${spring.data.redis.port}")
+    private int port;
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
-
-        RedisClusterConfiguration clusterConfig = new RedisClusterConfiguration(clusterNodes);
-        clusterConfig.setMaxRedirects(3);
+        RedisStandaloneConfiguration config =
+                new RedisStandaloneConfiguration(host, port);
 
         LettuceClientConfiguration clientConfig =
                 LettuceClientConfiguration.builder()
                         .useSsl()
                         .build();
 
-        return new LettuceConnectionFactory(clusterConfig, clientConfig);
+        return new LettuceConnectionFactory(config, clientConfig);
     }
 
     @Bean
