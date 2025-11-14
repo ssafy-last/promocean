@@ -1,5 +1,5 @@
 # Build Stage
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 WORKDIR /app
 
 # 빌드 전에 환경 변수 설정
@@ -8,7 +8,7 @@ ENV NODE_ENV=production
 
 # dependencies 설치
 COPY package*.json ./
-RUN npm ci --only=production && \
+RUN npm ci && \
     npm cache clean --force
 
 # 프로젝트 전체 복사 후 빌드
@@ -16,7 +16,7 @@ COPY . .
 RUN npm run build
 
 # Run Stage
-FROM node:20-alpine
+FROM node:22-alpine
 WORKDIR /app
 
 # 런타임때 쓸 환경 변수수
@@ -30,10 +30,6 @@ COPY --from=builder /app/next.config.js ./
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
-
-# production dependencies만 설치
-RUN npm ci --only=production && \
-    npm cache clean --force
 
 EXPOSE 3000
 
