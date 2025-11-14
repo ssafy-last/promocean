@@ -18,7 +18,7 @@ export default async function ContestPostPage({ params }: ContestPostPageProps) 
 
   // 각각 API 호출
   const { contestData: contestPostData } = await ContestAPI.getContestDetailData(contestId);
-  const { contestNoticeList = [] } = await ContestAPI.getContestNoticeList(contestId);
+  const { contestNoticeList } = await ContestAPI.getContestNoticeList(contestId);
   
   // 날짜 조건 체크: 대회 종료 후에만 제출물 목록 조회
   const endAt = new Date(contestPostData.endAt);
