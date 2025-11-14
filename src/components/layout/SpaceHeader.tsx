@@ -4,6 +4,7 @@
 
 import { useAuthStore } from "@/store/authStore";
 import { useParams, usePathname, useRouter } from "next/navigation";
+import path from "path";
 import React from "react";
 
 /**
@@ -44,7 +45,7 @@ export default function SpaceHeader(
 
     const handleButtonClick = () => {
       console.log("Button clicked!");
-      router.push(`/post?type=my-space&folderId=1`);
+      router.push(`/post?type=my-space&folder=${pathSegments[2]}`);
     }
 
   return (
