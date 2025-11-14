@@ -45,8 +45,8 @@ function PostPageContent() {
   const [selectedFolder, setSelectedFolder] = useState(folderName || "");
 
   // 아카이브 폴더 상태
-  const [pinnedFolders, setPinnedFolders] = useState<ArchiveFolderItem[]>([]);
-  const [normalFolders, setNormalFolders] = useState<ArchiveFolderItem[]>([]);
+  const [pinnedFolders, setPinnedFolders] = useState<SpaceArchiveData[]>([]);
+  const [normalFolders, setNormalFolders] = useState<SpaceArchiveData[]>([]);
   const [isLoadingFolders, setIsLoadingFolders] = useState(false);
 
   const spaceStore = useSpaceStore();
@@ -80,17 +80,9 @@ function PostPageContent() {
         const pinned = folders.filter(folder => folder.isPinned);
         const normal = folders.filter(folder => !folder.isPinned);
 
-        setPinnedFolders(pinned.map(folder => ({
-          title : folder.name,
-          bgColor : folder.color,
-          isPinned : folder.isPinned
-        })));
-        setNormalFolders(normal.map(folder => ({
-          title : folder.name,
-          bgColor : folder.color,
-          isPinned : folder.isPinned
-        })));
-        
+        setPinnedFolders(pinned);
+        setNormalFolders(normal);
+
       } catch (error) {
         console.error("Failed to fetch archive folders:", error);
       } finally {
