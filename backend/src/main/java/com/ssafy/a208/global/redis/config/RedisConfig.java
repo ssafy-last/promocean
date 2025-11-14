@@ -1,8 +1,5 @@
 package com.ssafy.a208.global.redis.config;
 
-import io.lettuce.core.ReadFrom;
-import io.lettuce.core.ClientOptions;
-import io.lettuce.core.cluster.ClusterClientOptions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,21 +25,17 @@ public class RedisConfig {
         RedisClusterConfiguration clusterConfig = new RedisClusterConfiguration(clusterNodes);
         clusterConfig.setMaxRedirects(3);
 
-        ClusterClientOptions clientOptions = ClusterClientOptions.builder()
-                .validateClusterNodeMembership(true)
-                .build();
-
-        LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder()
-                .useSsl()
-                .clientOptions(clientOptions)
-                .readFrom(ReadFrom.REPLICA_PREFERRED)
-                .build();
+        LettuceClientConfiguration clientConfig =
+                LettuceClientConfiguration.builder()
+                        .useSsl()
+                        .build();
 
         return new LettuceConnectionFactory(clusterConfig, clientConfig);
     }
 
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
+
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
 
