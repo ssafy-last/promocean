@@ -4,7 +4,7 @@ import { HashtagItemProps} from "@/types/itemType";
 
 import SpaceAPI from "@/api/space";
 import { ArticleData } from "@/types/apiTypes/space";
-import SpaceArchiveArticleSection from "@/components/section/SpaceArchiveArticleSection";
+import MySpaceArchiveArticleSection from "@/components/section/MySpaceArchiveArticleSection";
 import { cookies } from "next/headers";
 
 interface SpaceArchiveArticlePageProps {
@@ -16,7 +16,7 @@ interface SpaceArchiveArticlePageProps {
  * @description 스페이스의 아카이브 글 상세 페이지입니다.
  * @returns {React.ReactNode}
  */
-export default async function SpaceArchiveArticlePage({ params }: SpaceArchiveArticlePageProps) {
+export default async function MySpaceArchiveArticlePage({ params }: SpaceArchiveArticlePageProps) {
   const {  articleId : articleParams } = await params;
   const articleId = parseInt(articleParams, 10);
   const spaceId =  Number(await (await cookies()).get("spaceId")?.value) || -1;
@@ -31,7 +31,7 @@ export default async function SpaceArchiveArticlePage({ params }: SpaceArchiveAr
     return (
       <div className="flex-1 flex flex-col gap-6 bg-white rounded-lg shadow-md">
         {/* 글 섹션 */}
-        <SpaceArchiveArticleSection articleData={articleData!} hashtagList={hashtagList} />
+        <MySpaceArchiveArticleSection articleData={articleData!} hashtagList={hashtagList} />
         {/* 구분선 */}
         <hr className="border-gray-200" />
 

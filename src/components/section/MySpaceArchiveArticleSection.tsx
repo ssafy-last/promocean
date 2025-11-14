@@ -18,8 +18,8 @@ export interface SpaceArchiveArticleSectionProps {
 
 
 /**
- * CommunityPostDetailSection component
- * @description CommunityPostDetailSection component is a community post detail section component that displays the community post detail section content
+ * 마이 스페이스의 아카이브 글 상세 섹션 컴포넌트
+ * @description MySpaceArchiveArticleSection component is a my space archive article detail section component that displays the my space archive article detail section content
  * @returns {React.ReactNode}
  */
 export default function MySpaceArchiveArticleSection( { articleData, hashtagList } : SpaceArchiveArticleSectionProps ) {
