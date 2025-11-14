@@ -1,11 +1,8 @@
 'use client';
 
-// frontend/src/components/section/ContestPostSection.tsx
-
 import { useSearchParams } from "next/navigation";
 import { ContestPostItemProps, ContestNoticeItemProps, ContestSubmissionItemProps } from "@/types/itemType";
 import CommunityPostUserProfileItem from "@/components/item/CommunityPostUserProfileItem";
-// import LeaderboardList from "@/components/list/LeaderboardList";
 import Tag from "@/components/icon/Tag";
 import Calendar from "@/components/icon/Calendar";
 import ContestPostTabs from "@/components/filter/ContestPostTabs";
@@ -38,7 +35,9 @@ export default function ContestPostSection({ contestPostData, ContestNoticeList,
           <h1 className="text-3xl font-bold text-gray-900">
             {contestPostData.title}
           </h1>
-          <ContestPostButtonList author={contestPostData.author} />
+
+          {/* 컨테스트 글 수정/삭제 버튼 */}
+          <ContestPostButtonList author={contestPostData.author} contestPostData={contestPostData} />
         </div>
 
         {/* 대회 정보 및 사용자 정보 */}
@@ -111,7 +110,10 @@ export default function ContestPostSection({ contestPostData, ContestNoticeList,
         )}
         
         {currentTab === 'submission' && (
-          <ContestSubmissionSection contestSubmissionList={contestSubmissionList} />
+          <ContestSubmissionSection 
+            contestSubmissionList={contestSubmissionList} 
+            voteEndAt={contestPostData.voteEndAt}
+          />
         )}
         
         {/* {currentTab === 'my-submission' && (
