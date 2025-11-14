@@ -4,6 +4,7 @@
 
 import { useSearchParams, useRouter } from "next/navigation";
 import { useState, useEffect, Suspense } from "react";
+import Image from "next/image";
 import PostingFloatingSection from "@/components/section/PostingFloatingSection";
 import PostingWriteSection from "@/components/section/PostingWriteSection";
 import PostingFooter from "@/components/layout/PostingFooter";
@@ -16,6 +17,9 @@ import { buildPromptFromLexical, extractTextFromLexical } from "@/utils/lexicalU
 import { PromptAPI } from "@/api/prompt";
 import { PostAPI, PostArticleRequest } from "@/api/post";
 import { categoryStringToEnum, promptTypeStringToEnum } from "@/types/postEnum";
+import { PostImagePromptRequest, PostImamgePromptResponse, PostTextPromptRequest, PostTextPromptResponse } from "@/types/apiTypes/prompt";
+import { UploadAPI } from "@/api/upload";
+import { Upload } from "lucide-react";
 
 /**
  * PostPageContent component (useSearchParams를 사용하는 내부 컴포넌트)
@@ -44,6 +48,12 @@ function PostPageContent() {
 
   // AI 답변 생성 로딩 상태
   const [isGeneratingAnswer, setIsGeneratingAnswer] = useState(false);
+
+  // 이미지 프롬프트 결과 관련 상태
+  const [generatedImageUrl, setGeneratedImageUrl] = useState<string>("");
+  const [generatedImageKey, setGeneratedImageKey] = useState<string>("");
+  const [uploadedImageUrl, setUploadedImageUrl] = useState<string>("");
+  const [uploadedImageKey, setUploadedImageKey] = useState<string>("");
 
   // 아카이브 타입인지 확인
   const isArchiveType = postType === 'my-space' || postType === 'team-space';
@@ -113,14 +123,18 @@ function PostPageContent() {
         alert('답변 프롬프트를 입력해주세요.');
         return;
       }
+    } else if (selectedPromptType === 'image') {
+      // 이미지 타입일 때는 AI 생성 이미지나 업로드된 이미지 중 하나는 있어야 함
+      if (!generatedImageKey && !uploadedImageKey) {
+        alert('결과 이미지를 업로드하거나 AI로 생성해주세요.');
+        return;
+      }
     }
 
     try {
       // Lexical JSON에서 텍스트 추출
       const description = extractTextFromLexical(descriptionState);
       const prompt = extractTextFromLexical(usedPrompt);
-      const sampleQuestion = extractTextFromLexical(examplePrompt);
-      const sampleAnswer = extractTextFromLexical(answerPrompt);
 
       // 길이 검증
       if (title.length > 100) {
@@ -133,22 +147,34 @@ function PostPageContent() {
         return;
       }
 
-      if (sampleQuestion.length > 200) {
-        alert('예시 질문은 200자 이하로 입력해주세요.');
-        return;
-      }
-
-      // API 요청 데이터 구성
+      // API 요청 데이터 구성 (기본 필드)
       const requestData: PostArticleRequest = {
         title: title.trim(),
         description: description.trim(),
         category: categoryStringToEnum(selectedCategory),
         prompt: prompt.trim(),
         promptType: promptTypeStringToEnum(selectedPromptType),
-        sampleQuestion: sampleQuestion.trim(),
-        sampleAnswer: sampleAnswer.trim(),
         tags: tags,
+        sampleQuestion: '', // 기본값
+        sampleAnswer: '', // 기본값
       };
+
+      // 프롬프트 타입에 따라 추가 필드 설정
+      if (selectedPromptType === 'text') {
+        const sampleQuestion = extractTextFromLexical(examplePrompt);
+        const sampleAnswer = extractTextFromLexical(answerPrompt);
+
+        if (sampleQuestion.length > 200) {
+          alert('예시 질문은 200자 이하로 입력해주세요.');
+          return;
+        }
+
+        requestData.sampleQuestion = sampleQuestion.trim();
+        requestData.sampleAnswer = sampleAnswer.trim();
+      } else if (selectedPromptType === 'image') {
+        // 이미지 타입: 업로드된 이미지 우선, 없으면 AI 생성 이미지
+        requestData.filePath = uploadedImageKey || generatedImageKey;
+      }
 
       console.log('제출 데이터:', requestData);
 
@@ -167,31 +193,84 @@ function PostPageContent() {
     }
   };
 
+  // 이미지 업로드 핸들러
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // 이미지 파일 검증
+    if (!file.type.startsWith('image/')) {
+      alert('이미지 파일만 업로드할 수 있습니다.');
+      return;
+    }
+
+    // 파일 크기 검증 (예: 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      alert('파일 크기는 10MB를 초과할 수 없습니다.');
+      return;
+    }
+
+    try {
+      // 1단계: presigned URL 받기
+      const uploadData = await UploadAPI.getImagesS3Upload(file.name);
+      if (!uploadData) {
+        throw new Error('Presigned URL을 받아오지 못했습니다.');
+      }
+
+      // 2단계: S3에 이미지 업로드
+      const uploadResult = await UploadAPI.uploadImageToS3({
+        presignedUrl: uploadData.presignedUrl,
+        file: file,
+      });
+
+      if (!uploadResult || !uploadResult.ok) {
+        throw new Error('S3 업로드에 실패했습니다.');
+      }
+
+      // 업로드된 이미지 정보 저장
+      // CloudFront URL 생성 (key를 사용)
+      const cloudfrontUrl = `https://d3qr7nnlhj7oex.cloudfront.net/${uploadData.key}`;
+      setUploadedImageUrl(cloudfrontUrl);
+      setUploadedImageKey(uploadData.key);
+
+      console.log('이미지 업로드 성공:', uploadData);
+      alert('이미지가 성공적으로 업로드되었습니다!');
+    } catch (error) {
+      console.error('이미지 업로드 실패:', error);
+      alert('이미지 업로드에 실패했습니다. 다시 시도해주세요.');
+    }
+  };
+
   const handleAISubmit = async () => {
     // 입력 검증
-    if (!usedPrompt || !examplePrompt) {
+    if (selectedPromptType == 'text' && (!usedPrompt || !examplePrompt)) {
       alert('사용 프롬프트와 예시 질문을 모두 입력해주세요.');
+      return;
+    }
+    else if(selectedPromptType == 'image' && !usedPrompt){
+      alert('사용 프롬프트를 입력해주세요')
       return;
     }
 
     setIsGeneratingAnswer(true);
 
     try {
-      // Lexical JSON에서 텍스트 추출
-      const { systemMessage, userMessage } = buildPromptFromLexical(usedPrompt, examplePrompt);
 
+      
+
+      if(selectedPromptType === 'text'){
+              // Lexical JSON에서 텍스트 추출
+      const { systemMessage, userMessage } = buildPromptFromLexical(usedPrompt, examplePrompt);
       console.log('추출된 텍스트:');
       console.log('사용 프롬프트:', systemMessage);
       console.log('예시 질문:', userMessage);
 
       // PromptAPI를 통해 백엔드 호출
-      const response = await PromptAPI.postTextPrompt({
+        const response = await PromptAPI.postTextPrompt({
         prompt: systemMessage,
         exampleQuestion: userMessage,
       });
-
-      console.log('AI 응답:', response.exampleAnswer);
-
+      
       // 응답을 answerPrompt에 설정 (Lexical JSON 형식으로 변환)
       const lexicalAnswer = {
         root: {
@@ -224,10 +303,35 @@ function PostPageContent() {
           version: 1,
         },
       };
+      
+      console.log('AI 응답:', response.exampleAnswer );
 
       setAnswerPrompt(JSON.stringify(lexicalAnswer));
-      alert('AI 응답이 생성되었습니다!');
 
+
+      } else if (selectedPromptType === 'image'){
+       const { systemMessage } = buildPromptFromLexical(usedPrompt);
+        console.log("system ",systemMessage);
+       const response = await PromptAPI.postImagePrompt({
+          prompt: systemMessage,
+        })
+
+
+        //그냥 이미지 URL
+        const url = response.cloudfrontUrl;
+
+        //back 에 넣어야 할 image key (s3 key)
+        const key = response.key;
+
+        // AI 생성 이미지 상태 업데이트
+        setGeneratedImageUrl(url);
+        setGeneratedImageKey(key);
+
+      } 
+
+
+      alert('AI 응답이 생성되었습니다!');
+      
     } catch (error) {
       console.error('AI 생성 요청 실패:', error);
       alert('AI 응답 생성에 실패했습니다. 콘솔을 확인하세요.');
@@ -349,6 +453,7 @@ function PostPageContent() {
               placeholder="사용한 프롬프트를 입력하세요..."
               onChange={setUsedPrompt}
               isSubmitButton={selectedPromptType === 'image'}
+              onSubmit={handleAISubmit}
             />
 
             {
@@ -374,12 +479,109 @@ function PostPageContent() {
                   </div>
               ) : (
                 <div>
-                      {/* 답변 프롬프트 */}
-                      <PostingWriteSection
-                        title="결과 사진"
-                        placeholder="결과 사진을 첨부하세요..."
-                        onChange={setAnswerPrompt}
-                      />
+                      {/* 결과 사진 업로드 섹션 */}
+                      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                        <h3 className="text-lg font-semibold text-gray-800 mb-4">결과 사진</h3>
+
+                        {/* AI 생성 이미지가 있는 경우 표시 */}
+                        {generatedImageUrl && (
+                          <div className="mb-4">
+                            <div className="flex items-center justify-between mb-2">
+                              <p className="text-sm font-medium text-gray-700">AI 생성 이미지</p>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setGeneratedImageUrl("");
+                                  setGeneratedImageKey("");
+                                }}
+                                className="text-xs text-red-600 hover:text-red-700"
+                              >
+                                제거
+                              </button>
+                            </div>
+                            <div className="relative w-full aspect-video bg-gray-100 rounded-lg overflow-hidden border border-gray-300">
+                              <Image
+                                src={generatedImageUrl}
+                                alt="AI 생성 이미지"
+                                fill
+                                className="object-contain"
+                              />
+                            </div>
+                          </div>
+                        )}
+
+                        {/* 업로드된 이미지가 있는 경우 표시 */}
+                        {uploadedImageUrl && (
+                          <div className="mb-4">
+                            <div className="flex items-center justify-between mb-2">
+                              <p className="text-sm font-medium text-gray-700">업로드된 이미지</p>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setUploadedImageUrl("");
+                                  setUploadedImageKey("");
+                                }}
+                                className="text-xs text-red-600 hover:text-red-700"
+                              >
+                                제거
+                              </button>
+                            </div>
+                            <div className="relative w-full aspect-video bg-gray-100 rounded-lg overflow-hidden border border-gray-300">
+                              <Image
+                                src={uploadedImageUrl}
+                                alt="업로드된 이미지"
+                                fill
+                                className="object-contain"
+                              />
+                            </div>
+                          </div>
+                        )}
+
+                        {/* 이미지가 없는 경우 업로드 UI */}
+                        {!generatedImageUrl && !uploadedImageUrl && (
+                          <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+                            <label
+                              htmlFor="image-upload"
+                              className="cursor-pointer flex flex-col items-center"
+                            >
+                              <Upload className="w-12 h-12 text-gray-400 mb-3" />
+                              <span className="text-sm font-medium text-gray-700 mb-1">
+                                이미지를 업로드하거나
+                              </span>
+                              <span className="text-xs text-gray-500">
+                                AI 생성 버튼을 눌러 이미지를 생성하세요
+                              </span>
+                              <input
+                                id="image-upload"
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageUpload}
+                                className="hidden"
+                              />
+                            </label>
+                          </div>
+                        )}
+
+                        {/* 이미지가 있을 때 추가 업로드 버튼 */}
+                        {(generatedImageUrl || uploadedImageUrl) && (
+                          <div className="mt-4">
+                            <label
+                              htmlFor="image-upload-additional"
+                              className="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-md cursor-pointer transition-colors"
+                            >
+                              <Upload className="w-4 h-4 mr-2" />
+                              다른 이미지 업로드
+                              <input
+                                id="image-upload-additional"
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageUpload}
+                                className="hidden"
+                              />
+                            </label>
+                          </div>
+                        )}
+                      </div>
                   </div>
               )
             }
