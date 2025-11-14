@@ -3,7 +3,7 @@
 // frontend/src/components/section/ContestPostSection.tsx
 
 import { useSearchParams } from "next/navigation";
-import { ContestPostItemProps, LeaderboardItemProps, ContestNoticeItemProps, ContestSubmissionItemProps } from "@/types/itemType";
+import { ContestPostItemProps, ContestNoticeItemProps, ContestSubmissionItemProps } from "@/types/itemType";
 import CommunityPostUserProfileItem from "@/components/item/CommunityPostUserProfileItem";
 // import LeaderboardList from "@/components/list/LeaderboardList";
 import Tag from "@/components/icon/Tag";
@@ -12,22 +12,17 @@ import ContestPostTabs from "@/components/filter/ContestPostTabs";
 import ContestNoticeSection from "@/components/section/ContestNoticeSection";
 import ContestSubmissionSection from "@/components/section/ContestSubmissionSection";
 import { formatKoreanDate } from "@/utils/formatDate";
+import ContestPostButtonList from "@/components/list/ContestPostButtonList";
 
-/**
- * ContestPostSectionProps interface
- * @description ContestPostSection component props
- */
 export interface ContestPostSectionProps {
   contestPostData: ContestPostItemProps
-  // leaderboardList: LeaderboardItemProps[]
   ContestNoticeList: ContestNoticeItemProps[]
   contestSubmissionList: ContestSubmissionItemProps[]
-  // contestMySubmissionList: ContestSubmissionItemProps[]
 }
 
 /**
  * ContestPostSection component
- * @description ContestPostSection component is a contest post section component that displays the contest post section content
+ * @description 컨테스트 글 상세 페이지 섹션 컴포넌트
  * @returns {React.ReactNode}
  */
 // export default function ContestPostSection({ contestPostData, leaderboardList, ContestNoticeList, contestSubmissionList }: ContestPostSectionProps) {
@@ -39,10 +34,11 @@ export default function ContestPostSection({ contestPostData, ContestNoticeList,
       {/* 메타 데이터 섹션 */}
       <div className="flex flex-col gap-3 border-gray-200 pb-5">
         {/* 제목 */}
-        <div className="mb-3">
+        <div className="mb-3 flex flex-row items-center justify-between">
           <h1 className="text-3xl font-bold text-gray-900">
             {contestPostData.title}
           </h1>
+          <ContestPostButtonList author={contestPostData.author} />
         </div>
 
         {/* 대회 정보 및 사용자 정보 */}
