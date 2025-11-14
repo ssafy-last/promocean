@@ -20,6 +20,9 @@ import { categoryStringToEnum, promptTypeStringToEnum } from "@/types/postEnum";
 import { PostImagePromptRequest, PostImamgePromptResponse, PostTextPromptRequest, PostTextPromptResponse } from "@/types/apiTypes/prompt";
 import { UploadAPI } from "@/api/upload";
 import { Upload } from "lucide-react";
+import { useSpaceStore } from "@/store/spaceStore";
+import SpaceAPI from "@/api/space";
+import { SpaceArchiveData } from "@/store/archiveFolderStore";
 
 /**
  * PostPageContent component (useSearchParams를 사용하는 내부 컴포넌트)
@@ -46,6 +49,8 @@ function PostPageContent() {
   const [normalFolders, setNormalFolders] = useState<ArchiveFolderItem[]>([]);
   const [isLoadingFolders, setIsLoadingFolders] = useState(false);
 
+  const spaceStore = useSpaceStore();
+
   // AI 답변 생성 로딩 상태
   const [isGeneratingAnswer, setIsGeneratingAnswer] = useState(false);
 
@@ -66,14 +71,26 @@ function PostPageContent() {
       setIsLoadingFolders(true);
       try {
         // TODO: 백엔드 API 연결 후 수정 필요
-        // const response = await fetch(
-        //   `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/mock/MySpaceArchiveData.json`,
-        //   { cache: "no-store" }
-        // );
-        // const data = await response.json();
+        const response = await SpaceAPI.getSpaceArchiveFoldersData(
+          spaceStore.currentSpace?.spaceId || -1
+        )
 
-        setPinnedFolders([]);
-        setNormalFolders([]);
+        const folders : SpaceArchiveData[] = response?.folders || [];
+
+        const pinned = folders.filter(folder => folder.isPinned);
+        const normal = folders.filter(folder => !folder.isPinned);
+
+        setPinnedFolders(pinned.map(folder => ({
+          title : folder.name,
+          bgColor : folder.color,
+          isPinned : folder.isPinned
+        })));
+        setNormalFolders(normal.map(folder => ({
+          title : folder.name,
+          bgColor : folder.color,
+          isPinned : folder.isPinned
+        })));
+        
       } catch (error) {
         console.error("Failed to fetch archive folders:", error);
       } finally {
