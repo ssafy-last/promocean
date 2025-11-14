@@ -233,6 +233,34 @@ export const ContestAPI = {
   },
 
   /**
+   * 대회 공지사항 작성하는 API입니다.
+   * @page /contest/[contestId]/post-notice
+   * @endpoint POST /api/v1/contests/{contestId}/notices
+   * @description 대회 공지사항을 작성하는 API입니다.
+   * @param {number} contestId - 대회 ID (contestId)
+   * @param {string} title - 공지사항 제목
+   * @param {string} content - 공지사항 내용
+   * @returns {Promise<{ message: string | null, data: null }>}
+   */
+  async createContestNotice(contestId: number, title: string, content: string) {
+    interface ApiResponse {
+      message: string | null;
+      data: null;
+    }
+    const response = await apiFetch<ApiResponse>(`/api/v1/contests/${contestId}/notices`, {
+      method: 'POST',
+      body: JSON.stringify({
+        title,
+        content,
+      }),
+    });
+    return {
+      message: response.message,
+      data: response.data,
+    };
+  },
+
+  /**
    * 대회 상세 페이지 산출물 목록 데이터 조회하는 API입니다.
    * @page /contest/[contestId]?tab=submission
    * @endpoint /api/v1/contests/{contestId}/submissions
