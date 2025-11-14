@@ -33,10 +33,13 @@ export default function ContestCardItem({ contestId, author, profileUrl, title, 
   // endAt 포맷팅 (YYYY.MM.DD)
   const endDateObj = new Date(endAt);
   const formattedEndDate = `${endDateObj.getFullYear()}.${String(endDateObj.getMonth() + 1).padStart(2, '0')}.${String(endDateObj.getDate()).padStart(2, '0')}`;
+
   const imgUrl = `/assets/img_random${contestId % 21}.png`;
+
   return (
     <Link href={`/contest/${contestId}?tab=detail`} className="block group">
-      <div className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 group-hover:border-primary/20">
+      
+      <div className="w-full bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 group-hover:border-primary/20">
 
         {/* Image Section */}
         <div className="relative w-full h-48 overflow-hidden">
@@ -46,6 +49,7 @@ export default function ContestCardItem({ contestId, author, profileUrl, title, 
             fill
             className="object-cover transition-transform duration-300 group-hover:scale-105"
           />
+
           {/* Status Pill - 왼쪽 상단 */}
           <div className="absolute top-3 left-3">
             <span className={`px-3 py-1 rounded-full text-xs font-medium ${
@@ -66,7 +70,6 @@ export default function ContestCardItem({ contestId, author, profileUrl, title, 
             {title}
           </h3>
 
-
           {/* 종료날짜 + D-day */}
           <div className="flex flex-row items-center justify-between mb-4">
             {/* 왼쪽: 아이콘 + 날짜 */}
@@ -82,9 +85,10 @@ export default function ContestCardItem({ contestId, author, profileUrl, title, 
               D-{deadline}
             </span>
           </div>
-            
+
           {/* Author */}
-          {/* <div className="mb-4">
+          {/* 
+          <div className="mb-4">
             <UserSimpleProfile
               profileUrl={profileUrl}
               nickname={author}
@@ -92,10 +96,11 @@ export default function ContestCardItem({ contestId, author, profileUrl, title, 
               textSize="xs"
               showName={true}
             />
-          </div> */}
+          </div> 
+          */}
         </div>
+
       </div>
     </Link>
   )
 }
-
