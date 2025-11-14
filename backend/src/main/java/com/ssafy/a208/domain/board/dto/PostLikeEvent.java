@@ -15,4 +15,5 @@ public class PostLikeEvent {
     private String eventId;
     private Long postId;
     private Long userId;
+    private LocalDateTime timestamp;
 }
