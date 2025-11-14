@@ -4,6 +4,16 @@ import { ArticleData, DeleteTeamSpaceResponse, GetArchiveArticlesResponse, GetSp
 import { SpaceRole, TeamSpaceRole } from "@/enum/TeamSpaceRole";
 
 
+export interface searchParamsType{
+    folderId : number, 
+    type? : number, 
+    tag? : string, 
+    title? : string, 
+    page? : number, 
+    size? : number, 
+    sort? : "latest"|"oldest"
+}
+
 export const SpaceAPI = {
 
     /**
@@ -194,7 +204,7 @@ export const SpaceAPI = {
     /*
         * 아카이브 아티클 목록을 조회하는 API입니다.
     */
-    async getArchiveArticles(spaceId : number, params?:{folderId : number, type? : number, tag? : string, title? : string, page? : number, size? : number, sort? : "latest"|"oldest"}) : Promise<GetArchiveArticlesResponse | null> {
+    async getArchiveArticles(spaceId : number, params?:searchParamsType) : Promise<GetArchiveArticlesResponse | null> {
        
         //page default : 1, size default : 10, sort default : "latest"
 
