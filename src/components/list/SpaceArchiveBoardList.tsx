@@ -33,7 +33,7 @@ export default function SpaceArchiveBoardList(
             const fetcher = async () =>
                 {
                     console.log("api ",spaceId, folderId);
-                    const res = await SpaceAPI.getArchiveArticles(spaceId||-1, folderId||-1);
+                    const res = await SpaceAPI.getArchiveArticles(spaceId||-1, {folderId: folderId || -1});
 
                     const res2 = await CommunityAPI.getCommunityBoardList({
                         author : name
