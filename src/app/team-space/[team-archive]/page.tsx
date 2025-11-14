@@ -10,6 +10,11 @@ import TeamSpaceHeader from "@/components/layout/TeamSpaceHeader";
 import { useSpaceStore } from "@/store/spaceStore";
 import { useArchiveFolderStore } from "@/store/archiveFolderStore";
 
+
+/**
+ * 특정 팀 스페이스의 아카이브 폴더 리스트가 표시되는 페이지
+ * @returns 
+ */
 export default function TeamSpaceArchivePage() {
   const [archiveItemListState, setArchiveItemListState] = useState<SpaceArchiveData[]>([]);
   const [pinnedItemListState, setPinnedItemListState] = useState<SpaceArchiveData[]>([]);
