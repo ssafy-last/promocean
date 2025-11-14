@@ -158,7 +158,6 @@ export default function SpaceArchiveBoardList(
                     mySpaceBoardList.map((item, index) => (
                         <SpaceArchiveBoardItem
                             key={index}
-                            spaceId = {spaceId || -1}
                             articleId={item.articleId}
                             category={item.category}
                             title={item.title}
