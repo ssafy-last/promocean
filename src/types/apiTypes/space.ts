@@ -96,10 +96,16 @@ export interface PostArchiveArticleCreateResponse{
     tags : string[];
 }
 
-
+/**
+ * 스페이스 아카이브 글 데이터의 타입입니다.
+ */
 export interface ArticleData{
     articleId : number;
     title : string;
+    description : string;
+    prompt : string;
+    sampleQuestion : string;
+    sampleAnswer : string;
     fileUrl : string;
     type : string;
     updatedAt : string;
