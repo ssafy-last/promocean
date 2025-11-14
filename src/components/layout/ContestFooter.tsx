@@ -49,9 +49,15 @@ export default function ContestFooter({ itemCnt, totalCnt, totalPages, currentPa
   };
 
   return (
-    <div className="flex flex-row items-center py-8 relative">
-      {/* 페이지네이션 - 중앙 */}
-      <div className="flex-1 flex justify-center py-4">
+    <div className="relative flex items-center py-4 px-8 border-gray-200">
+      {/* 왼쪽: 전체 페이지 수 / 게시글 수 */}
+      <div className="flex flex-col text-gray-600 text-sm">
+        <span>전체 페이지 수: {totalPages}</span>
+        <span>전체 게시글 수: {totalCnt}</span>
+      </div>
+  
+      {/* 중앙: 페이지네이션 */}
+      <div className="absolute left-1/2 -translate-x-1/2 flex justify-center">
         <div className="flex overflow-hidden rounded-lg border border-gray-300">
           {/* 이전 */}
           <button
@@ -63,7 +69,7 @@ export default function ContestFooter({ itemCnt, totalCnt, totalPages, currentPa
           >
             «
           </button>
-
+  
           {/* 페이지 번호 */}
           {Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i).map(
             (pageNum) => (
@@ -82,7 +88,7 @@ export default function ContestFooter({ itemCnt, totalCnt, totalPages, currentPa
               </button>
             )
           )}
-
+  
           {/* 다음 */}
           <button
             className={`px-4 py-2 bg-white text-gray-700 hover:bg-gray-100 border-l border-gray-300 transition-colors ${
@@ -98,4 +104,3 @@ export default function ContestFooter({ itemCnt, totalCnt, totalPages, currentPa
     </div>
   );
 }
-
