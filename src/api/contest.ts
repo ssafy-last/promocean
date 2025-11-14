@@ -261,6 +261,58 @@ export const ContestAPI = {
   },
 
   /**
+   * 대회 공지사항 수정하는 API입니다.
+   * @page /contest/[contestId]/notice/[noticeId]/update
+   * @endpoint PUT /api/v1/contests/{contestId}/notices/{noticeId}
+   * @description 대회 공지사항을 수정하는 API입니다.
+   * @param {number} contestId - 대회 ID (contestId)
+   * @param {number} noticeId - 공지사항 ID
+   * @param {string} title - 공지사항 제목
+   * @param {string} content - 공지사항 내용
+   * @returns {Promise<{ message: string | null, data: null }>}
+   */
+  async updateContestNotice(contestId: number, noticeId: number, title: string, content: string) {
+    interface ApiResponse {
+      message: string | null;
+      data: null;
+    }
+    const response = await apiFetch<ApiResponse>(`/api/v1/contests/${contestId}/notices/${noticeId}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        title,
+        content,
+      }),
+    });
+    return {
+      message: response.message,
+      data: response.data,
+    };
+  },
+
+  /**
+   * 대회 공지사항 삭제하는 API입니다.
+   * @page /contest/[contestId]/notice/[noticeId]
+   * @endpoint DELETE /api/v1/contests/{contestId}/notices/{noticeId}
+   * @description 대회 공지사항을 삭제하는 API입니다.
+   * @param {number} contestId - 대회 ID (contestId)
+   * @param {number} noticeId - 공지사항 ID
+   * @returns {Promise<{ message: string | null, data: null }>}
+   */
+  async deleteContestNotice(contestId: number, noticeId: number) {
+    interface ApiResponse {
+      message: string | null;
+      data: null;
+    }
+    const response = await apiFetch<ApiResponse>(`/api/v1/contests/${contestId}/notices/${noticeId}`, {
+      method: 'DELETE',
+    });
+    return {
+      message: response.message,
+      data: response.data,
+    };
+  },
+
+  /**
    * 대회 상세 페이지 산출물 목록 데이터 조회하는 API입니다.
    * @page /contest/[contestId]?tab=submission
    * @endpoint /api/v1/contests/{contestId}/submissions
