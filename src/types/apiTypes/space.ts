@@ -79,7 +79,7 @@ export interface PostArchiveArticleCreateRequest{
     type : number;
     exampleQuestion : string;
     exampleAnswer : string;
-    filePath : string;
+    filePath? : string;
     tags : string[];
 }
 

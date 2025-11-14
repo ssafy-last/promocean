@@ -43,6 +43,7 @@ function PostPageContent() {
   const [selectedCategory, setSelectedCategory] = useState("work");
   const [selectedPromptType, setSelectedPromptType] = useState("text");
   const [selectedFolder, setSelectedFolder] = useState(folderName || "");
+  const [selectedFolderId , setSelectedFolderId] = useState<number | null>(null);
 
   // 아카이브 폴더 상태
   const [pinnedFolders, setPinnedFolders] = useState<SpaceArchiveData[]>([]);
@@ -94,8 +95,9 @@ function PostPageContent() {
   }, [isArchiveType]);
 
   // 폴더 변경 시 쿼리 파라미터 업데이트
-  const handleFolderChange = (newFolder: string) => {
+  const handleFolderChange = (newFolder: string, newFolderId : number) => {
     setSelectedFolder(newFolder);
+    setSelectedFolderId(newFolderId);
 
     // 쿼리 파라미터 업데이트
     const params = new URLSearchParams(searchParams.toString());
@@ -188,13 +190,31 @@ function PostPageContent() {
       console.log('제출 데이터:', requestData);
 
       // API 호출
-      const response = await PostAPI.postArticlePost(requestData);
+      // 일반 게시글 or 아카이브 게시글 분기
+      if(!isArchiveType){
+          const response = await PostAPI.postArticlePost(requestData);
 
-      console.log('게시글 생성 성공:', response);
-      alert(`게시글이 성공적으로 등록되었습니다!\n게시글 ID: ${response.postId}`);
+          console.log('게시글 생성 성공:', response);
+          alert(`게시글이 성공적으로 등록되었습니다!\n게시글 ID: ${response.postId}`);
 
-      // 성공 후 이동 (커뮤니티 페이지 또는 상세 페이지로)
-      router.push(`/community/${response.postId}`);
+          // 성공 후 이동 (커뮤니티 페이지 또는 상세 페이지로)
+          router.push(`/community/${response.postId}`);
+      }else{
+          const response = await SpaceAPI.postArchiveArticleCreate(spaceStore.currentSpace?.spaceId || -1,
+            selectedFolderId!,{
+              description : requestData.description,
+              title : requestData.title,
+              prompt : requestData.prompt,
+              type : requestData.promptType,
+              exampleQuestion : requestData.sampleQuestion,
+              exampleAnswer : requestData.sampleAnswer,
+              filePath : requestData.filePath,
+              tags : requestData.tags
+            })
+
+            console.log('아카이브 게시글 생성 성공:', response);
+            alert(`아카이브 게시글이 성공적으로 등록되었습니다!\n게시글 ID: ${response?.articleId}`);
+      }
 
     } catch (error) {
       console.error('게시글 등록 실패:', error);

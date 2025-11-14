@@ -12,7 +12,7 @@ export interface ArchiveFolderItem {
 
 export interface PostingArchiveFolderSectionProps {
   selectedFolder: string;
-  onFolderChange: (folder: string) => void;
+  onFolderChange: (folder: string, folderId :number) => void;
   pinnedFolders: SpaceArchiveData[];
   normalFolders: SpaceArchiveData[];
 }
@@ -53,7 +53,7 @@ export default function PostingArchiveFolderSection({
                   name="archive-folder"
                   value={folder.name}
                   checked={selectedFolder === folder.name}
-                  onChange={(e) => onFolderChange(e.target.value)}
+                  onChange={(e) => onFolderChange(e.target.value, folder.folderId)}
                   className="w-4 h-4 text-primary focus:ring-primary focus:ring-2"
                 />
                 <div className="flex items-center gap-2 flex-1">
@@ -91,7 +91,7 @@ export default function PostingArchiveFolderSection({
                   name="archive-folder"
                   value={folder.name}
                   checked={selectedFolder === folder.name}
-                  onChange={(e) => onFolderChange(e.target.value)}
+                  onChange={(e) => onFolderChange(e.target.value, folder.folderId)}
                   className="w-4 h-4 text-primary focus:ring-primary focus:ring-2"
                 />
                 <div className="flex items-center gap-2 flex-1">
