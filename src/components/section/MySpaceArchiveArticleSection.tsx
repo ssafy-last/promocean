@@ -22,7 +22,7 @@ export interface SpaceArchiveArticleSectionProps {
  * @description CommunityPostDetailSection component is a community post detail section component that displays the community post detail section content
  * @returns {React.ReactNode}
  */
-export default function SpaceArchiveArticleSection( { articleData, hashtagList } : SpaceArchiveArticleSectionProps ) {
+export default function MySpaceArchiveArticleSection( { articleData, hashtagList } : SpaceArchiveArticleSectionProps ) {
 
   return (
     <div className="p-8">
