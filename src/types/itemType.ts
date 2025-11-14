@@ -63,7 +63,7 @@ export interface CommunityBoardItemProps {
   tags: string[]
   likeCnt: number
   replyCnt: number
-  image?: string  // API 응답에 없지만 컴포넌트에서 사용
+  fileUrl?: string
 }
 
 /**
