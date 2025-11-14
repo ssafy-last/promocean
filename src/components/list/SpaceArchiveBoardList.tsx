@@ -27,6 +27,7 @@ export default function SpaceArchiveBoardList(
         const name = user?.nickname || "나의 스페이스";
         const folderStore = useArchiveFolderStore();
         const folderId = folderStore.currentFolder?.folderId;
+        const folderName = folderStore.currentFolder?.name;
 
         // URL 파라미터에서 필터 정보 가져오기
         const currentPage = parseInt(searchParams.get("page") || "1");
@@ -72,10 +73,11 @@ export default function SpaceArchiveBoardList(
                         const boardList : SpaceArchiveBoardItemProps[]=[];
                         for(const article of articles){
                             boardList.push({
-                                id: article.articleId,
+                                articleId: article.articleId,
                                 category:article.type,
                                 title:article.title,
                                 tags: article.tags,
+                                folderName: folderName || "default",
                                 image:article.fileUrl
                             });
                         }
@@ -155,11 +157,13 @@ export default function SpaceArchiveBoardList(
                 mySpaceBoardList && mySpaceBoardList.length > 0 ? (
                     mySpaceBoardList.map((item, index) => (
                         <SpaceArchiveBoardItem
-                            key={item.id}
-                            id={item.id}
+                            key={index}
+                            spaceId = {spaceId || -1}
+                            articleId={item.articleId}
                             category={item.category}
                             title={item.title}
                             tags={item.tags}
+                            folderName={folderName || "default"}
                             image={item.image}
                         />
                     ))
