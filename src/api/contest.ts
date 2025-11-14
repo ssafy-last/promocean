@@ -185,6 +185,49 @@ export const ContestAPI = {
     // }).then(res => res.json());
   },
 
+  /**
+   * 대회 글 수정하는 API입니다.
+   * @page /contest/[contestId]
+   * @endpoint /api/v1/contests/{contestId}
+   * @description 대회 글 수정하는 API입니다.
+   * @returns {Promise<{ message: string | null, data: null }>}
+   */
+  async updateContestPost(contestId: number, body: { title: string; content: string; type: number; startAt: string; endAt: string; voteEndAt: string }) {
+    interface ApiResponse {
+      message: string | null;
+      data: null;
+    }
+    console.log(body)
+    
+    // 날짜 형식 변환 (YYYY-MM-DD -> YYYY-MM-DDTHH:mm:ss)
+    const formatDateTime = (dateStr: string): string => {
+      if (!dateStr || dateStr.trim() === '') {
+        throw new Error('날짜가 비어있습니다.');
+      }
+      // 이미 T가 포함되어 있으면 그대로 반환
+      if (dateStr.includes('T')) {
+        return dateStr;
+      }
+      // YYYY-MM-DD 형식이면 T00:00:00 추가
+      return `${dateStr}T00:00:00`;
+    };
+    
+    const response = await apiFetch<ApiResponse>(`/api/v1/contests/${contestId}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        ...body,
+        startAt: formatDateTime(body.startAt),
+        endAt: formatDateTime(body.endAt),
+        voteEndAt: formatDateTime(body.voteEndAt),
+      }),
+    });
+    console.log(response)
+    return {
+      message: response.message,
+      data: response.data,
+    }
+  },
+
   // /**
   //  * 대회 상세 페이지 리더보드 목록 데이터 조회하는 API입니다.
   //  * @page /contest/[contestId]?tab=leaderboard
@@ -230,10 +273,6 @@ export const ContestAPI = {
         contestNoticeList: [],
       };
     }
-    // const response = await fetch(`http://localhost:3000/mock/ContestNoticeData.json`, {
-    //     cache: "no-store",
-    //   }
-    // ).then(res => res.json());
   },
   
   /**
@@ -250,9 +289,6 @@ export const ContestAPI = {
       data: ContestNoticeDetailData;
     }
     const response = await apiFetch<ApiResponse>(`/api/v1/contests/${contestId}/notices/${noticeId}`);
-    // const response = await fetch(`/mock/ContestNoticeDetailData.json`, {
-    //   cache: "no-store",
-    // }).then(res => res.json());
     return {
       noticeData: response.data,
     };
@@ -275,14 +311,11 @@ export const ContestAPI = {
         };
       }
       const response = await apiFetch<ApiResponse>(`/api/v1/contests/${contestId}/submissions`);
-      // const response = await fetch(`http://localhost:3000/mock/ContestSubmissionData.json`, {
-      //   cache: "no-store",
-      // }).then(res => res.json());
       return {
         contestSubmissionList: response.data.submissions,
       };
     } catch (error) {
-      console.error('산출물 목록 조회 실패:', error);
+      console.error(error);
       return {
         contestSubmissionList: [],
       };
