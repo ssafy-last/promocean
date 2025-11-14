@@ -21,7 +21,7 @@ export default function ContestPostButtonList({ author }: ContestPostButtonListP
   const { isLoggedIn, user } = useAuthStore();
   const params = useParams();
   const router = useRouter();
-  const contestId = params.contestId as string;
+  const contestId = Number(params.contestId);
 
   // 작성자와 로그인한 사용자가 일치할 때만 버튼 표시
   if (!isLoggedIn || !user || user.nickname !== author) {
@@ -34,12 +34,16 @@ export default function ContestPostButtonList({ author }: ContestPostButtonListP
 
   return (
     <div className="flex flex-row items-center justify-end gap-2">
+
+      {/* 수정 버튼 */}
       <button
         className="text-xs text-gray-500 hover:text-gray-700 transition-colors cursor-pointer"
         onClick={handleUpdatePost}
       >
         수정
       </button>
+
+      {/* TODO : 삭제 API 추가 논의 */}
       <button
         className="text-xs text-red-500 hover:text-red-700 transition-colors cursor-pointer"
         // onClick={handleDeletePost}
