@@ -10,7 +10,7 @@ import { useEffect } from "react";
  * @description 페이지 네이션을 및 글 작성 버튼을 포함하는 컴포넌트입니다.
  * @returns {React.ReactNode}
  */
-export default function CommunityFooter({ totalCnt, totalPages, currentPage } : { totalCnt: number, totalPages: number, currentPage: number }) {
+export default function CommunityFooter({ itemCnt, totalCnt, totalPages, currentPage } : { itemCnt: number, totalCnt: number, totalPages: number, currentPage: number }) {
 
   const router = useRouter();
   const searchParams = useSearchParams();
