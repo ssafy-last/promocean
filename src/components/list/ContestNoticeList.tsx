@@ -9,7 +9,7 @@ import ContestNoticeItem from "@/components/item/ContestNoticeItem";
  * @returns {React.ReactNode}
  */
 export default function ContestNoticeList({ ContestNoticeList }: { ContestNoticeList: ContestNoticeItemProps[] }) {
-  if (ContestNoticeList.length === 0) {
+  if (!ContestNoticeList || ContestNoticeList.length === 0) {
     return (
       <div className="text-center py-8 text-gray-500">
         <p>등록된 공지사항이 없습니다.</p>
