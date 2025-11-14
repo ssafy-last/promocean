@@ -340,7 +340,7 @@ function PostPageContent() {
               title="설명"
               placeholder="텍스트를 입력하세요..."
               onChange={setDescriptionState}
-              isSubmitButton={selectedPromptType === 'image'}
+              isSubmitButton={false}
             />
 
             {/* 사용 프롬프트 */}
