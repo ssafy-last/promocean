@@ -104,6 +104,7 @@ export interface ContestCardItemProps {
   title: string
   startAt: string
   endAt: string
+  voteEndAt: string
   status: string // "개최전", "종료" 등 한글
   createdAt: string
   updatedAt: string

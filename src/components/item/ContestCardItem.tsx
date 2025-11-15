@@ -19,13 +19,14 @@ export default function ContestCardItem({
   title,
   startAt,
   endAt,
+  voteEndAt,
   status,
   createdAt,
   updatedAt,
 }: ContestCardItemProps) {
   // 현재 날짜를 기준으로 상태 계산
   const currentDate = new Date();
-  const displayStatus = calculateContestStatus(currentDate, startAt, endAt);
+  const displayStatus = calculateContestStatus(currentDate, startAt, endAt, voteEndAt);
 
   // 날짜 포맷팅
   const formattedStartDate = formatDotDate(startAt);
@@ -37,6 +38,8 @@ export default function ContestCardItem({
     targetDate = new Date(startAt); // 시작일까지 D-
   } else if (displayStatus === "진행중") {
     targetDate = new Date(endAt); // 종료일까지 D-
+  } else if (displayStatus === "투표중") {
+    targetDate = new Date(voteEndAt); // 투표종료일까지 D-
   }
 
   const dday = calculateDday(targetDate, currentDate);
@@ -69,7 +72,7 @@ export default function ContestCardItem({
           <div className="absolute top-5 left-4">
             <span
               className={`px-4 py-2 rounded-full text-s font-medium ${
-                displayStatus === "진행중"
+                displayStatus === "진행중" || displayStatus === "투표중"
                   ? "bg-primary/90 text-white"
                   : "bg-gray-500/90 text-white"
               }`}
