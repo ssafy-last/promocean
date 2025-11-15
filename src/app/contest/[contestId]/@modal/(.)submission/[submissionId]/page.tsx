@@ -9,7 +9,6 @@ import CommunityPostUserProfileItem from "@/components/item/CommunityPostUserPro
 import Heart from "@/components/icon/Heart";
 import { ContestAPI } from "@/api/contest";
 import { ContestSubmissionDetailData } from "@/types/itemType";
-import { useAuthStore } from "@/store/authStore";
 
 /**
  * 대회 상세 페이지 산출물 모달
@@ -37,26 +36,6 @@ export default function ContestSubmissionModal({ params }: { params: Promise<{ c
   }, [contestId, submissionId]);
 
   const isText = submissionData?.type === "텍스트" ? true : false;
-
-  // 수정 버튼 클릭 시 실행되는 함수
-  const handleUpdateSubmission = async () => {
-    ContestAPI.updateContestSubmission(contestId, submissionId);
-  }
-
-  // 삭제 버튼 클릭 시 실행되는 함수
-  const handleDeleteSubmission = async () => {
-    if (!confirm('정말 이 산출물을 삭제하시겠습니까?')) {
-      return;
-    }
-
-    try {
-      await ContestAPI.deleteContestSubmission(contestId, submissionId);
-      router.back();
-      router.refresh();
-    } catch (error) {
-      console.error('삭제 실패:', error);
-    }
-  };
 
   // 투표 버튼 클릭 시 실행되는 함수
   const handleVoteSubmission = async () => {
@@ -167,7 +146,7 @@ export default function ContestSubmissionModal({ params }: { params: Promise<{ c
         )}
 
         {/* 투표하기 버튼 or [수정하기, 삭제하기] 버튼 */}
-        {!error && submissionData && (
+        {/* {!error && submissionData && (
           useAuthStore.getState().user?.nickname === submissionData.author ? (
             <div className="flex flex-row items-center justify-center gap-2 w-full">
               <button
@@ -193,7 +172,7 @@ export default function ContestSubmissionModal({ params }: { params: Promise<{ c
               </button>
             </div>
           )
-        )}
+        )} */}
       </div>
     </div>
   );

@@ -7,6 +7,7 @@ import { useEffect, useState, use } from "react";
 import { ContestAPI } from "@/api/contest";
 import { ContestSubmissionItemProps } from "@/types/itemType";
 import CommunityPostUserProfileItem from "@/components/item/CommunityPostUserProfileItem";
+import { useAuthStore } from "@/store/authStore";
 
 /**
  * 대회 내 산출물 모달
@@ -17,6 +18,7 @@ export default function ContestMySubmissionModal({ params }: { params: Promise<{
   
   const router = useRouter();
   const { contestId } = use(params);
+  const { user } = useAuthStore();
   const [submissionData, setSubmissionData] = useState<ContestSubmissionItemProps | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -39,6 +41,33 @@ export default function ContestMySubmissionModal({ params }: { params: Promise<{
     };
     fetchMySubmission();
   }, [contestId]);
+
+  // 수정 버튼 클릭 시 실행되는 함수
+  const handleUpdateSubmission = async () => {
+    if (!submissionData) return;
+    // TODO: 수정 구현하기
+    console.log('수정하기', submissionData.submissionId);
+  };
+
+  // 삭제 버튼 클릭 시 실행되는 함수
+  const handleDeleteSubmission = async () => {
+    if (!submissionData) return;
+    
+    if (!confirm('정말 이 산출물을 삭제하시겠습니까?')) {
+      return;
+    }
+
+    try {
+      await ContestAPI.deleteContestSubmission(contestId, submissionData.submissionId);
+      router.back();
+      router.refresh();
+    } catch (error) {
+      console.error('삭제 실패:', error);
+      alert('산출물 삭제에 실패했습니다.');
+    }
+  };
+
+  const isAuthor = user && submissionData && user.nickname === submissionData.author;
 
   return (
     <div
@@ -128,6 +157,24 @@ export default function ContestMySubmissionModal({ params }: { params: Promise<{
                 </div>
               )}
             </div>
+
+            {/* 수정/삭제 버튼 */}
+            {isAuthor && (
+              <div className="flex flex-row items-center justify-center gap-2 w-full mt-6 pt-6 border-t border-gray-200">
+                <button
+                  className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 transition-colors cursor-pointer"
+                  onClick={handleUpdateSubmission}
+                >
+                  수정하기
+                </button>
+                <button
+                  className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors cursor-pointer"
+                  onClick={handleDeleteSubmission}
+                >
+                  삭제하기
+                </button>
+              </div>
+            )}
           </>
         )}
       </div>
