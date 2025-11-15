@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import SpaceAPI from "@/api/space";
 import { useArchiveFolderStore } from "@/store/archiveFolderStore";
 import { useSpaceStore } from "@/store/spaceStore";
-import { CommunityAPI } from "@/api/community";
+import { PostAPI } from "@/api/community";
 import { ArticleData } from "@/types/apiTypes/space";
 
 
@@ -35,7 +35,7 @@ export default function SpaceArchiveBoardList(
                     console.log("api ",spaceId, folderId);
                     const res = await SpaceAPI.getArchiveArticles(spaceId||-1, folderId||-1);
 
-                    const res2 = await CommunityAPI.getCommunityBoardList({
+                    const res2 = await PostAPI.getList({
                         author : name
                     });
 

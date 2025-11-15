@@ -2,7 +2,7 @@
 
 import ContestHeader from "@/components/layout/ContestHeader";
 import CommunityFloatingSection from "@/components/section/CommunityFloatingSection";
-import { CommunityAPI } from "@/api/community";
+import { PostAPI } from "@/api/community";
 
 /**
  * ContestLayout component
@@ -11,7 +11,7 @@ import { CommunityAPI } from "@/api/community";
  */
 export default async function ContestLayout({ children }: { children: React.ReactNode }) {
   // 인기글 데이터 가져오기
-  const { popularPosts } = await CommunityAPI.getPopularPosts();
+  const { popularPosts } = await PostAPI.getPopular();
 
   return (
     <div className="min-h-screen bg-gray-50">

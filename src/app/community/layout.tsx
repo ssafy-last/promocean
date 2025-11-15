@@ -3,7 +3,7 @@
 import CommunityHeader from "@/components/layout/CommunityHeader";
 import CommunityFloatingSection from "@/components/section/CommunityFloatingSection";
 import CommunityTabs from "@/components/filter/CommunityTabs";
-import { CommunityAPI } from "@/api/community";
+import { PostAPI } from "@/api/community";
 import { Suspense } from "react";
 
 /**
@@ -17,7 +17,7 @@ export default async function CommunityLayout({
   children: React.ReactNode;
 }) {
   // 인기글 데이터 가져오기
-  const { popularPosts } = await CommunityAPI.getPopularPosts();
+  const { popularPosts } = await PostAPI.getPopular();
 
   return (
     <div className="min-h-screen bg-gray-50">

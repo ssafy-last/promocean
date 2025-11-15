@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { CommunityAPI } from "@/api/community";
+import { PostAPI } from "@/api/community";
 import { useAuthStore } from "@/store/authStore";
 import { CommunityBoardItemProps } from "@/types/itemType";
 import MyPostBoardItem from "@/components/item/MyPostBoardItem";
@@ -32,7 +32,7 @@ export default function MySpaceMyPostSection() {
 
       try {
         setIsLoading(true);
-        const response = await CommunityAPI.getCommunityBoardList({
+        const response = await PostAPI.getList({
           page: currentPage,
           size: 10,
           author: user.nickname,
