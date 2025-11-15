@@ -455,12 +455,12 @@ export const ContestAPI = {
    * @endpoint /api/v1/contests/{contestId}/submissions/me
    * @description 대회 내 산출물 목록 데이터를 조회하는 API입니다.
    * @param {number} contestId - 대회 ID (contestId)
-   * @returns {Promise<{ contestMySubmissionItem: ContestSubmissionItemProps }>}
+   * @returns {Promise<{ contestMySubmissionItem: ContestSubmissionDetailData }>}
    */
   async getContestMySubmissionItem(contestId: number) {
     interface ApiResponse {
       message: string | null;
-      data: ContestSubmissionItemProps;
+      data: ContestSubmissionDetailData;
     }
     const response = await apiFetch<ApiResponse>(`/api/v1/contests/${contestId}/submissions/me`);
     return {

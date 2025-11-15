@@ -5,7 +5,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState, use } from "react";
 import { ContestAPI } from "@/api/contest";
-import { ContestSubmissionItemProps, ContestSubmissionDetailData } from "@/types/itemType";
+import { ContestSubmissionDetailData } from "@/types/itemType";
 import CommunityPostUserProfileItem from "@/components/item/CommunityPostUserProfileItem";
 import { useAuthStore } from "@/store/authStore";
 
@@ -19,7 +19,6 @@ export default function ContestMySubmissionModal({ params }: { params: Promise<{
   const router = useRouter();
   const { contestId } = use(params);
   const { user } = useAuthStore();
-  const [submissionData, setSubmissionData] = useState<ContestSubmissionItemProps | null>(null);
   const [submissionDetailData, setSubmissionDetailData] = useState<ContestSubmissionDetailData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
@@ -30,28 +29,18 @@ export default function ContestMySubmissionModal({ params }: { params: Promise<{
   useEffect(() => {
     const fetchMySubmission = async () => {
       try {
+        // /submissions/me API는 상세 데이터를 반환하므로 한 번만 호출
         const { contestMySubmissionItem } = await ContestAPI.getContestMySubmissionItem(contestId);
-        setSubmissionData(contestMySubmissionItem);
-        
-        // 상세 데이터도 가져오기
-        if (contestMySubmissionItem) {
-          const { submissionData: detailData } = await ContestAPI.getContestSubmissionDetailData(
-            contestId,
-            contestMySubmissionItem.submissionId
-          );
-          setSubmissionDetailData(detailData);
-          setEditPrompt(detailData.prompt);
-          setEditDescription(detailData.description);
-          setEditResult(detailData.result);
-        }
+        setSubmissionDetailData(contestMySubmissionItem);
+        setEditPrompt(contestMySubmissionItem.prompt);
+        setEditDescription(contestMySubmissionItem.description);
+        setEditResult(contestMySubmissionItem.result);
       } catch (error) {
         // 404 에러는 산출물이 없는 것으로 처리
         if (error instanceof Error && error.message.includes('404')) {
-          setSubmissionData(null);
           setSubmissionDetailData(null);
         } else {
           console.error('산출물 조회 실패:', error);
-          setSubmissionData(null);
           setSubmissionDetailData(null);
         }
       } finally {
@@ -78,7 +67,7 @@ export default function ContestMySubmissionModal({ params }: { params: Promise<{
 
   // 수정 저장
   const handleUpdateSubmission = async () => {
-    if (!submissionData || !submissionDetailData) return;
+    if (!submissionDetailData) return;
     
     if (!editPrompt.trim() || !editDescription.trim() || !editResult.trim()) {
       alert('모든 필드를 입력해주세요.');
@@ -88,18 +77,18 @@ export default function ContestMySubmissionModal({ params }: { params: Promise<{
     try {
       await ContestAPI.updateContestSubmission(
         contestId,
-        submissionData.submissionId,
+        submissionDetailData.submissionId,
         editPrompt,
         editDescription,
         editResult
       );
       
       // 최신 데이터로 갱신
-      const { submissionData: updatedData } = await ContestAPI.getContestSubmissionDetailData(
-        contestId,
-        submissionData.submissionId
-      );
+      const { contestMySubmissionItem: updatedData } = await ContestAPI.getContestMySubmissionItem(contestId);
       setSubmissionDetailData(updatedData);
+      setEditPrompt(updatedData.prompt);
+      setEditDescription(updatedData.description);
+      setEditResult(updatedData.result);
       setIsEditing(false);
       router.refresh();
     } catch (error) {
@@ -110,14 +99,14 @@ export default function ContestMySubmissionModal({ params }: { params: Promise<{
 
   // 삭제 버튼 클릭 시 실행되는 함수
   const handleDeleteSubmission = async () => {
-    if (!submissionData) return;
+    if (!submissionDetailData) return;
     
     if (!confirm('정말 이 산출물을 삭제하시겠습니까?')) {
       return;
     }
 
     try {
-      await ContestAPI.deleteContestSubmission(contestId, submissionData.submissionId);
+      await ContestAPI.deleteContestSubmission(contestId, submissionDetailData.submissionId);
       router.back();
       router.refresh();
     } catch (error) {
@@ -126,7 +115,7 @@ export default function ContestMySubmissionModal({ params }: { params: Promise<{
     }
   };
 
-  const isAuthor = user && submissionData && user.nickname === submissionData.author;
+  const isAuthor = user && submissionDetailData && user.nickname === submissionDetailData.author;
 
   return (
     <div
@@ -150,7 +139,7 @@ export default function ContestMySubmissionModal({ params }: { params: Promise<{
               로딩 중...
             </div>
           </>
-        ) : !submissionData ? (
+        ) : !submissionDetailData ? (
           <>
             <div className="mb-6 pb-4 border-b border-gray-200">
               <h2 className="text-2xl font-bold text-gray-900">내 산출물</h2>
@@ -169,8 +158,8 @@ export default function ContestMySubmissionModal({ params }: { params: Promise<{
             {/* 작성자 정보 */}
             <div className="mb-6">
               <CommunityPostUserProfileItem
-                profileUrl={submissionData.profileUrl}
-                author={submissionData.author}
+                profileUrl={submissionDetailData.profileUrl}
+                author={submissionDetailData.author}
                 createdAt=""
               />
             </div>
@@ -238,22 +227,7 @@ export default function ContestMySubmissionModal({ params }: { params: Promise<{
               {!isEditing && (
                 <div>
                   <h3 className="text-sm font-medium text-gray-700 mb-2">투표 수</h3>
-                  <span className="text-base text-gray-900 font-medium">{submissionData.voteCnt}표</span>
-                </div>
-              )}
-
-              {/* 제출 URL */}
-              {!isEditing && submissionData.submissionUrl && (
-                <div>
-                  <h3 className="text-sm font-medium text-gray-700 mb-2">제출 링크</h3>
-                  <a
-                    href={submissionData.submissionUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary hover:underline break-all"
-                  >
-                    {submissionData.submissionUrl}
-                  </a>
+                  <span className="text-base text-gray-900 font-medium">{submissionDetailData.voteCnt}표</span>
                 </div>
               )}
             </div>
