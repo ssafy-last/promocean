@@ -5,7 +5,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState, use } from "react";
 import { ContestAPI } from "@/api/contest";
-import { ContestSubmissionItemProps } from "@/types/itemType";
+import { ContestSubmissionItemProps, ContestSubmissionDetailData } from "@/types/itemType";
 import CommunityPostUserProfileItem from "@/components/item/CommunityPostUserProfileItem";
 import { useAuthStore } from "@/store/authStore";
 
@@ -20,20 +20,39 @@ export default function ContestMySubmissionModal({ params }: { params: Promise<{
   const { contestId } = use(params);
   const { user } = useAuthStore();
   const [submissionData, setSubmissionData] = useState<ContestSubmissionItemProps | null>(null);
+  const [submissionDetailData, setSubmissionDetailData] = useState<ContestSubmissionDetailData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editPrompt, setEditPrompt] = useState('');
+  const [editDescription, setEditDescription] = useState('');
+  const [editResult, setEditResult] = useState('');
 
   useEffect(() => {
     const fetchMySubmission = async () => {
       try {
         const { contestMySubmissionItem } = await ContestAPI.getContestMySubmissionItem(contestId);
         setSubmissionData(contestMySubmissionItem);
+        
+        // 상세 데이터도 가져오기
+        if (contestMySubmissionItem) {
+          const { submissionData: detailData } = await ContestAPI.getContestSubmissionDetailData(
+            contestId,
+            contestMySubmissionItem.submissionId
+          );
+          setSubmissionDetailData(detailData);
+          setEditPrompt(detailData.prompt);
+          setEditDescription(detailData.description);
+          setEditResult(detailData.result);
+        }
       } catch (error) {
         // 404 에러는 산출물이 없는 것으로 처리
         if (error instanceof Error && error.message.includes('404')) {
           setSubmissionData(null);
+          setSubmissionDetailData(null);
         } else {
           console.error('산출물 조회 실패:', error);
           setSubmissionData(null);
+          setSubmissionDetailData(null);
         }
       } finally {
         setIsLoading(false);
@@ -42,11 +61,51 @@ export default function ContestMySubmissionModal({ params }: { params: Promise<{
     fetchMySubmission();
   }, [contestId]);
 
-  // 수정 버튼 클릭 시 실행되는 함수
+  // 수정 시작
+  const handleEditStart = () => {
+    setIsEditing(true);
+  };
+
+  // 수정 취소
+  const handleEditCancel = () => {
+    if (submissionDetailData) {
+      setEditPrompt(submissionDetailData.prompt);
+      setEditDescription(submissionDetailData.description);
+      setEditResult(submissionDetailData.result);
+    }
+    setIsEditing(false);
+  };
+
+  // 수정 저장
   const handleUpdateSubmission = async () => {
-    if (!submissionData) return;
-    // TODO: 수정 구현하기
-    console.log('수정하기', submissionData.submissionId);
+    if (!submissionData || !submissionDetailData) return;
+    
+    if (!editPrompt.trim() || !editDescription.trim() || !editResult.trim()) {
+      alert('모든 필드를 입력해주세요.');
+      return;
+    }
+
+    try {
+      await ContestAPI.updateContestSubmission(
+        contestId,
+        submissionData.submissionId,
+        editPrompt,
+        editDescription,
+        editResult
+      );
+      
+      // 최신 데이터로 갱신
+      const { submissionData: updatedData } = await ContestAPI.getContestSubmissionDetailData(
+        contestId,
+        submissionData.submissionId
+      );
+      setSubmissionDetailData(updatedData);
+      setIsEditing(false);
+      router.refresh();
+    } catch (error) {
+      console.error('수정 실패:', error);
+      alert('산출물 수정에 실패했습니다.');
+    }
   };
 
   // 삭제 버튼 클릭 시 실행되는 함수
@@ -118,32 +177,73 @@ export default function ContestMySubmissionModal({ params }: { params: Promise<{
 
             {/* 산출물 정보 */}
             <div className="mb-6 space-y-4">
-              {/* 설명 */}
-              {submissionData.description && (
+              {/* 프롬프트 */}
+              {submissionDetailData && (
                 <div>
-                  <h3 className="text-sm font-medium text-gray-700 mb-2">설명</h3>
-                  <div className="p-4 bg-gray-50 rounded-lg">
-                    <p className="text-gray-700 whitespace-pre-wrap">{submissionData.description}</p>
-                  </div>
+                  <h3 className="text-sm font-medium text-gray-700 mb-2">프롬프트</h3>
+                  {isEditing ? (
+                    <textarea
+                      value={editPrompt}
+                      onChange={(e) => setEditPrompt(e.target.value)}
+                      className="w-full min-h-[100px] text-gray-700 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary resize-y"
+                      placeholder="프롬프트를 입력하세요"
+                    />
+                  ) : (
+                    <div className="p-4 bg-gray-50 rounded-lg">
+                      <p className="text-gray-700 whitespace-pre-wrap">{submissionDetailData.prompt}</p>
+                    </div>
+                  )}
                 </div>
               )}
 
-              {/* 타입 */}
-              <div>
-                <h3 className="text-sm font-medium text-gray-700 mb-2">타입</h3>
-                <span className="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium">
-                  {submissionData.type}
-                </span>
-              </div>
+              {/* 설명 */}
+              {submissionDetailData && (
+                <div>
+                  <h3 className="text-sm font-medium text-gray-700 mb-2">설명</h3>
+                  {isEditing ? (
+                    <textarea
+                      value={editDescription}
+                      onChange={(e) => setEditDescription(e.target.value)}
+                      className="w-full min-h-[100px] text-gray-700 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary resize-y"
+                      placeholder="설명을 입력하세요"
+                    />
+                  ) : (
+                    <div className="p-4 bg-gray-50 rounded-lg">
+                      <p className="text-gray-700 whitespace-pre-wrap">{submissionDetailData.description}</p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* 결과 */}
+              {submissionDetailData && (
+                <div>
+                  <h3 className="text-sm font-medium text-gray-700 mb-2">결과</h3>
+                  {isEditing ? (
+                    <textarea
+                      value={editResult}
+                      onChange={(e) => setEditResult(e.target.value)}
+                      className="w-full min-h-[200px] text-gray-700 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary resize-y"
+                      placeholder="결과를 입력하세요"
+                    />
+                  ) : (
+                    <div className="p-4 bg-gray-50 rounded-lg">
+                      <p className="text-gray-700 whitespace-pre-wrap">{submissionDetailData.result}</p>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* 투표 수 */}
-              <div>
-                <h3 className="text-sm font-medium text-gray-700 mb-2">투표 수</h3>
-                <span className="text-base text-gray-900 font-medium">{submissionData.voteCnt}표</span>
-              </div>
+              {!isEditing && (
+                <div>
+                  <h3 className="text-sm font-medium text-gray-700 mb-2">투표 수</h3>
+                  <span className="text-base text-gray-900 font-medium">{submissionData.voteCnt}표</span>
+                </div>
+              )}
 
               {/* 제출 URL */}
-              {submissionData.submissionUrl && (
+              {!isEditing && submissionData.submissionUrl && (
                 <div>
                   <h3 className="text-sm font-medium text-gray-700 mb-2">제출 링크</h3>
                   <a
@@ -161,18 +261,37 @@ export default function ContestMySubmissionModal({ params }: { params: Promise<{
             {/* 수정/삭제 버튼 */}
             {isAuthor && (
               <div className="flex flex-row items-center justify-center gap-2 w-full mt-6 pt-6 border-t border-gray-200">
-                <button
-                  className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 transition-colors cursor-pointer"
-                  onClick={handleUpdateSubmission}
-                >
-                  수정하기
-                </button>
-                <button
-                  className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors cursor-pointer"
-                  onClick={handleDeleteSubmission}
-                >
-                  삭제하기
-                </button>
+                {isEditing ? (
+                  <>
+                    <button
+                      className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition-colors cursor-pointer"
+                      onClick={handleEditCancel}
+                    >
+                      취소
+                    </button>
+                    <button
+                      className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 transition-colors cursor-pointer"
+                      onClick={handleUpdateSubmission}
+                    >
+                      저장
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 transition-colors cursor-pointer"
+                      onClick={handleEditStart}
+                    >
+                      수정하기
+                    </button>
+                    <button
+                      className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors cursor-pointer"
+                      onClick={handleDeleteSubmission}
+                    >
+                      삭제하기
+                    </button>
+                  </>
+                )}
               </div>
             )}
           </>

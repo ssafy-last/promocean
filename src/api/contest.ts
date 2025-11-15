@@ -419,15 +419,29 @@ export const ContestAPI = {
    * @description 대회 산출물 수정하는 API입니다.
    * @param {number} contestId - 대회 ID (contestId)
    * @param {number} submissionId - 산출물 ID
+   * @param {string} prompt - 프롬프트
+   * @param {string} description - 설명
+   * @param {string} result - 결과
    * @returns {Promise<{ message: string | null, data: null }>}
    */
-  async updateContestSubmission(contestId: number, submissionId: number) {
+  async updateContestSubmission(
+    contestId: number,
+    submissionId: number,
+    prompt: string,
+    description: string,
+    result: string
+  ) {
     interface ApiResponse {
       message: string | null;
       data: null;
     }
     const response = await apiFetch<ApiResponse>(`/api/v1/contests/${contestId}/submissions/${submissionId}`, {
       method: 'PUT',
+      body: JSON.stringify({
+        prompt,
+        description,
+        result,
+      }),
     });
     return {
       message: response.message,
