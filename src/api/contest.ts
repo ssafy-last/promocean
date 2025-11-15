@@ -449,9 +449,6 @@ export const ContestAPI = {
       data: ContestSubmissionItemProps;
     }
     const response = await apiFetch<ApiResponse>(`/api/v1/contests/${contestId}/submissions/me`);
-    // const response = await fetch(`http://localhost:3000/mock/ContestMySubmissionData.json`, {
-    //   cache: "no-store",
-    // }).then(res => res.json());  
     return {
       contestMySubmissionItem: response.data,
     };
