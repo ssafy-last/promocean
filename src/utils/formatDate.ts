@@ -67,24 +67,30 @@ export function formatDotDate(dateStr?: string): string {
  * @param currentDate - 현재 날짜
  * @param startAt - 대회 시작일
  * @param endAt - 대회 종료일
- * @returns "개최전" | "진행중" | "종료"
+ * @param voteEndAt - 투표 종료일
+ * @returns "개최전" | "진행중" | "투표중" | "종료"
  */
 export function calculateContestStatus(
   currentDate: Date,
   startAt: string,
-  endAt: string
-): "개최전" | "진행중" | "종료" {
+  endAt: string,
+  voteEndAt: string
+): "개최전" | "진행중" | "투표중" | "종료" {
   const start = new Date(startAt);
   const end = new Date(endAt);
+  const voteEnd = new Date(voteEndAt);
 
   start.setHours(0, 0, 0, 0);
   end.setHours(0, 0, 0, 0);
+  voteEnd.setHours(0, 0, 0, 0);
   currentDate.setHours(0, 0, 0, 0);
 
   if (currentDate < start) {
     return "개최전";
   } else if (currentDate >= start && currentDate <= end) {
     return "진행중";
+  } else if (currentDate > end && currentDate <= voteEnd) {
+    return "투표중";
   } else {
     return "종료";
   }
@@ -116,7 +122,7 @@ export function calculateDday(targetDate: Date | null, currentDate: Date = new D
  * @returns D-day 텍스트
  */
 export function formatDdayText(
-  displayStatus: "개최전" | "진행중" | "종료",
+  displayStatus: "개최전" | "진행중" | "투표중" | "종료",
   dday: number | null
 ): string {
   if (displayStatus === "종료") {
@@ -133,6 +139,12 @@ export function formatDdayText(
     } else if (dday && dday > 0) {
       return `종료까지 D-${dday}`;
     }
+  } else if (displayStatus === "투표중") {
+    if (dday === 0) {
+      return "투표종료까지 D-day";
+    } else if (dday && dday > 0) {
+      return `투표종료까지 D-${dday}`;
+    }
   }
   return "";
 }
@@ -144,14 +156,14 @@ export function formatDdayText(
  * @returns Tailwind CSS 클래스 문자열
  */
 export function getDdayColor(
-  displayStatus: "개최전" | "진행중" | "종료",
+  displayStatus: "개최전" | "진행중" | "투표중" | "종료",
   dday: number | null
 ): string {
   let ddayColor = "";
 
   if (displayStatus === "개최전") {
     ddayColor = "bg-gray-200 text-gray-600";
-  } else if (displayStatus === "진행중") {
+  } else if (displayStatus === "진행중" || displayStatus === "투표중") {
     ddayColor = "bg-primary/10 text-primary";
   }
 
