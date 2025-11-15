@@ -39,7 +39,16 @@ export class PostAPI {
    * @param {object} params - 쿼리 파라미터
    * @returns {Promise<{ communityBoardList: CommunityBoardItemProps[], itemCnt: number, totalCnt: number, totalPages: number, currentPage: number }>}
    */
-  static async getList(params?: {
+  static async getList({
+    page = 1,
+    size = 10,
+    author,
+    title,
+    tag,
+    sorter,
+    category,
+    type,
+  }: {
     page?: number;
     size?: number;
     author?: string;
@@ -48,31 +57,20 @@ export class PostAPI {
     sorter?: string;
     category?: string;
     type?: string;
-  }) {
-    // 쿼리 파라미터 생성 (값이 있는 파라미터만 추가)
+  } = {}) {
+
+    // 쿼리 파라미터 생성
     const queryParams = new URLSearchParams();
-    
-    // 디폴트값 설정
-    const defaultParams = {
-      page: params?.page || 1,
-      size: 10, // 응답이 10개보다 적더라도 항상 10으로 요청
-    };
-    
-    // 디폴트값 추가
-    queryParams.set('page', defaultParams.page.toString());
-    queryParams.set('size', defaultParams.size.toString());
-    
-    // 나머지 파라미터는 값이 있을 때만 추가
-    if (params?.author) queryParams.set('author', params.author);
-    if (params?.title) queryParams.set('title', params.title);
-    if (params?.tag) queryParams.set('tag', params.tag);
-    if (params?.sorter) queryParams.set('sorter', params.sorter);
-    
-    // 카테고리 변환 후 추가
-    const convertedCategory = convertCategoryToApiCode(params?.category);
-    if (convertedCategory) {
-      queryParams.set('category', convertedCategory);
-    }
+    [
+      { key: 'page', value: page?.toString() || '1' },
+      { key: 'size', value: size?.toString() || '10' },
+      { key: 'author', value: author },
+      { key: 'title', value: title },
+      { key: 'tag', value: tag },
+      { key: 'sorter', value: sorter },
+      { key: 'type', value: type },
+      { key: 'category', value: convertCategoryToApiCode(category) },
+    ].forEach(({ key, value }) => value && queryParams.set(key, value));
     
     interface ApiResponse {
       message: string | null;
