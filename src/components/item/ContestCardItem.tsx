@@ -4,6 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { ContestCardItemProps } from "@/types/itemType";
 import { Calendar } from "lucide-react";
+import {
+  formatDotDate,
+  calculateContestStatus,
+  calculateDday,
+  formatDdayText,
+  getDdayColor,
+} from "@/utils/formatDate";
 
 export default function ContestCardItem({
   contestId,
@@ -16,82 +23,29 @@ export default function ContestCardItem({
   createdAt,
   updatedAt,
 }: ContestCardItemProps) {
+  // 현재 날짜를 기준으로 상태 계산
+  const currentDate = new Date();
+  const displayStatus = calculateContestStatus(currentDate, startAt, endAt);
+
   // 날짜 포맷팅
-  const startDateObj = new Date(startAt);
-  const endDateObj = new Date(endAt);
+  const formattedStartDate = formatDotDate(startAt);
+  const formattedEndDate = formatDotDate(endAt);
 
-  const formattedStartDate = `${startDateObj.getFullYear()}.${String(
-    startDateObj.getMonth() + 1
-  ).padStart(2, "0")}.${String(startDateObj.getDate()).padStart(2, "0")}`;
-
-  const formattedEndDate = `${endDateObj.getFullYear()}.${String(
-    endDateObj.getMonth() + 1
-  ).padStart(2, "0")}.${String(endDateObj.getDate()).padStart(2, "0")}`;
-
-  // ------------------------------
-  // 🔥 상태별 D-day 기준 설정
-  // ------------------------------
+  // D-day 계산
   let targetDate: Date | null = null;
-
-  if (status === "개최전") {
+  if (displayStatus === "개최전") {
     targetDate = new Date(startAt); // 시작일까지 D-
-  } else if (status === "진행중" || status === "투표중") {
+  } else if (displayStatus === "진행중") {
     targetDate = new Date(endAt); // 종료일까지 D-
   }
 
-  // ------------------------------
-  // 🔥 D-day 계산
-  // ------------------------------
-  let dday: number | null = null;
+  const dday = calculateDday(targetDate, currentDate);
+  const ddayColor = getDdayColor(displayStatus, dday);
+  const ddayText = formatDdayText(displayStatus, dday);
 
-  if (targetDate) {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    const target = new Date(targetDate);
-    target.setHours(0, 0, 0, 0);
-
-    const diff = target.getTime() - today.getTime();
-    dday = Math.ceil(diff / (1000 * 60 * 60 * 24));
-  }
-
-  // ------------------------------
-  // 🔥 D-day 색상 규칙
-  // ------------------------------
-  let ddayColor = "";
-
-  if (status === "개최전") {
-    ddayColor = "bg-gray-200 text-gray-600";
-  } else if (status === "진행중" || status === "투표중") {
-    ddayColor = "bg-primary/10 text-primary";
-  }
-
-  // 임박 강조
-  if (dday !== null && status !== "종료") {
-    if (dday === 0) {
-      ddayColor = "bg-red-100 text-red-600"; // D-day
-    } else if (dday > 0 && dday <= 3) {
-      ddayColor = "bg-orange-100 text-orange-600"; // D-3 이하
-    }
-  }
-
-  // ------------------------------
-  // 🔥 D-day 텍스트 규칙
-  // ------------------------------
-
-  let ddayText = "";
-
-  if (status === "종료") {
-    ddayText = ""; // 종료는 표시 안 함
-  } else if (dday === 0) {
-    ddayText = "D-day";
-  } else if (dday && dday > 0) {
-    ddayText = `D-${dday}`;
-  }
-
+  const isEnded = displayStatus === "종료";
+  
   const imgUrl = `/assets/img_random${contestId % 21}.png`;
-
-  const isEnded = status === "종료";
 
   return (
     <Link
@@ -107,20 +61,20 @@ export default function ContestCardItem({
             alt={title}
             fill
             className={`object-cover transition-transform duration-300 group-hover:scale-105 ${
-              isEnded ? "opacity-60 grayscale" : ""
+              isEnded ? "opacity-80 grayscale" : ""
             }`}
           />
 
           {/* Status Pill */}
-          <div className="absolute top-4 left-4">
+          <div className="absolute top-5 left-4">
             <span
-              className={`px-4 py-2 rounded-full text-xs font-medium ${
-                status === "진행중" || status === "투표중"
+              className={`px-4 py-2 rounded-full text-s font-medium ${
+                displayStatus === "진행중"
                   ? "bg-primary/90 text-white"
                   : "bg-gray-500/90 text-white"
               }`}
             >
-              {status}
+              {displayStatus}
             </span>
           </div>
         </div>
