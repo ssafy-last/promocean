@@ -3,7 +3,7 @@
 import HeroSection from "@/components/section/HeroSection";
 import PostCardSection from "@/components/section/PostCardSection";
 import { PostCardItemProps, CommunityFloatingItemProps } from "@/types/itemType";
-import { CommunityAPI } from "@/api/community";
+import { PostAPI } from "@/api/community";
 
 /**
  * Home component
@@ -12,7 +12,7 @@ import { CommunityAPI } from "@/api/community";
  */
 export default async function Home() {
 
-  const { popularPosts: popularPostsRaw } = await CommunityAPI.getPopularPosts();
+  const { popularPosts: popularPostsRaw } = await PostAPI.getPopular();
   
   // TODO : API 만들어야함?
   // CommunityFloatingItemProps를 PostCardItemProps로 변환
