@@ -90,7 +90,7 @@ export default function ContestPostModal({ contestId, onClose, initialData }: Co
         throw new Error('초기 데이터가 없습니다.');
       }
       
-      await ContestAPI.updateContestPost(contestId, {
+      await ContestAPI.update(contestId, {
         title: title.trim(),
         content: content.trim(),
         type: getTypeNumber(initialData.type),

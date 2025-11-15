@@ -4,7 +4,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState, use } from "react";
-import { ContestAPI } from "@/api/contest";
+import { SubmissionAPI } from "@/api/contest";
 import { ContestSubmissionDetailData } from "@/types/itemType";
 import CommunityPostUserProfileItem from "@/components/item/CommunityPostUserProfileItem";
 import { useAuthStore } from "@/store/authStore";
@@ -30,7 +30,7 @@ export default function ContestMySubmissionModal({ params }: { params: Promise<{
     const fetchMySubmission = async () => {
       try {
         // /submissions/me API는 상세 데이터를 반환하므로 한 번만 호출
-        const { contestMySubmissionItem } = await ContestAPI.getContestMySubmissionItem(contestId);
+        const { contestMySubmissionItem } = await SubmissionAPI.getMySubmission(contestId);
         setSubmissionDetailData(contestMySubmissionItem);
         setEditPrompt(contestMySubmissionItem.prompt);
         setEditDescription(contestMySubmissionItem.description);
@@ -75,7 +75,7 @@ export default function ContestMySubmissionModal({ params }: { params: Promise<{
     }
 
     try {
-      await ContestAPI.updateContestSubmission(
+      await SubmissionAPI.update(
         contestId,
         submissionDetailData.submissionId,
         editPrompt,
@@ -84,7 +84,7 @@ export default function ContestMySubmissionModal({ params }: { params: Promise<{
       );
       
       // 최신 데이터로 갱신
-      const { contestMySubmissionItem: updatedData } = await ContestAPI.getContestMySubmissionItem(contestId);
+      const { contestMySubmissionItem: updatedData } = await SubmissionAPI.getMySubmission(contestId);
       setSubmissionDetailData(updatedData);
       setEditPrompt(updatedData.prompt);
       setEditDescription(updatedData.description);
@@ -106,7 +106,7 @@ export default function ContestMySubmissionModal({ params }: { params: Promise<{
     }
 
     try {
-      await ContestAPI.deleteContestSubmission(contestId, submissionDetailData.submissionId);
+      await SubmissionAPI.delete(contestId, submissionDetailData.submissionId);
       router.back();
       router.refresh();
     } catch (error) {

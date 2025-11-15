@@ -30,7 +30,7 @@ export default function ContestUpdateModal() {
   useEffect(() => {
     const fetchContestData = async () => {
       try {
-        const { contestData } = await ContestAPI.getContestDetailData(contestId);
+        const { contestData } = await ContestAPI.getDetail(contestId);
         setContestData(contestData);
         setTitle(contestData.title);
         setContent(contestData.content);
@@ -95,7 +95,7 @@ export default function ContestUpdateModal() {
     setIsSubmitting(true);
 
     try {
-      await ContestAPI.updateContestPost(contestId, {
+      await ContestAPI.update(contestId, {
         title: title.trim(),
         content: content.trim(),
         type: getTypeNumber(contestData.type),

@@ -1,7 +1,7 @@
 // frontend/src/app/contest/[contestId]/page.tsx
 
 import ContestPostSection from "@/components/section/ContestPostSection";
-import { ContestAPI } from "@/api/contest"; 
+import { ContestAPI, NoticeAPI, SubmissionAPI } from "@/api/contest"; 
 
 interface ContestPostPageProps {
   params: Promise<{ contestId: string }>;
@@ -17,8 +17,8 @@ export default async function ContestPostPage({ params }: ContestPostPageProps) 
   const contestId = parseInt(contestIdStr, 10);
 
   // 각각 API 호출
-  const { contestData: contestPostData } = await ContestAPI.getContestDetailData(contestId);
-  const { contestNoticeList } = await ContestAPI.getContestNoticeList(contestId);
+  const { contestData: contestPostData } = await ContestAPI.getDetail(contestId);
+  const { contestNoticeList } = await NoticeAPI.list(contestId);
   
   // 날짜 조건 체크: 대회 종료 후에만 제출물 목록 조회
   const endAt = new Date(contestPostData.endAt);
@@ -27,7 +27,7 @@ export default async function ContestPostPage({ params }: ContestPostPageProps) 
   
   // 날짜 조건이 맞으면 제출물 목록 조회, 안 맞으면 빈 배열
   const { contestSubmissionList = [] } = isContestEnded 
-    ? await ContestAPI.getContestSubmissionList(contestId)
+    ? await SubmissionAPI.list(contestId)
     : { contestSubmissionList: [] };
 
   return (

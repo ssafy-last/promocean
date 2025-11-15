@@ -7,7 +7,7 @@ import { useEffect, useState, use } from "react";
 import Image from "next/image";
 import CommunityPostUserProfileItem from "@/components/item/CommunityPostUserProfileItem";
 import Heart from "@/components/icon/Heart";
-import { ContestAPI } from "@/api/contest";
+import { SubmissionAPI, VoteAPI } from "@/api/contest";
 import { ContestSubmissionDetailData } from "@/types/itemType";
 
 /**
@@ -25,7 +25,7 @@ export default function ContestSubmissionModal({ params }: { params: Promise<{ c
     const fetchSubmissionDetail = async () => {
       try {
         setError(null);
-        const { submissionData } = await ContestAPI.getContestSubmissionDetailData(contestId, submissionId);
+        const { submissionData } = await SubmissionAPI.getDetail(contestId, submissionId);
         setSubmissionData(submissionData);
       } catch (err) {
         console.error('산출물 조회 실패:', err);
@@ -47,11 +47,11 @@ export default function ContestSubmissionModal({ params }: { params: Promise<{ c
     setSubmissionData(prev => prev && { ...prev, voteCnt: prev.voteCnt + 1 });
   
     try {
-      await ContestAPI.createContestSubmissionVote(contestId, submissionId);
+      await VoteAPI.create(contestId, submissionId);
   
       // 최신 데이터로 동기화
       const { submissionData: updatedData } =
-        await ContestAPI.getContestSubmissionDetailData(contestId, submissionId);
+        await SubmissionAPI.getDetail(contestId, submissionId);
   
       setSubmissionData(updatedData);
     } catch (error) {
