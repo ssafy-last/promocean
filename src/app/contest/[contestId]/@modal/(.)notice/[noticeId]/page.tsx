@@ -5,7 +5,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState, use } from "react";
 import CommunityPostUserProfileItem from "@/components/item/CommunityPostUserProfileItem";
-import { ContestAPI } from "@/api/contest";
+import { ContestAPI, NoticeAPI } from "@/api/contest";
 import { ContestNoticeDetailData } from "@/types/itemType";
 import { useAuthStore } from "@/store/authStore";
 
@@ -28,8 +28,8 @@ export default function ContestNoticeModal({ params }: { params: Promise<{ conte
   useEffect(() => {
     const fetchData = async () => {
       const [noticeResult, contestResult] = await Promise.all([
-        ContestAPI.getContestNoticeDetailData(contestId, noticeId),
-        ContestAPI.getContestDetailData(contestId),
+        NoticeAPI.getDetail(contestId, noticeId),
+        ContestAPI.getDetail(contestId),
       ]);
       setNoticeData(noticeResult.noticeData);
       setContestAuthor(contestResult.contestData.author);
@@ -57,8 +57,8 @@ export default function ContestNoticeModal({ params }: { params: Promise<{ conte
       return;
     }
     try {
-      await ContestAPI.updateContestNotice(contestId, noticeId, editTitle, editContent);
-      const { noticeData: updatedNotice } = await ContestAPI.getContestNoticeDetailData(contestId, noticeId);
+      await NoticeAPI.update(contestId, noticeId, editTitle, editContent);
+      const { noticeData: updatedNotice } = await NoticeAPI.getDetail(contestId, noticeId);
       setNoticeData(updatedNotice);
       setIsEditing(false);
       router.refresh();
@@ -73,7 +73,7 @@ export default function ContestNoticeModal({ params }: { params: Promise<{ conte
       return;
     }
     try {
-      await ContestAPI.deleteContestNotice(contestId, noticeId);
+      await NoticeAPI.delete(contestId, noticeId);
       router.refresh();
       router.back();
     } catch (error) {

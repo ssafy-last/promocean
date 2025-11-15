@@ -32,7 +32,7 @@ export default async function ContestPage({ searchParams }: ContestPageProps) {
     ...(params.tag && { tag: params.tag }),
   };
 
-  const { contestCardList, itemCnt, totalCnt, totalPages, currentPage } = await ContestAPI.getContestCardList(apiParams);
+  const { contestCardList, itemCnt, totalCnt, totalPages, currentPage } = await ContestAPI.getList(apiParams);
 
   return (
     <>

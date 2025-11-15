@@ -4,7 +4,7 @@
 
 import { useRouter, useParams } from "next/navigation";
 import { useState } from "react";
-import { ContestAPI } from "@/api/contest";
+import { NoticeAPI } from "@/api/contest";
 
 /**
  * 공지사항 작성 모달
@@ -46,7 +46,7 @@ export default function ContestPostNoticeModal() {
     setIsSubmitting(true);
 
     try {
-      await ContestAPI.createContestNotice(contestId, title.trim(), content.trim());
+      await NoticeAPI.create(contestId, title.trim(), content.trim());
 
       // 성공 시 페이지 새로고침하고 모달 닫기
       router.refresh();
