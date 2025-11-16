@@ -4,9 +4,13 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { HashtagItemProps } from "@/types/itemType";
 import CommunityHashtagSection from "@/components/section/CommunityHashtagSection";
 import { ArticleData } from "@/types/apiTypes/space";
+import SpaceAPI from "@/api/space";
+import { useSpaceStore } from "@/store/spaceStore";
+import { useArchiveFolderStore } from "@/store/archiveFolderStore";
 
 interface MySpaceArchiveArticleSectionProps {
   articleData: ArticleData;
@@ -19,7 +23,11 @@ interface MySpaceArchiveArticleSectionProps {
  */
 export default function MySpaceArchiveArticleSection({ articleData }: MySpaceArchiveArticleSectionProps) {
     const router = useRouter();
+    const spaceStore = useSpaceStore();
+    const folderStore = useArchiveFolderStore();
     const hashtagList: HashtagItemProps[] = articleData.tags.map((tag: string) => ({ tag }));
+
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const handleEdit = () => {
       // TODO: 수정 페이지로 이동 로직 구현
@@ -28,12 +36,45 @@ export default function MySpaceArchiveArticleSection({ articleData }: MySpaceArc
     };
 
     const handleDelete = async () => {
-      // TODO: 삭제 API 호출 로직 구현
-      if (confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
-        console.log('삭제 버튼 클릭', articleData.articleId);
-        alert('삭제 기능은 구현 예정입니다.');
-        // 삭제 성공 후 목록으로 이동
-        // router.back();
+      // 삭제 확인 모달
+      if (!confirm('정말로 이 게시글을 삭제하시겠습니까?\n삭제된 게시글은 복구할 수 없습니다.')) {
+        return;
+      }
+
+      setIsDeleting(true);
+
+      try {
+        const spaceId = spaceStore.currentSpace?.spaceId;
+        const currentFolder = folderStore.currentFolder;
+
+        if (!spaceId) {
+          alert('스페이스 정보를 찾을 수 없습니다.');
+          setIsDeleting(false);
+          return;
+        }
+
+        if (!currentFolder) {
+          alert('폴더 정보를 찾을 수 없습니다.');
+          setIsDeleting(false);
+          return;
+        }
+
+        const result = await SpaceAPI.deleteArchiveArticle(spaceId, currentFolder.folderId, articleData.articleId);
+
+        if (result) {
+          alert('게시글이 성공적으로 삭제되었습니다.');
+
+          // 아카이브 목록 페이지로 직접 이동
+          // 마이스페이스: /my-space/archive/[폴더명]
+          router.push(`/my-space/archive/${encodeURIComponent(currentFolder.name)}`);
+        } else {
+          throw new Error('삭제 응답이 없습니다.');
+        }
+      } catch (error) {
+        console.error('게시글 삭제 실패:', error);
+        alert('게시글 삭제에 실패했습니다. 다시 시도해주세요.');
+      } finally {
+        setIsDeleting(false);
       }
     };
 
@@ -126,15 +167,17 @@ export default function MySpaceArchiveArticleSection({ articleData }: MySpaceArc
         <div className="flex justify-end gap-3 mt-8 pt-6 border-t border-gray-200">
           <button
             onClick={handleEdit}
-            className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
+            disabled={isDeleting}
+            className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
           >
             수정
           </button>
           <button
             onClick={handleDelete}
-            className="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-medium"
+            disabled={isDeleting}
+            className="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            삭제
+            {isDeleting ? '삭제 중...' : '삭제'}
           </button>
         </div>
       </div>
