@@ -32,6 +32,10 @@ function PostPageContent() {
   const searchParams = useSearchParams();
   const postType = searchParams.get("type"); // community, my-space, team-space
   const folderName = searchParams.get("folder"); // 아카이브 폴더 이름
+  const mode = searchParams.get("mode"); // edit 모드인지 확인
+  const articleIdParam = searchParams.get("articleId"); // 수정할 게시글 ID
+
+  const isEditMode = mode === "edit" && articleIdParam;
 
   // 폼 상태 관리
   const [title, setTitle] = useState("");
@@ -44,6 +48,7 @@ function PostPageContent() {
   const [selectedPromptType, setSelectedPromptType] = useState("text");
   const [selectedFolder, setSelectedFolder] = useState(folderName || "");
   const [selectedFolderId , setSelectedFolderId] = useState<number | null>(null);
+  const [isLoadingArticle, setIsLoadingArticle] = useState(false);
 
   const spaceStore = useSpaceStore();
   const folderStore = useArchiveFolderStore();
@@ -76,6 +81,106 @@ function PostPageContent() {
       setSelectedFolder(folder.name);
     }
   }, [isArchiveType, folderName, allFolders]);
+
+  // 수정 모드일 때 기존 게시글 데이터 로드
+  useEffect(() => {
+    if (!isEditMode || !articleIdParam) return;
+
+    const loadArticleData = async () => {
+      setIsLoadingArticle(true);
+      try {
+        const spaceId = spaceStore.currentSpace?.spaceId;
+        if (!spaceId) {
+          alert('스페이스 정보를 찾을 수 없습니다.');
+          router.back();
+          return;
+        }
+
+        const articleId = parseInt(articleIdParam, 10);
+        if (isNaN(articleId)) {
+          alert('잘못된 게시글 ID입니다.');
+          router.back();
+          return;
+        }
+
+        const data = await SpaceAPI.getArchiveArticleDetail(spaceId, articleId);
+
+        if (!data) {
+          alert('게시글을 찾을 수 없습니다.');
+          router.back();
+          return;
+        }
+
+        // Lexical JSON 형식으로 변환하는 헬퍼 함수
+        const textToLexicalJSON = (text: string) => {
+          return JSON.stringify({
+            root: {
+              children: [
+                {
+                  children: [
+                    {
+                      detail: 0,
+                      format: 0,
+                      mode: 'normal',
+                      style: '',
+                      text: text,
+                      type: 'text',
+                      version: 1,
+                    },
+                  ],
+                  direction: null,
+                  format: '',
+                  indent: 0,
+                  type: 'paragraph',
+                  version: 1,
+                  textFormat: 0,
+                  textStyle: '',
+                },
+              ],
+              direction: null,
+              format: '',
+              indent: 0,
+              type: 'root',
+              version: 1,
+            },
+          });
+        };
+
+        // 타입 변환: 숫자 -> 문자열
+        const promptTypeMap: { [key: string]: "text" | "image" } = {
+          "1": "text",
+          "2": "image",
+          "text": "text",
+          "image": "image"
+        };
+        const mappedType = promptTypeMap[data.type] || "text";
+
+        // 폼 데이터 채우기
+        setTitle(data.title);
+        setTags(data.tags);
+        setDescriptionState(textToLexicalJSON(data.description));
+        setUsedPrompt(textToLexicalJSON(data.prompt));
+        setExamplePrompt(textToLexicalJSON(data.sampleQuestion));
+        setAnswerPrompt(textToLexicalJSON(data.sampleAnswer));
+        setSelectedPromptType(mappedType);
+
+        // 이미지 타입인 경우 fileUrl 설정
+        if (mappedType === 'image' && data.fileUrl) {
+          setUploadedImageUrl(data.fileUrl);
+          setUploadedImageKey(data.fileUrl); // 또는 적절한 key 값
+        }
+
+      } catch (error) {
+        console.error('게시글 로드 실패:', error);
+        alert('게시글을 불러오는데 실패했습니다.');
+        router.back();
+      } finally {
+        setIsLoadingArticle(false);
+      }
+    };
+
+    loadArticleData();
+  }, [isEditMode, articleIdParam, spaceStore.currentSpace?.spaceId, router]);
 
   // 폴더 변경 시 쿼리 파라미터 업데이트
   const handleFolderChange = (newFolder: string, newFolderId : number) => {
@@ -183,7 +288,7 @@ function PostPageContent() {
           // 성공 후 이동 (커뮤니티 페이지 또는 상세 페이지로)
           router.push(`/community/${response.postId}`);
       }else{
-        // 아카이브 게시글 생성
+        // 아카이브 게시글 생성/수정
         if (!selectedFolderId) {
           alert('폴더를 선택해주세요.');
           return;
@@ -195,35 +300,68 @@ function PostPageContent() {
           return;
         }
 
-        console.log("아카이브 게시글 생성 로직 실행", { spaceId, folderId: selectedFolderId });
+        const articlePayload = {
+          description : requestData.description,
+          title : requestData.title,
+          prompt : requestData.prompt,
+          type : requestData.promptType,
+          exampleQuestion : requestData.sampleQuestion,
+          exampleAnswer : requestData.sampleAnswer,
+          filePath : requestData.filePath || '',
+          tags : requestData.tags
+        };
 
-        const response = await SpaceAPI.postArchiveArticleCreate(
-          spaceId,
-          selectedFolderId,
-          {
-            description : requestData.description,
-            title : requestData.title,
-            prompt : requestData.prompt,
-            type : requestData.promptType,
-            exampleQuestion : requestData.sampleQuestion,
-            exampleAnswer : requestData.sampleAnswer,
-            filePath : requestData.filePath,
-            tags : requestData.tags
+        console.log('=== 전송할 articlePayload ===');
+        console.log('tags:', articlePayload.tags);
+        console.log('전체 payload:', articlePayload);
+
+        if (isEditMode && articleIdParam) {
+          // 수정 모드
+          const articleId = parseInt(articleIdParam, 10);
+          console.log("아카이브 게시글 수정 로직 실행", { spaceId, folderId: selectedFolderId, articleId });
+
+          const response = await SpaceAPI.putArchiveArticle(
+            spaceId,
+            selectedFolderId,
+            articleId,
+            articlePayload
+          );
+
+          if (response) {
+            console.log('아카이브 게시글 수정 성공:', response);
+            alert('게시글이 성공적으로 수정되었습니다!');
+
+            // 성공 후 상세 페이지로 이동
+            if (postType === 'my-space') {
+              router.push(`/my-space/archive/${encodeURIComponent(selectedFolder)}/${articleId}`);
+            } else if (postType === 'team-space') {
+              const teamSpaceName = spaceStore.currentSpace?.name || '';
+              router.push(`/team-space/${encodeURIComponent(teamSpaceName)}/${encodeURIComponent(selectedFolder)}/${articleId}`);
+            }
           }
-        );
+        } else {
+          // 생성 모드
+          console.log("아카이브 게시글 생성 로직 실행", { spaceId, folderId: selectedFolderId });
 
-        console.log('아카이브 게시글 생성 성공:', response);
-        alert(`아카이브 게시글이 성공적으로 등록되었습니다!\n게시글 ID: ${response?.articleId}`);
+          const response = await SpaceAPI.postArchiveArticleCreate(
+            spaceId,
+            selectedFolderId,
+            articlePayload
+          );
 
-        // 성공 후 상세 페이지로 이동
-        if (response?.articleId) {
-          if (postType === 'my-space') {
-            // 마이스페이스: /my-space/archive/[폴더명]/[아티클ID]
-            router.push(`/my-space/archive/${encodeURIComponent(selectedFolder)}/${response.articleId}`);
-          } else if (postType === 'team-space') {
-            // 팀스페이스: /team-space/[팀스페이스명]/[폴더명]/[아티클ID]
-            const teamSpaceName = spaceStore.currentSpace?.name || '';
-            router.push(`/team-space/${encodeURIComponent(teamSpaceName)}/${encodeURIComponent(selectedFolder)}/${response.articleId}`);
+          console.log('아카이브 게시글 생성 성공:', response);
+          alert(`아카이브 게시글이 성공적으로 등록되었습니다!\n게시글 ID: ${response?.articleId}`);
+
+          // 성공 후 상세 페이지로 이동
+          if (response?.articleId) {
+            if (postType === 'my-space') {
+              // 마이스페이스: /my-space/archive/[폴더명]/[아티클ID]
+              router.push(`/my-space/archive/${encodeURIComponent(selectedFolder)}/${response.articleId}`);
+            } else if (postType === 'team-space') {
+              // 팀스페이스: /team-space/[팀스페이스명]/[폴더명]/[아티클ID]
+              const teamSpaceName = spaceStore.currentSpace?.name || '';
+              router.push(`/team-space/${encodeURIComponent(teamSpaceName)}/${encodeURIComponent(selectedFolder)}/${response.articleId}`);
+            }
           }
         }
       }
@@ -465,9 +603,26 @@ function PostPageContent() {
     },
   ];
 
+  // 로딩 중일 때
+  if (isLoadingArticle) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-8 flex items-center justify-center">
+        <div className="text-gray-600">게시글을 불러오는 중...</div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4">
+        {/* 페이지 제목 표시 */}
+        {isEditMode && (
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold text-gray-800">게시글 수정</h1>
+            <p className="text-sm text-gray-600 mt-1">기존 내용을 수정한 후 저장하세요.</p>
+          </div>
+        )}
+
         <div className="mb-4">
           <TitleInput value={title} onChange={setTitle} placeholder="제목을 입력하세요"/>
         </div>
@@ -480,11 +635,12 @@ function PostPageContent() {
 
           {/* 글 작성 컨테이너 (8 비율) */}
           <div className="lg:col-span-4 space-y-4">
-            {/* 사용 프롬프트 */}
+            {/* 설명 */}
             <PostingWriteSection
               title="설명"
               placeholder="텍스트를 입력하세요..."
               onChange={setDescriptionState}
+              value={descriptionState}
               isSubmitButton={false}
             />
 
@@ -493,6 +649,7 @@ function PostPageContent() {
               title="사용 프롬프트"
               placeholder="사용한 프롬프트를 입력하세요..."
               onChange={setUsedPrompt}
+              value={usedPrompt}
               isSubmitButton={selectedPromptType === 'image'}
               onSubmit={handleAISubmit}
             />
@@ -505,6 +662,7 @@ function PostPageContent() {
                         title="예시 질문 프롬프트"
                         placeholder="예시 질문을 입력하세요..."
                         onChange={setExamplePrompt}
+                        value={examplePrompt}
                         isSubmitButton={true}
                         onSubmit={handleAISubmit}
                         isLoading={isGeneratingAnswer}
