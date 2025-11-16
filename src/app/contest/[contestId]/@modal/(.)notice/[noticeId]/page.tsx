@@ -21,6 +21,7 @@ export default function ContestNoticeModal({ params }: { params: Promise<{ conte
   const { isLoggedIn, user } = useAuthStore();
   const [noticeData, setNoticeData] = useState<ContestNoticeDetailData | null>(null);
   const [contestAuthor, setContestAuthor] = useState<string | null>(null);
+  const [contestProfileUrl, setContestProfileUrl] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState('');
   const [editContent, setEditContent] = useState('');
@@ -33,6 +34,7 @@ export default function ContestNoticeModal({ params }: { params: Promise<{ conte
       ]);
       setNoticeData(noticeResult.noticeData);
       setContestAuthor(contestResult.contestData.author);
+      setContestProfileUrl(contestResult.contestData.profileUrl || null);
       setEditTitle(noticeResult.noticeData.title);
       setEditContent(noticeResult.noticeData.content);
     };
@@ -128,7 +130,7 @@ export default function ContestNoticeModal({ params }: { params: Promise<{ conte
                   {/* 작성자 정보 */}
                   {contestAuthor && (
                     <CommunityPostUserProfileItem
-                      profileUrl={noticeData.profileUrl || ''}
+                      profileUrl={contestProfileUrl || ''}
                       author={contestAuthor}
                       createdAt={noticeData.createdAt}
                     />
