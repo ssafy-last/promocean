@@ -181,7 +181,7 @@ export const SpaceAPI = {
         * 아카이브 아티클을 삭제하는 API입니다.
     */
     async deleteArchiveArticle(spaceId : number, folderId : number, articleId : number) : Promise<NoArgsResponse | null> {
-        const res = await apiFetch<NoArgsResponse>(`/api/v1/articles/${articleId}`, {
+        const res = await apiFetch<NoArgsResponse>(`/api/v1/spaces/${spaceId}/folders/${folderId}/articles/${articleId}`, {
             method: "DELETE",
         });
 
