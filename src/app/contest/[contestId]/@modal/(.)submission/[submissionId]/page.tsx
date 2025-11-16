@@ -39,27 +39,8 @@ export default function ContestSubmissionModal({ params }: { params: Promise<{ c
 
   // 투표 버튼 클릭 시 실행되는 함수
   const handleVoteSubmission = async () => {
-    if (!submissionData) return;
-  
-    const previousVoteCnt = submissionData.voteCnt;
-  
-    // 낙관적 업데이트
-    setSubmissionData(prev => prev && { ...prev, voteCnt: prev.voteCnt + 1 });
-  
-    try {
-      await VoteAPI.create(contestId, submissionId);
-  
-      // 최신 데이터로 동기화
-      const { submissionData: updatedData } =
-        await SubmissionAPI.getDetail(contestId, submissionId);
-  
-      setSubmissionData(updatedData);
-    } catch (error) {
-      console.error("투표 실패:", error);
-  
-      // 롤백
-      setSubmissionData(prev => prev && { ...prev, voteCnt: previousVoteCnt });
-    }
+    VoteAPI.create(contestId, submissionId);
+    router.refresh();
   };
   
 
@@ -145,34 +126,16 @@ export default function ContestSubmissionModal({ params }: { params: Promise<{ c
           </>
         )}
 
-        {/* 투표하기 버튼 or [수정하기, 삭제하기] 버튼 */}
-        {/* {!error && submissionData && (
-          useAuthStore.getState().user?.nickname === submissionData.author ? (
-            <div className="flex flex-row items-center justify-center gap-2 w-full">
-              <button
-                className="bg-primary text-white px-4 py-2 rounded-md"
-                // onClick={handleUpdateSubmission} TODO: 수정 구현하기
-              >
-                수정하기
-              </button>
-              <button
-                className="bg-red-500 text-white px-4 py-2 rounded-md"
-                onClick={handleDeleteSubmission}
-              >
-                삭제하기
-              </button>
-            </div>
-          ) : (
-            <div className="flex flex-row items-center justify-end gap-2 w-full">
-              <button
-                className="bg-primary text-white px-4 py-2 rounded-md"
-                onClick={handleVoteSubmission}
-              >
-                투표하기
-              </button>
-            </div>
-          )
-        )} */}
+        {/* 투표하기 */}
+        <div className="flex flex-row items-center justify-center gap-2 w-full">
+          <button
+            className="bg-primary text-white px-4 py-2 rounded-md"
+            onClick={handleVoteSubmission}
+          >
+            투표하기
+          </button>
+        </div>
+
       </div>
     </div>
   );
