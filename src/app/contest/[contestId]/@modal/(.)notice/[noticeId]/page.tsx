@@ -112,88 +112,111 @@ export default function ContestNoticeModal({ params }: { params: Promise<{ conte
           </>
         ) : (
           <>
+            {/* 모달 제목 */}
+            {isEditing && (
+              <h1 className="text-2xl font-semibold mb-6">공지사항 수정</h1>
+            )}
+
             {/* 헤더 - 제목 */}
-            <div className="mb-6 pb-4 border-gray-200 flex flex-col justify-between items-start gap-4">
-              <div className="flex flex-row items-center justify-between w-full">
-                {isEditing ? (
+            {!isEditing && (
+              <div className="mb-6 pb-4 border-b border-gray-200">
+                <div className="flex flex-row items-center justify-between w-full gap-4">
+                  <h2 className="text-2xl font-bold text-gray-900">
+                    {noticeData.title}
+                  </h2>
+                  
+                  {/* 작성자 정보 */}
+                  {contestAuthor && (
+                    <CommunityPostUserProfileItem
+                      profileUrl={noticeData.profileUrl || ''}
+                      author={contestAuthor}
+                      createdAt={noticeData.createdAt}
+                    />
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* 수정 모드 */}
+            {isEditing && (
+              <>
+                {/* 제목 입력 */}
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    제목
+                  </label>
                   <input
                     type="text"
                     value={editTitle}
                     onChange={(e) => setEditTitle(e.target.value)}
-                    className="flex-1 text-2xl font-bold text-gray-900 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full text-gray-900 shadow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                     placeholder="제목을 입력하세요"
                   />
-                ) : (
-                  <h2 className="text-2xl font-bold text-gray-900">
-                    {noticeData.title}
-                  </h2>
-                )}
-                
-                {/* 수정/삭제 버튼 */}
-                {isAuthor && (
-                  <div className="flex flex-row items-center gap-2">
-                    {isEditing ? (
-                      <>
-                        <button
-                          className="text-xs text-gray-500 hover:text-gray-700 transition-colors cursor-pointer px-3 py-1 border border-gray-300 rounded"
-                          onClick={handleEditCancel}
-                        >
-                          취소
-                        </button>
-                        <button
-                          className="text-xs text-white bg-primary hover:bg-primary/90 transition-colors cursor-pointer px-3 py-1 rounded"
-                          onClick={handleEditSave}
-                        >
-                          저장
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        <button
-                          className="text-xs text-gray-500 hover:text-gray-700 transition-colors cursor-pointer"
-                          onClick={handleEditStart}
-                        >
-                          수정
-                        </button>
-                        <button
-                          className="text-xs text-red-500 hover:text-red-700 transition-colors cursor-pointer"
-                          onClick={handleDeleteNotice}
-                        >
-                          삭제
-                        </button>
-                      </>
-                    )}
-                  </div>
-                )}
-              </div>
-              
-              {/* 작성자 정보 */}
-              {!isEditing && contestAuthor && (
-                <CommunityPostUserProfileItem
-                  profileUrl={noticeData.profileUrl || ''}
-                  author={contestAuthor}
-                  createdAt={noticeData.createdAt}
-                />
-              )}
-            </div>
+                </div>
 
-            {/* 내용 */}
-            <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-              {isEditing ? (
-                <textarea
-                  value={editContent}
-                  onChange={(e) => setEditContent(e.target.value)}
-                  className="w-full min-h-[300px] text-gray-700 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary resize-y"
-                  placeholder="내용을 입력하세요"
-                />
-              ) : (
+                {/* 내용 입력 */}
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    내용
+                  </label>
+                  <textarea
+                    value={editContent}
+                    onChange={(e) => setEditContent(e.target.value)}
+                    rows={8}
+                    className="flex w-full shadow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all resize-none text-gray-900"
+                    placeholder="내용을 입력하세요"
+                  />
+                </div>
+              </>
+            )}
+
+            {/* 내용 (읽기 모드) */}
+            {!isEditing && (
+              <div className="mb-6 p-4 bg-gray-50 rounded-lg">
                 <div className="prose max-w-none">
                   <div className="text-gray-700 whitespace-pre-wrap">
                     {noticeData.content}
                   </div>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
+
+            {/* 수정/삭제 버튼 - 작성자에게만 표시 */}
+            {isAuthor && (
+              <div className="flex flex-row items-center justify-center gap-3 pt-4">
+                {isEditing ? (
+                  <>
+                    <button
+                      className="px-6 py-2 text-base text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+                      onClick={handleEditCancel}
+                    >
+                      취소
+                    </button>
+                    <button
+                      className="px-6 py-2 text-base text-white bg-primary rounded-lg hover:bg-primary/90 transition-colors cursor-pointer"
+                      onClick={handleEditSave}
+                    >
+                      저장
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      className="px-6 py-2 text-base text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+                      onClick={handleEditStart}
+                    >
+                      수정
+                    </button>
+                    <button
+                      className="px-6 py-2 text-base text-white bg-red-500 rounded-lg hover:bg-red-600 transition-colors cursor-pointer"
+                      onClick={handleDeleteNotice}
+                    >
+                      삭제
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
           </>
         )}
       </div>

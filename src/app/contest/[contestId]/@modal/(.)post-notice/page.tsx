@@ -85,8 +85,8 @@ export default function ContestPostNoticeModal() {
           <input
             type="text"
             placeholder="제목을 입력하세요"
-            className={`flex w-full h-12 shadow p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all
-              ${errors.title ? 'border-red-500' : 'border-gray-300'}`}
+            className={`flex w-full h-12 shadow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all text-2xl font-bold text-gray-900
+              ${errors.title ? 'border-red-500' : ''}`}
             value={title}
             onChange={(e) => {
               setTitle(e.target.value);
@@ -106,8 +106,8 @@ export default function ContestPostNoticeModal() {
           <textarea
             placeholder="내용을 입력하세요"
             rows={8}
-            className={`flex w-full shadow p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all resize-none
-              ${errors.content ? 'border-red-500' : 'border-gray-300'}`}
+            className={`flex w-full shadow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all resize-none text-gray-900
+              ${errors.content ? 'border-red-500' : ''}`}
             value={content}
             onChange={(e) => {
               setContent(e.target.value);
