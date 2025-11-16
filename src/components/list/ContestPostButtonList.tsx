@@ -37,7 +37,7 @@ export default function ContestPostButtonList({ author }: ContestPostButtonListP
 
       {/* 수정 버튼 */}
       <button
-        className="text-xs text-gray-500 hover:text-gray-700 transition-colors cursor-pointer"
+        className="text-sm text-gray-500 hover:text-gray-700 transition-colors cursor-pointer"
         onClick={handleUpdatePost}
       >
         수정
@@ -45,7 +45,7 @@ export default function ContestPostButtonList({ author }: ContestPostButtonListP
 
       {/* TODO : 삭제 API 추가 논의 */}
       <button
-        className="text-xs text-red-500 hover:text-red-700 transition-colors cursor-pointer"
+        className="text-sm text-red-500 hover:text-red-700 transition-colors cursor-pointer"
         // onClick={handleDeletePost}
       >
         삭제
