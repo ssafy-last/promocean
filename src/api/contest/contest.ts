@@ -46,7 +46,7 @@ export class ContestAPI {
    * @page /contest?page=1&size=10&sorter=&status=&title=&tag=
    * @endpoint /api/v1/contests?page={page}&size={size}&sorter={sorter}&status={status}&title={title}&tag={tag}
    * @description 대회 목록 데이터를 조회하는 API입니다.
-   * @returns {Promise<{ contestCardList: ContestCardItemProps[], itemCnt: number, totalCnt: number, totalPages: number, currentPage: number }>}
+   * @returns {Promise<{ contestCardList: ContestCardItemProps[] }>}
    */
   static async getList(params?: {
     page?: number;
@@ -82,6 +82,7 @@ export class ContestAPI {
       title: string;
       startAt: string;
       endAt: string;
+      voteEndAt: string;
       status: string; // "개최전", "종료" 등 한글
       createdAt: string;
       updatedAt: string;
@@ -109,6 +110,7 @@ export class ContestAPI {
       title: contest.title,
       startAt: contest.startAt,
       endAt: contest.endAt,
+      voteEndAt: contest.voteEndAt,
       status: contest.status,
       createdAt: contest.createdAt,
       updatedAt: contest.updatedAt,

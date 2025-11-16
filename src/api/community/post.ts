@@ -105,10 +105,18 @@ export class PostAPI {
    * @returns {Promise<{ popularPosts: CommunityFloatingItemProps[] }>}
    */
   static async getPopular() {
-    const response = await apiFetch<CommunityFloatingItemProps[]>(`/mock/CommunityPopularPost.json`);
-    return {
-      popularPosts: response,
-    };
+    interface ApiResponse {
+      message: string | null;
+      data: {
+        posts: CommunityFloatingItemProps[];
+      };
+    }
+    // const params = new URLSearchParams();
+    // const page = "9";
+    // params.set('page', page);
+    // const response = await apiFetch<ApiResponse>(`/api/v1/trending/posts?${params.toString()}`);
+    const response = await apiFetch<ApiResponse>(`/mock/CommunityPopularPost.json`);
+    return { popularPosts: response.data.posts };
   }
 
   /**
