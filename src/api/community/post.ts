@@ -115,7 +115,7 @@ export class PostAPI {
     // const page = "9";
     // params.set('page', page);
     // const response = await apiFetch<ApiResponse>(`/api/v1/trending/posts?${params.toString()}`);
-    const response = await apiFetch<ApiResponse>(`/mock/CommunityPopularPost.json`);
+    const response = await fetch('http://localhost:3000/mock/CommunityPopularPost.json').then(res => res.json());
     return { popularPosts: response.data.posts };
   }
 

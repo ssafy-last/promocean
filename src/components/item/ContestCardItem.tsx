@@ -11,6 +11,7 @@ import {
   formatDdayText,
   getDdayColor,
 } from "@/utils/formatDate";
+import { getContestImageUrl } from "@/utils/imageUtils";
 
 export default function ContestCardItem({
   contestId,
@@ -23,7 +24,8 @@ export default function ContestCardItem({
   status,
   createdAt,
   updatedAt,
-}: ContestCardItemProps) {
+  fileUrl,
+}: ContestCardItemProps & { fileUrl?: string | null }) {
   // 현재 날짜를 기준으로 상태 계산
   const currentDate = new Date();
   const displayStatus = calculateContestStatus(currentDate, startAt, endAt, voteEndAt);
@@ -48,7 +50,7 @@ export default function ContestCardItem({
 
   const isEnded = displayStatus === "종료";
   
-  const imgUrl = `/assets/img_random${contestId % 21}.png`;
+  const imgUrl = getContestImageUrl(fileUrl, contestId);
 
   return (
     <Link

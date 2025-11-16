@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { CommunityFloatingItemProps } from '@/types/itemType'
 import Heart from '../icon/Heart'
 import ChatBubbleBottomCenterText from '../icon/ChatBubbleBottomCenterText'
+import { getPostImageUrl } from '@/utils/imageUtils'
 
 /**
  * CommunityFloatingItem component
@@ -13,7 +14,7 @@ import ChatBubbleBottomCenterText from '../icon/ChatBubbleBottomCenterText'
  * @returns {React.ReactNode}
  */
 export default function CommunityFloatingItem({ postId, title, tags, fileUrl, likeCnt, replyCnt }: CommunityFloatingItemProps) {
-  const imgUrl = fileUrl || `/assets/img_random${postId % 21}.png`;
+  const imgUrl = getPostImageUrl(fileUrl, postId);
   return (
     <Link href={`/community/${postId}`} className="block group">
       <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-gray-100 group-hover:border-primary/20">
@@ -21,7 +22,7 @@ export default function CommunityFloatingItem({ postId, title, tags, fileUrl, li
         {/* Image Section */}
         <div className="relative w-full h-32 overflow-hidden">
           <Image
-            src={fileUrl || imgUrl}
+            src={imgUrl}
             alt={title}
             fill
             className="object-cover transition-transform duration-300 group-hover:scale-105"
