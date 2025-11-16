@@ -22,7 +22,7 @@ import { UploadAPI } from "@/api/upload";
 import { Upload } from "lucide-react";
 import { useSpaceStore } from "@/store/spaceStore";
 import SpaceAPI from "@/api/space";
-import { SpaceArchiveData } from "@/store/archiveFolderStore";
+import { SpaceArchiveData, useArchiveFolderStore } from "@/store/archiveFolderStore";
 
 /**
  * PostPageContent component (useSearchParams를 사용하는 내부 컴포넌트)
@@ -45,12 +45,9 @@ function PostPageContent() {
   const [selectedFolder, setSelectedFolder] = useState(folderName || "");
   const [selectedFolderId , setSelectedFolderId] = useState<number | null>(null);
 
-  // 아카이브 폴더 상태
-  const [pinnedFolders, setPinnedFolders] = useState<SpaceArchiveData[]>([]);
-  const [normalFolders, setNormalFolders] = useState<SpaceArchiveData[]>([]);
-  const [isLoadingFolders, setIsLoadingFolders] = useState(false);
-
   const spaceStore = useSpaceStore();
+  const folderStore = useArchiveFolderStore();
+
 
   // AI 답변 생성 로딩 상태
   const [isGeneratingAnswer, setIsGeneratingAnswer] = useState(false);
@@ -64,35 +61,21 @@ function PostPageContent() {
   // 아카이브 타입인지 확인
   const isArchiveType = postType === 'my-space' || postType === 'team-space';
 
-  // 아카이브 폴더 데이터 가져오기
+  // Zustand store에서 폴더 리스트 가져오기
+  const allFolders = folderStore.allFolderList;
+  const pinnedFolders = allFolders.filter(folder => folder.isPinned);
+  const normalFolders = allFolders.filter(folder => !folder.isPinned);
+
+  // URL 파라미터의 폴더명으로 folderId 찾기
   useEffect(() => {
-    if (!isArchiveType) return;
+    if (!isArchiveType || !folderName) return;
 
-    const fetchArchiveFolders = async () => {
-      setIsLoadingFolders(true);
-      try {
-        // TODO: 백엔드 API 연결 후 수정 필요
-        const response = await SpaceAPI.getSpaceArchiveFoldersData(
-          spaceStore.currentSpace?.spaceId || -1
-        )
-
-        const folders : SpaceArchiveData[] = response?.folders || [];
-
-        const pinned = folders.filter(folder => folder.isPinned);
-        const normal = folders.filter(folder => !folder.isPinned);
-
-        setPinnedFolders(pinned);
-        setNormalFolders(normal);
-
-      } catch (error) {
-        console.error("Failed to fetch archive folders:", error);
-      } finally {
-        setIsLoadingFolders(false);
-      }
-    };
-
-    fetchArchiveFolders();
-  }, [isArchiveType]);
+    const folder = allFolders.find(f => f.name === folderName);
+    if (folder) {
+      setSelectedFolderId(folder.folderId);
+      setSelectedFolder(folder.name);
+    }
+  }, [isArchiveType, folderName, allFolders]);
 
   // 폴더 변경 시 쿼리 파라미터 업데이트
   const handleFolderChange = (newFolder: string, newFolderId : number) => {
@@ -200,20 +183,37 @@ function PostPageContent() {
           // 성공 후 이동 (커뮤니티 페이지 또는 상세 페이지로)
           router.push(`/community/${response.postId}`);
       }else{
-          const response = await SpaceAPI.postArchiveArticleCreate(spaceStore.currentSpace?.spaceId || -1,
-            selectedFolderId!,{
-              description : requestData.description,
-              title : requestData.title,
-              prompt : requestData.prompt,
-              type : requestData.promptType,
-              exampleQuestion : requestData.sampleQuestion,
-              exampleAnswer : requestData.sampleAnswer,
-              filePath : requestData.filePath,
-              tags : requestData.tags
-            })
+        // 아카이브 게시글 생성
+        if (!selectedFolderId) {
+          alert('폴더를 선택해주세요.');
+          return;
+        }
 
-            console.log('아카이브 게시글 생성 성공:', response);
-            alert(`아카이브 게시글이 성공적으로 등록되었습니다!\n게시글 ID: ${response?.articleId}`);
+        const spaceId = spaceStore.currentSpace?.spaceId;
+        if (!spaceId) {
+          alert('스페이스 정보를 찾을 수 없습니다.');
+          return;
+        }
+
+        console.log("아카이브 게시글 생성 로직 실행", { spaceId, folderId: selectedFolderId });
+
+        const response = await SpaceAPI.postArchiveArticleCreate(
+          spaceId,
+          selectedFolderId,
+          {
+            description : requestData.description,
+            title : requestData.title,
+            prompt : requestData.prompt,
+            type : requestData.promptType,
+            exampleQuestion : requestData.sampleQuestion,
+            exampleAnswer : requestData.sampleAnswer,
+            filePath : requestData.filePath,
+            tags : requestData.tags
+          }
+        );
+
+        console.log('아카이브 게시글 생성 성공:', response);
+        alert(`아카이브 게시글이 성공적으로 등록되었습니다!\n게시글 ID: ${response?.articleId}`);
       }
 
     } catch (error) {
@@ -622,29 +622,25 @@ function PostPageContent() {
           {/* 플로팅 컨테이너 (2 비율) */}
           <div className="lg:col-span-1 space-y-4">
 
-            {/* 카테고리 선택 */}
-            <PostingFloatingSection
-              title="카테고리"
-              items={categoryItems}
-              selectedValue={selectedCategory}
-              onSelect={setSelectedCategory}
-              name="category"
-            />
+            {/* 카테고리 선택 - 커뮤니티 글쓰기일 때만 표시 */}
+            {!isArchiveType && (
+              <PostingFloatingSection
+                title="카테고리"
+                items={categoryItems}
+                selectedValue={selectedCategory}
+                onSelect={setSelectedCategory}
+                name="category"
+              />
+            )}
 
             {/* 아카이브 폴더 선택 - 아카이브 타입일 때만 표시 */}
             {isArchiveType && (
-              isLoadingFolders ? (
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-                  <p className="text-sm text-gray-500 text-center py-4">폴더 목록 로딩 중...</p>
-                </div>
-              ) : (
-                <PostingArchiveFolderSection
-                  selectedFolder={selectedFolder}
-                  onFolderChange={handleFolderChange}
-                  pinnedFolders={pinnedFolders}
-                  normalFolders={normalFolders}
-                />
-              )
+              <PostingArchiveFolderSection
+                selectedFolder={selectedFolder}
+                onFolderChange={handleFolderChange}
+                pinnedFolders={pinnedFolders}
+                normalFolders={normalFolders}
+              />
             )}
 
             {/* 프롬프트 타입 */}
