@@ -17,15 +17,15 @@ import { cookies } from "next/headers";
 
         const cookieStore = await cookies();
         const teamSpaceInfoCookie = cookieStore.get('teamSpaceInfo');
-
         console.log("teamSpaceInfoCookie ", JSON.parse(teamSpaceInfoCookie?.value || '{}'));
 
+        const { spaceId, name, spaceCoverUrl } = JSON.parse(teamSpaceInfoCookie?.value || '{}');
           return(
               <div>
-                {/* <TeamSpaceHeader 
+                <TeamSpaceHeader 
                 nickname={name||"팀 이름"} 
-                coverImageUrl={coverImageUrl} 
-                spaceId={spaceId}/> */}
+                coverImageUrl={spaceCoverUrl || "defaultCoverUrl"} 
+                spaceId={spaceId}/>
                {children}
               </div>
           )
