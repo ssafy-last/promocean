@@ -108,10 +108,12 @@ export default function ContestPostSection({ contestPostData, ContestNoticeList,
           </div>
         )}
 
+        {/* 공지사항 */}
         {currentTab === 'notice' && (
           <ContestNoticeSection ContestNoticeList={ContestNoticeList} />
         )}
         
+        {/* 산출물 */}
         {currentTab === 'submission' && (
           <ContestSubmissionSection 
             contestSubmissionList={contestSubmissionList} 

@@ -27,7 +27,7 @@ export default function ContestNoticeButtonSection() {
   return (
     <div>
       <button
-        className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 active:bg-primary/80 transition-colors duration-200 cursor-pointer"
+        className="text-sm text-gray-500 hover:text-gray-700 transition-colors cursor-pointer"
         onClick={handleAddNotice}
       >
         공지사항 작성
