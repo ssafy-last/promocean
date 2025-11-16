@@ -8,17 +8,24 @@
   import MySpaceHeader from "@/components/layout/SpaceHeader";
   import MySpaceTabs from "@/components/filter/MySpaceTabs";
 import TeamSpaceHeader from "@/components/layout/TeamSpaceHeader";
+import { cookies } from "next/headers";
   
   
-  export default function TeamLayout({
+  export  default  async function TeamLayout({
       children
   }: Readonly<{children: React.ReactNode}>){
+
+        const cookieStore = await cookies();
+        const teamSpaceInfoCookie = cookieStore.get('teamSpaceInfo');
+
+        console.log("teamSpaceInfoCookie ", JSON.parse(teamSpaceInfoCookie?.value || '{}'));
+
           return(
               <div>
-                <TeamSpaceHeader 
+                {/* <TeamSpaceHeader 
                 nickname={name||"팀 이름"} 
                 coverImageUrl={coverImageUrl} 
-                spaceId={spaceId}/>
+                spaceId={spaceId}/> */}
                {children}
               </div>
           )
