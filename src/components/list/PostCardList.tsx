@@ -1,10 +1,10 @@
 // frontend/src/components/list/PostCardList.tsx
 
 import PostCardItem from '@/components/item/PostCardItem'
-import { PostCardItemProps } from '@/types/itemType'
+import { CommunityFloatingItemProps } from '@/types/itemType'
 
 interface PostCardListProps {
-  posts: PostCardItemProps[]
+  posts: (CommunityFloatingItemProps & { category: string })[]
 }
 
 /**
