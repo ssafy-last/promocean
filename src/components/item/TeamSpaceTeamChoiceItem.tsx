@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import UserGroup from "../icon/UserGroup";
 import { useSpaceStore } from "@/store/spaceStore";
-import { getTeamSpaceInfo } from "@/server-side/TeamSpaceInfo";
+import { getTeamSpaceInfoToServer } from "@/server-side/TeamSpaceInfo";
 
 export interface TeamSpaceChoiceItemProps {
     // Define props here if needed in the future
@@ -27,7 +27,6 @@ export default function TeamSpaceChoiceItem({
     
 
 
-
     //팀 스페이스 아이템 클릭 핸들러
     const handleClick = async() => {
         spaceStore.setCurrentSpace({
@@ -37,7 +36,7 @@ export default function TeamSpaceChoiceItem({
            spaceCoverUrl: spaceCoverUrl
         })
         
-        const res = await getTeamSpaceInfo(spaceId, name, participantCnt, spaceCoverUrl);
+        const res = await getTeamSpaceInfoToServer(spaceId, name, participantCnt, spaceCoverUrl);
 
         console.log("TeamSpaceTeamChoiceItem clicked");
         router.push(`/team-space/${encodeURIComponent(name)}`);

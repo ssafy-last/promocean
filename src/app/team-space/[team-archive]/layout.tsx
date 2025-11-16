@@ -11,7 +11,7 @@ import TeamSpaceHeader from "@/components/layout/TeamSpaceHeader";
 import { cookies } from "next/headers";
   
   
-  export  default  async function TeamLayout({
+export  default  async function TeamLayout({
       children
   }: Readonly<{children: React.ReactNode}>){
 
