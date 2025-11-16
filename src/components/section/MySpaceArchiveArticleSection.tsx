@@ -30,9 +30,16 @@ export default function MySpaceArchiveArticleSection({ articleData }: MySpaceArc
     const [isDeleting, setIsDeleting] = useState(false);
 
     const handleEdit = () => {
-      // TODO: 수정 페이지로 이동 로직 구현
-      console.log('수정 버튼 클릭', articleData.articleId);
-      alert('수정 기능은 구현 예정입니다.');
+      const currentFolder = folderStore.currentFolder;
+
+      if (!currentFolder) {
+        alert('폴더 정보를 찾을 수 없습니다.');
+        return;
+      }
+
+      // 수정 페이지로 이동: /post?type=my-space&folder=폴더명&mode=edit&articleId=123
+      const editUrl = `/post?type=my-space&folder=${encodeURIComponent(currentFolder.name)}&mode=edit&articleId=${articleData.articleId}`;
+      router.push(editUrl);
     };
 
     const handleDelete = async () => {
