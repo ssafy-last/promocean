@@ -1,6 +1,9 @@
 // frontend/src/components/section/MySpaceArchiveArticleSection.tsx
 
+'use client';
+
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { HashtagItemProps } from "@/types/itemType";
 import CommunityHashtagSection from "@/components/section/CommunityHashtagSection";
 import { ArticleData } from "@/types/apiTypes/space";
@@ -15,11 +18,28 @@ interface MySpaceArchiveArticleSectionProps {
  * @returns {React.ReactNode}
  */
 export default function MySpaceArchiveArticleSection({ articleData }: MySpaceArchiveArticleSectionProps) {
+    const router = useRouter();
     const hashtagList: HashtagItemProps[] = articleData.tags.map((tag: string) => ({ tag }));
-    
-  
+
+    const handleEdit = () => {
+      // TODO: 수정 페이지로 이동 로직 구현
+      console.log('수정 버튼 클릭', articleData.articleId);
+      alert('수정 기능은 구현 예정입니다.');
+    };
+
+    const handleDelete = async () => {
+      // TODO: 삭제 API 호출 로직 구현
+      if (confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
+        console.log('삭제 버튼 클릭', articleData.articleId);
+        alert('삭제 기능은 구현 예정입니다.');
+        // 삭제 성공 후 목록으로 이동
+        // router.back();
+      }
+    };
+
+
   return (
-    <div className="p-8">
+    <div className="flex flex-col justify-center p-8  min-w-xl">
       
       {/* 메타 데이터 섹션 */}
       <div className="flex flex-col gap-3 border-b border-gray-200 pb-5">
@@ -101,6 +121,22 @@ export default function MySpaceArchiveArticleSection({ articleData }: MySpaceArc
             </div>
           </div>
         )}
+
+        {/* 수정/삭제 버튼 - 우하단 */}
+        <div className="flex justify-end gap-3 mt-8 pt-6 border-t border-gray-200">
+          <button
+            onClick={handleEdit}
+            className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
+          >
+            수정
+          </button>
+          <button
+            onClick={handleDelete}
+            className="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-medium"
+          >
+            삭제
+          </button>
+        </div>
       </div>
     </div>
   )
