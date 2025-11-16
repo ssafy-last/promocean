@@ -12,7 +12,7 @@ export interface TeamSpaceArchiveFolderPageProps {
 
 export default async function TeamSpaceArchiveFolderPage({ params }: TeamSpaceArchiveFolderPageProps) {
   const { folderId } = await params;
-  
+    console.log("!!!");
   return (
 
     <div className="min-h-screen bg-gray-50">

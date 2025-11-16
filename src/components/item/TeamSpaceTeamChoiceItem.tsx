@@ -24,6 +24,9 @@ export default function TeamSpaceChoiceItem({
     const router = useRouter();
     const spaceStore = useSpaceStore();
     
+
+
+
     //팀 스페이스 아이템 클릭 핸들러
     const handleClick = () => {
         spaceStore.setCurrentSpace({
@@ -32,6 +35,9 @@ export default function TeamSpaceChoiceItem({
            participantCnt: participantCnt,
            spaceCoverUrl: spaceCoverUrl
         })
+
+
+
         console.log("TeamSpaceTeamChoiceItem clicked");
         router.push(`/team-space/${encodeURIComponent(name)}`);
     }

@@ -77,7 +77,6 @@ export default function TeamSpaceArchivePage() {
 
   return (
     <>
-    <TeamSpaceHeader nickname={name||"팀 이름"} coverImageUrl={coverImageUrl} spaceId={spaceId}/>
     <div className="min-h-screen bg-gray-50">
       <div className="flex justify-end-safe">
         <div className="shrink-0 min-w-[380px]">
