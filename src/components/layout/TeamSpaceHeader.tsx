@@ -76,6 +76,8 @@ export default function TeamSpaceHeader(
   const handleWrite = () => {
     console.log("글 쓰기 버튼 클릭됨");
     // 여기에 글쓰기 로직 추가
+
+    router.push('/post?type=team-space&space='+params['team-archive']+'&folder='+params['folder']);
   
   }
 
