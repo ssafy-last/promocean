@@ -8,6 +8,7 @@ import CommunityPostUserProfileItem from "@/components/item/CommunityPostUserPro
 import { ContestAPI, NoticeAPI } from "@/api/contest";
 import { ContestNoticeDetailData } from "@/types/itemType";
 import { useAuthStore } from "@/store/authStore";
+import Tag from "@/components/icon/Tag";
 
 /**
  * 대회 상세 페이지 공지사항 모달
@@ -22,6 +23,7 @@ export default function ContestNoticeModal({ params }: { params: Promise<{ conte
   const [noticeData, setNoticeData] = useState<ContestNoticeDetailData | null>(null);
   const [contestAuthor, setContestAuthor] = useState<string | null>(null);
   const [contestProfileUrl, setContestProfileUrl] = useState<string | null>(null);
+  const [contestType, setContestType] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState('');
   const [editContent, setEditContent] = useState('');
@@ -35,6 +37,7 @@ export default function ContestNoticeModal({ params }: { params: Promise<{ conte
       setNoticeData(noticeResult.noticeData);
       setContestAuthor(contestResult.contestData.author);
       setContestProfileUrl(contestResult.contestData.profileUrl || null);
+      setContestType(contestResult.contestData.type || null);
       setEditTitle(noticeResult.noticeData.title);
       setEditContent(noticeResult.noticeData.content);
     };
@@ -121,13 +124,48 @@ export default function ContestNoticeModal({ params }: { params: Promise<{ conte
 
             {/* 헤더 - 제목 */}
             {!isEditing && (
-              <div className="mb-6 pb-4 border-b border-gray-200">
-                <div className="flex flex-row items-center justify-between w-full gap-4">
+              <div className="mb-6 pb-5 border-b border-gray-200 flex flex-col gap-3">
+                {/* 제목 및 수정/삭제 버튼 */}
+                <div className="flex flex-row items-center justify-between">
                   <h2 className="text-2xl font-bold text-gray-900">
                     {noticeData.title}
                   </h2>
                   
-                  {/* 작성자 정보 */}
+                  {/* 수정/삭제 버튼 - 작성자에게만 표시 */}
+                  {isAuthor && (
+                    <div className="flex flex-row items-center gap-3">
+                      <button
+                        className="text-sm text-gray-600 hover:text-gray-900 cursor-pointer"
+                        onClick={handleEditStart}
+                      >
+                        수정
+                      </button>
+                      <button
+                        className="text-sm text-red-500 hover:text-red-700 cursor-pointer"
+                        onClick={handleDeleteNotice}
+                      >
+                        삭제
+                      </button>
+                    </div>
+                  )}
+                </div>
+                
+                {/* 해시태그 아이콘/타입 및 사용자 정보 */}
+                <div className="flex items-end justify-between">
+                  {/* 왼쪽: 해시태그 아이콘, 타입 */}
+                  <div className="flex flex-row items-center gap-4">
+                    <div className="flex flex-row items-center gap-2">
+                      <Tag />
+                      <span className="text-sm text-gray-600">대회 타입</span>
+                    </div>
+                    {contestType && (
+                      <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs font-medium">
+                        {contestType}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* 오른쪽: 사용자 정보 */}
                   {contestAuthor && (
                     <CommunityPostUserProfileItem
                       profileUrl={contestProfileUrl || ''}
@@ -142,6 +180,24 @@ export default function ContestNoticeModal({ params }: { params: Promise<{ conte
             {/* 수정 모드 */}
             {isEditing && (
               <>
+                {/* 취소/저장 버튼 - 우측 상단 */}
+                {isAuthor && (
+                  <div className="flex flex-row items-center justify-end gap-3 mb-6">
+                    <button
+                      className="text-sm text-gray-600 hover:text-gray-900 cursor-pointer"
+                      onClick={handleEditCancel}
+                    >
+                      취소
+                    </button>
+                    <button
+                      className="text-sm text-primary hover:text-primary/80 cursor-pointer"
+                      onClick={handleEditSave}
+                    >
+                      저장
+                    </button>
+                  </div>
+                )}
+
                 {/* 제목 입력 */}
                 <div className="mb-6">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -180,43 +236,6 @@ export default function ContestNoticeModal({ params }: { params: Promise<{ conte
                     {noticeData.content}
                   </div>
                 </div>
-              </div>
-            )}
-
-            {/* 수정/삭제 버튼 - 작성자에게만 표시 */}
-            {isAuthor && (
-              <div className="flex flex-row items-center justify-center gap-3 pt-4">
-                {isEditing ? (
-                  <>
-                    <button
-                      className="px-6 py-2 text-base text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
-                      onClick={handleEditCancel}
-                    >
-                      취소
-                    </button>
-                    <button
-                      className="px-6 py-2 text-base text-white bg-primary rounded-lg hover:bg-primary/90 transition-colors cursor-pointer"
-                      onClick={handleEditSave}
-                    >
-                      저장
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <button
-                      className="px-6 py-2 text-base text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
-                      onClick={handleEditStart}
-                    >
-                      수정
-                    </button>
-                    <button
-                      className="px-6 py-2 text-base text-white bg-red-500 rounded-lg hover:bg-red-600 transition-colors cursor-pointer"
-                      onClick={handleDeleteNotice}
-                    >
-                      삭제
-                    </button>
-                  </>
-                )}
               </div>
             )}
           </>
