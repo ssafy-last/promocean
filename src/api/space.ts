@@ -241,7 +241,7 @@ export const SpaceAPI = {
         * 아카이브 아티클 상세 조회하는 API입니다.
     */
     async getArchiveArticleDetail(spaceId: number,  articleId : number) : Promise<ArticleData | null> {
-        const res = await apiFetch<ApiResponse<ArticleData>>(`/api/v1/spaces/${spaceId}}/articles/${articleId}`, {
+        const res = await apiFetch<ApiResponse<ArticleData>>(`/api/v1/spaces/${spaceId}/articles/${articleId}`, {
             method: "GET",
         });
         return res.data;

@@ -1,26 +1,21 @@
-// frontend/src/components/section/CommunityPostDetailSection.tsx
+// frontend/src/components/section/MySpaceArchiveArticleSection.tsx
 
 import Image from "next/image";
-import { CommunityPostItemProps, HashtagItemProps } from "@/types/itemType";
+import { HashtagItemProps } from "@/types/itemType";
 import CommunityHashtagSection from "@/components/section/CommunityHashtagSection";
-import CommunityPostUserProfileItem from "@/components/item/CommunityPostUserProfileItem";
-import CommunityPostCategoryTypeBadges from "@/components/item/CommunityPostCategoryTypeBadges";
 import { ArticleData } from "@/types/apiTypes/space";
 
-
-
-
+interface MySpaceArchiveArticleSectionProps {
+  articleData: ArticleData;
+}
 
 /**
  * 마이 스페이스의 아카이브 글 상세 섹션 컴포넌트
  * @description MySpaceArchiveArticleSection component is a my space archive article detail section component that displays the my space archive article detail section content
  * @returns {React.ReactNode}
  */
-export default function MySpaceArchiveArticleSection(  ) {
-
-    const articleData : ArticleData | null=null// = await SpaceAPI.getArchiveArticleDetail(spaceId, articleId);
-
-    const hashtagList: HashtagItemProps[]= [] // = articleData!.tags.map((tag: string) => ({ tag }));
+export default function MySpaceArchiveArticleSection({ articleData }: MySpaceArchiveArticleSectionProps) {
+    const hashtagList: HashtagItemProps[] = articleData.tags.map((tag: string) => ({ tag }));
     
   
   return (
