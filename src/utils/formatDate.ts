@@ -135,7 +135,7 @@ export function formatDdayText(
     }
   } else if (displayStatus === "진행중") {
     if (dday === 0) {
-      return "종료까지 D-day";
+      return "오늘 마감";
     } else if (dday && dday > 0) {
       return `종료까지 D-${dday}`;
     }
