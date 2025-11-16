@@ -15,10 +15,14 @@ export default async function Home() {
   const { popularPosts: popularPostsRaw } = await PostAPI.getPopular();
   
   // TODO : API 만들어야함?
-  // CommunityFloatingItemProps를 PostCardItemProps로 변환
-  const popularPosts: PostCardItemProps[] = (popularPostsRaw as CommunityFloatingItemProps[]).map(item => ({
-    ...item,
-    category: "AI", // 기본값 또는 실제 category 값
+  const popularPosts: PostCardItemProps[] = popularPostsRaw.map(item => ({
+    postId: item.postId,
+    title: item.title,
+    hashtags: item.tags,
+    category: "AI",
+    likeCount: item.likeCnt,
+    commentCount: item.replyCnt,
+    image: item.fileUrl || "",
   }));
 
   return (

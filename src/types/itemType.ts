@@ -73,10 +73,10 @@ export interface CommunityBoardItemProps {
 export interface CommunityFloatingItemProps {
   postId: number
   title: string
-  hashtags: string[]
-  image: string
-  likeCount: number
-  commentCount: number
+  tags: string[]
+  fileUrl: string | null
+  likeCnt: number
+  replyCnt: number
 }
 
 /**
