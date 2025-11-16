@@ -8,6 +8,8 @@ import TeamSpaceMyMenuModal from "../modal/TeamSpaceMyMenuModal";
 import SpaceAPI, { SpaceParticipants } from "@/api/space";
 import { useAuthStore } from "@/store/authStore";
 import Image from "next/image";
+import { useParams, useRouter } from "next/navigation";
+
 
 /**
  * TeamSpaceHeaderProps 인터페이스
@@ -45,6 +47,15 @@ export default function TeamSpaceHeader(
   const username = authStore.user?.nickname;
   const userEmail = authStore.user?.email;
   const userNickname = authStore.user?.nickname;
+  const router = useRouter();
+  const params = useParams();
+  const isFolderPage = Boolean(params['folder']);
+  console.log("isFolderPage:", isFolderPage);
+  // console.log("params['folder']", params['folder']);
+  // console.log("params['team-archive']", params['team-archive']);
+
+
+
 
 
   // console.log("spaceId in TeamSpaceHeader:", spaceId);
@@ -60,6 +71,12 @@ export default function TeamSpaceHeader(
   }
   const handleMyMenuClose = () => {
     setIsMyMenuModalOpen(false);
+  }
+
+  const handleWrite = () => {
+    console.log("글 쓰기 버튼 클릭됨");
+    // 여기에 글쓰기 로직 추가
+  
   }
 
   useEffect(()=>{
@@ -101,10 +118,13 @@ export default function TeamSpaceHeader(
             <p className="text-white/80 text-sm">{description}</p>
         </div>
 
-        <div className="relative flex flex-row gap-3">
+        <div className = "flex flex-col h-full justify-between">
+        <div className="relative flex flex-row gap-3 h-full">
+          
+          {isFolderPage &&   <button className="cursor-pointer p-2 rounded-md bg-primary hover:bg-primary/40" onClick={handleWrite}>글 쓰기</button> }
           <button className="cursor-pointer p-2 rounded-md bg-primary hover:bg-primary/40" onClick={handleMyMenuOpen}>내 메뉴</button>
           <button className="cursor-pointer p-2 rounded-md bg-primary hover:bg-primary/40" onClick={handleModalOpen}>팀 관리</button>
-
+          
           {isMyMenuModalOpen && (
             <TeamSpaceMyMenuModal
               spaceId={spaceId}
@@ -128,6 +148,8 @@ export default function TeamSpaceHeader(
             />
           )}
         </div>
+        <div className = "flex"></div>
+      </div>
       </div>
     </header>
   );
