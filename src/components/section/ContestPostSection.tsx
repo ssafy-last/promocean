@@ -59,7 +59,7 @@ export default function ContestPostSection({ contestPostData, ContestNoticeList,
               </div>
 
               {/* 상태 */}
-              <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600">
+              <div className="flex flex-wrap items-center gap-3 text-sm text-gray-700">
                 <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-medium">
                   {contestPostData.type}
                 </span>
@@ -79,7 +79,7 @@ export default function ContestPostSection({ contestPostData, ContestNoticeList,
                   <Calendar />
                   <span className="text-sm font-medium text-gray-700">{item.label}</span>
                 </div>
-                <span className="text-sm text-gray-600">{item.value}</span>
+                <span className="text-sm text-gray-700">{item.value}</span>
               </div>
             ))}
           </div>
