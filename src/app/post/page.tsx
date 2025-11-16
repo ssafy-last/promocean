@@ -214,6 +214,18 @@ function PostPageContent() {
 
         console.log('아카이브 게시글 생성 성공:', response);
         alert(`아카이브 게시글이 성공적으로 등록되었습니다!\n게시글 ID: ${response?.articleId}`);
+
+        // 성공 후 상세 페이지로 이동
+        if (response?.articleId) {
+          if (postType === 'my-space') {
+            // 마이스페이스: /my-space/archive/[폴더명]/[아티클ID]
+            router.push(`/my-space/archive/${encodeURIComponent(selectedFolder)}/${response.articleId}`);
+          } else if (postType === 'team-space') {
+            // 팀스페이스: /team-space/[팀스페이스명]/[폴더명]/[아티클ID]
+            const teamSpaceName = spaceStore.currentSpace?.name || '';
+            router.push(`/team-space/${encodeURIComponent(teamSpaceName)}/${encodeURIComponent(selectedFolder)}/${response.articleId}`);
+          }
+        }
       }
 
     } catch (error) {
