@@ -101,7 +101,7 @@ public class PostService {
         // 태그 처리
         postTagService.createTags(req.tags(), post);
 
-         log.info("게시글 생성 완료 - postId: {}, type: {}", post.getId(), promptType);
+        log.info("게시글 생성 완료 - postId: {}, type: {}", post.getId(), promptType);
 
         return PostCreateRes.builder().postId(post.getId()).build();
     }
