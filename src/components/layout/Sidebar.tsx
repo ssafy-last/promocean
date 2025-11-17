@@ -16,6 +16,8 @@ import { useSidebar } from '@/contexts/SidebarContext'
 import { useAuthStore } from '@/store/authStore'
 import SidebarSimpleSection from '../section/SidebarSimpleSection';
 import AlarmBell from '../icon/AlarmBell';
+import AlarmItem from '../item/AlarmItem';
+import SidebarAlarmModal from '../modal/SidebarAlarmModal';
 
 /** 
  * Sidebar component
@@ -93,7 +95,7 @@ const alarmItems : SidebarItemProps[] = [{
       <div className="flex-1">
         <SidebarHeader />
         
-       <SidebarSimpleSection title="알림" sidebarList={alarmItems} />
+       <SidebarSimpleSection title="알림" sidebarList={alarmItems} isAlarm={isAlarm} setIsAlarm={setIsAlarm} />
 
         <SidebarSection title="게시판" sidebarList={communityItems} />
 
@@ -108,32 +110,8 @@ const alarmItems : SidebarItemProps[] = [{
     </div>
 
 
-        {isAlarm &&(
-      <div className ={`
-      fixed ${ isCollapsed ? 'left-16' : 'left-64'}  
-      bg-[#fdfdfc] min-w-32 w-72
-      h-screen 
-      flex flex-col transition-[left] duration-200 z-50
-      overflow-hidden shrink-0
-      p-4
-      ` }>
-
-          <div className= ""> 
-              <h2> 알림함 </h2>
-
-
-        <p> 알림 내용 </p>
-              <div className = "flex flex-col">
-                  <div className = "h-24 border-b border-gray-300 hover:bg-gray-200"> 
-
-                  </div>
-                  
-              </div>
-
-          </div>
-      </div>
-          
-    )}
+    <SidebarAlarmModal isAlarm={isAlarm} setIsAlarm={setIsAlarm}/>
+        
     </div>
     
   );

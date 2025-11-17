@@ -27,11 +27,13 @@ export default function AlarmItem(
 ) {
 
     return(
-        <div className = "h-24 border-b border-gray-300 hover:bg-gray-200"> 
-            <h2>{message}</h2>
-            
-            <p>{createdAt}</p>
+        <div className = "h-24 p-2  border-b border-gray-300 hover:bg-gray-200"> 
+            <h4 className = "text-base">{message}</h4>
 
+            <div>
+            <p className = "text-sm">{category}</p>
+            <p className = "text-xs">{createdAt}</p>
+            </div>
         </div>
     )
 }
