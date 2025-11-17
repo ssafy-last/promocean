@@ -17,7 +17,7 @@ export default function SidebarItem({ icon, title, href, onClick }: SidebarItemP
   const { isCollapsed, showText, isCollapsing } = useSidebar();
 
   const baseClass =
-    'flex items-center py-2 text-sm font-medium rounded-md hover:bg-primary hover:text-white transition-colors text-[#343434]';
+    'flex w-full items-center py-2 text-sm font-medium rounded-md hover:bg-primary hover:text-white transition-colors text-[#343434]';
 
   // transition 완료 후 접는 중이 아닐 때만 justify-center 적용
   const layoutClass = (isCollapsed && !isCollapsing) ? 'px-2 justify-center' : 'pl-1 pr-8';
