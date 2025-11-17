@@ -6,6 +6,7 @@ import TeamSpaceTeamChoiceLabelList from "../list/TeamSpaceTeamChoiceLabelList";
 import { TeamSpaceChoiceItemProps } from "../item/TeamSpaceTeamChoiceItem";
 import { TeamSpaceRole } from "@/enum/TeamSpaceRole";
 import SpaceAPI from "@/api/space";
+import { authAPI } from "@/api/auth";
 
 export interface SelectedMember {
     name: string;
@@ -23,7 +24,11 @@ export interface TeamSpaceAddModalProps{
 }
 
 
-
+/**
+ *  팀 스페이스 생성 모달 컴포넌트
+ * @param param0 
+ * @returns 
+ */
 export default function TeamSpaceAddModal({isModalState, setIsModalState, teamSpaceTeamChoiceList, setTeamSpaceTeamChoiceList}: TeamSpaceAddModalProps){
 
     const [isMemberExistState, setIsMemberExistState] = useState(false);
@@ -117,11 +122,27 @@ export default function TeamSpaceAddModal({isModalState, setIsModalState, teamSp
                             <div>
                                 <div className="relative">
                                 <input type="text"
-                                    placeholder="팀원 닉네임 또는 이메일을 입력하세요"
+                                    placeholder="추가 할 팀원 닉네임 또는 이메일 입력 후 Enter를 눌러주세요"
                                     className = "w-full border border-gray-300 rounded-[10px] p-3"
-                                    onKeyDown={(e)=>{
+                                    onKeyDown={async (e)=>{
                                               if(e.key === '\n' || e.key === 'Enter'){
                                             console.log("zz");
+                                            const res = await authAPI.getMemberinfo({email : e.currentTarget.value, nickname : e.currentTarget.value})
+                                            if(res){
+                                                setIsMemberExistState(true);
+                                                setSearchSpaceMemberListState([{
+                                                    member : {
+                                                        email :  res.email,
+                                                        nickname : res.nickname,
+                                                        profileUrl : res.profileUrl!,
+                                                        participantId : 0,
+                                                        role : TeamSpaceRole.READ_ONLY
+                                                    }
+                                                }]);
+                                            } else {
+                                                setIsMemberExistState(false);
+                                                setSearchSpaceMemberListState([]);
+                                            }
                                         }
                                     }}
                                 />
