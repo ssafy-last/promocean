@@ -2,7 +2,7 @@
 
 // frontend/src/components/layout/Sidebar.tsx
 
-import React from 'react'
+import React, { useState } from 'react'
 import SidebarHeader from '@/components/layout/SidebarHeader'
 import SidebarSection from '@/components/section/SidebarSection'
 import SidebarFooter from '@/components/layout/SidebarFooter'
@@ -26,7 +26,7 @@ export default function Sidebar() {
   const { isCollapsed, onTransitionEnd } = useSidebar();
   const { isLoggedIn } = useAuthStore();
   const sidebarRef = React.useRef<HTMLDivElement>(null);
-  
+  const [isAlarm, setIsAlarm] = useState(false);
   // 커뮤니티 섹션
   const communityItems: SidebarItemProps[] = [{
     'icon': <MagnifyingGlass />,
@@ -82,6 +82,7 @@ const alarmItems : SidebarItemProps[] = [{
   }, [onTransitionEnd]);
 
   return (
+    <div>
     <div
       ref={sidebarRef}
       className={`fixed left-0 top-0 ${
@@ -105,5 +106,35 @@ const alarmItems : SidebarItemProps[] = [{
         <SidebarFooter />
       </div>
     </div>
+
+
+        {isAlarm &&(
+      <div className ={`
+      fixed ${ isCollapsed ? 'left-16' : 'left-64'}  
+      bg-[#fdfdfc] min-w-32 w-72
+      h-screen 
+      flex flex-col transition-[left] duration-200 z-50
+      overflow-hidden shrink-0
+      p-4
+      ` }>
+
+          <div className= ""> 
+              <h2> 알림함 </h2>
+
+
+        <p> 알림 내용 </p>
+              <div className = "flex flex-col">
+                  <div className = "h-24 border-b border-gray-300 hover:bg-gray-200"> 
+
+                  </div>
+                  
+              </div>
+
+          </div>
+      </div>
+          
+    )}
+    </div>
+    
   );
 }
