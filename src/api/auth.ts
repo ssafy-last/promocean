@@ -145,9 +145,17 @@ export const authAPI = {
 
 
   async getMemberinfo(params : {email? : string, nickname? : string}): Promise<MemberInfo> {
-    const res = await apiFetch<ApiResponse<MemberInfo>>('/api/v1/members/search?' + new URLSearchParams({
-      ...params
-    }), {
+
+    const searchParams = new URLSearchParams();
+    if(params.email){
+      searchParams.append('email', params.email);
+    }
+    if(params.nickname){
+      searchParams.append('nickname', params.nickname);
+    }
+
+
+    const res = await apiFetch<ApiResponse<MemberInfo>>('/api/v1/members/search?' + searchParams.toString(), {
       method: 'GET',
     });
 
