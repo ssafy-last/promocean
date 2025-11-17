@@ -13,7 +13,7 @@ import { useSidebar } from '@/contexts/SidebarContext'
  * @param {SidebarItemProps} props - The props for the SidebarItem component
  * @returns {React.ReactNode}
  */
-export default function SidebarItem({ icon, title, href, onClick }: SidebarItemProps) {
+export default function SidebarItem({ icon, title, href, onClick, showBadge }: SidebarItemProps) {
   const { isCollapsed, showText, isCollapsing } = useSidebar();
 
   const baseClass =
@@ -28,10 +28,15 @@ export default function SidebarItem({ icon, title, href, onClick }: SidebarItemP
       <button
         type="button"
         onClick={onClick}
-        className={className}
+        className={`${className} relative`}
         title={isCollapsed ? title : undefined}
       >
-        <span className="flex-shrink-0">{icon}</span>
+        <span className="flex-shrink-0 relative">
+          {icon}
+          {showBadge && (
+            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
+          )}
+        </span>
         {showText && (
           <span className="ml-4 whitespace-nowrap">{title}</span>
         )}
@@ -42,10 +47,15 @@ export default function SidebarItem({ icon, title, href, onClick }: SidebarItemP
   return (
     <Link
       href={href ?? ''}
-      className={className}
+      className={`${className} relative`}
       title={isCollapsed ? title : undefined}
     >
-      <span className="flex-shrink-0">{icon}</span>
+      <span className="flex-shrink-0 relative">
+        {icon}
+        {showBadge && (
+          <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
+        )}
+      </span>
       {showText && (
         <span className="ml-4 whitespace-nowrap">{title}</span>
       )}

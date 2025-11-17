@@ -66,19 +66,14 @@ export function connectAlarmSSE(
 
   // 에러 발생 (EventSource는 자동으로 재연결 시도함)
   eventSource.onerror = (error: Event) => {
-    console.error('❌ SSE 연결 에러 (ERR_INCOMPLETE_CHUNKED_ENCODING 가능):', error);
-    console.log('📊 SSE 상태:', {
+    console.log('ℹ️ SSE 연결 상태 변경:', {
       readyState: eventSource.readyState,
       url: eventSource.url,
     });
 
     // readyState: 0 = CONNECTING, 1 = OPEN, 2 = CLOSED
     if (eventSource.readyState === EventSource.CLOSED) {
-      console.error('⚠️ SSE 연결이 완전히 닫혔습니다.');
-      console.error('💡 백엔드에서 다음을 확인하세요:');
-      console.error('   1. SSE 타임아웃 설정 (무제한 권장)');
-      console.error('   2. Heartbeat 전송 (30초마다)');
-      console.error('   3. 프록시/로드밸런서 설정');
+      console.log('📴 SSE 연결이 닫혔습니다. (타임아웃 또는 서버 종료)');
     } else if (eventSource.readyState === EventSource.CONNECTING) {
       console.log('🔄 SSE 자동 재연결 시도 중...');
     }

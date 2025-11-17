@@ -30,6 +30,7 @@ export default function Sidebar() {
   const sidebarRef = React.useRef<HTMLDivElement>(null);
   const [isAlarm, setIsAlarm] = useState(false);
   const [alarmListState, setAlarmListState] = useState<AlarmItemProps[]>([]);
+  const [hasNewAlarm, setHasNewAlarm] = useState(false);
   
   // 커뮤니티 섹션
   const communityItems: SidebarItemProps[] = [{
@@ -97,8 +98,15 @@ const alarmItems : SidebarItemProps[] = [{
       <div className="flex-1">
         <SidebarHeader />
         
-       <SidebarSimpleSection title="알림" sidebarList={alarmItems} isAlarm={isAlarm} setIsAlarm={setIsAlarm}
-        setAlarmList={setAlarmListState} />
+       <SidebarSimpleSection
+        title="알림"
+        sidebarList={alarmItems}
+        isAlarm={isAlarm}
+        setIsAlarm={setIsAlarm}
+        setAlarmList={setAlarmListState}
+        hasNewAlarm={hasNewAlarm}
+        setHasNewAlarm={setHasNewAlarm}
+       />
 
         <SidebarSection title="게시판" sidebarList={communityItems} />
 
@@ -113,9 +121,12 @@ const alarmItems : SidebarItemProps[] = [{
     </div>
 
 
-    <SidebarAlarmModal isAlarm={isAlarm} setIsAlarm={setIsAlarm}
+    <SidebarAlarmModal
+        isAlarm={isAlarm}
+        setIsAlarm={setIsAlarm}
         alarmListState={alarmListState}
         setAlarmListState={setAlarmListState}
+        setHasNewAlarm={setHasNewAlarm}
     />
         
     </div>
