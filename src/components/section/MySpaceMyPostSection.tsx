@@ -2,11 +2,21 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { CommunityAPI } from "@/api/community";
+import { PostAPI } from "@/api/community";
 import { useAuthStore } from "@/store/authStore";
 import { CommunityBoardItemProps } from "@/types/itemType";
 import MyPostBoardItem from "@/components/item/MyPostBoardItem";
 import MySpaceMyPostFilter from "@/components/filter/MySpaceMyPostFilter";
+
+interface MySpaceMyPostSectionProps {
+  page?: number;
+  size?: number;
+  author?: string;
+  sorter?: string;
+  title?: string;
+  tag?: string;
+  category?: string;
+}
 
 /**
  * MySpaceMyPostSection component
@@ -39,21 +49,16 @@ export default function MySpaceMyPostSection() {
 
       try {
         setIsLoading(true);
-
-        // API 호출 파라미터 구성
-        const apiParams: any = {
+        const response = await PostAPI.getList({
           page: currentPage,
           size: 10,
           author: user.nickname,
           sorter: sorter,
-        };
+          title: title,
+          tag: tag,
+          category: category,
+        });
 
-        // 검색 조건 추가 (값이 있을 때만)
-        if (title) apiParams.title = title;
-        if (tag) apiParams.tag = tag;
-        if (category) apiParams.category = category;
-
-        const response = await CommunityAPI.getCommunityBoardList(apiParams);
         setPosts(response.communityBoardList);
         // totalPages가 없으면 최소 1페이지로 설정
         setTotalPages(response.totalPages || 1);
