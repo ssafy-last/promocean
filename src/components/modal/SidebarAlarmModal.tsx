@@ -7,7 +7,7 @@ import AlarmList from "../list/AlarmList";
 import AlarmModalHeader from "../layout/AlarmModalHeader";
 import XCircle from "../icon/XCircle";
 import AlarmModalSmallHeader from "../layout/AlarmModalSmallHeader";
-import { connectAlarmSSE, disconnectAlarmSSE, AlarmEvent } from "@/api/alarm";
+import { connectAlarmSSE, disconnectAlarmSSE, AlarmEvent, deleteAlarm, deleteAllAlarms } from "@/api/alarm";
 
 
 export interface SidebarAlarmModalProps {
@@ -108,6 +108,48 @@ export default function SidebarAlarmModal({
         });
     };
 
+    // 알람 삭제 핸들러
+    const handleDeleteSelectedAlarms = async () => {
+        if (selectedAlarms.size === 0) {
+            console.log('삭제할 알람이 선택되지 않았습니다.');
+            return;
+        }
+
+        try {
+            // 전체 선택된 경우 전체 삭제 API 호출
+            if (selectedAlarms.size === alarmListState.length) {
+                console.log('🗑️ 전체 알람 삭제 중...');
+                await deleteAllAlarms();
+                console.log('✅ 전체 알람 삭제 완료');
+
+                // 상태 업데이트
+                setAlarmListState([]);
+                setSelectedAlarms(new Set());
+            } else {
+                // 개별 삭제 - Promise.all로 병렬 처리
+                console.log(`🗑️ ${selectedAlarms.size}개의 알람 삭제 중...`);
+                const deletePromises = Array.from(selectedAlarms).map(alarmId =>
+                    deleteAlarm(alarmId)
+                );
+
+                await Promise.all(deletePromises);
+                console.log('✅ 선택된 알람 삭제 완료');
+
+                // 상태 업데이트: 삭제된 알람을 제외한 목록으로 업데이트
+                setAlarmListState(prev =>
+                    prev.filter(alarm => !selectedAlarms.has(alarm.alarmId))
+                );
+                setSelectedAlarms(new Set());
+            }
+
+            // 삭제 모드 해제
+            setIsRemoveModeState(false);
+        } catch (error) {
+            console.error('❌ 알람 삭제 실패:', error);
+            alert('알람 삭제 중 오류가 발생했습니다.');
+        }
+    };
+
     // SSE 연결 설정
     useEffect(() => {
         let eventSource: EventSource | null = null;
@@ -116,6 +158,12 @@ export default function SidebarAlarmModal({
             console.log('🔔 알람 핸들러 호출됨:', event);
 
             try {
+                // SSE 연결 확인 메시지는 무시
+                if (event.data === 'EventStream Created') {
+                    console.log('✅ SSE 연결 확인 메시지 수신');
+                    return;
+                }
+
                 // 서버에서 보낸 데이터 파싱 (JSON 형식으로 가정)
                 console.log('📦 파싱 전 데이터:', event.data);
                 const alarmData = JSON.parse(event.data);
@@ -196,6 +244,7 @@ export default function SidebarAlarmModal({
                 selectedAlarms={selectedAlarms}
                 alarmListState={alarmListState}
                 handleRemoveAllClick={handleRemoveAllClick}
+                handleDeleteClick={handleDeleteSelectedAlarms}
              />
 
             <AlarmList

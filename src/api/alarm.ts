@@ -2,7 +2,7 @@
 
 import { apiFetch, BASE_URL } from '@/api/fetcher';
 import { getAuthToken } from '@/lib/authToken';
-import { ApiResponse } from '@/types/apiTypes/common';
+import { ApiResponse, NoArgsResponse } from '@/types/apiTypes/common';
 
 export interface AlarmEvent {
   id?: string;
@@ -233,7 +233,24 @@ export async function getAlarmList() : Promise<GetAlarmListResponse>{
   const res  = await apiFetch<ApiResponse<GetAlarmListResponse>>('/api/v1/alarms', {
     method: 'GET',
   });
-
-
   return res.data;
+}
+
+
+export async function deleteAlarm(alarmId : number) : Promise<NoArgsResponse>{
+
+  const res = await apiFetch<NoArgsResponse>(`/api/v1/alarms/${alarmId}`, {
+    method: 'DELETE',
+  });
+
+  return res;
+}
+
+export async function deleteAllAlarms() : Promise<NoArgsResponse>{
+
+  const res = await apiFetch<NoArgsResponse>(`/api/v1/alarms`, {
+    method: 'DELETE',
+  });
+
+  return res;
 }
