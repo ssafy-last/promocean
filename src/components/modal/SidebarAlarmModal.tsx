@@ -5,6 +5,8 @@ import TrashDeleteIcon from "../icon/TrashDeleteIcon";
 import { useState, useRef, useCallback, useEffect } from "react";
 import AlarmList from "../list/AlarmList";
 import AlarmModalHeader from "../layout/AlarmModalHeader";
+import XCircle from "../icon/XCircle";
+import AlarmModalSmallHeader from "../layout/AlarmModalSmallHeader";
 
 
 export interface SidebarAlarmModalProps {
@@ -48,7 +50,7 @@ export default function SidebarAlarmModal({
     const resizeRef = useRef<HTMLDivElement>(null);
 
     const MIN_WIDTH = 240; // 15rem
-    const MAX_WIDTH = 384; // 24rem
+    const MAX_WIDTH = 448; // 28rem
 
     const handleMouseDown = useCallback((e: React.MouseEvent) => {
         e.preventDefault();
@@ -129,25 +131,21 @@ export default function SidebarAlarmModal({
        overflow-hidden shrink-0
         bg-[#fdfdfc]
         border-r border-gray-200
-        ${isAlarm ? '' : 'transition-all duration-200'}
        ` }
        style={{
         width: isAlarm ? `${width}px` : '0px',
-        transition: isResizingState ? 'none' : isAlarm ? 'none' : 'width 200ms'
+        transition: isResizingState ? 'none' : 'width 200ms, padding 200ms'
        }}
        >
  
              <AlarmModalHeader handleRemoveClick={handleRemoveClick}/>
 
-             <div  className = "flex justify-between items-center ">
-                <h3 className='text-sm pb-4'> 알림 내용 </h3>
-                {  isRemoveModeState &&
-                <button onClick={handleRemoveAllClick} className="text-sm text-red-500 hover:text-red-700
-                active:text-red-900 flex items-center">
-                    {selectedAlarms.size === alarmListState.length ? '전체 해제' : '전체 선택'}
-                </button>
-                }
-            </div>
+             <AlarmModalSmallHeader
+                isRemoveModeState={isRemoveModeState}
+                selectedAlarms={selectedAlarms}
+                alarmListState={alarmListState}
+                handleRemoveAllClick={handleRemoveAllClick}
+             />
 
             <AlarmList
                 alarmListState={alarmListState}
