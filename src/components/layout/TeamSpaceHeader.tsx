@@ -131,7 +131,10 @@ export default function TeamSpaceHeader(
       <div className={`flex flex-row justify-between items-center text-white w-full transition-all duration-300 ease-in-out ${
         isInFolderPage ? 'px-6 py-3.5' : 'px-8 py-15'
       }`}>
-        <div className = "z-1">
+        <div
+          className="z-1 cursor-pointer hover:opacity-80 transition-opacity"
+          onClick={() => router.push(`/team-space/${params['team-archive']}`)}
+        >
             <h1 className={`flex font-semibold transition-all duration-300 ${isInFolderPage ? 'text-base' : 'text-4xl'}`}>
               {nickname}의 팀 스페이스
             </h1>
