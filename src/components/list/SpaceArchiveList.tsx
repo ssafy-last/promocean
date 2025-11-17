@@ -18,7 +18,7 @@ export interface SpaceArchiveListProps {
 }
 
 const interactiveBtnClasses = `
-  w-40 h-60 relative rounded-[20px]
+  w-32 h-44 relative rounded-[10px]
   shadow-[0px_4px_6px_0px_rgba(0,0,0,0.10)] overflow-hidden
   transition-all duration-200 ease-in-out
   hover:-translate-y-1 hover:brightness-105 hover:shadow-lg
@@ -70,7 +70,7 @@ export default function SpaceArchiveList({
                     aria-label="모든 프롬프트 보기"
                 >
                     <div className="w-full h-full flex items-center justify-center">
-                        <div className="text-center text-black text-3xl font-medium leading-9">
+                        <div className="text-center text-black text-xl font-medium leading-6">
                             모든<br />프롬프트
                         </div>
                     </div>
@@ -84,7 +84,7 @@ export default function SpaceArchiveList({
                         onClick={onOpenAddModal}
                     >
                         <div className="w-full h-full flex items-center justify-center">
-                            <div className="text-center text-black text-5xl font-medium leading-9">+</div>
+                            <div className="text-center text-black text-4xl font-medium leading-9">+</div>
                         </div>
                     </button>
                 )

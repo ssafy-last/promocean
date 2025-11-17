@@ -48,6 +48,7 @@ export default function MySpacePage() {
           name : name,
           participantCnt : 1,
           spaceCoverUrl : "",
+          userRole : "OWNER"
         });
         }
         
