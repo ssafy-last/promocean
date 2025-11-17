@@ -31,8 +31,9 @@ export default function TeamSpaceChoiceItem({
            name: name,
            participantCnt: participantCnt,
            spaceCoverUrl: spaceCoverUrl
+          ,userRole: userRole
         })
-        
+        console.log("현재 스페이스 설정됨, 내 권한 ", userRole);
         const res = await getTeamSpaceInfoToServer(spaceId, name, participantCnt, spaceCoverUrl);
 
         console.log("TeamSpaceTeamChoiceItem clicked");
