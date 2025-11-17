@@ -7,6 +7,7 @@ import TeamSpaceManageModal from "../modal/TeamSpaceManageModal";
 import TeamSpaceMyMenuModal from "../modal/TeamSpaceMyMenuModal";
 import SpaceAPI, { SpaceParticipants } from "@/api/space";
 import { useAuthStore } from "@/store/authStore";
+import { useSpaceStore } from "@/store/spaceStore";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 
@@ -36,7 +37,7 @@ export interface TeamSpaceHeaderProps {
 export default function TeamSpaceHeader(
   {nickname, description, spaceId, coverImageUrl}: TeamSpaceHeaderProps) {
 
-  console.log("coverImageUrl", coverImageUrl);  
+  console.log("coverImageUrl", coverImageUrl);
   const [isModalOpenState, setIsModalOpenState] = useState(false);
   const [isMyMenuModalOpen, setIsMyMenuModalOpen] = useState(false);
   const [modalTabState, setModalTabState] = useState<"멤버" | "초대" | "수정" | "삭제">("멤버");
@@ -44,6 +45,7 @@ export default function TeamSpaceHeader(
   const [ownerMemberState, setOwnerMemberState] = useState<SpaceParticipants | null>(null);
   const [currentUserSpaceNickname, setCurrentUserSpaceNickname] = useState<string>(nickname);
   const authStore = useAuthStore();
+  const spaceStore = useSpaceStore();
   const username = authStore.user?.nickname;
   const userEmail = authStore.user?.email;
   const userNickname = authStore.user?.nickname;
@@ -51,6 +53,14 @@ export default function TeamSpaceHeader(
   const params = useParams();
   const isFolderPage = Boolean(params['folder']);
   console.log("isFolderPage:", isFolderPage);
+
+  // 현재 사용자의 권한 가져오기
+  const userRole = spaceStore.currentSpace?.userRole;
+  const isOwner = userRole === "OWNER";
+  const isEditor = userRole === "EDITOR";
+  const isReader = userRole === "READER";
+
+  console.log("현재 사용자 권한:", userRole);
   // console.log("params['folder']", params['folder']);
   // console.log("params['team-archive']", params['team-archive']);
 
@@ -122,10 +132,22 @@ export default function TeamSpaceHeader(
 
         <div className = "flex flex-col h-full justify-between">
         <div className="relative flex flex-row gap-3 h-full">
-          
-          {isFolderPage &&   <button className="cursor-pointer p-2 rounded-md bg-primary hover:bg-primary/40" onClick={handleWrite}>글 쓰기</button> }
-          <button className="cursor-pointer p-2 rounded-md bg-primary hover:bg-primary/40" onClick={handleMyMenuOpen}>내 메뉴</button>
-          <button className="cursor-pointer p-2 rounded-md bg-primary hover:bg-primary/40" onClick={handleModalOpen}>팀 관리</button>
+
+          {/* 글 쓰기: READER 제외 (EDITOR, OWNER만 가능) */}
+          {isFolderPage && !isReader && (
+            <button className="cursor-pointer p-2 rounded-md bg-primary hover:bg-primary/40" onClick={handleWrite}>
+              글 쓰기
+            </button>
+          )}
+
+          <button className="cursor-pointer p-2 rounded-md bg-primary hover:bg-primary/40" onClick={handleMyMenuOpen}>
+            내 메뉴
+          </button>
+
+          {/* 팀 관리: 모든 권한에서 접근 가능하지만, 내부에서 권한별로 다르게 표시 */}
+          <button className="cursor-pointer p-2 rounded-md bg-primary hover:bg-primary/40" onClick={handleModalOpen}>
+            팀 관리
+          </button>
           
           {isMyMenuModalOpen && (
             <TeamSpaceMyMenuModal
@@ -147,6 +169,7 @@ export default function TeamSpaceHeader(
               memberListState={memberListState}
               ownerMemberState={ownerMemberState}
               setMemberListState={setMemberListState}
+              userRole={userRole}
             />
           )}
         </div>
