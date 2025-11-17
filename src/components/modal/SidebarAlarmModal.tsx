@@ -15,6 +15,7 @@ export interface SidebarAlarmModalProps {
     setAlarmListState: React.Dispatch<React.SetStateAction<AlarmItemProps[]>>;
     isAlarm: boolean;
     setIsAlarm: (isAlarm:boolean) => void;
+    setHasNewAlarm: (hasNew: boolean) => void;
 }
 
 
@@ -22,7 +23,8 @@ export default function SidebarAlarmModal({
     alarmListState = [],
     setAlarmListState,
     isAlarm,
-    setIsAlarm
+    setIsAlarm,
+    setHasNewAlarm
 
 }: SidebarAlarmModalProps) {
 
@@ -188,14 +190,17 @@ export default function SidebarAlarmModal({
                     console.log('📋 업데이트된 알람 목록:', updated);
                     return updated;
                 });
+
+                // 새 알람이 왔으므로 뱃지 표시
+                setHasNewAlarm(true);
             } catch (error) {
                 console.error('❌ 알람 데이터 파싱 실패:', error);
                 console.error('원본 데이터:', event.data);
             }
         };
 
-        const handleAlarmError = (error: Event) => {
-            console.error('⚠️ SSE 연결 오류 (핸들러):', error);
+        const handleAlarmError = () => {
+            console.log('ℹ️ SSE 연결 상태 변경 (핸들러)');
         };
 
         try {
@@ -215,7 +220,7 @@ export default function SidebarAlarmModal({
                 disconnectAlarmSSE(eventSource);
             }
         };
-    }, []); // 빈 배열: 컴포넌트 마운트 시 한 번만 실행
+    }, [setAlarmListState, setHasNewAlarm]); // setAlarmListState와 setHasNewAlarm은 안정적인 함수이므로 의존성에 추가
 
 
 
