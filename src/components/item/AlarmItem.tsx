@@ -1,3 +1,13 @@
+'use client';
+
+import { useRouter } from "next/navigation";
+
+enum AlarmCategory {
+    "TEAM_INVITATION" = 0,
+    "CONTEST_NOTICE" = 1,
+    "POST_REPLY" = 2,
+}
+
 
 export interface AlarmItemProps {
     alarmId: number;
@@ -34,11 +44,23 @@ export default function AlarmItem(
 }: AlarmItemProps,
 ) {
 
+    //console.log("AlarmItem 렌더링:", { postId, replyId, spaceId, contestId, noticeId });
+
+    const router = useRouter();
     const handleCheckboxChange = () => {
         if (onToggle) {
             onToggle(alarmId);
         }
     }
+
+    const handleItemClick = () =>{
+        if(isRemove) return;
+         router.push(`/commuity/${postId}`)
+    }
+
+    //팀초대 TEAM_INVITATION = 0,
+    //대회 공지 CONTEST_NOTICE = 1
+    //댓글 POST_REPLY = 2
 
 
     return(
@@ -50,7 +72,9 @@ export default function AlarmItem(
                 : 'border-gray-300 hover:bg-gray-200 hover:cursor-pointer active:bg-gray-300 active:border-primary active:border-b-2'
             }
             transition-colors duration-150
-        `}>
+        `}
+        onClick={handleItemClick}
+        >
             <h4 className = "text-base">{message}</h4>
 
             {isRemove?

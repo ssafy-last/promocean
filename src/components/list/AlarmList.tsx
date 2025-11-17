@@ -23,6 +23,11 @@ export default function AlarmList({
                             message={alarmItem.message}
                             category={alarmItem.category}
                             createdAt={alarmItem.createdAt}
+                            spaceId={alarmItem.spaceId}
+                            contestId={alarmItem.contestId}
+                            noticeId={alarmItem.noticeId}
+                            postId={alarmItem.postId}
+                            replyId={alarmItem.replyId}
                             isRemove={isRemove}
                             isChecked={selectedAlarms.has(alarmItem.alarmId)}
                             onToggle={onAlarmToggle}
