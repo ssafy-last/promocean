@@ -8,21 +8,33 @@ import ChevronDown from "@/components/icon/ChevronDown";
 import MagnifyingGlass from "@/components/icon/MagnifyingGlass";
 import Funnel from "@/components/icon/Funnel";
 
+interface CombinedSearchFilterProps {
+  searchOptions: string[];
+  sorterOptions: Record<string, string>;
+  defaultSorter: string;
+  route: string;
+  searchParamMapping: Record<string, string>; // 검색 옵션 -> 쿼리 파라미터 매핑 (예: {"제목": "title", "작성자": "author"})
+  preserveParams?: string[]; // 유지할 쿼리 파라미터 목록 (예: ["category"])
+}
+
 /**
  * CombinedSearchFilter component
- * @description 드롭다운과 검색바가 통합된 컴포넌트입니다.
+ * @description 드롭다운과 검색바가 통합된 재사용 가능한 컴포넌트입니다.
  * @param {CombinedSearchFilterProps} props - The props for the CombinedSearchFilter component
  * @returns {React.ReactNode}
 */
-export default function CombinedSearchFilter() {
+export default function CombinedSearchFilter({
+  searchOptions,
+  sorterOptions,
+  defaultSorter,
+  route,
+  searchParamMapping,
+  preserveParams = [],
+}: CombinedSearchFilterProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // search Parmas, sorter Parmas
-  const searchOptions = ["전체", "제목", "작성자", "내용", "태그"];
-  const sorterOptions = {"latest": "최신순", "oldest": "오래된 순", "popular": "인기순"};
-
-  const [selectedSorter, setSelectedSorter] = useState(searchParams.get("sorter") || "latest");
+  const [selectedSorter, setSelectedSorter] = useState(searchParams.get("sorter") || defaultSorter);
   const [isSorterOpen, setIsSorterOpen] = useState(false);
   const [selected, setSelected] = useState("전체");
   const [isOpen, setIsOpen] = useState(false);
@@ -32,16 +44,16 @@ export default function CombinedSearchFilter() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // 기존 쿼리 파라미터 가져오기
-    const category = searchParams.get("category");
-    
     // 새로운 쿼리 파라미터 구성
     const params = new URLSearchParams();
     
-    // category 유지
-    if (category) {
-      params.set("category", category);
-    }
+    // 유지할 파라미터 추가
+    preserveParams.forEach((key) => {
+      const value = searchParams.get(key);
+      if (value) {
+        params.set(key, value);
+      }
+    });
     
     // sorter 추가
     if (selectedSorter) {
@@ -50,23 +62,16 @@ export default function CombinedSearchFilter() {
     
     // 검색 파라미터 추가 (전체가 아닐 때만)
     if (selected !== "전체" && keyword.trim()) {
-      switch (selected) {
-        case "제목":
-          params.set("title", keyword.trim());
-          break;
-        case "작성자":
-          params.set("author", keyword.trim());
-          break;
-        case "태그":
-          params.set("tag", keyword.trim());
-          break;
+      const paramKey = searchParamMapping[selected];
+      if (paramKey) {
+        params.set(paramKey, keyword.trim());
       }
     }
 
     // page는 1로 리셋 (검색 시 첫 페이지로)
     params.set("page", "1");
 
-    router.push(`/community?${params.toString()}`);
+    router.push(`${route}?${params.toString()}`);
   };
 
   return (
@@ -128,11 +133,16 @@ export default function CombinedSearchFilter() {
                 setIsSorterOpen(false);
                 // 정렬 변경 시 즉시 라우팅
                 const params = new URLSearchParams();
-                const category = searchParams.get("category");
-                if (category) params.set("category", category);
+                // 유지할 파라미터 추가
+                preserveParams.forEach((paramKey) => {
+                  const value = searchParams.get(paramKey);
+                  if (value) {
+                    params.set(paramKey, value);
+                  }
+                });
                 params.set("sorter", key);
                 params.set("page", "1");
-                router.push(`/community?${params.toString()}`);
+                router.push(`${route}?${params.toString()}`);
               }}
               className={`px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 ${
                 key === selectedSorter ? "text-primary" : "text-gray-700"
