@@ -21,7 +21,6 @@ jwt:
   secret: ${JWT_SECRET}
   expiration_time: ${JWT_EXPIRATION_TIME}
 
-# GMS API 설정
 gms:
   api:
     key: ${GMS_API_KEY}
