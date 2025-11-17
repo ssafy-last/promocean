@@ -11,6 +11,8 @@ import SidebarItem from '../item/SidebarItem';
 interface SidebarSectionProps {
   title: string
   sidebarList: SidebarItemProps[]
+  isAlarm: boolean
+  setIsAlarm: (isAlarm:boolean) => void
 }
 
 /**
@@ -19,11 +21,11 @@ interface SidebarSectionProps {
  * @param {SidebarSectionProps} props - The props for the SidebarSection component
  * @returns {React.ReactNode}
  */
-export default function SidebarSection({title, sidebarList}: SidebarSectionProps) {
+export default function SidebarSection({title, sidebarList, isAlarm, setIsAlarm}: SidebarSectionProps) {
   const { isCollapsed } = useSidebar();
 
   const callback = ()=>{
-    console.log("콜백 함수 실행됨");
+    setIsAlarm(!isAlarm);
   }
 
   return (
