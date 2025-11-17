@@ -5,6 +5,7 @@ import {
   ContestSubmissionItemProps,
   ContestSubmissionDetailData,
 } from "@/types/itemType";
+import { ApiResponse } from "@/types/apiTypes/common";
 
 /**
  * SubmissionAPI
@@ -21,13 +22,9 @@ export class SubmissionAPI {
    */
   static async list(contestId: number) {
     try {
-      interface ApiResponse {
-        message: string | null;
-        data: {
-          submissions: ContestSubmissionItemProps[];
-        };
-      }
-      const response = await apiFetch<ApiResponse>(`/api/v1/contests/${contestId}/submissions`);
+      const response = await apiFetch<ApiResponse<{
+        submissions: ContestSubmissionItemProps[];
+      }>>(`/api/v1/contests/${contestId}/submissions`);
       return {
         contestSubmissionList: response.data.submissions,
       };
@@ -49,12 +46,7 @@ export class SubmissionAPI {
    * @returns {Promise<{ submissionData: ContestSubmissionDetailData }>}
    */
   static async getDetail(contestId: number, submissionId: number) {
-    interface ApiResponse {
-      message: string | null;
-      data: ContestSubmissionDetailData;
-    }
-    
-    const response = await apiFetch<ApiResponse>(`/api/v1/contests/${contestId}/submissions/${submissionId}`);
+    const response = await apiFetch<ApiResponse<ContestSubmissionDetailData>>(`/api/v1/contests/${contestId}/submissions/${submissionId}`);
     return {
       submissionData: response.data,
     };
@@ -69,11 +61,7 @@ export class SubmissionAPI {
    * @returns {Promise<{ contestMySubmissionItem: ContestSubmissionDetailData }>}
    */
   static async getMySubmission(contestId: number) {
-    interface ApiResponse {
-      message: string | null;
-      data: ContestSubmissionDetailData;
-    }
-    const response = await apiFetch<ApiResponse>(`/api/v1/contests/${contestId}/submissions/me`);
+    const response = await apiFetch<ApiResponse<ContestSubmissionDetailData>>(`/api/v1/contests/${contestId}/submissions/me`);
     return {
       contestMySubmissionItem: response.data,
     };
@@ -98,11 +86,7 @@ export class SubmissionAPI {
     description: string,
     result: string
   ) {
-    interface ApiResponse {
-      message: string | null;
-      data: null;
-    }
-    const response = await apiFetch<ApiResponse>(`/api/v1/contests/${contestId}/submissions/${submissionId}`, {
+    const response = await apiFetch<ApiResponse<null>>(`/api/v1/contests/${contestId}/submissions/${submissionId}`, {
       method: 'PUT',
       body: JSON.stringify({
         prompt,
@@ -126,11 +110,7 @@ export class SubmissionAPI {
    * @returns {Promise<{ message: string | null, data: null }>}
    */
   static async delete(contestId: number, submissionId: number) {
-    interface ApiResponse {
-      message: string | null;
-      data: null;
-    }
-    const response = await apiFetch<ApiResponse>(`/api/v1/contests/${contestId}/submissions/${submissionId}`, {
+    const response = await apiFetch<ApiResponse<null>>(`/api/v1/contests/${contestId}/submissions/${submissionId}`, {
       method: 'DELETE',
     });
     return {
