@@ -163,7 +163,7 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
                     participantId: Date.now(), // 임시 ID
                     nickname: memberInfo.nickname,
                     email: memberInfo.email,
-                    role: "READ_ONLY",
+                    role: "READER",
                     profileUrl: memberInfo.profileUrl || ""
                 };
 
@@ -182,7 +182,7 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
         setAddMemberListState(prev =>
             prev.map(member =>
                 member.email === email
-                    ? { ...member, role: newRole === TeamSpaceRole.READ_ONLY ? "READ_ONLY" : "EDITOR" }
+                    ? { ...member, role: newRole === TeamSpaceRole.READER ? "READER" : newRole === TeamSpaceRole.EDITOR ? "EDITOR" : "OWNER" }
                     : member
             )
         );
