@@ -3,11 +3,12 @@ import { AlarmItemProps } from "../item/AlarmItem";
 
 
 export interface AlarmModalSmallHeaderProps {
-    
+
     isRemoveModeState: boolean;
     selectedAlarms: Set<number>;
     alarmListState: AlarmItemProps[];
     handleRemoveAllClick: () => void;
+    handleDeleteClick: () => void;
 }
 
 
@@ -15,7 +16,8 @@ export default function AlarmModalSmallHeader({
     isRemoveModeState,
     selectedAlarms,
     alarmListState,
-    handleRemoveAllClick
+    handleRemoveAllClick,
+    handleDeleteClick
 }: AlarmModalSmallHeaderProps) {
     return(
         <div  className = "flex justify-between items-center pb-2">
@@ -26,9 +28,17 @@ export default function AlarmModalSmallHeader({
                         active:text-red-900 flex items-center">
                             {selectedAlarms.size === alarmListState.length ? '전체 해제' : '전체 선택'}
                         </button>
-                        
-                        <button className ="w-8 h-8 flex justify-center items-center">
-                            <XCircle className="size-6 stroke-red-500 hover:stroke-red-700 active:stroke-red-900" />
+
+                        <button
+                            onClick={handleDeleteClick}
+                            className="w-8 h-8 flex justify-center items-center"
+                            disabled={selectedAlarms.size === 0}
+                        >
+                            <XCircle className={`size-6 ${
+                                selectedAlarms.size === 0
+                                    ? 'stroke-gray-300 cursor-not-allowed'
+                                    : 'stroke-red-500 hover:stroke-red-700 active:stroke-red-900 cursor-pointer'
+                            }`} />
                         </button>
         
                         </div>
