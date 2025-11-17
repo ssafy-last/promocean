@@ -83,8 +83,8 @@ export class PostAPI {
     }>>(`/api/v1/posts?${queryParams.toString()}`);
 
     const { posts, itemCnt, totalCnt, totalPages, currentPage } = response.data;
-    const communityBoardList: CommunityBoardItemProps[] = posts.map((post) => ({ ...post, fileUrl: undefined }));
-
+    const communityBoardList: CommunityBoardItemProps[] = posts.map((post) => ({ ...post}));
+    
     return {
       communityBoardList,
       itemCnt,
