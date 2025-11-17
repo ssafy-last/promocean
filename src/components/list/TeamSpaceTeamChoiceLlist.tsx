@@ -18,7 +18,7 @@ export default function TeamSpaceTeamChoiceList({teamSpaceTeamChoiceList} : Team
                             name={item.name}
                             participantCnt={item.participantCnt}
                             spaceId={item.spaceId}
-                            role = {item.role}
+                            userRole={item.userRole}
                         />
                     ))
                 }
