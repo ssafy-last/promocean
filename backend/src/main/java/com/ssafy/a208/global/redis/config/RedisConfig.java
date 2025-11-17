@@ -4,44 +4,35 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import org.springframework.data.redis.connection.RedisClusterConfiguration;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-
-import java.util.List;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 
 @Configuration
 public class RedisConfig {
 
-    /**
-     * Redis Cluster 노드 목록
-     * application-prod.yml에서 spring.data.redis.cluster.nodes 값을 주입받는다.
-     * 예) nodes:
-     *      - clustercfg.xxx.amazonaws.com:6379
-     */
-    @Value("${spring.data.redis.cluster.nodes}")
-    private List<String> clusterNodes;
+    @Value("${spring.data.redis.host}")
+    private String host;
 
-    /**
-     * Redis Cluster 연결 Factory
-     * SSL 활성화 + 리다이렉트 3회 설정
-     */
+    @Value("${spring.data.redis.port}")
+    private int port;
+
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
+        RedisStandaloneConfiguration config =
+                new RedisStandaloneConfiguration(host, port);
 
-        RedisClusterConfiguration clusterConfig = new RedisClusterConfiguration(clusterNodes);
-        clusterConfig.setMaxRedirects(3);  // cluster 모드 필수 옵션
+        LettuceClientConfiguration clientConfig =
+                LettuceClientConfiguration.builder()
+                        .useSsl()
+                        .build();
 
-        LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder()
-                .useSsl()   // AWS ElastiCache Cluster Mode Enabled는 SSL 필수
-                .build();
-
-        return new LettuceConnectionFactory(clusterConfig, clientConfig);
+        return new LettuceConnectionFactory(config, clientConfig);
     }
 
     @Bean
