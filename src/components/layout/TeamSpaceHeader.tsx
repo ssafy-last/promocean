@@ -128,39 +128,42 @@ export default function TeamSpaceHeader(
       />
       <div className="absolute w-full h-full backdrop-blur-none group-hover:backdrop-blur-xs transition-all duration-300"/>
 
-      <div className={`flex flex-row justify-between items-center text-white w-full transition-all duration-300 ease-in-out ${
+      {/* 어두운 그라데이션 오버레이 - 텍스트 가독성 향상 */}
+      <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/30 to-transparent pointer-events-none"></div>
+
+      <div className={`relative flex flex-row justify-between items-center text-white w-full transition-all duration-300 ease-in-out ${
         isInFolderPage ? 'px-6 py-3.5' : 'px-8 py-15'
       }`}>
         <div
-          className="z-1 cursor-pointer hover:opacity-80 transition-opacity"
+          className="z-10 cursor-pointer hover:opacity-90 transition-opacity"
           onClick={() => router.push(`/team-space/${params['team-archive']}`)}
         >
             <h1 className={`flex font-semibold transition-all duration-300 ${isInFolderPage ? 'text-base' : 'text-4xl'}`}>
               {nickname}의 팀 스페이스
             </h1>
-            <p className={`text-white/80 transition-all duration-300 ${isInFolderPage ? 'text-[10px]' : 'text-sm'}`}>{description}</p>
+            <p className={`text-white/90 transition-all duration-300 ${isInFolderPage ? 'text-[10px]' : 'text-sm'}`}>{description}</p>
         </div>
 
         <div className = "flex flex-col h-full justify-between">
-        <div className="relative flex flex-row gap-2 h-full">
+        <div className="relative flex flex-row gap-2 h-full z-10">
 
           {/* 글 쓰기: READER 제외 (EDITOR, OWNER만 가능) */}
           {isFolderPage && !isReader && (
-            <button className={`cursor-pointer rounded-md bg-primary hover:bg-primary/40 transition-all duration-300 ${
+            <button className={`cursor-pointer rounded-md bg-black/30 backdrop-blur-sm hover:bg-black/50 transition-all duration-300 border border-white/20 ${
               isInFolderPage ? 'px-2 py-1 text-xs' : 'px-3 py-1.5 text-sm'
             }`} onClick={handleWrite}>
               글 쓰기
             </button>
           )}
 
-          <button className={`cursor-pointer rounded-md bg-primary hover:bg-primary/40 transition-all duration-300 ${
+          <button className={`cursor-pointer rounded-md bg-black/30 backdrop-blur-sm hover:bg-black/50 transition-all duration-300 border border-white/20 ${
             isInFolderPage ? 'px-2 py-1 text-xs' : 'p-2'
           }`} onClick={handleMyMenuOpen}>
             내 메뉴
           </button>
 
           {/* 팀 관리: 모든 권한에서 접근 가능하지만, 내부에서 권한별로 다르게 표시 */}
-          <button className={`cursor-pointer rounded-md bg-primary hover:bg-primary/40 transition-all duration-300 ${
+          <button className={`cursor-pointer rounded-md bg-black/30 backdrop-blur-sm hover:bg-black/50 transition-all duration-300 border border-white/20 ${
             isInFolderPage ? 'px-2 py-1 text-xs' : 'p-2'
           }`} onClick={handleModalOpen}>
             팀 관리
