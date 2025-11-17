@@ -1,6 +1,8 @@
 package com.ssafy.a208.domain.board.service;
 
 import com.ssafy.a208.domain.board.dto.PostCommentEvent;
+import com.ssafy.a208.domain.alarm.dto.AlarmReq;
+import com.ssafy.a208.domain.alarm.service.AlarmService;
 import com.ssafy.a208.domain.board.dto.ReplyReq;
 import com.ssafy.a208.domain.board.entity.Post;
 import com.ssafy.a208.domain.board.entity.Reply;
@@ -11,21 +13,21 @@ import com.ssafy.a208.domain.board.reader.ReplyReader;
 import com.ssafy.a208.domain.board.repository.ReplyRepository;
 import com.ssafy.a208.domain.member.entity.Member;
 import com.ssafy.a208.domain.member.reader.MemberReader;
+import com.ssafy.a208.global.common.enums.AlarmCategory;
 import com.ssafy.a208.global.security.dto.CustomUserDetails;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 /**
- * 댓글 서비스
- * 댓글 생성, 수정, 삭제 등 핵심 비즈니스 로직을 담당합니다.
+ * 댓글 서비스 댓글 생성, 수정, 삭제 등 핵심 비즈니스 로직을 담당합니다.
  */
 @Slf4j
 @Service
@@ -35,6 +37,7 @@ public class ReplyService {
     private final MemberReader memberReader;
     private final PostReader postReader;
     private final ReplyReader replyReader;
+    private final AlarmService alarmService;
     private final ReplyRepository replyRepository;
     private final PostIndexService postIndexService;
     private final KafkaTemplate<String, PostCommentEvent> postCommentKafkaTemplate;
@@ -49,8 +52,8 @@ public class ReplyService {
      * 댓글을 생성합니다.
      *
      * @param userDetails 인증된 사용자 정보
-     * @param postId 게시글 ID
-     * @param req 댓글 작성 요청 DTO
+     * @param postId      게시글 ID
+     * @param req         댓글 작성 요청 DTO
      */
     @Transactional
     public void createReply(CustomUserDetails userDetails, Long postId, ReplyReq req) {
@@ -78,20 +81,32 @@ public class ReplyService {
 
         log.info("댓글 생성 완료 - replyId: {}, postId: {}, authorId: {}",
                 reply.getId(), postId, author.getId());
+
+        // 게시글 작성자에게 알림 전송
+        AlarmReq alarmReq = AlarmReq.builder()
+                .category(AlarmCategory.POST_REPLY)
+                .postId(postId)
+                .postTitle(post.getTitle())
+                .replyId(reply.getId())
+                .replyContent(reply.getContent())
+                .build();
+        Member receiver = post.getAuthor();
+        alarmService.send(receiver, alarmReq);
     }
 
     /**
      * 댓글을 수정합니다.
      *
      * @param userDetails 인증된 사용자 정보
-     * @param postId 게시글 ID
-     * @param replyId 댓글 ID
-     * @param req 댓글 수정 요청 DTO
-     * @throws ReplyNotFoundException 댓글을 찾을 수 없을 때
+     * @param postId      게시글 ID
+     * @param replyId     댓글 ID
+     * @param req         댓글 수정 요청 DTO
+     * @throws ReplyNotFoundException     댓글을 찾을 수 없을 때
      * @throws ReplyAccessDeniedException 수정 권한이 없을 때
      */
     @Transactional
-    public void updateReply(CustomUserDetails userDetails, Long postId, Long replyId, ReplyReq req) {
+    public void updateReply(CustomUserDetails userDetails, Long postId, Long replyId,
+            ReplyReq req) {
         // 게시글 존재 여부 먼저 확인
         Post post = postReader.getPostById(postId);
 
@@ -118,9 +133,9 @@ public class ReplyService {
      * 댓글을 삭제합니다.
      *
      * @param userDetails 인증된 사용자 정보
-     * @param postId 게시글 ID
-     * @param replyId 댓글 ID
-     * @throws ReplyNotFoundException 댓글을 찾을 수 없을 때
+     * @param postId      게시글 ID
+     * @param replyId     댓글 ID
+     * @throws ReplyNotFoundException     댓글을 찾을 수 없을 때
      * @throws ReplyAccessDeniedException 삭제 권한이 없을 때
      */
     @Transactional
