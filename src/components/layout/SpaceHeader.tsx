@@ -60,6 +60,10 @@ export default function SpaceHeader(
       router.push(`/post?type=my-space&folder=${pathSegments[2]}`);
     }
 
+    const handleHeaderClick = () => {
+      router.push('/my-space/archive');
+    }
+
   return (
     <header className="w-full">
       {/* 상단 영역 - 전체 너비 */}
@@ -69,7 +73,10 @@ export default function SpaceHeader(
         } ${folderColor ? '' : 'bg-primary'}`}
         style={folderColor ? { backgroundColor: folderColor } : undefined}
       >
-        <div>
+        <div
+          className="cursor-pointer hover:opacity-80 transition-opacity"
+          onClick={handleHeaderClick}
+        >
           <h1 className={`font-semibold transition-all duration-300 ${isInFolderPage ? 'text-base' : 'text-3xl'}`}>
             {nickname} 님의{isTeamSpace ? ' 팀 스페이스' : ' 마이 스페이스'}
           </h1>
