@@ -30,9 +30,11 @@ export default function SidebarSection({title, sidebarList, setAlarmList, isAlar
   const callback = async ()=>{
     setIsAlarm(!isAlarm);
 
+    if(!isAlarm){
     const res = await getAlarmList();
     console.log('알람 리스트 조회 결과:', res);
     setAlarmList(res.alarms);
+    }
   }
 
   return (
