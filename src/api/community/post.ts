@@ -8,6 +8,7 @@ import {
   CommunityPostItemResponse,
 } from "@/types/itemType";
 import { convertCategoryToApiCode } from "@/utils/categoryConvert";
+import popularMock from "../../../public/mock/CommunityPopularPost.json";
 
 /**
  * PostAPI
@@ -115,7 +116,7 @@ export class PostAPI {
     // const page = "9";
     // params.set('page', page);
     // const response = await apiFetch<ApiResponse>(`/api/v1/trending/posts?${params.toString()}`);
-    const response = await fetch('http://localhost:3000/mock/CommunityPopularPost.json').then(res => res.json());
+    const response = popularMock;
     return { popularPosts: response.data.posts };
   }
 
