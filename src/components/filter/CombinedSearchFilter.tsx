@@ -70,17 +70,17 @@ export default function CombinedSearchFilter() {
   };
 
   return (
-    <div className="relative">
-      <div className="flex items-center border border-gray-300 rounded-md bg-white overflow-hidden">
+    <div className="relative max-w-lg">
+      <div className="flex items-center border border-gray-300 rounded-md bg-white overflow-hidden h-8">
         {/* 왼쪽: 정렬 필터 */}
         <div className="relative">
           <button
             type="button"
             onClick={() => setIsSorterOpen((prev) => !prev)}
-            className="flex items-center justify-between w-28 px-3 py-2 text-sm hover:bg-gray-50 border-r border-gray-300"
+            className="flex items-center justify-between w-24 px-3 py-1 text-xs hover:bg-gray-50 border-r border-gray-300 h-full"
           >
             <span>{selectedSorter ? sorterOptions[selectedSorter as keyof typeof sorterOptions] : "최신순"}</span>
-            <Funnel />
+            <Funnel className="size-4" />
           </button>
         </div>
         {/* 중앙: 드롭다운 */}
@@ -88,38 +88,38 @@ export default function CombinedSearchFilter() {
           <button
             type="button"
             onClick={() => setIsOpen((prev) => !prev)}
-            className="flex items-center justify-between w-28 px-3 py-2 text-sm hover:bg-gray-50 border-r border-gray-300"
+            className="flex items-center justify-between w-24 px-3 py-1 text-xs hover:bg-gray-50 border-r border-gray-300 h-full"
           >
             <span>{selected}</span>
-            <ChevronDown />
+            <ChevronDown className="size-4"/>
           </button>
         </div>
 
         {/* 오른쪽: 검색바 */}
         <form
           onSubmit={handleSearch}
-          className="flex items-center flex-grow px-3 py-2"
+          className="flex items-center flex-grow px-3 py-1 h-full"
         >
           <input
             type="text"
             placeholder="검색어 입력"
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
-            className="flex-grow text-sm bg-transparent focus:outline-none ml-2"
+            className="flex-grow text-xs bg-transparent focus:outline-none"
           />
           <button
             type="submit"
             className="cursor-pointer"
             aria-label="검색"
           >
-            <MagnifyingGlass />
+            <MagnifyingGlass className="size-4" />
           </button>
         </form>
       </div>
 
       {/* 정렬 필터 드롭다운 메뉴 */}
       {isSorterOpen && (
-        <ul className="absolute left-0 top-full mt-1 w-28 border border-gray-200 bg-white rounded-md shadow-md z-10">
+        <ul className="absolute left-0 top-full mt-1 w-24 border border-gray-200 bg-white rounded-md shadow-md z-10">
           {Object.entries(sorterOptions).map(([key, value]) => (
             <li
               key={key}
@@ -146,7 +146,7 @@ export default function CombinedSearchFilter() {
 
       {/* 검색 옵션 드롭다운 메뉴 */}
       {isOpen && (
-        <ul className="absolute left-28 top-full mt-1 w-28 border border-gray-200 bg-white rounded-md shadow-md z-10">
+        <ul className="absolute left-24 top-full mt-1 w-24 border border-gray-200 bg-white rounded-md shadow-md z-10">
           {searchOptions.map((opt) => (
             <li
               key={opt}
