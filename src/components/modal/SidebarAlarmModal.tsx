@@ -12,7 +12,7 @@ import { connectAlarmSSE, disconnectAlarmSSE, AlarmEvent } from "@/api/alarm";
 
 export interface SidebarAlarmModalProps {
     alarmListState: AlarmItemProps[];
-    setAlarmListState: (list: AlarmItemProps[]) => void;
+    setAlarmListState: React.Dispatch<React.SetStateAction<AlarmItemProps[]>>;
     isAlarm: boolean;
     setIsAlarm: (isAlarm:boolean) => void;
 }
