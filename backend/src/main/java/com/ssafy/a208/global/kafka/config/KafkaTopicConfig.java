@@ -38,7 +38,7 @@ public class KafkaTopicConfig {
     @Profile("prod")
     public NewTopic postLikesTopicProd() {
         return TopicBuilder.name("post-likes")
-                .partitions(6)
+                .partitions(3)
                 .replicas(2)    // 프로덕션은 2
                 .config(TopicConfig.MIN_IN_SYNC_REPLICAS_CONFIG, "2")
                 .config(TopicConfig.RETENTION_MS_CONFIG, "604800000") // 7일
@@ -50,7 +50,7 @@ public class KafkaTopicConfig {
     @Profile("prod")
     public NewTopic postCommentsTopicProd() {
         return TopicBuilder.name("post-comments")
-                .partitions(6)
+                .partitions(3)
                 .replicas(2)    // 프로덕션은 2
                 .config(TopicConfig.MIN_IN_SYNC_REPLICAS_CONFIG, "2")
                 .config(TopicConfig.RETENTION_MS_CONFIG, "604800000") // 7일
