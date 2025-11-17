@@ -31,14 +31,14 @@ export interface PatchMySpaceArchiveFolderPinStatusRequest {
 
 /**
  * 팀 스페이스 아이템 데이터 타입
- * API에서 role은 문자열("READ_ONLY", "EDITOR", "OWNER")로 반환됩니다.
+ * API에서 role은 문자열("READER", "EDITOR", "OWNER")로 반환됩니다.
  */
 export interface TeamSpaceItem {
     name: string;
     participantCnt: number;
     spaceCoverUrl: string;
     spaceId: number;
-    userRole: "READ_ONLY" | "EDITOR" | "OWNER";
+    userRole: "READER" | "EDITOR" | "OWNER";
 }
 
 export interface GetTeamSpaceListResponse{

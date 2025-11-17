@@ -1,5 +1,5 @@
 export enum TeamSpaceRole {
-    READ_ONLY = 10,
+    READER = 10,
     EDITOR = 20,
     OWNER = 30
 }
@@ -12,9 +12,9 @@ export const ChangeSpaceRoleToValue = (role: SpaceRole | string): number => {
 
 /**
  * TeamSpaceRole을 한글로 변환하는 함수
- * API에서는 문자열("READ_ONLY", "EDITOR", "OWNER")로 반환되므로 문자열을 우선 처리합니다.
+ * API에서는 문자열("READER", "EDITOR", "OWNER")로 반환되므로 문자열을 우선 처리합니다.
  */
-export const TeamSpaceRoleToKorean = (role: "READ_ONLY" | "EDITOR" | "OWNER" | TeamSpaceRole | SpaceRole | number | string): string => {
+export const TeamSpaceRoleToKorean = (role: "READER" | "EDITOR" | "OWNER" | TeamSpaceRole | SpaceRole | number | string): string => {
     // 문자열로 전달된 경우 (API 응답)
     if (typeof role === 'string') {
         switch (role) {
@@ -32,7 +32,7 @@ export const TeamSpaceRoleToKorean = (role: "READ_ONLY" | "EDITOR" | "OWNER" | T
     // enum 값(숫자)으로 전달된 경우
     if (typeof role === 'number') {
         switch (role) {
-            case TeamSpaceRole.READ_ONLY:
+            case TeamSpaceRole.READER:
                 return '읽기 전용';
             case TeamSpaceRole.EDITOR:
                 return '편집자';
