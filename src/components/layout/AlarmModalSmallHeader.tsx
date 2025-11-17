@@ -18,7 +18,7 @@ export default function AlarmModalSmallHeader({
     handleRemoveAllClick
 }: AlarmModalSmallHeaderProps) {
     return(
-        <div  className = "flex justify-between items-center ">
+        <div  className = "flex justify-between items-center pb-2">
                         <h3 className='text-sm pb-4'> 알림 내용 </h3>
                         {  isRemoveModeState &&
                         <div className = "flex gap-4 justify-center items-center">
@@ -33,6 +33,6 @@ export default function AlarmModalSmallHeader({
         
                         </div>
                         }
-                    </div>
+        </div>
     )
 }
