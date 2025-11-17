@@ -24,8 +24,8 @@ export default function TeamSpaceChoiceSection(){
                 const spaceList = res?.spaces || [];
 
                 console.log("팀 스페이스 리스트 재조회 ", spaceList);
-                
 
+                console.log("role!! :", spaceList[0]?.userRole);
                 spaceStore.setAllTeamSpaces(spaceList);
                 setTeamSpaceTeamChoiceListState(spaceList);
 
