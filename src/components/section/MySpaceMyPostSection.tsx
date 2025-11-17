@@ -53,14 +53,12 @@ export default function MySpaceMyPostSection() {
           page: currentPage,
           size: 10,
           author: user.nickname,
-        };
+          sorter: sorter,
+          title: title,
+          tag: tag,
+          category: category,
+        });
 
-        // 검색 조건 추가 (값이 있을 때만)
-        if (title) apiParams.title = title;
-        if (tag) apiParams.tag = tag;
-        if (category) apiParams.category = category;
-
-        const response = await CommunityAPI.getCommunityBoardList(apiParams);
         setPosts(response.communityBoardList);
         // totalPages가 없으면 최소 1페이지로 설정
         setTotalPages(response.totalPages || 1);
