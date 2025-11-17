@@ -3,15 +3,16 @@ import AlarmItem, { AlarmItemProps } from "../item/AlarmItem";
 export interface AlarmListProps {
     alarmListState : AlarmItemProps[];
     isRemove?: boolean;
-    removeToggle?: boolean;
-
+    selectedAlarms?: Set<number>;
+    onAlarmToggle?: (alarmId: number) => void;
 }
 
 
 export default function AlarmList({
     alarmListState,
     isRemove = false,
-    removeToggle = false,
+    selectedAlarms = new Set(),
+    onAlarmToggle,
 }: AlarmListProps) {
     return(
              <div className = "flex flex-col">
@@ -23,10 +24,11 @@ export default function AlarmList({
                             category={alarmItem.category}
                             createdAt={alarmItem.createdAt}
                             isRemove={isRemove}
-                            removeToggle={removeToggle}
+                            isChecked={selectedAlarms.has(alarmItem.alarmId)}
+                            onToggle={onAlarmToggle}
                         />
                     ))}
-                       
+
             </div>
     )
 
