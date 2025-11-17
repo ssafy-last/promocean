@@ -23,12 +23,12 @@ export interface TeamSpacePageProps {
     ownerMemberState?: SpaceParticipants | null;
     setMemberListState: (members: SpaceParticipants[]) => void;
     teamName?: string;
-
+    userRole?: "READER" | "EDITOR" | "OWNER";
 }
 
 
 
-export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handleModalClose, modalTabState, setModalTabState, memberListState, ownerMemberState, setMemberListState, teamName = "팀 스페이스"}: TeamSpacePageProps) {
+export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handleModalClose, modalTabState, setModalTabState, memberListState, ownerMemberState, setMemberListState, teamName = "팀 스페이스", userRole}: TeamSpacePageProps) {
     console.log("spaceId in TeamSpaceManageModal:", spaceId);
     const router = useRouter();
     const { user } = useAuthStore();
@@ -37,6 +37,17 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
     const spaceStore = useSpaceStore();
     const currentSpace = spaceStore.currentSpace;
     const setCurrentSpace = spaceStore.setCurrentSpace;
+
+    // 권한 확인
+    const isOwner = userRole === "OWNER";
+    const isEditor = userRole === "EDITOR";
+    const isReader = userRole === "READER";
+
+    // OWNER만 초대, 수정, 삭제 가능
+    // EDITOR, READER는 멤버 조회만 가능
+    const canInvite = isOwner;
+    const canEdit = isOwner;
+    const canDelete = isOwner;
     
     const [addMemberListState, setAddMemberListState] = useState<SpaceParticipants[]>([]);
     const [searchInputState, setSearchInputState] = useState("");
@@ -289,7 +300,11 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
                 <div className="py-4 px-4 border-b border-gray-200">
                     <TeamSpaceInsertionModalTabs
                         modalTabState={modalTabState}
-                        setModalTabState={setModalTabState}/>
+                        setModalTabState={setModalTabState}
+                        canInvite={canInvite}
+                        canEdit={canEdit}
+                        canDelete={canDelete}
+                    />
                 </div>
 
                 {/* 컨텐츠 영역 - 스크롤 가능 */}
@@ -311,6 +326,7 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
                                 currentUserEmail={user?.email}
                                 onDelete={handleDeleteMember}
                                 onRoleChange={handleMemberRoleChangeInList}
+                                canManageMembers={isOwner}
                             />
                         </div>
                     </div>

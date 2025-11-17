@@ -5,6 +5,7 @@ import SpaceArchiveItem from "../item/SpaceArchiveItem";
 import SpaceArchiveAddModal from "../modal/SpaceArchiveAddModal";
 import { SpaceArchiveData } from "@/app/my-space/page";
 import { useAuthStore } from "@/store/authStore";
+import { useSpaceStore } from "@/store/spaceStore";
 
 export interface SpaceArchiveListProps {
   isPinnedList?: boolean;
@@ -35,6 +36,11 @@ export default function SpaceArchiveList({
 }: SpaceArchiveListProps) {
     const [isModalOpenState, setIsModalOpenState] = useState(false);
     const [shouldRenderModalState, setShouldRenderModalState] = useState(false);
+    const spaceStore = useSpaceStore();
+
+    // 팀 스페이스인 경우 권한 확인
+    const userRole = isTeamSpace ? spaceStore.currentSpace?.userRole : null;
+    const canCreateFolder = !isTeamSpace || (userRole !== "READER"); // 개인 스페이스 또는 READER가 아닌 경우
 
     const onOpenAddModal = () => {
         setShouldRenderModalState(true);
@@ -52,7 +58,7 @@ export default function SpaceArchiveList({
 
 
     // console.log("isPinnedList:", isPinnedList);
-    
+
     const displayList = isPinnedList ? pinnedItemListState : archiveItemListState;
     // console.log("displayList:", displayList);
 
@@ -70,15 +76,18 @@ export default function SpaceArchiveList({
                     </div>
                 </button>
             ) : (
-                <button
-                    className={`${interactiveBtnClasses} bg-white outline-2 outline-dodger-blue-11`}
-                    aria-label="새 항목 추가"
-                    onClick={onOpenAddModal}
-                >
-                    <div className="w-full h-full flex items-center justify-center">
-                        <div className="text-center text-black text-5xl font-medium leading-9">+</div>
-                    </div>
-                </button>
+                /* 폴더 추가 버튼: READER 제외 (개인 스페이스 또는 EDITOR, OWNER만 가능) */
+                canCreateFolder && (
+                    <button
+                        className={`${interactiveBtnClasses} bg-white outline-2 outline-dodger-blue-11`}
+                        aria-label="새 항목 추가"
+                        onClick={onOpenAddModal}
+                    >
+                        <div className="w-full h-full flex items-center justify-center">
+                            <div className="text-center text-black text-5xl font-medium leading-9">+</div>
+                        </div>
+                    </button>
+                )
             )}
 
             {displayList.map((item, index) => (
