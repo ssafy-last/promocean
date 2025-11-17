@@ -43,13 +43,20 @@ export default function AlarmItem(
 
     return(
         <div >
-        <button className = "flex flex-col items-start justify-between h-24 p-2  border-b border-gray-300 hover:bg-gray-200 hover:cursor-pointer active:bg-gray-300 active:border-primary active:border-b-2 w-full  group-checked:bg-gray-300">
+        <button className={`
+            flex flex-col items-start justify-between h-20 p-2 border-b w-full
+            ${isRemove && isChecked
+                ? 'bg-blue-50 border-blue-300 border-b-2'
+                : 'border-gray-300 hover:bg-gray-200 hover:cursor-pointer active:bg-gray-300 active:border-primary active:border-b-2'
+            }
+            transition-colors duration-150
+        `}>
             <h4 className = "text-base">{message}</h4>
 
             {isRemove?
             <input
                 type="checkbox"
-                className="self-end size-5 group-checked:bg-primary"
+                className="self-end size-5 accent-blue-500 cursor-pointer"
                 checked={isChecked}
                 onChange={handleCheckboxChange}
             />
