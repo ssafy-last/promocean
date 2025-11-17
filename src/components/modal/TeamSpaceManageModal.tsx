@@ -139,34 +139,29 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
                 return;
             }
 
-            // 사용자 존재 여부 확인
+            // 회원 정보 조회
             try {
-                const res = await authAPI.checkDuplicate(
+                const memberInfo = await authAPI.getMemberinfo(
                     searchMode === "email"
                         ? { email: searchValue }
                         : { nickname: searchValue }
                 );
 
-                if (!res?.data?.isDuplicated) {
-                    setSearchError(`존재하지 않는 ${searchMode === "email" ? "이메일" : "닉네임"}입니다. 다시 확인해주세요.`);
-                    return;
-                }
-
-                // 새 멤버 추가 (임시 데이터)
+                // 새 멤버 추가
                 const newMember: SpaceParticipants = {
                     participantId: Date.now(), // 임시 ID
-                    nickname: searchMode === "nickname" ? searchValue : "제인도",
-                    email: searchMode === "email" ? searchValue : `${searchValue}@temp.com`,
+                    nickname: memberInfo.nickname,
+                    email: memberInfo.email,
                     role: "READ_ONLY",
-                    profileUrl: ""
+                    profileUrl: memberInfo.profileUrl || ""
                 };
 
                 setAddMemberListState(prev => [...prev, newMember]);
                 setSearchInputState(""); // 입력창 초기화
                 setSearchError(""); // 에러 메시지 초기화
             } catch (error) {
-                console.error("Error checking duplicate:", error);
-                setSearchError("사용자 확인 중 오류가 발생했습니다.");
+                console.error("Error fetching member info:", error);
+                setSearchError(`존재하지 않는 ${searchMode === "email" ? "이메일" : "닉네임"}입니다. 다시 확인해주세요.`);
             }
         }
     };

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import UserGroup from "../icon/UserGroup";
 import { useSpaceStore } from "@/store/spaceStore";
 import { getTeamSpaceInfoToServer } from "@/server-side/TeamSpaceInfo";
+import { SpaceRole, TeamSpaceRole } from "@/enum/TeamSpaceRole";
 
 export interface TeamSpaceChoiceItemProps {
     // Define props here if needed in the future
@@ -13,6 +14,7 @@ export interface TeamSpaceChoiceItemProps {
     participantCnt : number;
     spaceCoverUrl : string;
     spaceId : number;
+    role: TeamSpaceRole;
 }
 
 
@@ -21,6 +23,7 @@ export default function TeamSpaceChoiceItem({
     participantCnt,
     spaceId,
     spaceCoverUrl,
+    role,
 } : TeamSpaceChoiceItemProps) {
     const router = useRouter();
     const spaceStore = useSpaceStore();
@@ -41,7 +44,7 @@ export default function TeamSpaceChoiceItem({
         console.log("TeamSpaceTeamChoiceItem clicked");
         router.push(`/team-space/${encodeURIComponent(name)}`);
     }
-    
+        console.log("role : ", role);
 
     return(
            <button className="group flex flex-col h-60 rounded-2xl bg-white/50 hover:bg-primary/90 overflow-hidden transition-all duration-300 ease-out border-gray-400 backdrop-blur-md hover:shadow-2xs hover:border-3 hover:-translate-y-1 active:translate-y-0 active:shadow-md"
@@ -68,7 +71,7 @@ export default function TeamSpaceChoiceItem({
                 <div className = "flex-1"></div>
                 <div className="flex justify-between flex-row-reverse items-center text-xs leading-tight line-clamp-2 w-full wrap-break-words transition-opacity group-hover:opacity-0">
                     <span className = "flex gap-1 justify-center items-center"><UserGroup />    {participantCnt}</span>
-                    <span className = "w-14 text-center bg-gray-200 rounded-3xl p-2"> 권한 </span>
+                    <span className = "w-14 text-center bg-gray-200 rounded-3xl p-2"> {role} </span>
                 </div>
             </div>
     </button>
