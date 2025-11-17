@@ -68,7 +68,7 @@ export default function TeamSpaceAddModal({isModalState, setIsModalState, teamSp
                 const newMember: SelectedMember = {
                     name: memberInfo.nickname,
                     email: memberInfo.email,
-                    role: TeamSpaceRole.READ_ONLY,
+                    role: TeamSpaceRole.READER,
                     profileUrl: memberInfo.profileUrl
                 };
 
@@ -117,7 +117,7 @@ export default function TeamSpaceAddModal({isModalState, setIsModalState, teamSp
                 participantCnt: res!.participantsCnt,
                 spaceCoverUrl: res!.spaceCoverUrl,
                 spaceId: res!.spaceId,
-                role : TeamSpaceRole.OWNER
+                userRole: "OWNER"
             }
         ])
 
