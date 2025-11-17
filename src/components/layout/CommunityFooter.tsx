@@ -56,9 +56,9 @@ export default function CommunityFooter({ itemCnt, totalCnt, totalPages, current
   };
 
   return (
-    <div className="flex flex-row items-center justify-between py-4 px-8 border-gray-200">
+    <div className="flex flex-row items-center justify-between py-4 px-2 border-gray-200">
       {/* 왼쪽: 전체 페이지 수 / 게시글 수 */}
-      <div className="flex flex-col text-gray-600 text-sm">
+      <div className="flex flex-col text-gray-600 text-xs">
         <span>전체 페이지 수: {totalPages}</span>
         <span>전체 게시글 수: {totalCnt}</span>
       </div>
@@ -68,7 +68,7 @@ export default function CommunityFooter({ itemCnt, totalCnt, totalPages, current
         <div className="flex overflow-hidden rounded-lg border border-gray-300">
           {/* 이전 */}
           <button
-            className={`px-4 py-2 bg-white text-gray-700 hover:bg-gray-100 border-r border-gray-300 transition-colors ${
+            className={`px-2 py-1 text-sm bg-white text-gray-700 hover:bg-gray-100 border-r border-gray-300 transition-colors ${
               startPage === 1 ? "opacity-50 cursor-not-allowed" : ""
             }`}
             onClick={handlePreviousPage}
@@ -84,7 +84,7 @@ export default function CommunityFooter({ itemCnt, totalCnt, totalPages, current
                 key={pageNum}
                 type="button"
                 aria-label={pageNum.toString()}
-                className={`w-10 h-10 flex items-center justify-center border-r border-gray-300 last:border-r-0 transition-colors ${
+                className={`w-7 h-7 text-sm flex items-center justify-center border-r border-gray-300 last:border-r-0 transition-colors ${
                   pageNum === currentPage
                     ? "bg-primary text-white font-medium"
                     : "bg-white text-gray-700 hover:bg-gray-100"
@@ -98,7 +98,7 @@ export default function CommunityFooter({ itemCnt, totalCnt, totalPages, current
 
           {/* 다음 */}
           <button
-            className={`px-4 py-2 bg-white text-gray-700 hover:bg-gray-100 border-l border-gray-300 transition-colors ${
+            className={`px-2 py-1 text-sm bg-white text-gray-700 hover:bg-gray-100 border-l border-gray-300 transition-colors ${
               endPage >= totalPages ? "opacity-50 cursor-not-allowed" : ""
             }`}
             onClick={handleNextPage}
@@ -113,7 +113,7 @@ export default function CommunityFooter({ itemCnt, totalCnt, totalPages, current
       <div>
         <button
           type="button"
-          className="px-4 py-2 rounded-md bg-primary text-white font-medium hover:brightness-110 active:brightness-95 transition-colors"
+          className="px-2 py-1 text-xs rounded-md text-gray-700 cursor-pointer"
           onClick={handleWritePost}
         >
           게시글 작성
