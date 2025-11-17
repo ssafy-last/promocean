@@ -169,13 +169,30 @@ export default function SidebarAlarmModal({
                 // 서버에서 보낸 데이터 파싱 (JSON 형식으로 가정)
                 console.log('📦 파싱 전 데이터:', event.data);
                 const alarmData = JSON.parse(event.data);
-                console.log('✅ 파싱된 데이터:', alarmData);
+                console.log('✅ 파싱된 데이터:', alarmData.category);
+
+                // // 유효성 검증: 필수 필드 확인
+                // if (!alarmData.category || !alarmData.alarmId || !alarmData.message) {
+                //     console.error('❌ 필수 필드가 누락된 알람:', alarmData);
+                //     return;
+                // }
+
+                // // 카테고리별 필수 필드 확인
+                // const isValidAlarm =
+                //     (alarmData.category === 'POST_REPLY' && alarmData.postId !== undefined && alarmData.replyId !== undefined) ||
+                //     (alarmData.category === 'CONTEST_NOTICE' && alarmData.contestId !== undefined && alarmData.noticeId !== undefined) ||
+                //     (alarmData.category === 'TEAM_INVITATION' && alarmData.spaceId !== undefined);
+
+                // if (!isValidAlarm) {
+                //     console.error('❌ 카테고리별 필수 필드가 누락된 알람:', alarmData);
+                //     return;
+                // }
 
                 // 새 알람을 목록에 추가
                 const newAlarm: AlarmItemProps = {
-                    alarmId: alarmData.alarmId || Date.now(), // 고유 ID
-                    message: alarmData.message || '새로운 알림이 도착했습니다.',
-                    category: alarmData.category || '알림',
+                    alarmId: alarmData.alarmId,
+                    message: alarmData.message,
+                    category: alarmData.category,
                     createdAt: alarmData.createdAt || new Date().toISOString(),
                     spaceId: alarmData.spaceId,
                     contestId: alarmData.contestId,
@@ -184,15 +201,21 @@ export default function SidebarAlarmModal({
                     replyId: alarmData.replyId,
                 };
 
+                console.log(newAlarm)
+
                 console.log('➕ 알람 추가:', newAlarm);
+
+                // 알림함이 열려있다면 즉시 목록에 추가
                 setAlarmListState((prev : AlarmItemProps[]) => {
                     const updated = [newAlarm, ...prev];
                     console.log('📋 업데이트된 알람 목록:', updated);
                     return updated;
                 });
 
-                // 새 알람이 왔으므로 뱃지 표시
-                setHasNewAlarm(true);
+                // 알림함이 닫혀있다면 뱃지 표시
+                if (!isAlarm) {
+                    setHasNewAlarm(true);
+                }
             } catch (error) {
                 console.error('❌ 알람 데이터 파싱 실패:', error);
                 console.error('원본 데이터:', event.data);
@@ -220,7 +243,7 @@ export default function SidebarAlarmModal({
                 disconnectAlarmSSE(eventSource);
             }
         };
-    }, [setAlarmListState, setHasNewAlarm]); // setAlarmListState와 setHasNewAlarm은 안정적인 함수이므로 의존성에 추가
+    }, [setAlarmListState, setHasNewAlarm, isAlarm]); // isAlarm 상태를 의존성에 추가
 
 
 
