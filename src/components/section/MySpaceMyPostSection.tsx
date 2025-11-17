@@ -8,6 +8,16 @@ import { CommunityBoardItemProps } from "@/types/itemType";
 import MyPostBoardItem from "@/components/item/MyPostBoardItem";
 import MySpaceMyPostFilter from "@/components/filter/MySpaceMyPostFilter";
 
+interface MySpaceMyPostSectionProps {
+  page?: number;
+  size?: number;
+  author?: string;
+  sorter?: string;
+  title?: string;
+  tag?: string;
+  category?: string;
+}
+
 /**
  * MySpaceMyPostSection component
  * @description 내 글 목록을 보여주는 섹션 컴포넌트
@@ -43,7 +53,6 @@ export default function MySpaceMyPostSection() {
           page: currentPage,
           size: 10,
           author: user.nickname,
-          sorter: sorter,
         };
 
         // 검색 조건 추가 (값이 있을 때만)
