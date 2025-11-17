@@ -14,6 +14,8 @@ import UserGroup from '@/components/icon/UserGroup'
 import { SidebarItemProps } from '@/types/itemType'
 import { useSidebar } from '@/contexts/SidebarContext'
 import { useAuthStore } from '@/store/authStore'
+import SidebarSimpleSection from '../section/SidebarSimpleSection';
+import AlarmBell from '../icon/AlarmBell';
 
 /** 
  * Sidebar component
@@ -56,6 +58,12 @@ export default function Sidebar() {
   },
 ]
 
+const alarmItems : SidebarItemProps[] = [{
+    'icon': <AlarmBell/>,
+    'title': '알림',
+    'href': '/notifications',
+}];
+
   React.useEffect(() => {
     const sidebar = sidebarRef.current;
     if (!sidebar) return;
@@ -84,6 +92,8 @@ export default function Sidebar() {
       <div className="flex-1">
         <SidebarHeader />
         
+       <SidebarSimpleSection title="알림" sidebarList={alarmItems} />
+
         <SidebarSection title="게시판" sidebarList={communityItems} />
 
         {isLoggedIn && (
