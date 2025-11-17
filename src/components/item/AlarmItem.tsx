@@ -1,5 +1,6 @@
 
 export interface AlarmItemProps {
+    alarmId: number;
     message: string;
     category:string;
     createdAt : string;
@@ -8,12 +9,16 @@ export interface AlarmItemProps {
     noticeId? : number;
     postId? :number;
     replyId? : number;
+    isRemove?: boolean;
+    removeList? : number[];
+    removeToggle?: boolean;
 }
 
 
 
 export default function AlarmItem(
 {
+    alarmId,
     message,
     category,
     createdAt,
@@ -21,15 +26,28 @@ export default function AlarmItem(
     contestId,
     noticeId,
     postId,
-    replyId
-}: AlarmItemProps
+    replyId,
+    isRemove = false,
+    removeList,
+    removeToggle = false,
 
+}: AlarmItemProps,
 ) {
 
+    const handletest = () => {
+        console.log("체크박스 클릭됨");
+    }
     return(
-        <button className = "flex flex-col items-start justify-between h-24 p-2  border-b border-gray-300 hover:bg-gray-200 hover:cursor-pointer active:bg-gray-300 w-full"> 
+        <div >
+        <button className = "flex flex-col items-start justify-between h-24 p-2  border-b border-gray-300 hover:bg-gray-200 hover:cursor-pointer active:bg-gray-300 active:border-primary active:border-b-2 w-full  group-checked:bg-gray-300"> 
             <h4 className = "text-base">{message}</h4>
 
+            {isRemove? 
+            <input type="checkbox" className="self-end size-5 group-checked:bg-primary"
+            checked={removeToggle}
+            onChange={handletest}
+            />
+            :
             <div className ="w-full flex justify-between">
                 <div></div>
                 <div className = "flex flex-col items-end">
@@ -37,6 +55,8 @@ export default function AlarmItem(
                 <p className = "text-xs">{createdAt}</p>
                 </div>
             </div>
+            }   
         </button>
+        </div>
     )
 }
