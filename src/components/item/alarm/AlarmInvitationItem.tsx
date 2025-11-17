@@ -24,10 +24,11 @@ export default function AlarmInvitationItem({
     const handleItemClick = () => {
         if (isRemove) return;
         // TODO: 팀 스페이스로 이동
-        router.push(`/space/${spaceId}`);
+        router.push(`/team-space/${spaceId}`);
     };
 
     const { messageHeading, messageParts } = parseMessage(message);
+    console.log('AlarmInvitationItem messageParts:', messageParts, message);
 
     return (
         <button
