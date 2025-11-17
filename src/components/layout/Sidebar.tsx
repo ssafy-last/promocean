@@ -16,7 +16,7 @@ import { useSidebar } from '@/contexts/SidebarContext'
 import { useAuthStore } from '@/store/authStore'
 import SidebarSimpleSection from '../section/SidebarSimpleSection';
 import AlarmBell from '../icon/AlarmBell';
-import AlarmItem from '../item/AlarmItem';
+import AlarmItem, { AlarmItemProps } from '../item/AlarmItem';
 import SidebarAlarmModal from '../modal/SidebarAlarmModal';
 
 /** 
@@ -29,6 +29,8 @@ export default function Sidebar() {
   const { isLoggedIn } = useAuthStore();
   const sidebarRef = React.useRef<HTMLDivElement>(null);
   const [isAlarm, setIsAlarm] = useState(false);
+  const [alarmListState, setAlarmListState] = useState<AlarmItemProps[]>([]);
+  
   // 커뮤니티 섹션
   const communityItems: SidebarItemProps[] = [{
     'icon': <MagnifyingGlass />,
@@ -95,7 +97,8 @@ const alarmItems : SidebarItemProps[] = [{
       <div className="flex-1">
         <SidebarHeader />
         
-       <SidebarSimpleSection title="알림" sidebarList={alarmItems} isAlarm={isAlarm} setIsAlarm={setIsAlarm} />
+       <SidebarSimpleSection title="알림" sidebarList={alarmItems} isAlarm={isAlarm} setIsAlarm={setIsAlarm}
+        setAlarmList={setAlarmListState} />
 
         <SidebarSection title="게시판" sidebarList={communityItems} />
 
@@ -110,7 +113,10 @@ const alarmItems : SidebarItemProps[] = [{
     </div>
 
 
-    <SidebarAlarmModal isAlarm={isAlarm} setIsAlarm={setIsAlarm}/>
+    <SidebarAlarmModal isAlarm={isAlarm} setIsAlarm={setIsAlarm}
+        alarmListState={alarmListState}
+        setAlarmListState={setAlarmListState}
+    />
         
     </div>
     
