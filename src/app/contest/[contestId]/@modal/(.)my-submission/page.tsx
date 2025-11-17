@@ -50,9 +50,10 @@ export default function ContestMySubmissionModal({ params }: { params: Promise<{
     fetchMySubmission();
   }, [contestId]);
 
-  // 수정 시작
+  // 수정 시작 - post 페이지로 이동
   const handleEditStart = () => {
-    setIsEditing(true);
+    if (!submissionDetailData) return;
+    router.push(`/post?type=submission&mode=edit&contestId=${contestId}&submissionId=${submissionDetailData.submissionId}`);
   };
 
   // 수정 취소

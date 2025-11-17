@@ -37,8 +37,9 @@ function PostPageContent() {
   const articleIdParam = searchParams.get("articleId"); // 수정할 게시글 ID (아카이브용)
   const postIdParam = searchParams.get("postId"); // 수정할 게시글 ID (커뮤니티용)
   const contestIdParam = searchParams.get("contestId"); // 대회 ID (산출물 제출용)
+  const submissionIdParam = searchParams.get("submissionId"); // 수정할 산출물 ID (산출물 수정용)
 
-  const isEditMode = mode === "edit" && (articleIdParam || postIdParam);
+  const isEditMode = mode === "edit" && (articleIdParam || postIdParam || submissionIdParam);
   const isSubmissionType = postType === 'submission';
 
   // 폼 상태 관리
@@ -133,6 +134,91 @@ function PostPageContent() {
     const loadArticleData = async () => {
       setIsLoadingArticle(true);
       try {
+        // 산출물 수정 모드
+        if (isSubmissionType && submissionIdParam && contestIdParam) {
+          const contestId = parseInt(contestIdParam, 10);
+          const submissionId = parseInt(submissionIdParam, 10);
+          if (isNaN(contestId) || isNaN(submissionId)) {
+            alert('잘못된 대회 ID 또는 산출물 ID입니다.');
+            router.back();
+            return;
+          }
+
+          const { submissionData } = await SubmissionAPI.getDetail(contestId, submissionId);
+
+          if (!submissionData) {
+            alert('산출물을 찾을 수 없습니다.');
+            router.back();
+            return;
+          }
+
+          // 대회 정보도 가져와서 타입 설정
+          const { contestData } = await ContestAPI.getDetail(contestId);
+          const typeMap: { [key: string]: string } = {
+            "TEXT": "text",
+            "IMAGE": "image",
+            "text": "text",
+            "image": "image"
+          };
+          setSelectedPromptType(typeMap[contestData.type] || "text");
+          setContestType(contestData.type);
+
+          // Lexical JSON 형식으로 변환하는 헬퍼 함수
+          const textToLexicalJSON = (text: string) => {
+            return JSON.stringify({
+              root: {
+                children: [
+                  {
+                    children: [
+                      {
+                        detail: 0,
+                        format: 0,
+                        mode: 'normal',
+                        style: '',
+                        text: text,
+                        type: 'text',
+                        version: 1,
+                      },
+                    ],
+                    direction: null,
+                    format: '',
+                    indent: 0,
+                    type: 'paragraph',
+                    version: 1,
+                    textFormat: 0,
+                    textStyle: '',
+                  },
+                ],
+                direction: null,
+                format: '',
+                indent: 0,
+                type: 'root',
+                version: 1,
+              },
+            });
+          };
+
+          // 폼 데이터 채우기
+          setDescriptionState(textToLexicalJSON(submissionData.description));
+          setUsedPrompt(textToLexicalJSON(submissionData.prompt));
+          
+          // 결과 설정 (타입에 따라 다르게)
+          const submissionType = typeMap[submissionData.type] || "text";
+          if (submissionType === 'image' && submissionData.result) {
+            // 이미지 타입인 경우 URL로 설정
+            setAnswerPrompt('');
+            setUploadedImageUrl(submissionData.result);
+            setUploadedImageKey(submissionData.result);
+            setGeneratedImageUrl(submissionData.result);
+          } else {
+            // 텍스트 타입인 경우
+            setAnswerPrompt(textToLexicalJSON(submissionData.result));
+          }
+
+          setIsLoadingArticle(false);
+          return;
+        }
+
         // 커뮤니티 게시글 수정 모드
         if (postType === 'community' && postIdParam) {
           const postId = parseInt(postIdParam, 10);
@@ -319,7 +405,7 @@ function PostPageContent() {
     };
 
     loadArticleData();
-  }, [isEditMode, articleIdParam, postIdParam, postType, spaceStore.currentSpace?.spaceId, router]);
+  }, [isEditMode, articleIdParam, postIdParam, submissionIdParam, contestIdParam, isSubmissionType, postType, spaceStore.currentSpace?.spaceId, router]);
 
   // 폴더 변경 시 쿼리 파라미터 업데이트
   const handleFolderChange = (newFolder: string, newFolderId : number) => {
@@ -360,7 +446,7 @@ function PostPageContent() {
         }
       }
 
-      // 산출물 제출 API 호출
+      // 산출물 제출/수정 API 호출
       if (!contestIdParam) {
         alert('대회 ID가 없습니다.');
         return;
@@ -384,16 +470,34 @@ function PostPageContent() {
           result = uploadedImageKey || generatedImageKey || extractTextFromLexical(answerPrompt);
         }
 
-        const response = await SubmissionAPI.create(contestId, prompt, description, result);
+        // 산출물 수정 모드
+        if (isEditMode && submissionIdParam) {
+          const submissionId = parseInt(submissionIdParam, 10);
+          if (isNaN(submissionId)) {
+            alert('잘못된 산출물 ID입니다.');
+            return;
+          }
 
-        console.log('산출물 제출 성공:', response);
-        alert('산출물이 성공적으로 제출되었습니다!');
+          await SubmissionAPI.update(contestId, submissionId, prompt, description, result);
 
-        // 성공 후 대회 상세 페이지로 이동
-        router.push(`/contest/${contestId}`);
+          console.log('산출물 수정 성공');
+          alert('산출물이 성공적으로 수정되었습니다!');
+
+          // 성공 후 대회 상세 페이지로 이동
+          router.push(`/contest/${contestId}`);
+        } else {
+          // 산출물 생성 모드
+          const response = await SubmissionAPI.create(contestId, prompt, description, result);
+
+          console.log('산출물 제출 성공:', response);
+          alert('산출물이 성공적으로 제출되었습니다!');
+
+          // 성공 후 대회 상세 페이지로 이동
+          router.push(`/contest/${contestId}`);
+        }
       } catch (error) {
-        console.error('산출물 제출 실패:', error);
-        alert('산출물 제출에 실패했습니다.');
+        console.error('산출물 제출/수정 실패:', error);
+        alert('산출물 제출/수정에 실패했습니다.');
       }
       return;
     }
