@@ -11,14 +11,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/trending")
+@RequestMapping("/api/v1/posts")
 @RequiredArgsConstructor
 @Tag(name = "실시간 인기글", description = "실시간 인기글 조회 API가 담겨있어요")
-public class TrendingRestController {
+public class TrendingPostRestController {
 
     private final TrendingPostService trendingPostService;
 
-    @GetMapping("/posts")
+    @GetMapping("/trending")
     @Operation(
             summary = "실시간 인기글 조회 API",
             description = "좋아요와 댓글 수를 기반으로 실시간 인기글을 조회합니다. 최근 게시글일수록 가중치가 높습니다."
