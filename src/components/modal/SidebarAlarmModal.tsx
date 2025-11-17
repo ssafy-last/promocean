@@ -41,7 +41,9 @@ export default function SidebarAlarmModal({
     const [width, setWidth] = useState(384); // 기본값 24rem = 384px
     const [isResizingState, setIsResizingState] = useState(false);
     const [isRemoveModeState, setIsRemoveModeState] = useState(false);
-    const [removeToggleState, setRemoveToggleState] = useState(false);
+
+    // 개별 알람 선택 상태 관리 (alarmId를 key로 사용)
+    const [selectedAlarms, setSelectedAlarms] = useState<Set<number>>(new Set());
 
     const resizeRef = useRef<HTMLDivElement>(null);
 
@@ -85,14 +87,33 @@ export default function SidebarAlarmModal({
         // 알림 삭제 로직 구현
         console.log("알림 삭제 클릭됨");
         setIsRemoveModeState(!isRemoveModeState);
+        // 삭제 모드 해제 시 선택 상태 초기화
+        if (isRemoveModeState) {
+            setSelectedAlarms(new Set());
+        }
     };
 
-    const handleRemoveAllClick = () => {    
-        // 전체 알림 삭제 로직 구현
-        console.log("전체 알림 삭제 클릭됨", removeToggleState);
-        setRemoveToggleState(!removeToggleState);
+    const handleRemoveAllClick = () => {
+        // 전체 선택/해제 토글
+        if (selectedAlarms.size === alarmListState.length) {
+            // 모두 선택된 상태 -> 전체 해제
+            setSelectedAlarms(new Set());
+        } else {
+            // 일부만 선택되거나 아무것도 선택 안 됨 -> 전체 선택
+            setSelectedAlarms(new Set(alarmListState.map(alarm => alarm.alarmId)));
+        }
+    };
 
-
+    const handleAlarmToggle = (alarmId: number) => {
+        setSelectedAlarms(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(alarmId)) {
+                newSet.delete(alarmId);
+            } else {
+                newSet.add(alarmId);
+            }
+            return newSet;
+        });
     };
 
 
@@ -123,13 +144,17 @@ export default function SidebarAlarmModal({
                 {  isRemoveModeState &&
                 <button onClick={handleRemoveAllClick} className="text-sm text-red-500 hover:text-red-700
                 active:text-red-900 flex items-center">
-                    전체 삭제 {isRemoveModeState}
+                    {selectedAlarms.size === alarmListState.length ? '전체 해제' : '전체 선택'}
                 </button>
                 }
             </div>
 
-            <AlarmList alarmListState={alarmListState} isRemove={isRemoveModeState}
-            removeToggle={removeToggleState}/>
+            <AlarmList
+                alarmListState={alarmListState}
+                isRemove={isRemoveModeState}
+                selectedAlarms={selectedAlarms}
+                onAlarmToggle={handleAlarmToggle}
+            />
 
             {/* 리사이즈 핸들 */}
             {isAlarm && (
