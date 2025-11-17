@@ -15,7 +15,7 @@ export default function AlarmList({
     onAlarmToggle,
 }: AlarmListProps) {
     return(
-             <div className = "flex flex-col">
+             <div className = "flex flex-col overflow-y-scroll">
                     {alarmListState.map((alarmItem, index) => (
                         <AlarmItem
                             key={index}

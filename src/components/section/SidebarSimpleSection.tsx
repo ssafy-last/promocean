@@ -7,10 +7,13 @@ import SidebarList from '@/components/list/SidebarList'
 import { SidebarItemProps } from '@/types/itemType'
 import { useSidebar } from '@/contexts/SidebarContext'
 import SidebarItem from '../item/SidebarItem';
+import { getAlarmList } from '@/api/alarm';
+import { AlarmItemProps } from '../item/AlarmItem';
 
 interface SidebarSectionProps {
   title: string
   sidebarList: SidebarItemProps[]
+  setAlarmList : (list: AlarmItemProps[]) => void
   isAlarm: boolean
   setIsAlarm: (isAlarm:boolean) => void
 }
@@ -21,11 +24,15 @@ interface SidebarSectionProps {
  * @param {SidebarSectionProps} props - The props for the SidebarSection component
  * @returns {React.ReactNode}
  */
-export default function SidebarSection({title, sidebarList, isAlarm, setIsAlarm}: SidebarSectionProps) {
+export default function SidebarSection({title, sidebarList, setAlarmList, isAlarm, setIsAlarm}: SidebarSectionProps) {
   const { isCollapsed } = useSidebar();
 
-  const callback = ()=>{
+  const callback = async ()=>{
     setIsAlarm(!isAlarm);
+
+    const res = await getAlarmList();
+    console.log('알람 리스트 조회 결과:', res);
+    setAlarmList(res.alarms);
   }
 
   return (

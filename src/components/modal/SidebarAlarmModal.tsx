@@ -7,16 +7,20 @@ import AlarmList from "../list/AlarmList";
 import AlarmModalHeader from "../layout/AlarmModalHeader";
 import XCircle from "../icon/XCircle";
 import AlarmModalSmallHeader from "../layout/AlarmModalSmallHeader";
+import { connectAlarmSSE, disconnectAlarmSSE, AlarmEvent } from "@/api/alarm";
 
 
 export interface SidebarAlarmModalProps {
+    alarmListState: AlarmItemProps[];
+    setAlarmListState: (list: AlarmItemProps[]) => void;
     isAlarm: boolean;
     setIsAlarm: (isAlarm:boolean) => void;
 }
 
 
 export default function SidebarAlarmModal({
-
+    alarmListState = [],
+    setAlarmListState,
     isAlarm,
     setIsAlarm
 
@@ -24,20 +28,6 @@ export default function SidebarAlarmModal({
 
     const { isCollapsed } = useSidebar();
 
-    const [alarmListState, setAlarmListState]   =  useState<AlarmItemProps[]>([
-        {
-            alarmId:1,
-            message: "새로운 댓글이 달렸습니다.",
-            category: '스페이스',
-            createdAt: '2020-01-01 12:00',
-        },
-        {
-            alarmId:2,
-            message: "새로운 댓글이 달렸습니다.",
-            category: '스페이스',
-            createdAt: '2020-01-01 12:00',
-        },
-    ])
 
     // 리사이즈 관련 상태
     const [width, setWidth] = useState(384); // 기본값 24rem = 384px
@@ -117,6 +107,67 @@ export default function SidebarAlarmModal({
             return newSet;
         });
     };
+
+    // SSE 연결 설정
+    useEffect(() => {
+        let eventSource: EventSource | null = null;
+
+        const handleAlarmMessage = (event: AlarmEvent) => {
+            console.log('🔔 알람 핸들러 호출됨:', event);
+
+            try {
+                // 서버에서 보낸 데이터 파싱 (JSON 형식으로 가정)
+                console.log('📦 파싱 전 데이터:', event.data);
+                const alarmData = JSON.parse(event.data);
+                console.log('✅ 파싱된 데이터:', alarmData);
+
+                // 새 알람을 목록에 추가
+                const newAlarm: AlarmItemProps = {
+                    alarmId: alarmData.alarmId || Date.now(), // 고유 ID
+                    message: alarmData.message || '새로운 알림이 도착했습니다.',
+                    category: alarmData.category || '알림',
+                    createdAt: alarmData.createdAt || new Date().toISOString(),
+                    spaceId: alarmData.spaceId,
+                    contestId: alarmData.contestId,
+                    noticeId: alarmData.noticeId,
+                    postId: alarmData.postId,
+                    replyId: alarmData.replyId,
+                };
+
+                console.log('➕ 알람 추가:', newAlarm);
+                setAlarmListState((prev : AlarmItemProps[]) => {
+                    const updated = [newAlarm, ...prev];
+                    console.log('📋 업데이트된 알람 목록:', updated);
+                    return updated;
+                });
+            } catch (error) {
+                console.error('❌ 알람 데이터 파싱 실패:', error);
+                console.error('원본 데이터:', event.data);
+            }
+        };
+
+        const handleAlarmError = (error: Event) => {
+            console.error('⚠️ SSE 연결 오류 (핸들러):', error);
+        };
+
+        try {
+            // SSE 연결 시작
+            eventSource = connectAlarmSSE(handleAlarmMessage, handleAlarmError);
+            console.log('🚀 알람 SSE 연결 시작');
+            console.log('📡 연결 상태:', eventSource.readyState);
+            console.log('🌐 연결 URL:', eventSource.url);
+        } catch (error) {
+            console.error('❌ SSE 연결 실패:', error);
+        }
+
+        // 컴포넌트 언마운트 시 연결 해제
+        return () => {
+            if (eventSource) {
+                console.log('🔌 알람 SSE 연결 해제');
+                disconnectAlarmSSE(eventSource);
+            }
+        };
+    }, []); // 빈 배열: 컴포넌트 마운트 시 한 번만 실행
 
 
 

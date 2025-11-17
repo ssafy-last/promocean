@@ -1,7 +1,8 @@
 // frontend/src/api/alarm.ts
 
-import { BASE_URL } from '@/api/fetcher';
+import { apiFetch, BASE_URL } from '@/api/fetcher';
 import { getAuthToken } from '@/lib/authToken';
+import { ApiResponse } from '@/types/apiTypes/common';
 
 export interface AlarmEvent {
   id?: string;
@@ -18,8 +19,7 @@ interface MessageEventWithLastEventId extends MessageEvent<string> {
 
 /**
  * SSE(Server-Sent Events)를 사용한 알람 연결
- * EventSource는 Last-Event-ID 헤더를 자동으로 관리합니다.
- * 수동으로 Last-Event-ID를 설정하려면 connectAlarmSSEWithFetch를 사용하세요.
+ * EventSource는 자동으로 재연결을 시도합니다.
  * @param onMessage - 알람 메시지를 받았을 때 실행할 콜백 함수
  * @param onError - 에러가 발생했을 때 실행할 콜백 함수
  * @returns EventSource 객체 (연결 해제를 위해)
@@ -35,23 +35,54 @@ export function connectAlarmSSE(
   }
 
   // EventSource는 GET 요청만 가능하므로 token을 쿼리 파라미터로 전달
-  const url = `${BASE_URL}/api/v1/alarms/connect?token=${encodeURIComponent(token)}`;
+  const url = `${BASE_URL}/api/v1/alarms/connect?token=${token}`;
 
+  console.log('🔗 SSE 연결 URL:', url);
   const eventSource = new EventSource(url);
 
+  // 연결 성공
+  eventSource.onopen = () => {
+    console.log('✅ SSE 연결 성공 (OPEN)');
+  };
+
+  // 메시지 수신
   eventSource.onmessage = (event: MessageEvent) => {
+    console.log("📩 SSE 메시지 수신됨:", event);
     try {
+      console.log('📨 SSE 메시지 상세:', {
+        data: event.data,
+        lastEventId: (event as MessageEventWithLastEventId).lastEventId,
+        type: event.type,
+        origin: event.origin,
+      });
       onMessage({
         id: (event as MessageEventWithLastEventId).lastEventId,
         data: event.data,
       });
     } catch (error) {
-      console.error('알람 메시지 처리 중 에러:', error);
+      console.error('❌ 알람 메시지 처리 중 에러:', error);
     }
   };
 
+  // 에러 발생 (EventSource는 자동으로 재연결 시도함)
   eventSource.onerror = (error: Event) => {
-    console.error('SSE 연결 에러:', error);
+    console.error('❌ SSE 연결 에러 (ERR_INCOMPLETE_CHUNKED_ENCODING 가능):', error);
+    console.log('📊 SSE 상태:', {
+      readyState: eventSource.readyState,
+      url: eventSource.url,
+    });
+
+    // readyState: 0 = CONNECTING, 1 = OPEN, 2 = CLOSED
+    if (eventSource.readyState === EventSource.CLOSED) {
+      console.error('⚠️ SSE 연결이 완전히 닫혔습니다.');
+      console.error('💡 백엔드에서 다음을 확인하세요:');
+      console.error('   1. SSE 타임아웃 설정 (무제한 권장)');
+      console.error('   2. Heartbeat 전송 (30초마다)');
+      console.error('   3. 프록시/로드밸런서 설정');
+    } else if (eventSource.readyState === EventSource.CONNECTING) {
+      console.log('🔄 SSE 자동 재연결 시도 중...');
+    }
+
     if (onError) {
       onError(error);
     }
@@ -176,4 +207,33 @@ export async function connectAlarmSSEWithFetch(
  */
 export function disconnectAlarmSSE(eventSource: EventSource): void {
   eventSource.close();
+}
+
+
+export interface Alarm{
+  alarmId : number;
+  message : string;
+  category : string;
+  createdAt : string;
+  spaceId ?: number;
+  contestId ?: number;
+  noticeId ?: number;
+  postId ?: number;
+  replyId ?: number;
+}
+
+
+export interface GetAlarmListResponse{
+  alarms : Alarm[];
+}
+
+
+export async function getAlarmList() : Promise<GetAlarmListResponse>{
+
+  const res  = await apiFetch<ApiResponse<GetAlarmListResponse>>('/api/v1/alarms', {
+    method: 'GET',
+  });
+
+
+  return res.data;
 }
