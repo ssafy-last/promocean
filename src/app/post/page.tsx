@@ -15,6 +15,7 @@ import HashtagInput from "@/components/editor/HashtagInput";
 import { buildPromptFromLexical, extractTextFromLexical } from "@/utils/lexicalUtils";
 import { PromptAPI } from "@/api/prompt";
 import { PostAPI, PostArticleRequest } from "@/api/post";
+import { PostAPI as CommunityPostAPI } from "@/api/community/post";
 import { categoryStringToEnum, promptTypeStringToEnum } from "@/types/postEnum";
 import { UploadAPI } from "@/api/upload";
 import { Upload } from "lucide-react";
@@ -31,9 +32,10 @@ function PostPageContent() {
   const postType = searchParams.get("type"); // community, my-space, team-space
   const folderName = searchParams.get("folder"); // 아카이브 폴더 이름
   const mode = searchParams.get("mode"); // edit 모드인지 확인
-  const articleIdParam = searchParams.get("articleId"); // 수정할 게시글 ID
+  const articleIdParam = searchParams.get("articleId"); // 수정할 게시글 ID (아카이브용)
+  const postIdParam = searchParams.get("postId"); // 수정할 게시글 ID (커뮤니티용)
 
-  const isEditMode = mode === "edit" && articleIdParam;
+  const isEditMode = mode === "edit" && (articleIdParam || postIdParam);
 
   // 폼 상태 관리
   const [title, setTitle] = useState("");
@@ -82,35 +84,130 @@ function PostPageContent() {
 
   // 수정 모드일 때 기존 게시글 데이터 로드
   useEffect(() => {
-    if (!isEditMode || !articleIdParam) return;
+    if (!isEditMode) return;
 
     const loadArticleData = async () => {
       setIsLoadingArticle(true);
       try {
-        const spaceId = spaceStore.currentSpace?.spaceId;
-        if (!spaceId) {
-          alert('스페이스 정보를 찾을 수 없습니다.');
-          router.back();
+        // 커뮤니티 게시글 수정 모드
+        if (postType === 'community' && postIdParam) {
+          const postId = parseInt(postIdParam, 10);
+          if (isNaN(postId)) {
+            alert('잘못된 게시글 ID입니다.');
+            router.back();
+            return;
+          }
+
+          const { communityPostDetailData } = await CommunityPostAPI.getDetail(postId);
+
+          if (!communityPostDetailData) {
+            alert('게시글을 찾을 수 없습니다.');
+            router.back();
+            return;
+          }
+
+          // Lexical JSON 형식으로 변환하는 헬퍼 함수
+          const textToLexicalJSON = (text: string) => {
+            return JSON.stringify({
+              root: {
+                children: [
+                  {
+                    children: [
+                      {
+                        detail: 0,
+                        format: 0,
+                        mode: 'normal',
+                        style: '',
+                        text: text,
+                        type: 'text',
+                        version: 1,
+                      },
+                    ],
+                    direction: null,
+                    format: '',
+                    indent: 0,
+                    type: 'paragraph',
+                    version: 1,
+                    textFormat: 0,
+                    textStyle: '',
+                  },
+                ],
+                direction: null,
+                format: '',
+                indent: 0,
+                type: 'root',
+                version: 1,
+              },
+            });
+          };
+
+          // 타입 변환
+          const promptTypeMap: { [key: string]: "text" | "image" } = {
+            "1": "text",
+            "2": "image",
+            "text": "text",
+            "image": "image"
+          };
+          const mappedType = promptTypeMap[communityPostDetailData.type] || "text";
+
+          // 카테고리 변환 (API 코드 -> 표시 이름)
+          const categoryMap: { [key: string]: string } = {
+            "WORK": "work",
+            "DEV": "dev",
+            "DESIGN": "design",
+            "JOB": "job",
+            "EDU": "edu",
+            "LIFE": "life",
+            "ETC": "etc",
+          };
+          const mappedCategory = categoryMap[communityPostDetailData.category] || "work";
+
+          // 폼 데이터 채우기
+          setTitle(communityPostDetailData.title);
+          setTags(communityPostDetailData.tags);
+          setDescriptionState(textToLexicalJSON(communityPostDetailData.description));
+          setUsedPrompt(textToLexicalJSON(communityPostDetailData.prompt));
+          setExamplePrompt(textToLexicalJSON(communityPostDetailData.sampleQuestion));
+          setAnswerPrompt(textToLexicalJSON(communityPostDetailData.sampleAnswer));
+          setSelectedPromptType(mappedType);
+          setSelectedCategory(mappedCategory);
+
+          // 이미지 타입인 경우 fileUrl 설정
+          if (mappedType === 'image' && communityPostDetailData.fileUrl) {
+            setUploadedImageUrl(communityPostDetailData.fileUrl);
+            setUploadedImageKey(communityPostDetailData.fileUrl);
+          }
+
+          setIsLoadingArticle(false);
           return;
         }
 
-        const articleId = parseInt(articleIdParam, 10);
-        if (isNaN(articleId)) {
-          alert('잘못된 게시글 ID입니다.');
-          router.back();
-          return;
-        }
+        // 아카이브 게시글 수정 모드
+        if (articleIdParam) {
+          const spaceId = spaceStore.currentSpace?.spaceId;
+          if (!spaceId) {
+            alert('스페이스 정보를 찾을 수 없습니다.');
+            router.back();
+            return;
+          }
 
-        const data = await SpaceAPI.getArchiveArticleDetail(spaceId, articleId);
+          const articleId = parseInt(articleIdParam, 10);
+          if (isNaN(articleId)) {
+            alert('잘못된 게시글 ID입니다.');
+            router.back();
+            return;
+          }
 
-        if (!data) {
-          alert('게시글을 찾을 수 없습니다.');
-          router.back();
-          return;
-        }
+          const data = await SpaceAPI.getArchiveArticleDetail(spaceId, articleId);
 
-        // Lexical JSON 형식으로 변환하는 헬퍼 함수
-        const textToLexicalJSON = (text: string) => {
+          if (!data) {
+            alert('게시글을 찾을 수 없습니다.');
+            router.back();
+            return;
+          }
+
+          // Lexical JSON 형식으로 변환하는 헬퍼 함수
+          const textToLexicalJSON = (text: string) => {
           return JSON.stringify({
             root: {
               children: [
@@ -144,30 +241,30 @@ function PostPageContent() {
           });
         };
 
-        // 타입 변환: 숫자 -> 문자열
-        const promptTypeMap: { [key: string]: "text" | "image" } = {
-          "1": "text",
-          "2": "image",
-          "text": "text",
-          "image": "image"
-        };
-        const mappedType = promptTypeMap[data.type] || "text";
+          // 타입 변환: 숫자 -> 문자열
+          const promptTypeMap: { [key: string]: "text" | "image" } = {
+            "1": "text",
+            "2": "image",
+            "text": "text",
+            "image": "image"
+          };
+          const mappedType = promptTypeMap[data.type] || "text";
 
-        // 폼 데이터 채우기
-        setTitle(data.title);
-        setTags(data.tags);
-        setDescriptionState(textToLexicalJSON(data.description));
-        setUsedPrompt(textToLexicalJSON(data.prompt));
-        setExamplePrompt(textToLexicalJSON(data.sampleQuestion));
-        setAnswerPrompt(textToLexicalJSON(data.sampleAnswer));
-        setSelectedPromptType(mappedType);
+          // 폼 데이터 채우기
+          setTitle(data.title);
+          setTags(data.tags);
+          setDescriptionState(textToLexicalJSON(data.description));
+          setUsedPrompt(textToLexicalJSON(data.prompt));
+          setExamplePrompt(textToLexicalJSON(data.sampleQuestion));
+          setAnswerPrompt(textToLexicalJSON(data.sampleAnswer));
+          setSelectedPromptType(mappedType);
 
-        // 이미지 타입인 경우 fileUrl 설정
-        if (mappedType === 'image' && data.fileUrl) {
-          setUploadedImageUrl(data.fileUrl);
-          setUploadedImageKey(data.fileUrl); // 또는 적절한 key 값
+          // 이미지 타입인 경우 fileUrl 설정
+          if (mappedType === 'image' && data.fileUrl) {
+            setUploadedImageUrl(data.fileUrl);
+            setUploadedImageKey(data.fileUrl); // 또는 적절한 key 값
+          }
         }
-
       } catch (error) {
         console.error('게시글 로드 실패:', error);
         alert('게시글을 불러오는데 실패했습니다.');
@@ -178,7 +275,7 @@ function PostPageContent() {
     };
 
     loadArticleData();
-  }, [isEditMode, articleIdParam, spaceStore.currentSpace?.spaceId, router]);
+  }, [isEditMode, articleIdParam, postIdParam, postType, spaceStore.currentSpace?.spaceId, router]);
 
   // 폴더 변경 시 쿼리 파라미터 업데이트
   const handleFolderChange = (newFolder: string, newFolderId : number) => {
@@ -278,6 +375,23 @@ function PostPageContent() {
       // API 호출
       // 일반 게시글 or 아카이브 게시글 분기
       if(!isArchiveType){
+        // 커뮤니티 게시글 수정 모드
+        if (isEditMode && postIdParam) {
+          const postId = parseInt(postIdParam, 10);
+          if (isNaN(postId)) {
+            alert('잘못된 게시글 ID입니다.');
+            return;
+          }
+
+          const response = await PostAPI.putArticlePost(postId, requestData);
+
+          console.log('게시글 수정 성공:', response);
+          alert(`게시글이 성공적으로 수정되었습니다!`);
+
+          // 성공 후 상세 페이지로 이동
+          router.push(`/community/${postId}`);
+        } else {
+          // 커뮤니티 게시글 생성 모드
           const response = await PostAPI.postArticlePost(requestData);
 
           console.log('게시글 생성 성공:', response);
@@ -285,6 +399,7 @@ function PostPageContent() {
 
           // 성공 후 이동 (커뮤니티 페이지 또는 상세 페이지로)
           router.push(`/community/${response.postId}`);
+        }
       }else{
         // 아카이브 게시글 생성/수정
         if (!selectedFolderId) {
