@@ -17,6 +17,8 @@ import { PromptAPI } from "@/api/prompt";
 import { PostAPI, PostArticleRequest } from "@/api/post";
 import { PostAPI as CommunityPostAPI } from "@/api/community/post";
 import { categoryStringToEnum, promptTypeStringToEnum } from "@/types/postEnum";
+import { ContestAPI } from "@/api/contest/contest";
+import { SubmissionAPI } from "@/api/contest/submission";
 import { UploadAPI } from "@/api/upload";
 import { Upload } from "lucide-react";
 import { useSpaceStore } from "@/store/spaceStore";
@@ -29,13 +31,15 @@ import { useArchiveFolderStore } from "@/store/archiveFolderStore";
 function PostPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const postType = searchParams.get("type"); // community, my-space, team-space
+  const postType = searchParams.get("type"); // community, my-space, team-space, submission
   const folderName = searchParams.get("folder"); // 아카이브 폴더 이름
   const mode = searchParams.get("mode"); // edit 모드인지 확인
   const articleIdParam = searchParams.get("articleId"); // 수정할 게시글 ID (아카이브용)
   const postIdParam = searchParams.get("postId"); // 수정할 게시글 ID (커뮤니티용)
+  const contestIdParam = searchParams.get("contestId"); // 대회 ID (산출물 제출용)
 
   const isEditMode = mode === "edit" && (articleIdParam || postIdParam);
+  const isSubmissionType = postType === 'submission';
 
   // 폼 상태 관리
   const [title, setTitle] = useState("");
@@ -65,6 +69,46 @@ function PostPageContent() {
 
   // 아카이브 타입인지 확인
   const isArchiveType = postType === 'my-space' || postType === 'team-space';
+  
+  // 대회 정보 및 타입 상태
+  const [contestType, setContestType] = useState<string>("text");
+  const [isLoadingContest, setIsLoadingContest] = useState(false);
+  
+  // 산출물 제출 모드일 때 대회 정보 로드
+  useEffect(() => {
+    if (!isSubmissionType || !contestIdParam) return;
+    
+    const loadContestData = async () => {
+      setIsLoadingContest(true);
+      try {
+        const contestId = parseInt(contestIdParam, 10);
+        if (isNaN(contestId)) {
+          alert('잘못된 대회 ID입니다.');
+          router.back();
+          return;
+        }
+        
+        const { contestData } = await ContestAPI.getDetail(contestId);
+        // 대회 타입을 promptType으로 설정 (TEXT -> text, IMAGE -> image)
+        const typeMap: { [key: string]: string } = {
+          "TEXT": "text",
+          "IMAGE": "image",
+          "text": "text",
+          "image": "image"
+        };
+        setSelectedPromptType(typeMap[contestData.type] || "text");
+        setContestType(contestData.type);
+      } catch (error) {
+        console.error('대회 정보 로드 실패:', error);
+        alert('대회 정보를 불러오는데 실패했습니다.');
+        router.back();
+      } finally {
+        setIsLoadingContest(false);
+      }
+    };
+    
+    loadContestData();
+  }, [isSubmissionType, contestIdParam, router]);
 
   // Zustand store에서 폴더 리스트 가져오기
   const allFolders = folderStore.allFolderList;
@@ -291,7 +335,70 @@ function PostPageContent() {
 
   // 제출 핸들러
   const handleSubmit = async () => {
-    // 필수 입력 검증
+    // 산출물 제출 모드일 때는 다른 검증
+    if (isSubmissionType) {
+      if (!descriptionState.trim()) {
+        alert('설명을 입력해주세요.');
+        return;
+      }
+
+      if (!usedPrompt.trim()) {
+        alert('프롬프트를 입력해주세요.');
+        return;
+      }
+
+      // 결과 검증 (텍스트 타입은 answerPrompt, 이미지 타입은 이미지 키)
+      if (selectedPromptType === 'text') {
+        if (!answerPrompt.trim()) {
+          alert('결과를 입력해주세요.');
+          return;
+        }
+      } else if (selectedPromptType === 'image') {
+        if (!generatedImageKey && !uploadedImageKey && !answerPrompt.trim()) {
+          alert('결과 이미지를 업로드하거나 AI로 생성하거나 텍스트로 입력해주세요.');
+          return;
+        }
+      }
+
+      // 산출물 제출 API 호출
+      if (!contestIdParam) {
+        alert('대회 ID가 없습니다.');
+        return;
+      }
+
+      try {
+        const contestId = parseInt(contestIdParam, 10);
+        if (isNaN(contestId)) {
+          alert('잘못된 대회 ID입니다.');
+          return;
+        }
+
+        const description = extractTextFromLexical(descriptionState);
+        const prompt = extractTextFromLexical(usedPrompt);
+        let result = '';
+        
+        if (selectedPromptType === 'text') {
+          result = extractTextFromLexical(answerPrompt);
+        } else if (selectedPromptType === 'image') {
+          // 이미지 타입: 이미지 URL 또는 텍스트 결과
+          result = uploadedImageKey || generatedImageKey || extractTextFromLexical(answerPrompt);
+        }
+
+        const response = await SubmissionAPI.create(contestId, prompt, description, result);
+
+        console.log('산출물 제출 성공:', response);
+        alert('산출물이 성공적으로 제출되었습니다!');
+
+        // 성공 후 대회 상세 페이지로 이동
+        router.push(`/contest/${contestId}`);
+      } catch (error) {
+        console.error('산출물 제출 실패:', error);
+        alert('산출물 제출에 실패했습니다.');
+      }
+      return;
+    }
+
+    // 기존 검증 (커뮤니티/아카이브 게시글)
     if (!title.trim()) {
       alert('제목을 입력해주세요.');
       return;
@@ -717,19 +824,31 @@ function PostPageContent() {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4">
         {/* 페이지 제목 표시 */}
-        {isEditMode && (
+        {isEditMode && !isSubmissionType && (
           <div className="mb-6">
             <h1 className="text-2xl font-bold text-gray-800">게시글 수정</h1>
             <p className="text-sm text-gray-600 mt-1">기존 내용을 수정한 후 저장하세요.</p>
           </div>
         )}
 
-        <div className="mb-4">
-          <TitleInput value={title} onChange={setTitle} placeholder="제목을 입력하세요"/>
-        </div>
-        <div className="mb-4">
-          <HashtagInput tags={tags} onTagsChange={setTags} />
-        </div>
+        {isSubmissionType && (
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold text-gray-800">산출물 제출</h1>
+            <p className="text-sm text-gray-600 mt-1">대회에 제출할 산출물을 작성해주세요.</p>
+          </div>
+        )}
+
+        {/* 제목과 해시태그는 submission 타입이 아닐 때만 표시 */}
+        {!isSubmissionType && (
+          <>
+            <div className="mb-4">
+              <TitleInput value={title} onChange={setTitle} placeholder="제목을 입력하세요"/>
+            </div>
+            <div className="mb-4">
+              <HashtagInput tags={tags} onTagsChange={setTags} />
+            </div>
+          </>
+        )}
 
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
@@ -747,15 +866,116 @@ function PostPageContent() {
 
             {/* 사용 프롬프트 */}
             <PostingWriteSection
-              title="사용 프롬프트"
-              placeholder="사용한 프롬프트를 입력하세요..."
+              title="프롬프트"
+              placeholder="프롬프트를 입력하세요..."
               onChange={setUsedPrompt}
               value={usedPrompt}
               isSubmitButton={selectedPromptType === 'image'}
               onSubmit={handleAISubmit}
             />
 
-            {
+            {/* submission 타입일 때는 예시 질문 없이 바로 결과 표시 */}
+            {isSubmissionType ? (
+              selectedPromptType === 'text' ? (
+                <PostingWriteSection
+                  title="결과"
+                  placeholder="결과를 입력하세요..."
+                  onChange={setAnswerPrompt}
+                  value={answerPrompt}
+                />
+              ) : (
+                <div>
+                  {/* 결과 사진 업로드 섹션 */}
+                  <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-4">결과</h3>
+
+                    {/* AI 생성 이미지가 있는 경우 표시 */}
+                    {generatedImageUrl && (
+                      <div className="mb-4">
+                        <div className="flex items-center justify-between mb-2">
+                          <p className="text-sm font-medium text-gray-700">AI 생성 이미지</p>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setGeneratedImageUrl("");
+                              setGeneratedImageKey("");
+                            }}
+                            className="text-xs text-red-600 hover:text-red-700"
+                          >
+                            제거
+                          </button>
+                        </div>
+                        <div className="relative w-full h-64 rounded-lg overflow-hidden border border-gray-300">
+                          <Image
+                            src={generatedImageUrl}
+                            alt="AI 생성 이미지"
+                            fill
+                            className="object-contain"
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* 업로드된 이미지가 있는 경우 표시 */}
+                    {uploadedImageUrl && (
+                      <div className="mb-4">
+                        <div className="flex items-center justify-between mb-2">
+                          <p className="text-sm font-medium text-gray-700">업로드된 이미지</p>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setUploadedImageUrl("");
+                              setUploadedImageKey("");
+                            }}
+                            className="text-xs text-red-600 hover:text-red-700"
+                          >
+                            제거
+                          </button>
+                        </div>
+                        <div className="relative w-full h-64 rounded-lg overflow-hidden border border-gray-300">
+                          <Image
+                            src={uploadedImageUrl}
+                            alt="업로드된 이미지"
+                            fill
+                            className="object-contain"
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* 텍스트 결과 입력 */}
+                    {!generatedImageUrl && !uploadedImageUrl && (
+                      <PostingWriteSection
+                        title="결과 (텍스트로 입력)"
+                        placeholder="결과를 텍스트로 입력하거나 이미지를 업로드하세요..."
+                        onChange={setAnswerPrompt}
+                        value={answerPrompt}
+                      />
+                    )}
+
+                    {/* 이미지 업로드 버튼 */}
+                    <label
+                      htmlFor="image-upload"
+                      className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors"
+                    >
+                      <Upload className="w-8 h-8 text-gray-400 mb-2" />
+                      <span className="text-sm text-gray-500">
+                        이미지를 업로드하거나
+                        <br />
+                        AI 생성 버튼을 눌러 이미지를 생성하세요
+                      </span>
+                      <input
+                        id="image-upload"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+                </div>
+              )
+            ) : (
               selectedPromptType === 'text' ? (
                 <div>
                       {/* 예시 질문 프롬프트 */}
@@ -884,7 +1104,7 @@ function PostPageContent() {
                       </div>
                   </div>
               )
-            }
+            )}
 
             {/* 프롬프트 작성 완료 버튼 */}
             <PostingFooter onSubmit={handleSubmit} />
@@ -893,8 +1113,8 @@ function PostPageContent() {
           {/* 플로팅 컨테이너 (2 비율) */}
           <div className="lg:col-span-1 space-y-4">
 
-            {/* 카테고리 선택 - 커뮤니티 글쓰기일 때만 표시 */}
-            {!isArchiveType && (
+            {/* 카테고리 선택 - 커뮤니티 글쓰기일 때만 표시 (submission 타입 제외) */}
+            {!isArchiveType && !isSubmissionType && (
               <PostingFloatingSection
                 title="카테고리"
                 items={categoryItems}
@@ -914,14 +1134,17 @@ function PostPageContent() {
               />
             )}
 
-            {/* 프롬프트 타입 */}
+            {/* 프롬프트 타입 - submission 타입일 때는 읽기 전용 */}
             <PostingFloatingSection
               title="프롬프트 타입"
               items={promptTypeItems}
               selectedValue={selectedPromptType}
-              onSelect={setSelectedPromptType}
+              onSelect={isSubmissionType ? undefined : setSelectedPromptType}
               name="promptType"
             />
+            {isSubmissionType && isLoadingContest && (
+              <div className="text-sm text-gray-500 mt-2">대회 정보를 불러오는 중...</div>
+            )}
           </div>
         </div>
 

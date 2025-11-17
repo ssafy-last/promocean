@@ -68,6 +68,37 @@ export class SubmissionAPI {
   }
 
   /**
+   * 대회 산출물 생성하는 API입니다.
+   * @page /post?type=submission&contestId={contestId}
+   * @endpoint /api/v1/contests/{contestId}/submissions
+   * @description 대회 산출물 생성하는 API입니다.
+   * @param {number} contestId - 대회 ID
+   * @param {string} prompt - 프롬프트
+   * @param {string} description - 설명
+   * @param {string} result - 결과
+   * @returns {Promise<{ message: string | null, data: { submissionId: number } | null }>}
+   */
+  static async create(
+    contestId: number,
+    prompt: string,
+    description: string,
+    result: string
+  ) {
+    const response = await apiFetch<ApiResponse<{ submissionId: number }>>(`/api/v1/contests/${contestId}/submissions`, {
+      method: 'POST',
+      body: JSON.stringify({
+        prompt,
+        description,
+        result,
+      }),
+    });
+    return {
+      message: response.message,
+      data: response.data,
+    };
+  }
+
+  /**
    * 대회 산출물 수정하는 API입니다.
    * @page /contest/[contestId]/submission/[submissionId]
    * @endpoint /api/v1/contests/{contestId}/submissions/{submissionId}
