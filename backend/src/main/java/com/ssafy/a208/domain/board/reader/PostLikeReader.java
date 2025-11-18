@@ -86,5 +86,8 @@ public class PostLikeReader {
         return postLikeRepository.findByPost(post);
     }
 
+    public int countByPost(Post post) {
+        return (int) postLikeRepository.countByPostAndDeletedAtIsNull(post);
+    }
 
 }
