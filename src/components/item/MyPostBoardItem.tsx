@@ -14,6 +14,9 @@ import { getPostImageUrl } from "@/utils/imageUtils";
  * @returns {React.ReactNode}
  */
 export default function MyPostBoardItem({ postId, title, category, tags, likeCnt, replyCnt, fileUrl }: CommunityBoardItemProps) {
+ 
+  console.log('MyPostBoardItem fileUrl:', fileUrl);
+ 
   return (
     <Link
       href={`/community/${postId}`}
