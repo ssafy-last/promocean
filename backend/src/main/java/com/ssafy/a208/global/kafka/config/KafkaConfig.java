@@ -11,6 +11,7 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.*;
@@ -35,9 +36,20 @@ public class KafkaConfig {
     @Value("${spring.kafka.consumer.group-id}")
     private String groupId;
 
+    private final Environment environment;
+
     private Map<String, Object> getCommonConfigs() {
         Map<String, Object> config = new HashMap<>();
-        config.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SSL");
+
+        // prod profile일 때만 SSL 설정
+        String[] activeProfiles = environment.getActiveProfiles();
+        for (String profile : activeProfiles) {
+            if ("prod".equals(profile)) {
+                config.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SSL");
+                break;
+            }
+        }
+
         return config;
     }
 
