@@ -552,17 +552,9 @@ function PostPageContent() {
       return;
     }
 
-    if (selectedPromptType === 'text') {
-      if (!examplePrompt.trim()) {
-        alert('예시 질문 프롬프트를 입력해주세요.');
-        return;
-      }
-
-      if (!answerPrompt.trim()) {
-        alert('답변 프롬프트를 입력해주세요.');
-        return;
-      }
-    } else if (selectedPromptType === 'image') {
+    // 예시 질문과 답변은 선택 사항으로 변경 (필수 아님)
+    // 이미지 타입일 때만 이미지 검증
+    if (selectedPromptType === 'image') {
       // 이미지 타입일 때는 AI 생성 이미지나 업로드된 이미지 중 하나는 있어야 함
       if (!generatedImageKey && !uploadedImageKey) {
         alert('결과 이미지를 업로드하거나 AI로 생성해주세요.');
@@ -600,10 +592,12 @@ function PostPageContent() {
 
       // 프롬프트 타입에 따라 추가 필드 설정
       if (selectedPromptType === 'text') {
-        const sampleQuestion = extractTextFromLexical(examplePrompt);
-        const sampleAnswer = extractTextFromLexical(answerPrompt);
+        // 예시 질문과 답변은 선택 사항
+        const sampleQuestion = examplePrompt.trim() ? extractTextFromLexical(examplePrompt) : '';
+        const sampleAnswer = answerPrompt.trim() ? extractTextFromLexical(answerPrompt) : '';
 
-        if (sampleQuestion.length > 200) {
+        // 예시 질문이 있을 경우에만 길이 검증
+        if (sampleQuestion && sampleQuestion.length > 200) {
           alert('예시 질문은 200자 이하로 입력해주세요.');
           return;
         }
