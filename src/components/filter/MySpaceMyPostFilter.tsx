@@ -2,11 +2,12 @@
 
 // frontend/src/components/filter/MySpaceMyPostFilter.tsx
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import ChevronDown from "@/components/icon/ChevronDown";
 import MagnifyingGlass from "@/components/icon/MagnifyingGlass";
 import Funnel from "@/components/icon/Funnel";
+import { TagAPI, TagItem } from "@/api/tag";
 
 interface MySpaceMyPostFilterProps {
   basePath?: string; // 필터 적용 시 라우팅할 기본 경로
@@ -31,6 +32,41 @@ export default function MySpaceMyPostFilter({ basePath = "/my-space/my-posts" }:
   const [selected, setSelected] = useState("전체");
   const [isOpen, setIsOpen] = useState(false);
   const [keyword, setKeyword] = useState("");
+
+  const timeout = useRef<NodeJS.Timeout | null>(null);
+  const [tagSuggestions, setTagSuggestions] = useState<TagItem[]>([]);
+
+      console.log("tag auto complete result:", tagSuggestions);
+
+  useEffect(() =>{
+    if(selected !== "태그"){
+      return;
+    }
+
+    timeout.current = setTimeout(async ()=>{
+      console.log("keyword:",keyword);
+
+      const res = await TagAPI.getTagAutoCompleteList({keyword:keyword});
+      
+      setTagSuggestions(res.data);
+    }, 1000);
+
+    return () => {
+      if (timeout.current) {
+        clearTimeout(timeout.current);
+      }
+    };
+
+  }, [keyword])
+
+
+
+  const handleTextChange = (e : React.ChangeEvent<HTMLInputElement>) => {
+      setKeyword(e.target.value);
+      console.log("changed" );
+
+  } 
+
 
   // 정렬 변경 핸들러 - 즉시 API 호출
   const handleSorterChange = (sorterKey: string) => {
@@ -131,7 +167,7 @@ export default function MySpaceMyPostFilter({ basePath = "/my-space/my-posts" }:
             type="text"
             placeholder="검색어 입력"
             value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
+            onChange={handleTextChange}
             className="flex-grow text-sm bg-transparent focus:outline-none ml-2"
           />
           <button
