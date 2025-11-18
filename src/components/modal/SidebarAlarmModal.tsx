@@ -315,7 +315,7 @@ export default function SidebarAlarmModal({
             if (resizeRef) resizeRef.current = node;
         }}
         className ={`
-       fixed ${ isCollapsed ? 'left-16' : 'left-58'}
+       fixed ${ isCollapsed ? 'left-16' : 'left-52'}
        ${ isAlarm ? 'p-2' : 'p-0'}
        h-screen
        flex flex-col z-50
