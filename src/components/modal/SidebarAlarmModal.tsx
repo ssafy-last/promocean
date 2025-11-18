@@ -168,25 +168,52 @@ export default function SidebarAlarmModal({
 
                 // 서버에서 보낸 데이터 파싱 (JSON 형식으로 가정)
                 console.log('📦 파싱 전 데이터:', event.data);
-                const alarmData = JSON.parse(event.data);
-                console.log('✅ 파싱된 데이터:', alarmData.category);
+                console.log('📦 파싱 전 데이터 타입:', typeof event.data);
 
-                // // 유효성 검증: 필수 필드 확인
-                // if (!alarmData.category || !alarmData.alarmId || !alarmData.message) {
-                //     console.error('❌ 필수 필드가 누락된 알람:', alarmData);
-                //     return;
-                // }
+                // JSON 파싱 시도
+                let parsedData;
+                try {
+                    parsedData = JSON.parse(event.data);
+                    console.log('✅ 1차 파싱된 데이터:', parsedData);
 
-                // // 카테고리별 필수 필드 확인
-                // const isValidAlarm =
-                //     (alarmData.category === 'POST_REPLY' && alarmData.postId !== undefined && alarmData.replyId !== undefined) ||
-                //     (alarmData.category === 'CONTEST_NOTICE' && alarmData.contestId !== undefined && alarmData.noticeId !== undefined) ||
-                //     (alarmData.category === 'TEAM_INVITATION' && alarmData.spaceId !== undefined);
+                    // 이중 인코딩 체크: 파싱 결과가 문자열이면 한번 더 파싱
+                    if (typeof parsedData === 'string') {
+                        console.log('🔄 이중 인코딩 감지, 2차 파싱 시도');
+                        parsedData = JSON.parse(parsedData);
+                        console.log('✅ 2차 파싱된 데이터:', parsedData);
+                    }
+                } catch (parseError) {
+                    console.error('❌ JSON 파싱 실패:', parseError);
+                    return;
+                }
 
-                // if (!isValidAlarm) {
-                //     console.error('❌ 카테고리별 필수 필드가 누락된 알람:', alarmData);
-                //     return;
-                // }
+                // 중첩된 데이터 구조 처리: 실제 알람 데이터는 data 필드 안에 있음
+                const alarmData = parsedData.data || parsedData;
+                console.log('✅ 최종 파싱된 데이터:', alarmData);
+                console.log('✅ category:', alarmData.category);
+
+                // 유효성 검증: 빈 객체 체크
+                if (!alarmData || typeof alarmData !== 'object' || Object.keys(alarmData).length === 0) {
+                    console.warn('⚠️ 빈 객체 또는 유효하지 않은 데이터 무시:', alarmData);
+                    return;
+                }
+
+                // 유효성 검증: 필수 필드 확인
+                if (!alarmData.category || alarmData.alarmId === undefined) {
+                    console.error('❌ 필수 필드가 누락된 알람:', alarmData);
+                    return;
+                }
+
+                // 카테고리별 필수 필드 확인
+                const isValidAlarm =
+                    (alarmData.category === 'POST_REPLY' && alarmData.postId !== undefined && alarmData.replyId !== undefined) ||
+                    (alarmData.category === 'CONTEST_NOTICE' && alarmData.contestId !== undefined && alarmData.noticeId !== undefined) ||
+                    (alarmData.category === 'TEAM_INVITATION' && alarmData.spaceId !== undefined);
+
+                if (!isValidAlarm) {
+                    console.error('❌ 카테고리별 필수 필드가 누락된 알람:', alarmData);
+                    return;
+                }
 
                 // 새 알람을 목록에 추가
                 const newAlarm: AlarmItemProps = {
