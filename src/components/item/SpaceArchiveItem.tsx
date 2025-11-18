@@ -61,6 +61,7 @@ export default function SpaceArchiveItem({
     const [isPinnedState, setIsPinnedState] = useState(isPinned);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [isDragging, setIsDragging] = useState(false);
     const archiveFolderStore = useArchiveFolderStore();
     const spaceStore = useSpaceStore();
     const teamName = spaceStore.currentSpace?.name;
@@ -136,7 +137,7 @@ export default function SpaceArchiveItem({
     const handleEdit = async (newTitle: string, newBgColor: string) => {
         console.log("id ",spaceId, folderId)
 
-        const res = await SpaceAPI.patchMySpaceArchiveFolderData(spaceId!, folderId, {
+        await SpaceAPI.patchMySpaceArchiveFolderData(spaceId!, folderId, {
             name: newTitle,
             color: colorCodeFrontToBack(newBgColor),
         });
@@ -161,9 +162,71 @@ export default function SpaceArchiveItem({
         console.log(`${name} 아카이브 폴더 수정됨:`, { newTitle, newBgColor });
     }
 
+    // 드래그 시작 핸들러
+    const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+        setIsDragging(true);
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('application/json', JSON.stringify({
+            folderId,
+            name,
+            color,
+            isPinned: isPinnedState
+        }));
+    };
+
+    // 드래그 종료 핸들러
+    const handleDragEnd = () => {
+        setIsDragging(false);
+    };
+
+    // 드래그 오버 핸들러
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+    };
+
+    // 드롭 핸들러
+    const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const draggedData = JSON.parse(e.dataTransfer.getData('application/json')) as SpaceArchiveData;
+
+        // 자기 자신에게 드롭한 경우 무시
+        if (draggedData.folderId === folderId) {
+            return;
+        }
+
+        // 드래그한 폴더와 드롭 대상 폴더의 pinned 상태가 다른 경우 핀 상태 변경
+        if (draggedData.isPinned !== isPinnedState) {
+            // API 호출로 핀 상태 변경
+            await SpaceAPI.patchMySpaceArchiveFolderPinStatus(spaceId!, draggedData.folderId);
+
+            // 드래그한 아이템을 원래 리스트에서 제거하고 새 리스트에 추가
+            if (draggedData.isPinned) {
+                // Pinned -> 일반 폴더로 이동
+                const updatedPinnedList = pinnedItemListState.filter(item => item.folderId !== draggedData.folderId);
+                setPinnedItemListState(updatedPinnedList);
+                setArchiveItemListState([...archiveItemListState, { ...draggedData, isPinned: false }]);
+            } else {
+                // 일반 폴더 -> Pinned로 이동
+                const updatedArchiveList = archiveItemListState.filter(item => item.folderId !== draggedData.folderId);
+                setArchiveItemListState(updatedArchiveList);
+                setPinnedItemListState([...pinnedItemListState, { ...draggedData, isPinned: true }]);
+            }
+
+            console.log(`${draggedData.name} 폴더를 드래그하여 ${isPinnedState ? 'Pinned' : '일반'}로 이동`);
+        }
+    };
+
     return (
         <>
             <div
+                draggable
+                onDragStart={handleDragStart}
+                onDragEnd={handleDragEnd}
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
                 className={`
                     group w-32 h-44 relative rounded-xl
                     shadow-md overflow-hidden
@@ -171,6 +234,7 @@ export default function SpaceArchiveItem({
                     hover:-translate-y-2 hover:shadow-2xl
                     active:translate-y-0 active:scale-95 active:shadow-md
                     cursor-pointer border-2 border-white/50 hover:border-white
+                    ${isDragging ? 'opacity-50 scale-95' : ''}
                 `}
                 style={{ backgroundColor: color }}
                 onClick={handleArchiveRoute}
