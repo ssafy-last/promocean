@@ -28,17 +28,18 @@ export default function SpaceArchiveFilter() {
   const [isOpen, setIsOpen] = useState(false);
   const [keyword, setKeyword] = useState("");
 
+
+
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-
   useEffect(()=>{
-    intervalRef.current = setInterval(()=>{
+    intervalRef.current = setTimeout(()=>{
       console.log("keyword:",keyword);  
-    }, 2000);
+    }, 1000);
 
     return () => {
       if (intervalRef.current) {
-        clearInterval(intervalRef.current);
+        clearTimeout(intervalRef.current);
       }
     };
   },[keyword])

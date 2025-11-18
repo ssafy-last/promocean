@@ -9,26 +9,29 @@ export interface TagItem{
 
 
 export interface TagAutoCompleteResponse{
-    tagList : TagItem[];
+    data : TagItem[];
 }
 
 
+export const TagAPI = {
 
 
-export function getTagAutoCompleteList(params ? : {keyword ? : string, size? : number}) : Promise<TagItem[]> {
+    async getTagAutoCompleteList(params ? : {keyword ? : string, size? : number}) : Promise<TagAutoCompleteResponse> {
 
-    const queryParams = new URLSearchParams();
+        const queryParams = new URLSearchParams();
 
-    //size default = 10
-    if (!params?.size) queryParams.append('size', '10');
+        //size default = 10
+        if (!params?.size) queryParams.append('size', '10');
 
-    if (params?.keyword) queryParams.append('keyword', params.keyword);
-    if (params?.size) queryParams.append('size', params.size.toString());
+        if (params?.keyword) queryParams.append('keyword', params.keyword);
+        if (params?.size) queryParams.append('size', params.size.toString());
 
-    const res = apiFetch<ApiResponse<TagAutoCompleteResponse>>(`/api/v1/tags/autocomplete?${queryParams.toString()}`, {
-        method : 'GET',
-    }).then((response) => response.data.tagList);
+        const res = await apiFetch<TagAutoCompleteResponse>(`/api/v1/tags/autocomplete?${queryParams.toString()}`, {
+            method : 'GET',
+        });
 
+        console.log("TagAPI.getTagAutoCompleteList response:", res.data);
 
-    return res;
+        return res;
+    }
 }
