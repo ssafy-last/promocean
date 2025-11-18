@@ -104,17 +104,6 @@ export default function SpaceScrapItem({
                     </span>
                 </div>
 
-                {/* 좋아요/댓글 - 이미지 위 우측 하단 */}
-                <div className="absolute bottom-3 right-3 flex items-center gap-3 bg-black/60 backdrop-blur-sm px-3 py-1.5 rounded-full">
-                    <div className="flex items-center gap-1 text-white">
-                        <Heart className="w-4 h-4 fill-white" />
-                        <span className="text-xs font-medium">{likeCnt}</span>
-                    </div>
-                    <div className="flex items-center gap-1 text-white">
-                        <ChatBubbleBottomCenterText className="w-4 h-4" />
-                        <span className="text-xs font-medium">{replyCnt}</span>
-                    </div>
-                </div>
             </div>
 
             {/* 컨텐츠 영역 */}
