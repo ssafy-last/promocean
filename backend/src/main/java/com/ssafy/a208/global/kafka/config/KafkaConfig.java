@@ -3,6 +3,7 @@ package com.ssafy.a208.global.kafka.config;
 import com.ssafy.a208.domain.board.dto.PostCommentEvent;
 import com.ssafy.a208.domain.board.dto.PostLikeEvent;
 import lombok.RequiredArgsConstructor;
+import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -34,11 +35,17 @@ public class KafkaConfig {
     @Value("${spring.kafka.consumer.group-id}")
     private String groupId;
 
+    private Map<String, Object> getCommonConfigs() {
+        Map<String, Object> config = new HashMap<>();
+        config.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SSL");
+        return config;
+    }
+
     // ===== Producer 설정 =====
 
     @Bean
     public ProducerFactory<String, PostLikeEvent> postLikeProducerFactory() {
-        Map<String, Object> config = new HashMap<>();
+        Map<String, Object> config = getCommonConfigs();
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
@@ -55,7 +62,7 @@ public class KafkaConfig {
 
     @Bean
     public ProducerFactory<String, PostCommentEvent> postCommentProducerFactory() {
-        Map<String, Object> config = new HashMap<>();
+        Map<String, Object> config = getCommonConfigs();
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
@@ -74,7 +81,7 @@ public class KafkaConfig {
 
     @Bean
     public ConsumerFactory<String, PostLikeEvent> postLikeConsumerFactory() {
-        Map<String, Object> config = new HashMap<>();
+        Map<String, Object> config = getCommonConfigs();
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         config.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
@@ -102,7 +109,7 @@ public class KafkaConfig {
 
     @Bean
     public ConsumerFactory<String, PostCommentEvent> postCommentConsumerFactory() {
-        Map<String, Object> config = new HashMap<>();
+        Map<String, Object> config = getCommonConfigs();
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         config.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
