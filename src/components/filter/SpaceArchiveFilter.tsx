@@ -2,7 +2,7 @@
 
 // frontend/src/components/filter/SpaceArchiveFilter.tsx
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import ChevronDown from "@/components/icon/ChevronDown";
 import MagnifyingGlass from "@/components/icon/MagnifyingGlass";
@@ -27,6 +27,30 @@ export default function SpaceArchiveFilter() {
   const [selected, setSelected] = useState("전체");
   const [isOpen, setIsOpen] = useState(false);
   const [keyword, setKeyword] = useState("");
+
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+
+  useEffect(()=>{
+    intervalRef.current = setInterval(()=>{
+      console.log("keyword:",keyword);  
+    }, 2000);
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  },[keyword])
+
+
+  const handleTextChange = (e : React.ChangeEvent<HTMLInputElement>) => {
+      setKeyword(e.target.value);
+//      clearInterval(interval);
+    console.log("changed" );
+
+  } 
+
 
   // 정렬 변경 핸들러 - 즉시 API 호출
   const handleSorterChange = (sorterKey: string) => {
@@ -121,14 +145,15 @@ export default function SpaceArchiveFilter() {
         {/* 오른쪽: 검색바 */}
         <form
           onSubmit={handleSearch}
-          className="flex items-center flex-grow px-3 py-2"
+          className="flex items-center grow px-3 py-2"
         >
           <input
             type="text"
             placeholder="검색어 입력"
             value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-            className="flex-grow text-sm bg-transparent focus:outline-none ml-2"
+            onChange={handleTextChange}
+            
+            className="grow text-sm bg-transparent focus:outline-none ml-2"
           />
           <button
             type="submit"
