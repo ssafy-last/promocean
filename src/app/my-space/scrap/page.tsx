@@ -7,8 +7,8 @@ export default function MySpaceScrapPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <SpaceBoardHeader title="스크랩" description="스크랩한 글을 모아볼 수 있습니다." />
-      <Suspense>      <SpaceScrapBoardList />
-        <SpaceScrapBoardList />
+      <Suspense>      
+        <SpaceScrapBoardList/>
       </Suspense>`
     </div>
   );
