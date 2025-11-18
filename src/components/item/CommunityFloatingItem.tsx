@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { CommunityFloatingItemProps } from '@/types/itemType'
 import Heart from '../icon/Heart'
 import ChatBubbleBottomCenterText from '../icon/ChatBubbleBottomCenterText'
+import IconCount from '../etc/IconCount'
 import { getPostImageUrl } from '@/utils/imageUtils'
 
 /**
@@ -51,18 +52,20 @@ export default function CommunityFloatingItem({ postId, title, tags, fileUrl, li
 
           {/* 아이콘들 (좋아요/댓글) */}
           <div className="flex items-center gap-3">
-
-            {/* 좋아요 */}
-            <div className="flex items-center gap-1 text-gray-500 transition-colors">
-              <Heart />
-              <span className="text-xs font-medium">{likeCnt}</span>
-            </div>
-
-            {/* 댓글 */}
-            <div className="flex items-center gap-1 text-gray-500 transition-colors">
-              <ChatBubbleBottomCenterText />
-              <span className="text-xs font-medium">{replyCnt}</span>
-            </div>
+            <IconCount 
+              icon={<Heart />} 
+              count={likeCnt} 
+              limit={99}
+              className="flex items-center gap-1 text-gray-500 transition-colors"
+              textClassName="text-xs font-medium"
+            />
+            <IconCount 
+              icon={<ChatBubbleBottomCenterText />} 
+              count={replyCnt} 
+              limit={99}
+              className="flex items-center gap-1 text-gray-500 transition-colors"
+              textClassName="text-xs font-medium"
+            />
           </div>
         </div>
       </div>
