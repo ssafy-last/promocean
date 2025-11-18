@@ -8,6 +8,7 @@ import com.ssafy.a208.domain.board.entity.Post;
 import com.ssafy.a208.domain.board.entity.Reply;
 import com.ssafy.a208.domain.board.exception.ReplyAccessDeniedException;
 import com.ssafy.a208.domain.board.exception.ReplyNotFoundException;
+import com.ssafy.a208.domain.board.reader.PostLikeReader;
 import com.ssafy.a208.domain.board.reader.PostReader;
 import com.ssafy.a208.domain.board.reader.ReplyReader;
 import com.ssafy.a208.domain.board.repository.ReplyRepository;
@@ -37,9 +38,11 @@ public class ReplyService {
     private final MemberReader memberReader;
     private final PostReader postReader;
     private final ReplyReader replyReader;
+    private final PostLikeReader postLikeReader;
     private final AlarmService alarmService;
     private final ReplyRepository replyRepository;
     private final PostIndexService postIndexService;
+
     private final KafkaTemplate<String, PostCommentEvent> postCommentKafkaTemplate;
     private final RedisTemplate<String, String> redisTemplate;
 
@@ -47,6 +50,7 @@ public class ReplyService {
     private static final String TRENDING_KEY = "trending:posts";
     private static final String COMMENT_COUNT_KEY = "post:%d:comments";
 
+    
 
     /**
      * 댓글을 생성합니다.
@@ -72,15 +76,17 @@ public class ReplyService {
 
         replyRepository.save(reply);
 
-        // 댓글 수 갱신 (ElasticSearch)
-        int currentReplyCount = replyReader.getRepliesByPost(post).size();
-        postIndexService.updatePostCounts(postId, null, currentReplyCount);
+        //es 카운트 업데이트
+        int likeCount = postLikeReader.countByPost(post);
+        int replyCount = replyReader.getRepliesByPost(post).size();
+        postIndexService.updatePostCounts(postId, likeCount, replyCount);
 
         // Kafka 이벤트 발행 (Redis용)
         publishCommentEvent(postId, reply.getId(), author.getId(), PostCommentEvent.CommentAction.CREATE);
 
         log.info("댓글 생성 완료 - replyId: {}, postId: {}, authorId: {}",
                 reply.getId(), postId, author.getId());
+
 
         // 게시글 작성자에게 알림 전송
         AlarmReq alarmReq = AlarmReq.builder()
@@ -92,6 +98,9 @@ public class ReplyService {
                 .build();
         Member receiver = post.getAuthor();
         alarmService.send(receiver, alarmReq);
+
+        log.info("댓글 생성 완료 - replyId: {}, postId: {}, authorId: {}",
+                reply.getId(), postId, author.getId());
     }
 
     /**
@@ -159,12 +168,14 @@ public class ReplyService {
         // 댓글 소프트 딜리트
         reply.deleteReply();
 
-        // 댓글 수 갱신 (ElasticSearch)
-        int currentReplyCount = replyReader.getRepliesByPost(reply.getPost()).size();
-        postIndexService.updatePostCounts(postId, null, currentReplyCount);
+        // es 업데이트트
+        int likeCount = postLikeReader.countByPost(post);
+        int replyCount = replyReader.getRepliesByPost(post).size();
+        postIndexService.updatePostCounts(postId, likeCount, replyCount);
 
         // Kafka 이벤트 발행 (Redis용)
         publishCommentEvent(postId, replyId, userDetails.memberId(), PostCommentEvent.CommentAction.DELETE);
+
 
         log.info("댓글 삭제 완료 - replyId: {}, postId: {}", replyId, postId);
     }
