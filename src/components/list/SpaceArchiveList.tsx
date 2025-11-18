@@ -76,13 +76,20 @@ export default function SpaceArchiveList({
 
     const router = useRouter();
     const handleAllPrompt = () => {
-        folderStore.setCurrentFolder({
+
+            folderStore.setCurrentFolder({
             folderId : 0,
             name : "모든 프롬프트",
             color : "bg-primary",
-            isPinned : false
-        })
-        router.push(`/my-space/archive/all-prompts`)
+            isPinned : true
+            })
+
+        if(isTeamSpace){
+            router.push(`/team-space/${spaceId}/all-prompts`)
+        }
+        else {
+            router.push(`/my-space/archive/all-prompts`)
+        }
     }
 
     // 드롭 핸들러 - 빈 공간에 드롭했을 때
