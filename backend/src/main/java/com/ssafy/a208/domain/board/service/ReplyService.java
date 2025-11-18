@@ -17,6 +17,7 @@ import com.ssafy.a208.domain.member.reader.MemberReader;
 import com.ssafy.a208.global.common.enums.AlarmCategory;
 import com.ssafy.a208.global.security.dto.CustomUserDetails;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -24,7 +25,6 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -50,7 +50,7 @@ public class ReplyService {
     private static final String TRENDING_KEY = "trending:posts";
     private static final String COMMENT_COUNT_KEY = "post:%d:comments";
 
-    
+
 
     /**
      * 댓글을 생성합니다.
@@ -83,24 +83,24 @@ public class ReplyService {
 
         // Kafka 이벤트 발행 (Redis용)
         publishCommentEvent(postId, reply.getId(), author.getId(), PostCommentEvent.CommentAction.CREATE);
-
         log.info("댓글 생성 완료 - replyId: {}, postId: {}, authorId: {}",
                 reply.getId(), postId, author.getId());
 
+        // 게시글 작성자에게 알림 전송(본인 게시물에 본인 댓글이면 제외)
+        if(!Objects.equals(post.getAuthor(), author)) {
+            AlarmReq alarmReq = AlarmReq.builder()
+                    .category(AlarmCategory.POST_REPLY)
+                    .postId(postId)
+                    .postTitle(post.getTitle())
+                    .replyId(reply.getId())
+                    .replyContent(reply.getContent())
+                    .build();
+            Member receiver = post.getAuthor();
+            alarmService.send(receiver, alarmReq);
+            log.info("알림 전송 완료 - replyId: {}, postId: {}, authorId: {}",
+                    reply.getId(), postId, author.getId());
+        }
 
-        // 게시글 작성자에게 알림 전송
-        AlarmReq alarmReq = AlarmReq.builder()
-                .category(AlarmCategory.POST_REPLY)
-                .postId(postId)
-                .postTitle(post.getTitle())
-                .replyId(reply.getId())
-                .replyContent(reply.getContent())
-                .build();
-        Member receiver = post.getAuthor();
-        alarmService.send(receiver, alarmReq);
-
-        log.info("댓글 생성 완료 - replyId: {}, postId: {}, authorId: {}",
-                reply.getId(), postId, author.getId());
     }
 
     /**
