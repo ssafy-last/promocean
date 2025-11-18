@@ -29,8 +29,6 @@ export default function RootLayout({
           <div className="min-h-screen">
             <Sidebar />
             <div>
-      asdasd
-
             </div>
             <main className="bg-background min-h-screen transition-all duration-300" style={{ marginLeft: 'var(--sidebar-width, 16rem)' }} id="main-content">{children}</main>
           </div>
