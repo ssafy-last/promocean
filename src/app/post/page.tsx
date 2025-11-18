@@ -1284,11 +1284,6 @@ function PostPageContent() {
  * @returns {React.ReactNode}
  */
 export default function PostPage() {
-
-  const searchParams = useSearchParams();
-  const postType = searchParams.get("type"); // community, my-space, team-space
-  
-
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-gray-50 py-8 flex items-center justify-center">

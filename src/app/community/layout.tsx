@@ -4,6 +4,7 @@ import CommunityHeader from "@/components/layout/CommunityHeader";
 import CommunityFloatingSection from "@/components/section/CommunityFloatingSection";
 import CommunityTabs from "@/components/filter/CommunityTabs";
 import { PostAPI } from "@/api/community";
+import { Suspense } from "react";
 
 /**
  * CommunityLayout component
@@ -22,7 +23,9 @@ export default async function CommunityLayout({
     <div className="min-h-screen bg-gray-50">
       <CommunityHeader />
 
-      <CommunityTabs />
+      <Suspense fallback={<div>Loading...</div>}>
+        <CommunityTabs />
+      </Suspense>
 
       <div className="flex flex-row gap-6 px-4 lg:px-8 pt-8 pb-8">
         
