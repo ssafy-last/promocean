@@ -3,7 +3,7 @@ import { apiFetch } from "./fetcher";
 
 export interface TagItem{
     tagId : number;
-    tagName : string;
+    name : string;
     usageCnt : number;
 }
 
