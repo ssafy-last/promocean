@@ -17,7 +17,7 @@ export default function SidebarItem({ icon, title, href, onClick, showBadge, isA
   const { isCollapsed, showText, isCollapsing } = useSidebar();
 
   const baseClass =
-    'flex w-full items-center py-2 text-xs font-medium rounded-md transition-colors';
+    'flex w-full items-center py-1.5 text-xs font-medium rounded-md transition-colors';
 
   // 활성화 상태에 따른 스타일 적용
   const activeClass = isActive

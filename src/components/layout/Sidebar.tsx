@@ -111,8 +111,8 @@ const alarmItems : SidebarItemProps[] = [{
       ref={sidebarRef}
       className={`fixed left-0 top-0 ${
         isCollapsed ? 'w-16' : 'w-52'
-      } h-screen p-4 border-r border-gray-200 flex flex-col transition-[width] duration-200 overflow-hidden shrink-0`}
-      style={{ backgroundColor: '#fdfdfc', color: '#343434' }}
+      } h-screen p-4 border-r border-gray-200/50 flex flex-col transition-[width] duration-200 overflow-hidden shrink-0`}
+      style={{ borderRightWidth: '0px', backgroundColor: '#fdfdfc', color: '#343434' }}
     >
       <div className="flex-1">
         <SidebarHeader />
