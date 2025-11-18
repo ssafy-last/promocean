@@ -42,17 +42,19 @@ export default function SidebarAlarmModal({
     const [selectedAlarms, setSelectedAlarms] = useState<Set<number>>(new Set());
 
     const resizeRef = useRef<HTMLDivElement>(null);
+    const isResizingRef = useRef(false);
 
     const MIN_WIDTH = 240; // 15rem
     const MAX_WIDTH = 448; // 28rem
 
     const handleMouseDown = useCallback((e: React.MouseEvent) => {
         e.preventDefault();
+        isResizingRef.current = true;
         setIsResizingState(true);
     }, []);
 
     const handleMouseMove = useCallback((e: MouseEvent) => {
-        if (!isResizingState || !resizeRef.current) return;
+        if (!isResizingRef.current || !resizeRef.current) return;
 
         const containerLeft = resizeRef.current.getBoundingClientRect().left;
         const newWidth = e.clientX - containerLeft;
@@ -61,9 +63,10 @@ export default function SidebarAlarmModal({
         if (newWidth >= MIN_WIDTH && newWidth <= MAX_WIDTH) {
             setWidth(newWidth);
         }
-    }, [isResizingState]);
+    }, []);
 
     const handleMouseUp = useCallback(() => {
+        isResizingRef.current = false;
         setIsResizingState(false);
     }, []);
 
@@ -307,9 +310,12 @@ export default function SidebarAlarmModal({
 
     return(
     <div
-        ref={modalRef}
+        ref={(node) => {
+            if (modalRef) modalRef.current = node;
+            if (resizeRef) resizeRef.current = node;
+        }}
         className ={`
-       fixed ${ isCollapsed ? 'left-16' : 'left-[14.5rem]'}
+       fixed ${ isCollapsed ? 'left-16' : 'left-58'}
        ${ isAlarm ? 'p-2' : 'p-0'}
        h-screen
        flex flex-col z-50
@@ -345,7 +351,7 @@ export default function SidebarAlarmModal({
                 <div
                     onMouseDown={handleMouseDown}
                     className={`
-                        absolute top-0 right-0 w-1 h-full
+                        absolute top-0 right-0 w-2 h-full z-100
                         cursor-ew-resize hover:bg-primary
                         transition-colors duration-150
                         ${isResizingState ? 'bg-primary' : 'bg-transparent'}
