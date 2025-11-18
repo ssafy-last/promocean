@@ -23,7 +23,7 @@ export default function CommunityPostDetailSection( { communityPostData, hashtag
 
         {/* 제목 */}
         <div className="mb-3 flex flex-row items-center justify-between">
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-gray-900">
             {communityPostData.title}
           </h1>
           <CommunityPostButtonList author={communityPostData.author} />
@@ -54,7 +54,7 @@ export default function CommunityPostDetailSection( { communityPostData, hashtag
         {/* 설명 */}
         {communityPostData.description && (
           <div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">설명</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-2">설명</h2>
             <MarkdownViewer content={communityPostData.description} />
           </div>
         )}
@@ -62,7 +62,7 @@ export default function CommunityPostDetailSection( { communityPostData, hashtag
         {/* 프롬프트 */}
         {communityPostData.prompt && (
           <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-            <h3 className="text-sm font-medium text-gray-900 mb-1">프롬프트</h3>
+            <h3 className="text-xs font-medium text-gray-900 mb-1">프롬프트</h3>
             <MarkdownViewer content={communityPostData.prompt} />
           </div>
         )}
@@ -70,18 +70,18 @@ export default function CommunityPostDetailSection( { communityPostData, hashtag
         {/* 샘플 질문/답변 */}
         {(communityPostData.sampleQuestion || communityPostData.sampleAnswer) && (
           <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-gray-900">예시</h2>
+            <h2 className="text-lg font-semibold text-gray-900">예시</h2>
 
             {communityPostData.sampleQuestion && (
               <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                <h3 className="text-sm font-medium text-blue-900 mb-1">질문</h3>
+                <h3 className="text-xs font-medium text-blue-900 mb-1">질문</h3>
                 <MarkdownViewer content={communityPostData.sampleQuestion} />
               </div>
             )}
 
             {communityPostData.sampleAnswer && (
               <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                <h3 className="text-sm font-medium text-green-900 mb-1">답변</h3>
+                <h3 className="text-xs font-medium text-green-900 mb-1">답변</h3>
                 <MarkdownViewer content={communityPostData.sampleAnswer} />
               </div>
             )}
