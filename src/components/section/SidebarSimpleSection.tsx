@@ -50,6 +50,7 @@ export default function SidebarSection({title, sidebarList, setAlarmList, isAlar
           title={sidebarList[0].title}
           onClick ={callback}
           showBadge={hasNewAlarm}
+          isActive={isAlarm}
         />
 
     </div>

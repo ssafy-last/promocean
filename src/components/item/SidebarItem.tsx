@@ -13,15 +13,20 @@ import { useSidebar } from '@/contexts/SidebarContext'
  * @param {SidebarItemProps} props - The props for the SidebarItem component
  * @returns {React.ReactNode}
  */
-export default function SidebarItem({ icon, title, href, onClick, showBadge }: SidebarItemProps) {
+export default function SidebarItem({ icon, title, href, onClick, showBadge, isActive }: SidebarItemProps) {
   const { isCollapsed, showText, isCollapsing } = useSidebar();
 
   const baseClass =
-    'flex w-full items-center py-2 text-sm font-medium rounded-md hover:bg-primary hover:text-white transition-colors text-[#343434]';
+    'flex w-full items-center py-2 text-sm font-medium rounded-md transition-colors';
+
+  // 활성화 상태에 따른 스타일 적용
+  const activeClass = isActive
+    ? 'bg-primary text-white'
+    : 'text-[#343434] hover:bg-primary hover:text-white';
 
   // transition 완료 후 접는 중이 아닐 때만 justify-center 적용
   const layoutClass = (isCollapsed && !isCollapsing) ? 'px-2 justify-center' : 'pl-1 pr-8';
-  const className = `${baseClass} ${layoutClass}`;
+  const className = `${baseClass} ${activeClass} ${layoutClass}`;
 
   if (onClick) {
     return (
