@@ -13,10 +13,11 @@ export interface SpaceArchiveBoardItemProps{
     category: string;
     tags: string[];
     folderName: string;
+    folderId : number; 
     image?: string;
 }
 
-export default function SpaceArchiveBoardItem( { articleId, title, category, tags, image, folderName }: SpaceArchiveBoardItemProps) {
+export default function SpaceArchiveBoardItem( { articleId, title, category, tags, image, folderName, folderId }: SpaceArchiveBoardItemProps) {
   const pathname = usePathname();
 
   // 현재 경로에서 팀 스페이스인지 마이 스페이스인지 판단
@@ -28,8 +29,8 @@ export default function SpaceArchiveBoardItem( { articleId, title, category, tag
 
   // 동적으로 href 생성
   const href = isTeamSpace
-    ? `/team-space/${teamArchiveId}/${folderName}/${articleId}`
-    : `/my-space/archive/${folderName}/${articleId}`;
+    ? `/team-space/${teamArchiveId}/${folderId}/${articleId}`
+    : `/my-space/archive/${folderId}/${articleId}`;
 
   return (
     <Link

@@ -77,7 +77,9 @@ export default function SpaceArchiveBoardList(
                                 title:article.title,
                                 tags: article.tags,
                                 folderName: folderName || "default",
+                                folderId: folderId || -1,
                                 image:article.fileUrl
+
                             });
                         }
 
@@ -162,6 +164,7 @@ export default function SpaceArchiveBoardList(
                             title={item.title}
                             tags={item.tags}
                             folderName={folderName || "default"}
+                            folderId={folderId || -1}
                             image={item.image}
                         />
                     ))

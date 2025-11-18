@@ -51,7 +51,7 @@ export default function TeamSpaceHeader(
   const userNickname = authStore.user?.nickname;
   const router = useRouter();
   const params = useParams();
-  const isFolderPage = Boolean(params['folder']);
+  const isFolderPage = Boolean(params['folderId']);
   console.log("isFolderPage:", isFolderPage);
 
   // 현재 사용자의 권한 가져오기
@@ -61,12 +61,12 @@ export default function TeamSpaceHeader(
   const isReader = userRole === "READER";
 
   // 폴더 내부 페이지인지 확인
-  const isInFolderPage = Boolean(params['folder']);
+  const isInFolderPage = Boolean(params['folderId']);
 
   console.log("현재 사용자 권한:", userRole);
   console.log("폴더 내부 페이지:", isInFolderPage);
-  // console.log("params['folder']", params['folder']);
-  // console.log("params['team-archive']", params['team-archive']);
+  // console.log("params['folderId']", params['folderId']);
+  // console.log("params['spaceId']", params['spaceId']);
 
 
 
@@ -91,8 +91,8 @@ export default function TeamSpaceHeader(
     console.log("글 쓰기 버튼 클릭됨");
     // 여기에 글쓰기 로직 추가
 
-    router.push('/post?type=team-space&space='+params['team-archive']+'&folder='+params['folder']);
-  
+    router.push(`/post?type=team-space&spaceId=${params['spaceId']}&folderId=${params['folderId']}`);
+
   }
 
   useEffect(()=>{
@@ -136,7 +136,7 @@ export default function TeamSpaceHeader(
       }`}>
         <div
           className="z-10 cursor-pointer hover:opacity-90 transition-opacity"
-          onClick={() => router.push(`/team-space/${params['team-archive']}`)}
+          onClick={() => router.push(`/team-space/${params['spaceId']}`)}
         >
             <h1 className={`flex font-semibold transition-all duration-300 ${isInFolderPage ? 'text-base' : 'text-4xl'}`}>
               {nickname}의 팀 스페이스

@@ -57,7 +57,10 @@ export default function SpaceHeader(
 
     const handleButtonClick = () => {
       console.log("Button clicked!");
-      router.push(`/post?type=my-space&folder=${pathSegments[2]}`);
+      const folderId = folderStore.currentFolder?.folderId;
+      if (folderId) {
+        router.push(`/post?type=my-space&folderId=${folderId}`);
+      }
     }
 
     const handleHeaderClick = () => {
