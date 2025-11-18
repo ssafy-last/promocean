@@ -6,6 +6,7 @@ import Link from "next/link";
 import { CommunityBoardItemProps } from "@/types/itemType";
 import Heart from "@/components/icon/Heart";
 import ChatBubbleBottomCenterText from "@/components/icon/ChatBubbleBottomCenterText";
+import { getPostImageUrl } from "@/utils/imageUtils";
 
 /**
  * MyPostBoardItem component
@@ -20,16 +21,13 @@ export default function MyPostBoardItem({ postId, title, category, tags, likeCnt
     >
       {/* 왼쪽 : 이미지 영역 */}
       <div className="relative flex-shrink-0 w-16 h-16 rounded-md overflow-hidden bg-gray-100">
-        {fileUrl ? (
+
           <Image
-            src={fileUrl}
+            src={fileUrl ? fileUrl : getPostImageUrl(fileUrl, postId)}
             alt={title}
             fill
             className="object-cover transition-transform duration-300 group-hover:scale-105"
           />
-        ) : (
-          <div className="w-full h-full bg-gray-200" />
-        )}
       </div>
 
       {/* 중앙 : 게시글 정보 영역 */}
