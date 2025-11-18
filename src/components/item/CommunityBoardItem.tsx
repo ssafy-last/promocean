@@ -38,7 +38,7 @@ export default function CommunityBoardItem({ postId, author, profileUrl, title, 
           <h3 className="font-bold text-text text-sm leading-snug group-hover:text-primary transition-colors pb-0.5">
             {title}
           </h3>
-          <p className="text-xs text-gray-600 line-clamp-2">{description}</p>
+          <p className="text-xs text-gray-600 line-clamp-1">{description}</p>
         </div>
 
         {/* 카테고리 + 태그 묶음 */}
