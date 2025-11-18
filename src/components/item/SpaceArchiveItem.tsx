@@ -64,7 +64,6 @@ export default function SpaceArchiveItem({
     const [isDragging, setIsDragging] = useState(false);
     const archiveFolderStore = useArchiveFolderStore();
     const spaceStore = useSpaceStore();
-    const teamName = spaceStore.currentSpace?.name;
     const spaceId = spaceStore.currentSpace?.spaceId;
 
     // 팀 스페이스의 경우 권한 확인
@@ -81,10 +80,10 @@ export default function SpaceArchiveItem({
             isPinned : isPinned
         })
 
-        if(isTeamSpace && teamName) {
-          router.push(`/team-space/${encodeURIComponent(teamName)}/${encodeURIComponent(name)}`);
+        if(isTeamSpace && spaceId) {
+          router.push(`/team-space/${spaceId}/${folderId}`);
         } else {
-          router.push('/my-space/archive/' + encodeURIComponent(name));
+          router.push(`/my-space/archive/${folderId}`);
         }
     }
 
