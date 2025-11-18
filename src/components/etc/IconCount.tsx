@@ -19,7 +19,7 @@ export default function IconCount({
   icon,
   count,
   limit = 99,
-  className = "flex items-center gap-1 transition-colors",
+  className = "flex items-center gap-0.75 transition-colors",
   iconClassName = "",
   textClassName = "text-xs",
 }: IconCountProps) {
