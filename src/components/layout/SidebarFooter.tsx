@@ -1,10 +1,10 @@
 // frontend/src/components/layout/SidebarFooter.tsx
+
 'use client';
 
 import React from 'react'
 import SidebarItem from '../item/SidebarItem'
 import UserCircle from '../icon/UserCircle'
-import Cog9Tooth from '../icon/Cog9Tooth'
 import ArrowRightStartOnRectangle from '@/components/icon/ArrowRightStartOnRectangle'
 import ArrowRightEndOnRectangle from '@/components/icon/ArrowRightEndOnRectangle'
 import { useAuthStore } from '@/store/authStore'
@@ -13,6 +13,7 @@ import { authAPI } from '@/api/auth'
 import { SidebarItemProps } from '@/types/itemType'
 import { AlarmItemProps } from '../item/AlarmItem'
 import { getAlarmList } from '@/api/alarm'
+import { usePathname } from 'next/navigation'
 
 interface SidebarFooterProps {
   alarmItems: SidebarItemProps[]
@@ -40,10 +41,19 @@ export default function SidebarFooter({
 }: SidebarFooterProps) {
 
   const { isLoggedIn, user } = useAuthStore();
+  const pathname = usePathname();
   const nickname = user?.nickname ?? '마이 페이지';
   const avatarIcon = user?.profileUrl
     ? (<UserSimpleProfile profileUrl={user.profileUrl} nickname={nickname} imageSize="w-5 h-5" showName={false} />)
     : (<UserCircle />);
+
+  // 현재 경로가 특정 메뉴와 일치하는지 확인하는 함수
+  const isActiveRoute = (href: string) => {
+    if (!pathname) return false;
+    if (pathname === href) return true;
+    if (href !== '/' && pathname.startsWith(href)) return true;
+    return false;
+  };
 
   const handleLogout = async () => {
     try {
@@ -66,12 +76,13 @@ export default function SidebarFooter({
   };
   
   return (
-    <div>
+    <div className="flex flex-col gap-0.5">
       {isLoggedIn && (
         <SidebarItem 
           icon={avatarIcon}
           title={nickname}
           href="/auth/mypage"
+          isActive={isActiveRoute('/auth/mypage')}
         />
       )}
 
