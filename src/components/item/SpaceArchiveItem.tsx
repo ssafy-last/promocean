@@ -165,6 +165,8 @@ export default function SpaceArchiveItem({
     // 드래그 시작 핸들러
     const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
         setIsDragging(true);
+        //dataTransfer란 드래그 앤 드롭 시에 데이터를 전달하는 역할을 하는 객체
+        //effectAllowed는 드래그 앤 드롭 작업에서 허용되는 효과를 지정
         e.dataTransfer.effectAllowed = 'move';
         e.dataTransfer.setData('application/json', JSON.stringify({
             folderId,
@@ -182,6 +184,9 @@ export default function SpaceArchiveItem({
     // 드래그 오버 핸들러
     const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault();
+        //dataTransfer은 기본적으로 드롭이 불가능하도록 설정되어 있어야 하므로, 
+        //여기서 드롭 가능하도록 설정
+        //dropEffect는 커서 모양을 지정
         e.dataTransfer.dropEffect = 'move';
     };
 
@@ -190,6 +195,7 @@ export default function SpaceArchiveItem({
         e.preventDefault();
         e.stopPropagation();
 
+        //어차피 자스 객체들은 제이슨 형태라서 파싱 가능함을 잊지 말자
         const draggedData = JSON.parse(e.dataTransfer.getData('application/json')) as SpaceArchiveData;
 
         // 자기 자신에게 드롭한 경우 무시
