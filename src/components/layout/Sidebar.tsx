@@ -30,6 +30,7 @@ export default function Sidebar() {
   const { isLoggedIn } = useAuthStore();
   const pathname = usePathname();
   const sidebarRef = React.useRef<HTMLDivElement>(null);
+  const alarmButtonRef = React.useRef<HTMLButtonElement>(null);
   const [isAlarm, setIsAlarm] = useState(false);
   const [alarmListState, setAlarmListState] = useState<AlarmItemProps[]>([]);
   const [hasNewAlarm, setHasNewAlarm] = useState(false);
@@ -125,6 +126,7 @@ const alarmItems : SidebarItemProps[] = [{
         setAlarmList={setAlarmListState}
         hasNewAlarm={hasNewAlarm}
         setHasNewAlarm={setHasNewAlarm}
+        alarmButtonRef={alarmButtonRef}
        />
 
         <SidebarSection title="게시판" sidebarList={communityItems} />
@@ -146,6 +148,7 @@ const alarmItems : SidebarItemProps[] = [{
         alarmListState={alarmListState}
         setAlarmListState={setAlarmListState}
         setHasNewAlarm={setHasNewAlarm}
+        alarmButtonRef={alarmButtonRef}
     />
         
     </div>

@@ -16,6 +16,7 @@ export interface SidebarAlarmModalProps {
     isAlarm: boolean;
     setIsAlarm: (isAlarm:boolean) => void;
     setHasNewAlarm: (hasNew: boolean) => void;
+    alarmButtonRef?: React.RefObject<HTMLButtonElement>;
 }
 
 
@@ -24,7 +25,8 @@ export default function SidebarAlarmModal({
     setAlarmListState,
     isAlarm,
     setIsAlarm,
-    setHasNewAlarm
+    setHasNewAlarm,
+    alarmButtonRef
 
 }: SidebarAlarmModalProps) {
 
@@ -281,6 +283,11 @@ export default function SidebarAlarmModal({
         if (!isAlarm) return;
 
         const handleClickOutside = (e: MouseEvent) => {
+            // 알림 버튼 클릭은 무시
+            if (alarmButtonRef?.current && alarmButtonRef.current.contains(e.target as Node)) {
+                return;
+            }
+
             // 모달 외부를 클릭했는지 확인
             if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
                 setIsAlarm(false);
@@ -296,7 +303,7 @@ export default function SidebarAlarmModal({
             clearTimeout(timeoutId);
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [isAlarm, setIsAlarm]);
+    }, [isAlarm, setIsAlarm, alarmButtonRef]);
 
     return(
     <div
@@ -339,9 +346,9 @@ export default function SidebarAlarmModal({
                     onMouseDown={handleMouseDown}
                     className={`
                         absolute top-0 right-0 w-1 h-full
-                        cursor-ew-resize hover:bg-blue-500
+                        cursor-ew-resize hover:bg-primary
                         transition-colors duration-150
-                        ${isResizingState ? 'bg-blue-500' : 'bg-transparent'}
+                        ${isResizingState ? 'bg-primary' : 'bg-transparent'}
                     `}
                 />
             )}
