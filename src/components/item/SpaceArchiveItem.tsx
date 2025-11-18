@@ -66,6 +66,11 @@ export default function SpaceArchiveItem({
     const spaceStore = useSpaceStore();
     const teamName = spaceStore.currentSpace?.name;
     const spaceId = spaceStore.currentSpace?.spaceId;
+
+    // 팀 스페이스의 경우 권한 확인
+    const userRole = isTeamSpace ? spaceStore.currentSpace?.userRole : null;
+    const isReader = userRole === "READER";
+    const canEdit = !isTeamSpace || !isReader; // 개인 스페이스 또는 READER가 아닌 경우
     
     const handleArchiveRoute = () => {
         console.log(`${name} 아카이브 아이템 클릭됨`);
@@ -164,6 +169,12 @@ export default function SpaceArchiveItem({
 
     // 드래그 시작 핸들러
     const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+        // Reader 권한인 경우 드래그 불가
+        if (!canEdit) {
+            e.preventDefault();
+            return;
+        }
+
         setIsDragging(true);
         //dataTransfer란 드래그 앤 드롭 시에 데이터를 전달하는 역할을 하는 객체
         //effectAllowed는 드래그 앤 드롭 작업에서 허용되는 효과를 지정
@@ -228,11 +239,11 @@ export default function SpaceArchiveItem({
     return (
         <>
             <div
-                draggable
-                onDragStart={handleDragStart}
-                onDragEnd={handleDragEnd}
-                onDragOver={handleDragOver}
-                onDrop={handleDrop}
+                draggable={canEdit}
+                onDragStart={canEdit ? handleDragStart : undefined}
+                onDragEnd={canEdit ? handleDragEnd : undefined}
+                onDragOver={canEdit ? handleDragOver : undefined}
+                onDrop={canEdit ? handleDrop : undefined}
                 className={`
                     group w-32 h-44 relative rounded-xl
                     shadow-md overflow-hidden
@@ -261,55 +272,59 @@ export default function SpaceArchiveItem({
                     </div>
                 </div>
 
-                {/* Pin 영역 */}
-                <div className="w-6 h-6 absolute top-2 right-2 z-20" onClick={(e) => e.stopPropagation()}>
-                    <label className="relative block w-6 h-6 cursor-pointer">
-                        <input
-                            type="checkbox"
-                            checked={isPinnedState}
-                            className="absolute opacity-0 w-6 h-6 cursor-pointer"
-                            aria-label={`${name} 아카이브 폴더 pinned 설정`}
-                            onChange={handlePinnedClick}
-                        />
-                        <div className={`w-6 h-6 rounded-full flex items-center justify-center transition-all duration-200 ${
-                            isPinnedState
-                                ? 'bg-white shadow-md'
-                                : 'bg-white/80 hover:bg-white hover:shadow-md'
-                        }`}>
-                            <Pin
-                                className={`w-4 h-4 transition-all duration-200 ${
-                                    isPinnedState
-                                        ? 'fill-red-500 stroke-red-600'
-                                        : 'fill-none stroke-gray-600'
-                                }`}
+                {/* Pin 영역 - Reader 권한이 아닐 때만 표시 */}
+                {canEdit && (
+                    <div className="w-6 h-6 absolute top-2 right-2 z-20" onClick={(e) => e.stopPropagation()}>
+                        <label className="relative block w-6 h-6 cursor-pointer">
+                            <input
+                                type="checkbox"
+                                checked={isPinnedState}
+                                className="absolute opacity-0 w-6 h-6 cursor-pointer"
+                                aria-label={`${name} 아카이브 폴더 pinned 설정`}
+                                onChange={handlePinnedClick}
                             />
-                        </div>
-                    </label>
-                </div>
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center transition-all duration-200 ${
+                                isPinnedState
+                                    ? 'bg-white shadow-md'
+                                    : 'bg-white/80 hover:bg-white hover:shadow-md'
+                            }`}>
+                                <Pin
+                                    className={`w-4 h-4 transition-all duration-200 ${
+                                        isPinnedState
+                                            ? 'fill-red-500 stroke-red-600'
+                                            : 'fill-none stroke-gray-600'
+                                    }`}
+                                />
+                            </div>
+                        </label>
+                    </div>
+                )}
 
-                {/* 수정 및 삭제 버튼 영역 */}
-                <div className="absolute bottom-16 left-0 w-full flex flex-row gap-1.5 px-1.5 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" onClick={(e) => e.stopPropagation()}>
-                    <button
-                        className="flex-1 px-2 py-1.5 bg-white text-gray-700 text-xs font-medium rounded-lg
-                            hover:bg-gray-50 hover:shadow-lg active:scale-95 transition-all duration-150 border border-gray-200"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            setIsEditModalOpen(true);
-                        }}
-                    >
-                        수정
-                    </button>
-                    <button
-                        className="flex-1 px-2 py-1.5 bg-red-500 text-white text-xs font-medium rounded-lg
-                            hover:bg-red-600 hover:shadow-lg active:scale-95 transition-all duration-150"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            setIsDeleteModalOpen(true);
-                        }}
-                    >
-                        삭제
-                    </button>
-                </div>
+                {/* 수정 및 삭제 버튼 영역 - Reader 권한이 아닐 때만 표시 */}
+                {canEdit && (
+                    <div className="absolute bottom-16 left-0 w-full flex flex-row gap-1.5 px-1.5 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" onClick={(e) => e.stopPropagation()}>
+                        <button
+                            className="flex-1 px-2 py-1.5 bg-white text-gray-700 text-xs font-medium rounded-lg
+                                hover:bg-gray-50 hover:shadow-lg active:scale-95 transition-all duration-150 border border-gray-200"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setIsEditModalOpen(true);
+                            }}
+                        >
+                            수정
+                        </button>
+                        <button
+                            className="flex-1 px-2 py-1.5 bg-red-500 text-white text-xs font-medium rounded-lg
+                                hover:bg-red-600 hover:shadow-lg active:scale-95 transition-all duration-150"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setIsDeleteModalOpen(true);
+                            }}
+                        >
+                            삭제
+                        </button>
+                    </div>
+                )}
             </div>
 
             {/* 삭제 확인 모달 */}
