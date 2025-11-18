@@ -274,9 +274,33 @@ export default function SidebarAlarmModal({
 
 
 
+    // 바깥 클릭 감지
+    const modalRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (!isAlarm) return;
+
+        const handleClickOutside = (e: MouseEvent) => {
+            // 모달 외부를 클릭했는지 확인
+            if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
+                setIsAlarm(false);
+            }
+        };
+
+        // 약간의 지연을 두고 이벤트 리스너 등록 (모달이 열리는 클릭과 충돌 방지)
+        const timeoutId = setTimeout(() => {
+            document.addEventListener('mousedown', handleClickOutside);
+        }, 100);
+
+        return () => {
+            clearTimeout(timeoutId);
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isAlarm, setIsAlarm]);
+
     return(
     <div
-        ref={resizeRef}
+        ref={modalRef}
         className ={`
        fixed ${ isCollapsed ? 'left-16' : 'left-64'}
        ${ isAlarm ? 'p-2' : 'p-0'}
