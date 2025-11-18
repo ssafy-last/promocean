@@ -127,9 +127,11 @@ function PostPageContent() {
     }
   }, [isArchiveType, folderName, allFolders]);
 
-  // 수정 모드일 때 기존 게시글 데이터 로드
+  // 수정 모드일 때 또는 아카이브로 이동할 때 기존 게시글 데이터 로드
   useEffect(() => {
-    if (!isEditMode) return;
+    // 아카이브로 이동할 때 (type=my-space && postId 있음) 또는 수정 모드일 때
+    const shouldLoadData = isEditMode || (postType === 'my-space' && postIdParam);
+    if (!shouldLoadData) return;
 
     const loadArticleData = async () => {
       setIsLoadingArticle(true);
@@ -219,8 +221,8 @@ function PostPageContent() {
           return;
         }
 
-        // 커뮤니티 게시글 수정 모드
-        if (postType === 'community' && postIdParam) {
+        // 커뮤니티 게시글 수정 모드 또는 아카이브로 이동할 때
+        if (postIdParam && (postType === 'community' || postType === 'my-space')) {
           const postId = parseInt(postIdParam, 10);
           if (isNaN(postId)) {
             alert('잘못된 게시글 ID입니다.');
