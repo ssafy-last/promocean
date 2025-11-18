@@ -130,7 +130,7 @@ export default function SpaceScrapBoardList(){
                         <p className="text-gray-800 text-lg font-medium">스크랩한 글이 없습니다</p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                         {scrapList.map((item) => (
                             <SpaceScrapItem
                                 key={item.postId}

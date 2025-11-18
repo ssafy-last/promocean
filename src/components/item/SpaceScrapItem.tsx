@@ -77,7 +77,7 @@ export default function SpaceScrapItem({
                     hover:-translate-y-1 active:translate-y-0"
             >
             {/* 썸네일 이미지 영역 */}
-            <div className="relative w-full h-48 bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
+            <div className="relative w-full h-36 bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
                     <Image
                         src={fileUrl ? fileUrl : getPostImageUrl(fileUrl, postId)}
                         alt={title}
@@ -94,9 +94,9 @@ export default function SpaceScrapItem({
             </div>
 
             {/* 컨텐츠 영역 */}
-            <div className="flex flex-col p-4 gap-3">
+            <div className="flex flex-col p-3 gap-2">
                 {/* 제목 */}
-                <h3 className="font-bold text-text text-base line-clamp-2 group-hover:text-primary transition-colors min-h-[3rem]">
+                <h3 className="font-bold text-text text-sm line-clamp-2 group-hover:text-primary transition-colors min-h-10">
                     {title}
                 </h3>
 
@@ -171,7 +171,7 @@ export default function SpaceScrapItem({
                     </svg>
                 ) : (
                     <svg
-                        className="w-5 h-5"
+                        className="w-8 h-15"
                         fill={isScrapped ? "#FFC107" : "none"}
                         stroke={isScrapped ? "#F59E0B" : "currentColor"}
                         strokeWidth="2"
