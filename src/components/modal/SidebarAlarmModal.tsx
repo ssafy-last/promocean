@@ -16,7 +16,7 @@ export interface SidebarAlarmModalProps {
     isAlarm: boolean;
     setIsAlarm: (isAlarm:boolean) => void;
     setHasNewAlarm: (hasNew: boolean) => void;
-    alarmButtonRef?: React.RefObject<HTMLButtonElement>;
+    alarmButtonRef?: React.RefObject<HTMLButtonElement | null>;
 }
 
 
@@ -309,7 +309,7 @@ export default function SidebarAlarmModal({
     <div
         ref={modalRef}
         className ={`
-       fixed ${ isCollapsed ? 'left-16' : 'left-64'}
+       fixed ${ isCollapsed ? 'left-16' : 'left-[14.5rem]'}
        ${ isAlarm ? 'p-2' : 'p-0'}
        h-screen
        flex flex-col z-50
