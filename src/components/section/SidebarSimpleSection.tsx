@@ -18,7 +18,7 @@ interface SidebarSectionProps {
   setIsAlarm: (isAlarm:boolean) => void
   hasNewAlarm: boolean
   setHasNewAlarm: (hasNew: boolean) => void
-  alarmButtonRef?: React.RefObject<HTMLButtonElement>
+  alarmButtonRef?: React.RefObject<HTMLButtonElement | null>
 }
 
 /**
