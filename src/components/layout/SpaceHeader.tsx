@@ -40,8 +40,8 @@ export default function SpaceHeader(
 
     const params = useParams();
     const pathname =  usePathname();
-    console.log("SpaceHeader params:", JSON.stringify(params));
-    console.log("SpaceHeader pathname:", pathname.split("/").splice(1,pathname.length));
+    // console.log("SpaceHeader params:", JSON.stringify(params));
+    // console.log("SpaceHeader pathname:", pathname.split("/").splice(1,pathname.length));
     const pathSegments = pathname.split("/").splice(1,pathname.length);
     const router = useRouter();
 
