@@ -23,4 +23,7 @@ public interface PostLikeRepository extends JpaRepository<PostLike, Long> {
     int countByPostAndDeletedAtIsNull(Post post);
 
     List<PostLike> findByPost(Post post);
+
+    long countByPostAndDeletedAtIsNull(Post post);
+
 }

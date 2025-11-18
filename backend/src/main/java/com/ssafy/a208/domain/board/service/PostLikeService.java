@@ -6,6 +6,7 @@ import com.ssafy.a208.domain.board.entity.PostLike;
 import com.ssafy.a208.domain.board.exception.PostLikeAlreadyExistsException;
 import com.ssafy.a208.domain.board.reader.PostLikeReader;
 import com.ssafy.a208.domain.board.reader.PostReader;
+import com.ssafy.a208.domain.board.reader.ReplyReader;
 import com.ssafy.a208.domain.board.repository.PostLikeRepository;
 import com.ssafy.a208.domain.member.entity.Member;
 import com.ssafy.a208.domain.member.reader.MemberReader;
@@ -29,8 +30,10 @@ public class PostLikeService {
     private final PostReader postReader;
     private final PostLikeReader postLikeReader;
     private final MemberReader memberReader;
+    private final ReplyReader replyReader;
     private final PostLikeRepository postLikeRepository;
     private final PostIndexService postIndexService;
+
     private final KafkaTemplate<String, PostLikeEvent> postLikeKafkaTemplate;
     private final RedisTemplate<String, String> redisTemplate;
 
@@ -66,13 +69,14 @@ public class PostLikeService {
 
         postLikeRepository.save(postLike);
 
-        // 좋아요 수 갱신 (ElasticSearch)
-        int currentLikeCount = postLikeReader.countByPost(post);
-        postIndexService.updatePostCounts(post.getId(), currentLikeCount, null);
+        //es 업데이트
+        int likeCount = postLikeReader.countByPost(post);
+        int replyCount = replyReader.getRepliesByPost(post).size();
+        postIndexService.updatePostCounts(postId, likeCount, replyCount);
 
         // Kafka 이벤트 발행 추가 (Redis용)
         publishLikeEvent(post.getId(), member.getId());
-
+        
         log.info("게시글 좋아요 완료 - postId: {}, memberId: {}", postId, member.getId());
     }
 
