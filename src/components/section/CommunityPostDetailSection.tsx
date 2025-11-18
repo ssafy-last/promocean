@@ -19,10 +19,10 @@ export default function CommunityPostDetailSection( { communityPostData, hashtag
     <div className="p-8">
       
       {/* 메타 데이터 섹션 */}
-      <div className="flex flex-col gap-3 border-b border-gray-200 pb-5">
+      <div className="flex flex-col gap-3 border-b border-gray-200 pb-4">
 
         {/* 제목 */}
-        <div className="mb-3 flex flex-row items-center justify-between">
+        <div className="mb-2 flex flex-row items-center justify-between">
           <h1 className="text-2xl font-bold text-gray-900">
             {communityPostData.title}
           </h1>
@@ -32,7 +32,7 @@ export default function CommunityPostDetailSection( { communityPostData, hashtag
         {/* 해시태그, 카테고리/타입 및 사용자 정보 */}
         <div className="flex items-end justify-between">
           {/* 왼쪽: 해시태그, 카테고리/타입 */}
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
             <CommunityHashtagSection hashtagList={hashtagList} />
             <CommunityPostCategoryTypeBadges
               category={communityPostData.category}
