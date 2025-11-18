@@ -256,7 +256,7 @@ export default function SpaceArchiveItem({
                 onClick={handleArchiveRoute}
             >
                 {/* 배경 그라데이션 오버레이 */}
-                <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10 group-hover:from-white/20 group-hover:to-black/5 transition-all duration-300"></div>
+                <div className="absolute inset-0 bg-linear-to-br from-white/10 via-transparent to-black/10 group-hover:from-white/20 group-hover:to-black/5 transition-all duration-300"></div>
 
                 {/* 폴더 아이콘 워터마크 */}
                 <div className="absolute top-2 left-2 opacity-10 group-hover:opacity-20 transition-opacity duration-300">
