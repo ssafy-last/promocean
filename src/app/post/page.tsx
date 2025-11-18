@@ -277,10 +277,17 @@ function PostPageContent() {
           const promptTypeMap: { [key: string]: "text" | "image" } = {
             "1": "text",
             "2": "image",
+            "TEXT": "text",
+            "IMAGE": "image",
             "text": "text",
             "image": "image"
           };
-          const mappedType = promptTypeMap[communityPostDetailData.type] || "text";
+          let mappedType = promptTypeMap[communityPostDetailData.type] || "text";
+          
+          // fileUrl이 있으면 이미지 타입으로 설정
+          if (communityPostDetailData.fileUrl) {
+            mappedType = "image";
+          }
 
           // 카테고리 변환 (API 코드 -> 표시 이름)
           const categoryMap: { [key: string]: string } = {
@@ -304,8 +311,8 @@ function PostPageContent() {
           setSelectedPromptType(mappedType);
           setSelectedCategory(mappedCategory);
 
-          // 이미지 타입인 경우 fileUrl 설정
-          if (mappedType === 'image' && communityPostDetailData.fileUrl) {
+          // fileUrl이 있으면 이미지 설정
+          if (communityPostDetailData.fileUrl) {
             setUploadedImageUrl(communityPostDetailData.fileUrl);
             setUploadedImageKey(communityPostDetailData.fileUrl);
           }
@@ -735,6 +742,12 @@ function PostPageContent() {
       // 업로드된 이미지 정보 저장
       // CloudFront URL 생성 (key를 사용)
       const cloudfrontUrl = `https://d3qr7nnlhj7oex.cloudfront.net/${uploadData.key}`;
+      
+      // 기존 AI 생성 이미지 제거 (단일 이미지만 허용)
+      setGeneratedImageUrl("");
+      setGeneratedImageKey("");
+      
+      // 새로운 업로드 이미지 설정
       setUploadedImageUrl(cloudfrontUrl);
       setUploadedImageKey(uploadData.key);
 
@@ -828,6 +841,10 @@ function PostPageContent() {
         //back 에 넣어야 할 image key (s3 key)
         const key = response.key;
 
+        // 기존 업로드된 이미지 제거 (단일 이미지만 허용)
+        setUploadedImageUrl("");
+        setUploadedImageKey("");
+        
         // AI 생성 이미지 상태 업데이트
         setGeneratedImageUrl(url);
         setGeneratedImageKey(key);
@@ -929,13 +946,13 @@ function PostPageContent() {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4">
-        {/* 페이지 제목 표시 */}
+        {/* 페이지 제목 표시
         {isEditMode && !isSubmissionType && (
           <div className="mb-6">
             <h1 className="text-2xl font-bold text-gray-800">게시글 수정</h1>
             <p className="text-sm text-gray-600 mt-1">기존 내용을 수정한 후 저장하세요.</p>
           </div>
-        )}
+        )} */}
 
         {isSubmissionType && (
           <div className="mb-6">
