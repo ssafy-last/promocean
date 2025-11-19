@@ -109,6 +109,7 @@ export default function ContestSubmissionModal({ params }: { params: Promise<{ c
                     src={submissionData.result}
                     alt={submissionData.description}
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 800px"
                     className="object-contain"
                   />
                 </div>

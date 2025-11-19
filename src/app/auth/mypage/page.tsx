@@ -184,6 +184,7 @@ export default function MyPage() {
                       src={profileImagePreview}
                       alt="프로필 이미지"
                       fill
+                      sizes="96px"
                       className="object-cover"
                     />
                   ) : (
