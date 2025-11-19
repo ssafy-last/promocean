@@ -309,14 +309,19 @@ function PostPageContent() {
             "TEXT": "text",
             "IMAGE": "image",
             "text": "text",
-            "image": "image"
+            "image": "image",
+            "텍스트": "text",
+            "이미지": "image"
           };
-          let mappedType = promptTypeMap[communityPostDetailData.type] || "text";
-          
+
+          console.log('커뮤니티 원본 타입:', communityPostDetailData.type, '타입:', typeof communityPostDetailData.type);
+          let mappedType = promptTypeMap[String(communityPostDetailData.type)] || "text";
+
           // fileUrl이 있으면 이미지 타입으로 설정
           if (communityPostDetailData.fileUrl) {
             mappedType = "image";
           }
+          console.log('커뮤니티 매핑된 타입:', mappedType);
 
           // 카테고리 변환 (API 코드 -> 표시 이름)
           const categoryMap: { [key: string]: string } = {
@@ -330,20 +335,34 @@ function PostPageContent() {
           };
           const mappedCategory = categoryMap[communityPostDetailData.category] || "work";
 
+          // 프롬프트 타입과 카테고리 먼저 설정
+          setSelectedPromptType(mappedType);
+          setSelectedCategory(mappedCategory);
+
           // 폼 데이터 채우기
           setTitle(communityPostDetailData.title);
           setTags(communityPostDetailData.tags);
           setDescriptionState(textToLexicalJSON(communityPostDetailData.description));
           setUsedPrompt(textToLexicalJSON(communityPostDetailData.prompt));
           setExamplePrompt(textToLexicalJSON(communityPostDetailData.sampleQuestion));
-          setAnswerPrompt(textToLexicalJSON(communityPostDetailData.sampleAnswer));
-          setSelectedPromptType(mappedType);
-          setSelectedCategory(mappedCategory);
 
-          // fileUrl이 있으면 이미지 설정
-          if (communityPostDetailData.fileUrl) {
-            setUploadedImageUrl(communityPostDetailData.fileUrl);
-            setUploadedImageKey(communityPostDetailData.fileUrl);
+          // 이미지 타입인 경우 이미지 URL 처리
+          if (mappedType === 'image') {
+            if (communityPostDetailData.fileUrl) {
+              setUploadedImageUrl(communityPostDetailData.fileUrl);
+              // CloudFront URL에서 key 추출: https://d3qr7nnlhj7oex.cloudfront.net/articles/xxx.png -> articles/xxx.png
+              const keyMatch = communityPostDetailData.fileUrl.match(/cloudfront\.net\/(.+)$/);
+              const extractedKey = keyMatch ? keyMatch[1] : communityPostDetailData.fileUrl;
+              setUploadedImageKey(extractedKey);
+              console.log('커뮤니티 이미지 로드 - URL:', communityPostDetailData.fileUrl, 'Key:', extractedKey);
+              setAnswerPrompt(''); // 이미지가 있으면 텍스트 답변은 비움
+            } else {
+              // fileUrl이 없으면 sampleAnswer를 텍스트로 설정
+              setAnswerPrompt(textToLexicalJSON(communityPostDetailData.sampleAnswer));
+            }
+          } else {
+            // 텍스트 타입인 경우 sampleAnswer를 그대로 설정
+            setAnswerPrompt(textToLexicalJSON(communityPostDetailData.sampleAnswer));
           }
 
           setIsLoadingArticle(false);
@@ -413,10 +432,20 @@ function PostPageContent() {
           const promptTypeMap: { [key: string]: "text" | "image" } = {
             "1": "text",
             "2": "image",
+            "TEXT": "text",
+            "IMAGE": "image",
             "text": "text",
-            "image": "image"
+            "image": "image",
+            "텍스트": "text",
+            "이미지": "image"
           };
-          const mappedType = promptTypeMap[data.type] || "text";
+
+          console.log('아카이브 원본 타입:', data.type, '타입:', typeof data.type);
+          const mappedType = promptTypeMap[String(data.type)] || "text";
+          console.log('매핑된 타입:', mappedType);
+
+          // 프롬프트 타입 먼저 설정
+          setSelectedPromptType(mappedType);
 
           // 폼 데이터 채우기
           setTitle(data.title);
@@ -424,13 +453,25 @@ function PostPageContent() {
           setDescriptionState(textToLexicalJSON(data.description));
           setUsedPrompt(textToLexicalJSON(data.prompt));
           setExamplePrompt(textToLexicalJSON(data.sampleQuestion));
-          setAnswerPrompt(textToLexicalJSON(data.sampleAnswer));
-          setSelectedPromptType(mappedType);
 
-          // 이미지 타입인 경우 fileUrl 설정
-          if (mappedType === 'image' && data.fileUrl) {
-            setUploadedImageUrl(data.fileUrl);
-            setUploadedImageKey(data.fileUrl); // 또는 적절한 key 값
+          // 이미지 타입인 경우 이미지 URL 처리
+          if (mappedType === 'image') {
+            // fileUrl이 있으면 이미지로 설정
+            if (data.fileUrl) {
+              setUploadedImageUrl(data.fileUrl);
+              // CloudFront URL에서 key 추출: https://d3qr7nnlhj7oex.cloudfront.net/articles/xxx.png -> articles/xxx.png
+              const keyMatch = data.fileUrl.match(/cloudfront\.net\/(.+)$/);
+              const extractedKey = keyMatch ? keyMatch[1] : data.fileUrl;
+              setUploadedImageKey(extractedKey);
+              console.log('아카이브 이미지 로드 - URL:', data.fileUrl, 'Key:', extractedKey);
+              setAnswerPrompt(''); // 이미지가 있으면 텍스트 답변은 비움
+            } else {
+              // fileUrl이 없으면 sampleAnswer를 텍스트로 설정 (혹시 모를 경우)
+              setAnswerPrompt(textToLexicalJSON(data.sampleAnswer));
+            }
+          } else {
+            // 텍스트 타입인 경우 sampleAnswer를 그대로 설정
+            setAnswerPrompt(textToLexicalJSON(data.sampleAnswer));
           }
         }
       } catch (error) {
