@@ -6,12 +6,12 @@ import { Suspense } from "react";
 
 
 export default  function MySpaceMyPostPage() {
-  
+
   return (
 
     <div className="min-h-screen bg-gray-50">
 
-      <SpaceBoardHeader title="내가 쓴 글" description="지금까지 내가 쓴 글을 볼 수 있습니다." />
+      <SpaceBoardHeader title="내가 쓴 글" description="지금까지 내가 쓴 글을 볼 수 있습니다." showFolderUI={false} />
 
       <Suspense>
         <MySpaceMyPostSection />
