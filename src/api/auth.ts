@@ -160,6 +160,38 @@ export const authAPI = {
     });
 
     return res.data
+  },
+
+  /**
+   * 회원탈퇴 API
+   * @endpoint /api/v1/members/withdrawal
+   * @returns 회원탈퇴 응답 데이터
+   */
+  async withdrawal(): Promise<void> {
+    const res = await apiFetch<ApiResponse<null>>('/api/v1/members/withdrawal', {
+      method: 'DELETE',
+    });
+    
+    // 회원탈퇴 성공 시 로그아웃 처리
+    const { logout } = useAuthStore.getState();
+    logout();
+    
+    return;
+  },
+
+  /**
+   * 회원 정보 수정 API
+   * @endpoint /api/v1/members/me
+   * @param updateData - 회원 정보 수정 데이터 (filePath, password, nickname)
+   * @returns 회원 정보 수정 응답 데이터
+   */
+  async updateMember(updateData: { filePath?: string; password?: string; nickname?: string }): Promise<void> {
+    await apiFetch<ApiResponse<null>>('/api/v1/members/me', {
+      method: 'PUT',
+      body: JSON.stringify(updateData),
+    });
+    
+    return;
   }
 };
 
