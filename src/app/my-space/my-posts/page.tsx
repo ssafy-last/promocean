@@ -11,7 +11,13 @@ export default  function MySpaceMyPostPage() {
 
     <div className="min-h-screen bg-gray-50">
 
-      <SpaceBoardHeader title="내가 쓴 글" description="지금까지 내가 쓴 글을 볼 수 있습니다." showFolderUI={false} />
+      <SpaceBoardHeader
+        title="내가 쓴 글"
+        description="지금까지 내가 쓴 글을 볼 수 있습니다."
+        showFolderUI={false}
+        customIcon="pen-square"
+        customIconColor="#8b5cf6"
+      />
 
       <Suspense>
         <MySpaceMyPostSection />
