@@ -28,6 +28,7 @@ export default function MySpaceArchiveArticleSection({ articleData }: MySpaceArc
     const hashtagList: HashtagItemProps[] = articleData.tags.map((tag: string) => ({ tag }));
 
     const [isDeleting, setIsDeleting] = useState(false);
+    const [imageError, setImageError] = useState(false);
 
     const handleEdit = () => {
       const currentFolder = folderStore.currentFolder;
@@ -159,14 +160,29 @@ export default function MySpaceArchiveArticleSection({ articleData }: MySpaceArc
         {/* 이미지 */}
         {articleData.fileUrl && (
           <div className="flex flex-row items-center justify-center">
-            <div className="relative w-full max-w-2xl aspect-video overflow-hidden">
-              <Image
-                src={articleData.fileUrl}
-                alt="첨부 이미지"
-                fill
-                className="object-contain"
-              />
-            </div>
+            {!imageError ? (
+              <div className="relative w-full max-w-2xl aspect-video overflow-hidden rounded-lg border border-gray-200">
+                <Image
+                  src={articleData.fileUrl}
+                  alt="첨부 이미지"
+                  fill
+                  className="object-contain"
+                  onError={() => {
+                    console.error('이미지 로드 실패:', articleData.fileUrl);
+                    setImageError(true);
+                  }}
+                />
+              </div>
+            ) : (
+              <div className="w-full max-w-2xl aspect-video flex flex-col items-center justify-center bg-red-50 border-2 border-red-300 rounded-lg">
+                <svg className="w-16 h-16 text-red-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <p className="text-lg text-red-600 font-semibold mb-2">이미지를 불러올 수 없습니다</p>
+                <p className="text-sm text-red-500">이미지 파일에 접근할 수 없거나 손상되었습니다</p>
+                <p className="text-xs text-gray-500 mt-2 px-4 text-center break-all">{articleData.fileUrl}</p>
+              </div>
+            )}
           </div>
         )}
 
