@@ -12,7 +12,7 @@ import PostingArchiveFolderSection from "@/components/section/PostingArchiveFold
 import { PostingFloatingItemProps } from "@/types/itemType";
 import TitleInput from "@/components/editor/TitleInput";
 import HashtagInput from "@/components/editor/HashtagInput";
-import { buildPromptFromLexical, extractTextFromLexical } from "@/utils/lexicalUtils";
+import { buildPromptFromLexical, extractTextFromLexical, convertLexicalToMarkdown } from "@/utils/lexicalUtils";
 import { PromptAPI } from "@/api/prompt";
 import { PostAPI, PostArticleRequest } from "@/api/post";
 import { PostAPI as CommunityPostAPI } from "@/api/community/post";
@@ -538,15 +538,15 @@ function PostPageContent() {
           return;
         }
 
-        const description = extractTextFromLexical(descriptionState);
-        const prompt = extractTextFromLexical(usedPrompt);
+        const description = convertLexicalToMarkdown(descriptionState);
+        const prompt = convertLexicalToMarkdown(usedPrompt);
         let result = '';
-        
+
         if (selectedPromptType === 'text') {
-          result = extractTextFromLexical(answerPrompt);
+          result = convertLexicalToMarkdown(answerPrompt);
         } else if (selectedPromptType === 'image') {
           // 이미지 타입: 이미지 URL 또는 텍스트 결과
-          result = uploadedImageKey || generatedImageKey || extractTextFromLexical(answerPrompt);
+          result = uploadedImageKey || generatedImageKey || convertLexicalToMarkdown(answerPrompt);
         }
 
         // 산출물 수정 모드
@@ -608,9 +608,9 @@ function PostPageContent() {
     }
 
     try {
-      // Lexical JSON에서 텍스트 추출
-      const description = extractTextFromLexical(descriptionState);
-      const prompt = extractTextFromLexical(usedPrompt);
+      // Lexical JSON에서 마크다운으로 변환
+      const description = convertLexicalToMarkdown(descriptionState);
+      const prompt = convertLexicalToMarkdown(usedPrompt);
 
       // 길이 검증
       if (title.length > 100) {
@@ -638,8 +638,8 @@ function PostPageContent() {
       // 프롬프트 타입에 따라 추가 필드 설정
       if (selectedPromptType === 'text') {
         // 예시 질문과 답변은 선택 사항
-        const sampleQuestion = examplePrompt.trim() ? extractTextFromLexical(examplePrompt) : '';
-        const sampleAnswer = answerPrompt.trim() ? extractTextFromLexical(answerPrompt) : '';
+        const sampleQuestion = examplePrompt.trim() ? convertLexicalToMarkdown(examplePrompt) : '';
+        const sampleAnswer = answerPrompt.trim() ? convertLexicalToMarkdown(answerPrompt) : '';
 
         // 예시 질문이 있을 경우에만 길이 검증
         if (sampleQuestion && sampleQuestion.length > 200) {
