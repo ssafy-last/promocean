@@ -23,7 +23,7 @@ export default async function Home() {
   return (
     <>
       <HeroSection />
-      <div className = "flex flex-col gap-4 pt-4">
+      <div className = "flex flex-col gap-2 pt-8">
       <PostCardSection
         postSectionTitle="인기 프롬프트"
         postCardList={popularPosts}
