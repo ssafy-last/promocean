@@ -53,7 +53,7 @@ export default function ContestPostSection({ contestPostData, ContestNoticeList,
             <div className="flex flex-row items-center gap-4">
 
               {/* 대회 타입 */}
-              <div className="flex flex-row items-center gap-2">
+              <div className="flex flex-row items-center gap-1.5">
                 <Tag className="size-5" />
                 <span className="text-sm text-gray-700">대회 타입</span>
               </div>
