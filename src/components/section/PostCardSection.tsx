@@ -21,14 +21,14 @@ export default function PostCardSection({postSectionTitle, postCardList }: PostC
   }));
 
   return (
-    <div className="py-8 px-6">
+    <div className="py-6 px-6">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold text-text mb-2">{postSectionTitle}</h2>
+        <div className="pb-4">
+          <h2 className="text-3xl font-bold text-text">{postSectionTitle}</h2>
         </div>
         
-        {/* Post Cards Grid */}
+        {/* Post Cards List */}
         <PostCardList posts={posts} />
 
       </div>
