@@ -3,18 +3,20 @@
 import { useArchiveFolderStore } from "@/store/archiveFolderStore";
 import { useRouter, usePathname } from "next/navigation";
 import { useState } from "react";
-import { ChevronDown, Folder } from "lucide-react";
+import { ChevronDown, Folder, Bookmark, PenSquare } from "lucide-react";
 import { useSpaceStore } from "@/store/spaceStore";
 
 export interface SpaceBoardHeaderProps {
     title? : string;
     description? : string;
     showFolderUI? : boolean;
+    customIcon? : 'bookmark' | 'pen-square';
+    customIconColor? : string;
 }
 
 
 
-export function SpaceBoardHeader(   { title, description, showFolderUI = true } : SpaceBoardHeaderProps ) {
+export function SpaceBoardHeader(   { title, description, showFolderUI = true, customIcon, customIconColor = "#6366f1" } : SpaceBoardHeaderProps ) {
 
     const router = useRouter();
     const pathname = usePathname();
@@ -73,7 +75,7 @@ export function SpaceBoardHeader(   { title, description, showFolderUI = true } 
 
             <div className="relative flex items-start justify-between w-full">
                 <div className="flex items-start gap-4">
-                    {/* 폴더 아이콘 */}
+                    {/* 폴더 아이콘 또는 커스텀 아이콘 */}
                     {showFolderUI && currentStore && (
                         <div
                             className="flex items-center justify-center w-14 h-14 rounded-xl shadow-sm mt-1"
@@ -87,6 +89,30 @@ export function SpaceBoardHeader(   { title, description, showFolderUI = true } 
                                 style={{ color: currentStore.color }}
                                 strokeWidth={2}
                             />
+                        </div>
+                    )}
+                    {!showFolderUI && customIcon && (
+                        <div
+                            className="flex items-center justify-center w-14 h-14 rounded-xl shadow-sm mt-1"
+                            style={{
+                                backgroundColor: `${customIconColor}15`,
+                                border: `2px solid ${customIconColor}30`
+                            }}
+                        >
+                            {customIcon === 'bookmark' && (
+                                <Bookmark
+                                    className="w-7 h-7"
+                                    style={{ color: customIconColor }}
+                                    strokeWidth={2}
+                                />
+                            )}
+                            {customIcon === 'pen-square' && (
+                                <PenSquare
+                                    className="w-7 h-7"
+                                    style={{ color: customIconColor }}
+                                    strokeWidth={2}
+                                />
+                            )}
                         </div>
                     )}
 
