@@ -710,6 +710,9 @@ function PostPageContent() {
 
         console.log('=== 전송할 articlePayload ===');
         console.log('tags:', articlePayload.tags);
+        console.log('filePath:', articlePayload.filePath);
+        console.log('uploadedImageKey:', uploadedImageKey);
+        console.log('generatedImageKey:', generatedImageKey);
         console.log('전체 payload:', articlePayload);
 
         if (isEditMode && articleIdParam) {
