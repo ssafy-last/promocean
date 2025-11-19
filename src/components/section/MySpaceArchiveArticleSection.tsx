@@ -11,6 +11,7 @@ import { ArticleData } from "@/types/apiTypes/space";
 import SpaceAPI from "@/api/space";
 import { useSpaceStore } from "@/store/spaceStore";
 import { useArchiveFolderStore } from "@/store/archiveFolderStore";
+import MarkdownViewer from "@/components/etc/MarkdownViewer";
 
 interface MySpaceArchiveArticleSectionProps {
   articleData: ArticleData;
@@ -126,7 +127,7 @@ export default function MySpaceArchiveArticleSection({ articleData }: MySpaceArc
         {articleData.description && (
           <div>
             <h2 className="text-xl font-semibold text-gray-900 mb-2">설명</h2>
-            <p className="text-gray-700 whitespace-pre-wrap">{articleData.description}</p>
+            <MarkdownViewer content={articleData.description} />
           </div>
         )}
 
@@ -134,7 +135,7 @@ export default function MySpaceArchiveArticleSection({ articleData }: MySpaceArc
         {articleData.prompt && (
           <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
             <h3 className="text-sm font-medium text-gray-900 mb-1">프롬프트</h3>
-            <p className="text-gray-700 whitespace-pre-wrap">{articleData.prompt}</p>
+            <MarkdownViewer content={articleData.prompt} />
           </div>
         )}
 
@@ -145,13 +146,13 @@ export default function MySpaceArchiveArticleSection({ articleData }: MySpaceArc
             {articleData.sampleQuestion && (
               <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                 <h3 className="text-sm font-medium text-blue-900 mb-1">질문</h3>
-                <p className="text-gray-700">{articleData.sampleQuestion}</p>
+                <MarkdownViewer content={articleData.sampleQuestion} />
               </div>
             )}
             {articleData.sampleAnswer && (
               <div className="bg-green-50 p-4 rounded-lg border border-green-200">
                 <h3 className="text-sm font-medium text-green-900 mb-1">답변</h3>
-                <p className="text-gray-700">{articleData.sampleAnswer}</p>
+                <MarkdownViewer content={articleData.sampleAnswer} />
               </div>
             )}
           </div>
