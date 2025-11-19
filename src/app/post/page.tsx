@@ -12,7 +12,7 @@ import PostingArchiveFolderSection from "@/components/section/PostingArchiveFold
 import { PostingFloatingItemProps } from "@/types/itemType";
 import TitleInput from "@/components/editor/TitleInput";
 import HashtagInput from "@/components/editor/HashtagInput";
-import { buildPromptFromLexical, extractTextFromLexical } from "@/utils/lexicalUtils";
+import { buildPromptFromLexical, extractTextFromLexical, convertLexicalToMarkdown } from "@/utils/lexicalUtils";
 import { PromptAPI } from "@/api/prompt";
 import { PostAPI, PostArticleRequest } from "@/api/post";
 import { PostAPI as CommunityPostAPI } from "@/api/community/post";
@@ -86,6 +86,10 @@ function PostPageContent() {
   // 토큰 잔량 관련 상태
   const [remainingTokens, setRemainingTokens] = useState<number | null>(null);
   const [isLoadingTokens, setIsLoadingTokens] = useState(false);
+
+  // 에러 상태 관리
+  const [promptError, setPromptError] = useState(false);
+  const [examplePromptError, setExamplePromptError] = useState(false);
 
   // 아카이브 타입인지 확인
   const isArchiveType = postType === 'my-space' || postType === 'team-space';
@@ -368,14 +372,19 @@ function PostPageContent() {
             "TEXT": "text",
             "IMAGE": "image",
             "text": "text",
-            "image": "image"
+            "image": "image",
+            "텍스트": "text",
+            "이미지": "image"
           };
-          let mappedType = promptTypeMap[communityPostDetailData.type] || "text";
-          
+
+          console.log('커뮤니티 원본 타입:', communityPostDetailData.type, '타입:', typeof communityPostDetailData.type);
+          let mappedType = promptTypeMap[String(communityPostDetailData.type)] || "text";
+
           // fileUrl이 있으면 이미지 타입으로 설정
           if (communityPostDetailData.fileUrl) {
             mappedType = "image";
           }
+          console.log('커뮤니티 매핑된 타입:', mappedType);
 
           // 카테고리 변환 (API 코드 -> 표시 이름)
           const categoryMap: { [key: string]: string } = {
@@ -389,15 +398,16 @@ function PostPageContent() {
           };
           const mappedCategory = categoryMap[communityPostDetailData.category] || "work";
 
+          // 프롬프트 타입과 카테고리 먼저 설정
+          setSelectedPromptType(mappedType);
+          setSelectedCategory(mappedCategory);
+
           // 폼 데이터 채우기
           setTitle(communityPostDetailData.title);
           setTags(communityPostDetailData.tags);
           setDescriptionState(textToLexicalJSON(communityPostDetailData.description));
           setUsedPrompt(textToLexicalJSON(communityPostDetailData.prompt));
           setExamplePrompt(textToLexicalJSON(communityPostDetailData.sampleQuestion));
-          setAnswerPrompt(textToLexicalJSON(communityPostDetailData.sampleAnswer));
-          setSelectedPromptType(mappedType);
-          setSelectedCategory(mappedCategory);
 
           // fileUrl이 있으면 이미지 설정
           if (communityPostDetailData.fileUrl) {
@@ -474,10 +484,20 @@ function PostPageContent() {
           const promptTypeMap: { [key: string]: "text" | "image" } = {
             "1": "text",
             "2": "image",
+            "TEXT": "text",
+            "IMAGE": "image",
             "text": "text",
-            "image": "image"
+            "image": "image",
+            "텍스트": "text",
+            "이미지": "image"
           };
-          const mappedType = promptTypeMap[data.type] || "text";
+
+          console.log('아카이브 원본 타입:', data.type, '타입:', typeof data.type);
+          const mappedType = promptTypeMap[String(data.type)] || "text";
+          console.log('매핑된 타입:', mappedType);
+
+          // 프롬프트 타입 먼저 설정
+          setSelectedPromptType(mappedType);
 
           // 폼 데이터 채우기
           setTitle(data.title);
@@ -485,8 +505,6 @@ function PostPageContent() {
           setDescriptionState(textToLexicalJSON(data.description));
           setUsedPrompt(textToLexicalJSON(data.prompt));
           setExamplePrompt(textToLexicalJSON(data.sampleQuestion));
-          setAnswerPrompt(textToLexicalJSON(data.sampleAnswer));
-          setSelectedPromptType(mappedType);
 
           // 이미지 타입인 경우 fileUrl 설정
           if (mappedType === 'image' && data.fileUrl) {
@@ -569,12 +587,12 @@ function PostPageContent() {
           return;
         }
 
-        const description = extractTextFromLexical(descriptionState);
-        const prompt = extractTextFromLexical(usedPrompt);
+        const description = convertLexicalToMarkdown(descriptionState);
+        const prompt = convertLexicalToMarkdown(usedPrompt);
         let result = '';
-        
+
         if (selectedPromptType === 'text') {
-          result = extractTextFromLexical(answerPrompt);
+          result = convertLexicalToMarkdown(answerPrompt);
         } else if (selectedPromptType === 'image') {
           // 이미지 타입: 이미지 키 우선순위 (업로드 > AI 생성 > 텍스트)
           // 상태 값을 직접 확인
@@ -706,9 +724,9 @@ function PostPageContent() {
     }
 
     try {
-      // Lexical JSON에서 텍스트 추출
-      const description = extractTextFromLexical(descriptionState);
-      const prompt = extractTextFromLexical(usedPrompt);
+      // Lexical JSON에서 마크다운으로 변환
+      const description = convertLexicalToMarkdown(descriptionState);
+      const prompt = convertLexicalToMarkdown(usedPrompt);
 
       // 길이 검증
       if (title.length > 100) {
@@ -736,8 +754,8 @@ function PostPageContent() {
       // 프롬프트 타입에 따라 추가 필드 설정
       if (selectedPromptType === 'text') {
         // 예시 질문과 답변은 선택 사항
-        const sampleQuestion = examplePrompt.trim() ? extractTextFromLexical(examplePrompt) : '';
-        const sampleAnswer = answerPrompt.trim() ? extractTextFromLexical(answerPrompt) : '';
+        const sampleQuestion = examplePrompt.trim() ? convertLexicalToMarkdown(examplePrompt) : '';
+        const sampleAnswer = answerPrompt.trim() ? convertLexicalToMarkdown(answerPrompt) : '';
 
         // 예시 질문이 있을 경우에만 길이 검증
         if (sampleQuestion && sampleQuestion.length > 200) {
@@ -1231,7 +1249,10 @@ function PostPageContent() {
             <PostingWriteSection
               title="프롬프트"
               placeholder="프롬프트를 입력하세요..."
-              onChange={setUsedPrompt}
+              onChange={(content) => {
+                setUsedPrompt(content);
+                setPromptError(false);
+              }}
               value={usedPrompt}
               isSubmitButton={selectedPromptType === 'image' || (isSubmissionType && selectedPromptType === 'text')}
               onSubmit={handleAISubmit}
@@ -1372,11 +1393,17 @@ function PostPageContent() {
                       <PostingWriteSection
                         title="예시 질문 프롬프트"
                         placeholder="예시 질문을 입력하세요..."
-                        onChange={setExamplePrompt}
+                        onChange={(content) => {
+                          setExamplePrompt(content);
+                          setExamplePromptError(false);
+                        }}
                         value={examplePrompt}
                         isSubmitButton={true}
                         onSubmit={handleAISubmit}
                         isLoading={isGeneratingAnswer}
+                        hasError={examplePromptError}
+                        errorMessage="예시 질문을 입력해주세요. AI 답변 생성을 위해 필수 항목입니다."
+                        dataField="example-prompt"
                       />
 
                       {/* 답변 프롬프트 */}
