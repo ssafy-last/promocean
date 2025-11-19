@@ -43,6 +43,17 @@ function PostPageContent() {
   const isEditMode = mode === "edit" && (articleIdParam || postIdParam || submissionIdParam);
   const isSubmissionType = postType === 'submission';
 
+  // CloudFront URL에서 S3 key 추출 함수
+  const extractS3KeyFromUrl = (url: string): string => {
+    if (!url) return '';
+    const cloudfrontPrefix = 'https://d3qr7nnlhj7oex.cloudfront.net/';
+    if (url.startsWith(cloudfrontPrefix)) {
+      return url.replace(cloudfrontPrefix, '');
+    }
+    // 이미 key 형식이면 그대로 반환
+    return url;
+  };
+
   // 폼 상태 관리
   const [title, setTitle] = useState("");
   const [tags, setTags] = useState<string[]>([]); // 배열로 변경
@@ -210,10 +221,13 @@ function PostPageContent() {
           const submissionType = typeMap[submissionData.type] || "text";
           if (submissionType === 'image' && submissionData.result) {
             // 이미지 타입인 경우 URL로 설정
+            const imageUrl = submissionData.result;
+            const s3Key = extractS3KeyFromUrl(imageUrl);
             setAnswerPrompt('');
-            setUploadedImageUrl(submissionData.result);
-            setUploadedImageKey(submissionData.result);
-            setGeneratedImageUrl(submissionData.result);
+            setUploadedImageUrl(imageUrl); // 렌더링용: 전체 URL
+            setUploadedImageKey(s3Key); // 전송용: S3 key만
+            setGeneratedImageUrl(imageUrl);
+            setGeneratedImageKey(s3Key);
           } else {
             // 텍스트 타입인 경우
             setAnswerPrompt(textToLexicalJSON(submissionData.result));
@@ -315,8 +329,10 @@ function PostPageContent() {
 
           // fileUrl이 있으면 이미지 설정
           if (communityPostDetailData.fileUrl) {
-            setUploadedImageUrl(communityPostDetailData.fileUrl);
-            setUploadedImageKey(communityPostDetailData.fileUrl);
+            const imageUrl = communityPostDetailData.fileUrl;
+            const s3Key = extractS3KeyFromUrl(imageUrl);
+            setUploadedImageUrl(imageUrl); // 렌더링용: 전체 URL
+            setUploadedImageKey(s3Key); // 전송용: S3 key만
           }
 
           setIsLoadingArticle(false);
@@ -402,8 +418,10 @@ function PostPageContent() {
 
           // 이미지 타입인 경우 fileUrl 설정
           if (mappedType === 'image' && data.fileUrl) {
-            setUploadedImageUrl(data.fileUrl);
-            setUploadedImageKey(data.fileUrl); // 또는 적절한 key 값
+            const imageUrl = data.fileUrl;
+            const s3Key = extractS3KeyFromUrl(imageUrl);
+            setUploadedImageUrl(imageUrl); // 렌더링용: 전체 URL
+            setUploadedImageKey(s3Key); // 전송용: S3 key만
           }
         }
       } catch (error) {
@@ -646,10 +664,6 @@ function PostPageContent() {
           tags : requestData.tags
         };
 
-        console.log('=== 전송할 articlePayload ===');
-        console.log('tags:', articlePayload.tags);
-        console.log('전체 payload:', articlePayload);
-
         if (isEditMode && articleIdParam) {
           // 수정 모드
           const articleId = parseInt(articleIdParam, 10);
@@ -779,9 +793,6 @@ function PostPageContent() {
       if(selectedPromptType === 'text'){
               // Lexical JSON에서 텍스트 추출
       const { systemMessage, userMessage } = buildPromptFromLexical(usedPrompt, examplePrompt);
-      console.log('추출된 텍스트:');
-      console.log('사용 프롬프트:', systemMessage);
-      console.log('예시 질문:', userMessage);
 
       // PromptAPI를 통해 백엔드 호출
         const response = await PromptAPI.postTextPrompt({
