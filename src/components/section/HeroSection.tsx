@@ -18,7 +18,7 @@ export default function HeroSection() {
       {/* Main Content */}
       <div className="relative z-10 text-center max-w-4xl mx-auto px-6">
         <h1 className="text-6xl md:text-7xl font-bold text-text mb-6 leading-tight">
-          Prom<span className="text-primary">Ocean</span>
+          Prom<span className="text-primary">ocean</span>
         </h1>
         <p className="text-xl md:text-2xl text-text/80 mb-8 leading-relaxed">
           프롬프트의 바다에서 새로운 아이디어를 발견하세요
