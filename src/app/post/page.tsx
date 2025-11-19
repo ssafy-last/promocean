@@ -1033,6 +1033,7 @@ function PostPageContent() {
                             src={generatedImageUrl}
                             alt="AI 생성 이미지"
                             fill
+                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 800px"
                             className="object-contain"
                           />
                         </div>
@@ -1060,6 +1061,7 @@ function PostPageContent() {
                             src={uploadedImageUrl}
                             alt="업로드된 이미지"
                             fill
+                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 800px"
                             className="object-contain"
                           />
                         </div>
@@ -1147,6 +1149,7 @@ function PostPageContent() {
                                 src={generatedImageUrl}
                                 alt="AI 생성 이미지"
                                 fill
+                                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 800px"
                                 className="object-contain"
                               />
                             </div>
@@ -1174,6 +1177,7 @@ function PostPageContent() {
                                 src={uploadedImageUrl}
                                 alt="업로드된 이미지"
                                 fill
+                                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 800px"
                                 className="object-contain"
                               />
                             </div>
