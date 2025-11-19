@@ -18,6 +18,7 @@ export default async function Home() {
 
   // TODO : 카테고리 렌더링 할거면 요청해야함
   const { popularPosts } = await PostAPI.getPopular();
+  console.log("popularPosts ",popularPosts);
   const {contestCardList } = await ContestAPI.getList();
   console.log("context ",contestCardList);
   return (
