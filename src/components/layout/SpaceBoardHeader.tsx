@@ -8,12 +8,13 @@ import { useSpaceStore } from "@/store/spaceStore";
 
 export interface SpaceBoardHeaderProps {
     title? : string;
-    description? : string
+    description? : string;
+    showFolderUI? : boolean;
 }
 
 
 
-export function SpaceBoardHeader(   { title, description } : SpaceBoardHeaderProps ) {
+export function SpaceBoardHeader(   { title, description, showFolderUI = true } : SpaceBoardHeaderProps ) {
 
     const router = useRouter();
     const pathname = usePathname();
@@ -51,7 +52,7 @@ export function SpaceBoardHeader(   { title, description } : SpaceBoardHeaderPro
     return(
         <div className="relative w-full px-4 py-6">
             {/* 배경 그라디언트 - 폴더 색상 활용 */}
-            {currentStore && (
+            {showFolderUI && currentStore && (
                 <div
                     className="absolute inset-0 opacity-5 overflow-hidden"
                     style={{
@@ -61,17 +62,19 @@ export function SpaceBoardHeader(   { title, description } : SpaceBoardHeaderPro
             )}
 
             {/* 장식 요소 */}
-            <div className="absolute top-0 right-0 w-64 h-64 opacity-3 overflow-hidden pointer-events-none">
-                <div
-                    className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl"
-                    style={{ backgroundColor: currentStore?.color || '#e5e7eb' }}
-                />
-            </div>
+            {showFolderUI && currentStore && (
+                <div className="absolute top-0 right-0 w-64 h-64 opacity-3 overflow-hidden pointer-events-none">
+                    <div
+                        className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl"
+                        style={{ backgroundColor: currentStore.color }}
+                    />
+                </div>
+            )}
 
             <div className="relative flex items-start justify-between w-full">
                 <div className="flex items-start gap-4">
                     {/* 폴더 아이콘 */}
-                    {currentStore && (
+                    {showFolderUI && currentStore && (
                         <div
                             className="flex items-center justify-center w-14 h-14 rounded-xl shadow-sm mt-1"
                             style={{
@@ -93,7 +96,7 @@ export function SpaceBoardHeader(   { title, description } : SpaceBoardHeaderPro
                             <h1 className="text-[40px] font-bold text-gray-900 leading-tight">
                                 {title ? title : titleName}
                             </h1>
-                            {currentStore?.isPinned && (
+                            {showFolderUI && currentStore?.isPinned && (
                                 <span className="text-2xl" title="고정된 폴더">📌</span>
                             )}
                         </div>
@@ -103,7 +106,7 @@ export function SpaceBoardHeader(   { title, description } : SpaceBoardHeaderPro
                             </span>
                         )}
                         {/* 폴더 색상 인디케이터 바 */}
-                        {currentStore && (
+                        {showFolderUI && currentStore && (
                             <div className="flex items-center gap-2 mt-3">
                                 <div
                                     className="h-1 w-16 rounded-full"
@@ -118,7 +121,7 @@ export function SpaceBoardHeader(   { title, description } : SpaceBoardHeaderPro
                 </div>
 
                 {/* 폴더 이동 드롭다운 */}
-                {currentStore && otherFolders.length > 0 && (
+                {showFolderUI && currentStore && otherFolders.length > 0 && (
                     <div className="relative mt-2 ml-auto z-50">
                         <button
                             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
