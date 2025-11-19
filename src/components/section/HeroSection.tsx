@@ -19,7 +19,8 @@ export default function HeroSection() {
       title: ["함께 만드는", "고품질 프롬프트"],
       buttons: [
         { text: "커뮤니티 페이지로 가기", href: "/community" }
-      ]
+      ],
+      image : "/assets/hero-1.png"
     },
     {
       title: ["나만의 공간에서", "프롬프트를 관리해요"],
