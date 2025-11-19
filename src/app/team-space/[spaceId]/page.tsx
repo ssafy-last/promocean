@@ -31,21 +31,16 @@ export default function TeamSpaceArchivePage() {
 
   
   console.log("스페이스 ",currentSpace);
-
-
-  const params = useParams();
-
-
   useEffect(() => {
     const fetchData = async () => {
       try {
         if(!currentSpace) return;
 
-        console.log("팀 스페이스 아이디 ", spaceId, "실제 파라미터 :", params.spaceId);
-        const realspace = Number(params.spaceId?.toString())
+        // console.log("팀 스페이스 아이디 ", spaceId, "실제 파라미터 :", params.spaceId);
+        // const realspace = Number(params.spaceId?.toString())
         //console.log("스페이스 아이디 useEffect ", spaceId);
         //없으면 -1로 보내어 의도적인 에러 발생
-        const res = await SpaceAPI.getSpaceArchiveFoldersData(realspace || -1);
+        const res = await SpaceAPI.getSpaceArchiveFoldersData(spaceId || -1);
 
         const archiveFolders = res?.folders;
         archiveFolderStore.setAllFolderList(archiveFolders || []);
@@ -86,11 +81,6 @@ export default function TeamSpaceArchivePage() {
   return (
     <>
     <div className="min-h-screen bg-gray-50">
-      <div className="flex justify-end-safe">
-        <div className="shrink-0 min-w-[380px]">
-          <MySpaceArchiveFilterSection buttonMode="search"/>
-        </div>
-      </div>
 
       <div className="flex justify-start p-4 w-full">
         <div className="w-full">
