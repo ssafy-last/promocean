@@ -29,7 +29,7 @@ export default function AlarmNoticeItem({
         // 첫 번째 네비게이션 완료 후 모달 열기
         setTimeout(() => {
             router.push(`/contest/${contestId}/notice/${noticeId}`);
-        }, 500);
+        }, 100);
     };
 
     const { messageHeading, messageParts } = parseMessage(message);
