@@ -76,6 +76,10 @@ function PostPageContent() {
   const [remainingTokens, setRemainingTokens] = useState<number | null>(null);
   const [isLoadingTokens, setIsLoadingTokens] = useState(false);
 
+  // 에러 상태 관리
+  const [promptError, setPromptError] = useState(false);
+  const [examplePromptError, setExamplePromptError] = useState(false);
+
   // 아카이브 타입인지 확인
   const isArchiveType = postType === 'my-space' || postType === 'team-space';
   
@@ -777,14 +781,46 @@ function PostPageContent() {
   };
 
   const handleAISubmit = async () => {
+    // 에러 상태 초기화
+    setPromptError(false);
+    setExamplePromptError(false);
+
     // 입력 검증
-    if (selectedPromptType == 'text' && (!usedPrompt || !examplePrompt)) {
-      alert('사용 프롬프트와 예시 질문을 모두 입력해주세요.');
-      return;
+    if (selectedPromptType == 'text') {
+      const hasPromptError = !usedPrompt || extractTextFromLexical(usedPrompt).trim() === '';
+      const hasExampleError = !examplePrompt || extractTextFromLexical(examplePrompt).trim() === '';
+
+      if (hasPromptError || hasExampleError) {
+        setPromptError(hasPromptError);
+        setExamplePromptError(hasExampleError);
+
+        // 첫 번째 에러 필드로 스크롤
+        setTimeout(() => {
+          const errorElement = document.querySelector(hasPromptError ? '[data-field="prompt"]' : '[data-field="example-prompt"]');
+          if (errorElement) {
+            errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 100);
+
+        return;
+      }
     }
-    else if(selectedPromptType == 'image' && !usedPrompt){
-      alert('사용 프롬프트를 입력해주세요')
-      return;
+    else if(selectedPromptType == 'image') {
+      const hasPromptError = !usedPrompt || extractTextFromLexical(usedPrompt).trim() === '';
+
+      if (hasPromptError) {
+        setPromptError(true);
+
+        // 프롬프트 필드로 스크롤
+        setTimeout(() => {
+          const errorElement = document.querySelector('[data-field="prompt"]');
+          if (errorElement) {
+            errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 100);
+
+        return;
+      }
     }
 
     setIsGeneratingAnswer(true);
@@ -1045,10 +1081,20 @@ function PostPageContent() {
             <PostingWriteSection
               title="프롬프트"
               placeholder="프롬프트를 입력하세요..."
-              onChange={setUsedPrompt}
+              onChange={(content) => {
+                setUsedPrompt(content);
+                setPromptError(false);
+              }}
               value={usedPrompt}
               isSubmitButton={selectedPromptType === 'image'}
               onSubmit={handleAISubmit}
+              hasError={promptError}
+              errorMessage={
+                selectedPromptType === 'text'
+                  ? "프롬프트를 입력해주세요. AI 생성을 위해 필수 항목입니다."
+                  : "프롬프트를 입력해주세요. 이미지 생성을 위해 필수 항목입니다."
+              }
+              dataField="prompt"
             />
 
             {/* submission 타입일 때는 예시 질문 없이 바로 결과 표시 */}
@@ -1159,11 +1205,17 @@ function PostPageContent() {
                       <PostingWriteSection
                         title="예시 질문 프롬프트"
                         placeholder="예시 질문을 입력하세요..."
-                        onChange={setExamplePrompt}
+                        onChange={(content) => {
+                          setExamplePrompt(content);
+                          setExamplePromptError(false);
+                        }}
                         value={examplePrompt}
                         isSubmitButton={true}
                         onSubmit={handleAISubmit}
                         isLoading={isGeneratingAnswer}
+                        hasError={examplePromptError}
+                        errorMessage="예시 질문을 입력해주세요. AI 답변 생성을 위해 필수 항목입니다."
+                        dataField="example-prompt"
                       />
 
                       {/* 답변 프롬프트 */}
