@@ -168,7 +168,7 @@ export const authAPI = {
    * @returns 회원탈퇴 응답 데이터
    */
   async withdrawal(): Promise<void> {
-    const res = await apiFetch<ApiResponse<null>>('/api/v1/members/withdrawal', {
+    await apiFetch<ApiResponse<null>>('/api/v1/members/withdrawal', {
       method: 'DELETE',
     });
     
@@ -186,8 +186,8 @@ export const authAPI = {
    * @returns 회원 정보 수정 응답 데이터
    */
   async updateMember(updateData: { filePath?: string; password?: string; nickname?: string }): Promise<void> {
-    await apiFetch<ApiResponse<null>>('/api/v1/members/me', {
-      method: 'PUT',
+    await apiFetch<ApiResponse<null>>('/api/v1/members', {
+      method: 'PATCH',
       body: JSON.stringify(updateData),
     });
     
