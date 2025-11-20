@@ -59,7 +59,7 @@ export default function PostingArchiveFolderSection({
                 <div className="flex items-center gap-2 flex-1">
                   <div
                     className="w-4 h-4 rounded"
-                    style={{ backgroundColor: folder.color }}
+                    style={{ backgroundColor: folder.color.startsWith('#') ? folder.color : `#${folder.color}` }}
                   />
                   <span className="font-medium text-gray-800">{folder.name}</span>
                   <Pin className="w-4 h-4 fill-red-400 stroke-gray-800 ml-auto" />
@@ -97,7 +97,7 @@ export default function PostingArchiveFolderSection({
                 <div className="flex items-center gap-2 flex-1">
                   <div
                     className="w-4 h-4 rounded"
-                    style={{ backgroundColor: folder.color }}
+                    style={{ backgroundColor: folder.color.startsWith('#') ? folder.color : `#${folder.color}` }}
                   />
                   <span className="font-medium text-gray-800">{folder.name}</span>
                 </div>
