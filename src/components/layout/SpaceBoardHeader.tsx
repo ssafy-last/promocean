@@ -29,6 +29,7 @@ export function SpaceBoardHeader(   { title, description, showFolderUI = true, c
     const allFolders = folderStore.allFolderList;
     const titleName = currentStore ? currentStore.name : "";
 
+    console.log("SpaceBoardHeader - title:", title, "titleName:", titleName);
     const handleFolderChange = (folderId: number) => {
         const selectedFolder = allFolders.find(folder => folder.folderId === folderId);
         if (selectedFolder) {

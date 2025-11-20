@@ -579,6 +579,10 @@ function PostPageContent() {
     const params = new URLSearchParams(searchParams.toString());
     params.set("folder", newFolder);
 
+    //현재 폴더 설정
+    folderStore.currentFolder = allFolders.find(folder => folder.folderId === newFolderId) || null;
+    //왜냐면 이걸 해줘야... space board header에서 반영 됨
+
     router.replace(`/post?${params.toString()}`, { scroll: false });
   };
 
