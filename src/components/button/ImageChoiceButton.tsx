@@ -1,6 +1,7 @@
 import { useSpaceStore } from "@/store/spaceStore";
 import Image from "next/image";
 import { useState } from "react";
+import { validateImageFile, getFileExtension } from "@/utils/fileValidation";
 
 export interface ImageChoiceButtonProps{
     setSpaceImageState : (file : File | null) => void;
@@ -20,16 +21,46 @@ export default function ImageChoiceButton({ setSpaceImageState }: ImageChoiceBut
     const coverImageUrl = currentSpace?.spaceCoverUrl;
     const [spaceImagePreviewState, setSpaceImagePreviewState] = useState<string | null>(coverImageUrl || null);
 
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
-        if (file) {
-            setSpaceImageState(file);
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setSpaceImagePreviewState(reader.result as string);
-            };
-            reader.readAsDataURL(file);
+        if (!file) return;
+
+        // 파일 시그니처(매직 넘버) 검증
+        const validation = await validateImageFile(file);
+
+        if (!validation.isValid) {
+            alert(validation.error || '유효하지 않은 파일입니다.');
+            // 입력 초기화
+            e.target.value = '';
+            return;
         }
+
+        // 확장자와 실제 파일 형식이 일치하는지 확인 (선택적 경고)
+        const fileExtension = getFileExtension(file.name);
+        const detectedType = validation.detectedType;
+
+        if (detectedType && fileExtension !== detectedType &&
+            !(fileExtension === 'jpeg' && detectedType === 'jpg') &&
+            !(fileExtension === 'jpg' && detectedType === 'jpg')) {
+            const confirmUpload = confirm(
+                `파일 확장자(${fileExtension})와 실제 파일 형식(${detectedType})이 일치하지 않습니다.\n` +
+                `실제 형식은 ${detectedType.toUpperCase()} 파일입니다.\n` +
+                `계속 진행하시겠습니까?`
+            );
+
+            if (!confirmUpload) {
+                e.target.value = '';
+                return;
+            }
+        }
+
+        // 검증 통과 - 파일 업로드 진행
+        setSpaceImageState(file);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setSpaceImagePreviewState(reader.result as string);
+        };
+        reader.readAsDataURL(file);
     };
     
     return(
