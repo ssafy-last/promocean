@@ -25,6 +25,7 @@ import { useSpaceStore } from "@/store/spaceStore";
 import SpaceAPI from "@/api/space";
 import { useArchiveFolderStore } from "@/store/archiveFolderStore";
 import { authAPI } from "@/api/auth";
+import { useAuthStore } from "@/store/authStore";
 
 /**
  * PostPageContent component (useSearchParams를 사용하는 내부 컴포넌트)
@@ -168,6 +169,30 @@ function PostPageContent() {
   const allFolders = folderStore.allFolderList;
   const pinnedFolders = allFolders.filter(folder => folder.isPinned);
   const normalFolders = allFolders.filter(folder => !folder.isPinned);
+
+  // type=my-space일 때 내 스페이스 폴더 로드 및 URL 파라미터의 folderId로 폴더 이름 찾기
+  useEffect(() => {
+    if (!isArchiveType) return;
+
+    // type=my-space일 때 항상 내 스페이스 폴더를 로드
+    const loadMySpaceFolders = async () => {
+      if (postType === 'my-space') {
+        try {
+          const { user } = useAuthStore.getState();
+          if (!user?.personalSpaceId) return;
+
+          const foldersData = await SpaceAPI.getSpaceArchiveFoldersData(user.personalSpaceId);
+          if (foldersData?.folders) {
+            folderStore.setAllFolderList(foldersData.folders);
+          }
+        } catch (error) {
+          console.error('내 스페이스 폴더 로드 실패:', error);
+        }
+      }
+    };
+
+    loadMySpaceFolders();
+  }, [postType, isArchiveType]);
 
   // URL 파라미터의 folderId로 폴더 이름 찾기
   useEffect(() => {
@@ -424,11 +449,26 @@ function PostPageContent() {
 
         // 아카이브 게시글 수정 모드
         if (articleIdParam) {
-          const spaceId = spaceStore.currentSpace?.spaceId;
-          if (!spaceId) {
-            alert('스페이스 정보를 찾을 수 없습니다.');
-            router.back();
-            return;
+          // type에 따라 올바른 spaceId 가져오기
+          let spaceId: number;
+          if (postType === 'my-space') {
+            // 내 스페이스일 때는 authStore에서 personalSpaceId 가져오기
+            const { user } = useAuthStore.getState();
+            if (!user?.personalSpaceId) {
+              alert('내 스페이스 정보를 찾을 수 없습니다.');
+              router.back();
+              return;
+            }
+            spaceId = user.personalSpaceId;
+          } else {
+            // 팀 스페이스일 때는 spaceStore에서 가져오기
+            const teamSpaceId = spaceStore.currentSpace?.spaceId;
+            if (!teamSpaceId) {
+              alert('팀 스페이스 정보를 찾을 수 없습니다.');
+              router.back();
+              return;
+            }
+            spaceId = teamSpaceId;
           }
 
           const articleId = parseInt(articleIdParam, 10);
@@ -809,10 +849,24 @@ function PostPageContent() {
           return;
         }
 
-        const spaceId = spaceStore.currentSpace?.spaceId;
-        if (!spaceId) {
-          alert('스페이스 정보를 찾을 수 없습니다.');
-          return;
+        // type에 따라 올바른 spaceId 가져오기
+        let spaceId: number;
+        if (postType === 'my-space') {
+          // 내 스페이스일 때는 authStore에서 personalSpaceId 가져오기
+          const { user } = useAuthStore.getState();
+          if (!user?.personalSpaceId) {
+            alert('내 스페이스 정보를 찾을 수 없습니다.');
+            return;
+          }
+          spaceId = user.personalSpaceId;
+        } else {
+          // 팀 스페이스일 때는 spaceStore에서 가져오기
+          const teamSpaceId = spaceStore.currentSpace?.spaceId;
+          if (!teamSpaceId) {
+            alert('팀 스페이스 정보를 찾을 수 없습니다.');
+            return;
+          }
+          spaceId = teamSpaceId;
         }
 
         const articlePayload = {
