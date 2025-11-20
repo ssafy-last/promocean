@@ -10,6 +10,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
 import SpaceAPI from "@/api/space";
+import { useArchiveFolderStore } from "@/store/archiveFolderStore";
 
 /**
  * CommunityLikeShareSection component
@@ -95,6 +96,7 @@ export default function CommunityLikeShareSection({
 
   const router = useRouter();
   const { isLoggedIn, user } = useAuthStore();
+  const folderStore = useArchiveFolderStore();
 
   const archiveClick = async () => {
     // 1. 로그인 유효성 검사
@@ -118,6 +120,10 @@ export default function CommunityLikeShareSection({
         return;
       }
 
+      // 3-1. 폴더 데이터를 store에 저장 (색상 정보 포함)
+      console.log('아카이브 버튼 - 폴더 데이터:', foldersData.folders);
+      folderStore.setAllFolderList(foldersData.folders);
+
       // 첫 번째 폴더 이름 가져오기
       const firstFolderName = foldersData.folders[0].name;
       const encodedFolderName = encodeURIComponent(firstFolderName);
@@ -134,7 +140,7 @@ export default function CommunityLikeShareSection({
     } catch (error) {
       if (!(error instanceof Error)) return;
       const errorMessage = error.message;
-      
+
       if (errorMessage.includes('인증') || errorMessage.includes('로그인')) {
         alert('로그인이 필요합니다.');
       } else if (errorMessage.includes('404') || errorMessage.includes('찾을 수 없습니다')) {

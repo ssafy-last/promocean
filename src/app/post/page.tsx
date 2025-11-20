@@ -182,7 +182,9 @@ function PostPageContent() {
           if (!user?.personalSpaceId) return;
 
           const foldersData = await SpaceAPI.getSpaceArchiveFoldersData(user.personalSpaceId);
+          console.log('API에서 받은 폴더 데이터:', foldersData);
           if (foldersData?.folders) {
+            console.log('폴더 색상 정보:', foldersData.folders.map(f => ({ name: f.name, color: f.color })));
             folderStore.setAllFolderList(foldersData.folders);
           }
         } catch (error) {
