@@ -96,12 +96,12 @@ public class ArticleFileService {
     }
 
     private String extractFilePath(String filePath) {
-        if (!filePath.startsWith("tmp")) {
-            throw new InvalidFilePathException();
-        }
-
         if (filePath.startsWith(ImageDirectory.POSTS.getName())) {
             return s3Service.copyObject(filePath, ImageDirectory.ARTICLES);
+        }
+
+        if (!filePath.startsWith("tmp")) {
+            throw new InvalidFilePathException();
         }
 
         return s3Service.moveObject(filePath, ImageDirectory.ARTICLES);
