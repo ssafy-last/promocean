@@ -100,6 +100,10 @@ public class ArticleFileService {
             throw new InvalidFilePathException();
         }
 
+        if (filePath.startsWith(ImageDirectory.POSTS.getName())) {
+            return s3Service.copyObject(filePath, ImageDirectory.ARTICLES);
+        }
+
         return s3Service.moveObject(filePath, ImageDirectory.ARTICLES);
     }
 
