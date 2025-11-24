@@ -5,6 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useState } from "react";
 import { ChevronDown, Folder, Bookmark, PenSquare } from "lucide-react";
 import { useSpaceStore } from "@/store/spaceStore";
+import Link from "next/link";
 
 export interface SpaceBoardHeaderProps {
     title? : string;
@@ -30,6 +31,32 @@ export function SpaceBoardHeader(   { title, description, showFolderUI = true, c
     const titleName = currentStore ? currentStore.name : "";
 
     console.log("SpaceBoardHeader - title:", title, "titleName:", titleName);
+
+    // 링크 URL 결정
+    const getLinkUrl = (): string | null => {
+        // 폴더 UI가 있고 현재 폴더가 있는 경우 (아카이브 폴더)
+        if (showFolderUI && currentStore) {
+            const isTeamSpace = pathname?.startsWith('/team-space');
+            if (isTeamSpace && currentSpace) {
+                return `/team-space/${currentSpace.spaceId}/${currentStore.folderId}`;
+            } else {
+                return `/my-space/archive/${currentStore.folderId}`;
+            }
+        }
+
+        // 커스텀 아이콘을 사용하는 경우 (내가 쓴 글, 스크랩)
+        if (!showFolderUI && customIcon) {
+            if (customIcon === 'pen-square') {
+                return '/my-space/my-posts';
+            } else if (customIcon === 'bookmark') {
+                return '/my-space/scrap';
+            }
+        }
+
+        return null;
+    };
+
+    const linkUrl = getLinkUrl();
     const handleFolderChange = (folderId: number) => {
         const selectedFolder = allFolders.find(folder => folder.folderId === folderId);
         if (selectedFolder) {
@@ -75,77 +102,151 @@ export function SpaceBoardHeader(   { title, description, showFolderUI = true, c
             )}
 
             <div className="relative flex items-start justify-between w-full">
-                <div className="flex items-start gap-4">
-                    {/* 폴더 아이콘 또는 커스텀 아이콘 */}
-                    {showFolderUI && currentStore && (
-                        <div
-                            className="flex items-center justify-center w-14 h-14 rounded-xl shadow-sm mt-1"
-                            style={{
-                                backgroundColor: `${currentStore.color}15`,
-                                border: `2px solid ${currentStore.color}30`
-                            }}
-                        >
-                            <Folder
-                                className="w-7 h-7"
-                                style={{ color: currentStore.color }}
-                                strokeWidth={2}
-                            />
-                        </div>
-                    )}
-                    {!showFolderUI && customIcon && (
-                        <div
-                            className="flex items-center justify-center w-14 h-14 rounded-xl shadow-sm mt-1"
-                            style={{
-                                backgroundColor: `${customIconColor}15`,
-                                border: `2px solid ${customIconColor}30`
-                            }}
-                        >
-                            {customIcon === 'bookmark' && (
-                                <Bookmark
-                                    className="w-7 h-7"
-                                    style={{ color: customIconColor }}
-                                    strokeWidth={2}
-                                />
-                            )}
-                            {customIcon === 'pen-square' && (
-                                <PenSquare
-                                    className="w-7 h-7"
-                                    style={{ color: customIconColor }}
-                                    strokeWidth={2}
-                                />
-                            )}
-                        </div>
-                    )}
-
-                    {/* 제목 및 설명 */}
-                    <div className="flex flex-col justify-start">
-                        <div className="flex items-center gap-3">
-                            <h1 className="text-[40px] font-bold text-gray-900 leading-tight">
-                                {title ? title : titleName}
-                            </h1>
-                            {showFolderUI && currentStore?.isPinned && (
-                                <span className="text-2xl" title="고정된 폴더">📌</span>
-                            )}
-                        </div>
-                        {description && (
-                            <span className="text-sm font-normal text-gray-600 mt-1">
-                                {description}
-                            </span>
-                        )}
-                        {/* 폴더 색상 인디케이터 바 */}
+                {linkUrl ? (
+                    <Link href={linkUrl} className="flex items-start gap-4 hover:opacity-80 transition-opacity group cursor-pointer">
+                        {/* 폴더 아이콘 또는 커스텀 아이콘 */}
                         {showFolderUI && currentStore && (
-                            <div className="flex items-center gap-2 mt-3">
-                                <div
-                                    className="h-1 w-16 rounded-full"
-                                    style={{ backgroundColor: currentStore.color }}
+                            <div
+                                className="flex items-center justify-center w-14 h-14 rounded-xl shadow-sm mt-1 group-hover:scale-105 transition-transform"
+                                style={{
+                                    backgroundColor: `${currentStore.color}15`,
+                                    border: `2px solid ${currentStore.color}30`
+                                }}
+                            >
+                                <Folder
+                                    className="w-7 h-7"
+                                    style={{ color: currentStore.color }}
+                                    strokeWidth={2}
                                 />
-                                <span className="text-xs text-gray-400">
-                                    {allFolders.length}개의 폴더
-                                </span>
                             </div>
                         )}
+                        {!showFolderUI && customIcon && (
+                            <div
+                                className="flex items-center justify-center w-14 h-14 rounded-xl shadow-sm mt-1 group-hover:scale-105 transition-transform"
+                                style={{
+                                    backgroundColor: `${customIconColor}15`,
+                                    border: `2px solid ${customIconColor}30`
+                                }}
+                            >
+                                {customIcon === 'bookmark' && (
+                                    <Bookmark
+                                        className="w-7 h-7"
+                                        style={{ color: customIconColor }}
+                                        strokeWidth={2}
+                                    />
+                                )}
+                                {customIcon === 'pen-square' && (
+                                    <PenSquare
+                                        className="w-7 h-7"
+                                        style={{ color: customIconColor }}
+                                        strokeWidth={2}
+                                    />
+                                )}
+                            </div>
+                        )}
+
+                        {/* 제목 및 설명 */}
+                        <div className="flex flex-col justify-start">
+                            <div className="flex items-center gap-3">
+                                <h1 className="text-[40px] font-bold text-gray-900 leading-tight">
+                                    {title ? title : titleName}
+                                </h1>
+                                {showFolderUI && currentStore?.isPinned && (
+                                    <span className="text-2xl" title="고정된 폴더">📌</span>
+                                )}
+                            </div>
+                            {description && (
+                                <span className="text-sm font-normal text-gray-600 mt-1">
+                                    {description}
+                                </span>
+                            )}
+                            {/* 폴더 색상 인디케이터 바 */}
+                            {showFolderUI && currentStore && (
+                                <div className="flex items-center gap-2 mt-3">
+                                    <div
+                                        className="h-1 w-16 rounded-full"
+                                        style={{ backgroundColor: currentStore.color }}
+                                    />
+                                    <span className="text-xs text-gray-400">
+                                        {allFolders.length}개의 폴더
+                                    </span>
+                                </div>
+                            )}
+                        </div>
+                    </Link>
+                ) : (
+                    <div className="flex items-start gap-4">
+                        {/* 폴더 아이콘 또는 커스텀 아이콘 */}
+                        {showFolderUI && currentStore && (
+                            <div
+                                className="flex items-center justify-center w-14 h-14 rounded-xl shadow-sm mt-1"
+                                style={{
+                                    backgroundColor: `${currentStore.color}15`,
+                                    border: `2px solid ${currentStore.color}30`
+                                }}
+                            >
+                                <Folder
+                                    className="w-7 h-7"
+                                    style={{ color: currentStore.color }}
+                                    strokeWidth={2}
+                                />
+                            </div>
+                        )}
+                        {!showFolderUI && customIcon && (
+                            <div
+                                className="flex items-center justify-center w-14 h-14 rounded-xl shadow-sm mt-1"
+                                style={{
+                                    backgroundColor: `${customIconColor}15`,
+                                    border: `2px solid ${customIconColor}30`
+                                }}
+                            >
+                                {customIcon === 'bookmark' && (
+                                    <Bookmark
+                                        className="w-7 h-7"
+                                        style={{ color: customIconColor }}
+                                        strokeWidth={2}
+                                    />
+                                )}
+                                {customIcon === 'pen-square' && (
+                                    <PenSquare
+                                        className="w-7 h-7"
+                                        style={{ color: customIconColor }}
+                                        strokeWidth={2}
+                                    />
+                                )}
+                            </div>
+                        )}
+
+                        {/* 제목 및 설명 */}
+                        <div className="flex flex-col justify-start">
+                            <div className="flex items-center gap-3">
+                                <h1 className="text-[40px] font-bold text-gray-900 leading-tight">
+                                    {title ? title : titleName}
+                                </h1>
+                                {showFolderUI && currentStore?.isPinned && (
+                                    <span className="text-2xl" title="고정된 폴더">📌</span>
+                                )}
+                            </div>
+                            {description && (
+                                <span className="text-sm font-normal text-gray-600 mt-1">
+                                    {description}
+                                </span>
+                            )}
+                            {/* 폴더 색상 인디케이터 바 */}
+                            {showFolderUI && currentStore && (
+                                <div className="flex items-center gap-2 mt-3">
+                                    <div
+                                        className="h-1 w-16 rounded-full"
+                                        style={{ backgroundColor: currentStore.color }}
+                                    />
+                                    <span className="text-xs text-gray-400">
+                                        {allFolders.length}개의 폴더
+                                    </span>
+                                </div>
+                            )}
+                        </div>
                     </div>
-                </div>
+                )}
 
                 {/* 폴더 이동 드롭다운 */}
                 {showFolderUI && currentStore && otherFolders.length > 0 && (
