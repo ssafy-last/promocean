@@ -127,7 +127,7 @@ export default function TeamSpaceHeader(
       <div className="absolute w-full h-full backdrop-blur-none group-hover:backdrop-blur-xs transition-all duration-300"/>
 
       {/* 어두운 그라데이션 오버레이 - 텍스트 가독성 향상 */}
-      <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/30 to-transparent pointer-events-none"></div>
+      <div className="absolute inset-0 bg-linear-to-r from-black/50 via-black/30 to-transparent pointer-events-none"></div>
 
       <div className={`relative flex flex-row justify-between items-center text-white w-full transition-all duration-300 ease-in-out ${
         isInFolderPage ? 'px-6 py-3.5' : 'px-8 py-15'

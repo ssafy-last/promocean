@@ -20,7 +20,6 @@ interface PaginationFooterProps {
  * @returns {React.ReactNode}
  */
 export default function PaginationFooter({
-  itemCnt,
   totalCnt,
   totalPages,
   currentPage,

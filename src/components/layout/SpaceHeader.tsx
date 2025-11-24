@@ -5,7 +5,6 @@
 import { useAuthStore } from "@/store/authStore";
 import { useArchiveFolderStore } from "@/store/archiveFolderStore";
 import { useParams, usePathname, useRouter } from "next/navigation";
-import path from "path";
 import React from "react";
 
 /**
@@ -38,7 +37,6 @@ export default function SpaceHeader(
     const nickname = authStore.user?.nickname || "익명의 사용자";
     const folderStore = useArchiveFolderStore();
 
-    const params = useParams();
     const pathname =  usePathname();
     // console.log("SpaceHeader params:", JSON.stringify(params));
     // console.log("SpaceHeader pathname:", pathname.split("/").splice(1,pathname.length));
@@ -78,7 +76,7 @@ export default function SpaceHeader(
       >
         {/* 어두운 그라데이션 오버레이 - 텍스트 가독성 향상 */}
         {folderColor && (
-          <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/30 to-transparent pointer-events-none"></div>
+          <div className="absolute inset-0 bg-linear-to-r from-black/50 via-black/30 to-transparent pointer-events-none"></div>
         )}
 
         <div
