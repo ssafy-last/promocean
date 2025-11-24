@@ -1,64 +1,42 @@
-// frontend/src/components/post/CommunityPostForm.tsx
+// frontend/src/components/post/SubmissionPostForm.tsx
 
 import React from 'react';
-import TitleInput from '@/components/editor/TitleInput';
-import HashtagInput from '@/components/editor/HashtagInput';
 import PostingWriteSection from '@/components/section/PostingWriteSection';
 import PostingFooter from '@/components/layout/PostingFooter';
 import PostingFloatingSection from '@/components/section/PostingFloatingSection';
-import CommunityResultSection from './CommunityResultSection';
-import { CommunityPostFormProps } from '@/types/postFormTypes';
+import SubmissionResultSection from '@/components/post/SubmissionResultSection';
+import { SubmissionPostFormProps } from '@/types/postFormTypes';
+import { PROMPT_TYPE_ITEMS } from '@/constants/postFormConstants';
 
 /**
- * 커뮤니티 게시글 폼 컴포넌트
- * 커뮤니티 게시글 작성/수정 시 사용되는 폼
+ * 산출물 제출 폼 컴포넌트
+ * 대회 산출물 제출 시 사용되는 폼
  */
-export default function CommunityPostForm({
+export default function SubmissionPostForm({
   formState,
   imageState,
   uiState,
-  onTitleChange,
-  onTagsChange,
   onDescriptionChange,
   onUsedPromptChange,
-  onExamplePromptChange,
   onAnswerPromptChange,
-  onCategoryChange,
-  onPromptTypeChange,
   onImageUpload,
   onGeneratedImageRemove,
   onUploadedImageRemove,
   onAISubmit,
   onSubmit,
   onPromptErrorChange,
-  onExamplePromptErrorChange,
-  categoryItems,
-  promptTypeItems,
-}: CommunityPostFormProps) {
-  const {
-    title,
-    tags,
-    descriptionState,
-    usedPrompt,
-    examplePrompt,
-    answerPrompt,
-    selectedCategory,
-    selectedPromptType,
-  } = formState;
-
+  isLoadingContest,
+}: SubmissionPostFormProps) {
+  const { descriptionState, usedPrompt, answerPrompt, selectedPromptType } = formState;
   const { generatedImageUrl, uploadedImageUrl } = imageState;
-  const { isGeneratingAnswer, examplePromptError } = uiState;
+  const { isGeneratingAnswer } = uiState;
 
   return (
     <>
-      {/* 제목 */}
-      <div className="mb-4">
-        <TitleInput value={title} onChange={onTitleChange} placeholder="제목을 입력하세요" />
-      </div>
-
-      {/* 해시태그 */}
-      <div className="mb-4">
-        <HashtagInput tags={tags} onTagsChange={onTagsChange} />
+      {/* 페이지 제목 */}
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-gray-800">산출물 제출</h1>
+        <p className="text-sm text-gray-600 mt-1">대회에 제출할 산출물을 작성해주세요.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
@@ -82,26 +60,18 @@ export default function CommunityPostForm({
               onPromptErrorChange(false);
             }}
             value={usedPrompt}
-            isSubmitButton={selectedPromptType === 'image'}
+            isSubmitButton={selectedPromptType === 'image' || selectedPromptType === 'text'}
             onSubmit={onAISubmit}
             isLoading={isGeneratingAnswer}
           />
 
           {/* 결과 섹션 */}
-          <CommunityResultSection
+          <SubmissionResultSection
             selectedPromptType={selectedPromptType}
-            examplePrompt={examplePrompt}
             answerPrompt={answerPrompt}
             generatedImageUrl={generatedImageUrl}
             uploadedImageUrl={uploadedImageUrl}
-            examplePromptError={examplePromptError}
-            isGeneratingAnswer={isGeneratingAnswer}
-            onExamplePromptChange={(content) => {
-              onExamplePromptChange(content);
-              onExamplePromptErrorChange(false);
-            }}
             onAnswerPromptChange={onAnswerPromptChange}
-            onAISubmit={onAISubmit}
             onRemoveGenerated={onGeneratedImageRemove}
             onRemoveUploaded={onUploadedImageRemove}
             onImageUpload={onImageUpload}
@@ -113,23 +83,17 @@ export default function CommunityPostForm({
 
         {/* 플로팅 컨테이너 (1 비율) */}
         <div className="lg:col-span-1 space-y-4">
-          {/* 카테고리 선택 */}
-          <PostingFloatingSection
-            title="카테고리"
-            items={categoryItems}
-            selectedValue={selectedCategory}
-            onSelect={onCategoryChange}
-            name="category"
-          />
-
-          {/* 프롬프트 타입 */}
+          {/* 프롬프트 타입 - 읽기 전용 */}
           <PostingFloatingSection
             title="프롬프트 타입"
-            items={promptTypeItems}
+            items={PROMPT_TYPE_ITEMS}
             selectedValue={selectedPromptType}
-            onSelect={onPromptTypeChange}
+            onSelect={undefined} // 산출물은 타입 변경 불가
             name="promptType"
           />
+          {isLoadingContest && (
+            <div className="text-sm text-gray-500 mt-2">대회 정보를 불러오는 중...</div>
+          )}
         </div>
       </div>
     </>
