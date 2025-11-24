@@ -1,4 +1,4 @@
-// frontend/src/components/post/ArchivePostForm.tsx
+// frontend/src/components/post/CommunityPostForm.tsx
 
 import React from 'react';
 import TitleInput from '@/components/editor/TitleInput';
@@ -6,15 +6,14 @@ import HashtagInput from '@/components/editor/HashtagInput';
 import PostingWriteSection from '@/components/section/PostingWriteSection';
 import PostingFooter from '@/components/layout/PostingFooter';
 import PostingFloatingSection from '@/components/section/PostingFloatingSection';
-import PostingArchiveFolderSection from '@/components/section/PostingArchiveFolderSection';
-import CommunityResultSection from './CommunityResultSection';
-import { ArchivePostFormProps } from '@/types/postFormTypes';
+import CommunityResultSection from '@/components/post/CommunityResultSection';
+import { CommunityPostFormProps } from '@/types/postFormTypes';
 
 /**
- * 아카이브 게시글 폼 컴포넌트
- * 내 스페이스/팀 스페이스 아카이브 게시글 작성/수정 시 사용되는 폼
+ * 커뮤니티 게시글 폼 컴포넌트
+ * 커뮤니티 게시글 작성/수정 시 사용되는 폼
  */
-export default function ArchivePostForm({
+export default function CommunityPostForm({
   formState,
   imageState,
   uiState,
@@ -24,6 +23,7 @@ export default function ArchivePostForm({
   onUsedPromptChange,
   onExamplePromptChange,
   onAnswerPromptChange,
+  onCategoryChange,
   onPromptTypeChange,
   onImageUpload,
   onGeneratedImageRemove,
@@ -32,12 +32,9 @@ export default function ArchivePostForm({
   onSubmit,
   onPromptErrorChange,
   onExamplePromptErrorChange,
+  categoryItems,
   promptTypeItems,
-  selectedFolder,
-  onFolderChange,
-  pinnedFolders,
-  normalFolders,
-}: ArchivePostFormProps) {
+}: CommunityPostFormProps) {
   const {
     title,
     tags,
@@ -45,6 +42,7 @@ export default function ArchivePostForm({
     usedPrompt,
     examplePrompt,
     answerPrompt,
+    selectedCategory,
     selectedPromptType,
   } = formState;
 
@@ -89,7 +87,7 @@ export default function ArchivePostForm({
             isLoading={isGeneratingAnswer}
           />
 
-          {/* 결과 섹션 - Community와 동일한 형태 사용 */}
+          {/* 결과 섹션 */}
           <CommunityResultSection
             selectedPromptType={selectedPromptType}
             examplePrompt={examplePrompt}
@@ -115,12 +113,13 @@ export default function ArchivePostForm({
 
         {/* 플로팅 컨테이너 (1 비율) */}
         <div className="lg:col-span-1 space-y-4">
-          {/* 아카이브 폴더 선택 */}
-          <PostingArchiveFolderSection
-            selectedFolder={selectedFolder}
-            onFolderChange={onFolderChange}
-            pinnedFolders={pinnedFolders}
-            normalFolders={normalFolders}
+          {/* 카테고리 선택 */}
+          <PostingFloatingSection
+            title="카테고리"
+            items={categoryItems}
+            selectedValue={selectedCategory}
+            onSelect={onCategoryChange}
+            name="category"
           />
 
           {/* 프롬프트 타입 */}
