@@ -8,7 +8,6 @@ import TeamSpaceMyMenuModal from "../modal/TeamSpaceMyMenuModal";
 import SpaceAPI, { SpaceParticipants } from "@/api/space";
 import { useAuthStore } from "@/store/authStore";
 import { useSpaceStore } from "@/store/spaceStore";
-import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 
 
@@ -56,16 +55,12 @@ export default function TeamSpaceHeader(
   const [memberListState, setMemberListState] = useState<SpaceParticipants[]>([]);
   const [ownerMemberState, setOwnerMemberState] = useState<SpaceParticipants | null>(null);
   const [currentUserSpaceNickname, setCurrentUserSpaceNickname] = useState<string>(nickname);
-  const username = authStore.user?.nickname;
   const userEmail = authStore.user?.email;
-  const userNickname = authStore.user?.nickname;
   const isFolderPage = Boolean(params['folderId']);
   console.log("isFolderPage:", isFolderPage);
 
   // 현재 사용자의 권한 가져오기
   const userRole = spaceStore.currentSpace?.userRole || currentSpace?.userRole;
-  const isOwner = userRole === "OWNER";
-  const isEditor = userRole === "EDITOR";
   const isReader = userRole === "READER";
 
   // 폴더 내부 페이지인지 확인
@@ -75,11 +70,6 @@ export default function TeamSpaceHeader(
   console.log("폴더 내부 페이지:", isInFolderPage);
   // console.log("params['folderId']", params['folderId']);
   // console.log("params['spaceId']", params['spaceId']);
-
-
-
-
-
   // console.log("spaceId in TeamSpaceHeader:", spaceId);
   const handleModalOpen = () => {
     setIsModalOpenState(!isModalOpenState);
