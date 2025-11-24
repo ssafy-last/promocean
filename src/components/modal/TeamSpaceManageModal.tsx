@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import {  useState } from "react";
 import { useRouter } from "next/navigation";
 import TeamSpaceInsertionModalTabs from "../filter/TeamSpaceInsertionModalTabs";
 import SpaceAddMemberItem from "../item/SpaceAddMemberItem";
@@ -7,11 +7,10 @@ import TeamSpaceMemberList from "../list/TeamSpaceMemberList";
 import ImageChoiceButton from "../button/ImageChoiceButton";
 import SpaceAPI, { SpaceParticipants } from "@/api/space";
 import { UploadAPI } from "@/api/upload";
-import { ChangeSpaceRoleToValue, SpaceRole, TeamSpaceRole } from "@/enum/TeamSpaceRole";
-import { Space } from "lucide-react";
+import { ChangeSpaceRoleToValue,TeamSpaceRole } from "@/enum/TeamSpaceRole";
 import { authAPI } from "@/api/auth";
 import { useAuthStore } from "@/store/authStore";
-import { TeamSpaceInfo, useSpaceStore } from "@/store/spaceStore";
+import { useSpaceStore } from "@/store/spaceStore";
 
 export interface TeamSpacePageProps {
     spaceId? : number;
@@ -28,7 +27,7 @@ export interface TeamSpacePageProps {
 
 
 
-export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handleModalClose, modalTabState, setModalTabState, memberListState, ownerMemberState, setMemberListState, teamName = "팀 스페이스", userRole}: TeamSpacePageProps) {
+export default function TeamSpaceManageModal( { spaceId, handleModalClose, modalTabState, setModalTabState, memberListState, ownerMemberState, setMemberListState, teamName = "팀 스페이스", userRole}: TeamSpacePageProps) {
     console.log("spaceId in TeamSpaceManageModal:", spaceId);
     const router = useRouter();
     const { user } = useAuthStore();
@@ -40,8 +39,7 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
 
     // 권한 확인
     const isOwner = userRole === "OWNER";
-    const isEditor = userRole === "EDITOR";
-    const isReader = userRole === "READER";
+
 
     // OWNER만 초대, 수정, 삭제 가능
     // EDITOR, READER는 멤버 조회만 가능
@@ -84,13 +82,13 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
         if(s3res && editSpaceImageState) {
 
             // 이미지가 있을 때만 업로드 진행
-            const uploadS3Res = await UploadAPI.uploadImageToS3({
+            await UploadAPI.uploadImageToS3({
                 presignedUrl : presignedUrl!,
                 file : editSpaceImageState
             });
 
             // 업로드 성공 시에만 팀 스페이스 정보 업데이트
-            const patchRes = await SpaceAPI.patchTeamSpace(spaceId!, {
+            await SpaceAPI.patchTeamSpace(spaceId!, {
                 name: editSpaceNameState,
                 spaceCoverPath : key!
             });
@@ -117,7 +115,7 @@ export default function TeamSpaceManageModal( { spaceId, isModalOpenState, handl
                 name : editSpaceNameState,
             })
 
-            const patchRes = await SpaceAPI.patchTeamSpace(spaceId!, {
+            await SpaceAPI.patchTeamSpace(spaceId!, {
                 name: editSpaceNameState,
             });
 
