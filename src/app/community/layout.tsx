@@ -39,7 +39,7 @@ export default async function CommunityLayout({
         </div>
 
         {/* 오른쪽: 고정폭 플로팅 섹션 */}
-        <aside className="hidden lg:block w-64 flex-shrink-0 sticky top-24 self-start">
+        <aside className="hidden lg:block w-64 shrink-0 sticky top-24 self-start">
           <CommunityFloatingSection popularPosts={popularPosts} />
         </aside>
 

@@ -4,7 +4,7 @@
 
 import { useSearchParams, useRouter } from "next/navigation";
 import { Suspense, useEffect } from "react";
-import TokenDisplay from "@/components/post/TokenDisplay";
+import TokenDisplay from "@/components/etc/TokenDisplay";
 import SubmissionPostForm from "@/components/form/SubmissionPostForm";
 import CommunityPostForm from "@/components/form/CommunityPostForm";
 import ArchivePostForm from "@/components/form/ArchivePostForm";
@@ -20,7 +20,6 @@ import { useArchiveFolderStore } from "@/store/archiveFolderStore";
 import { authAPI } from "@/api/auth";
 import { useAuthStore } from "@/store/authStore";
 import { SpaceAPI } from "@/api/space";
-import { useSpaceStore } from "@/store/spaceStore";
 
 /**
  * PostPageContent component (useSearchParams를 사용하는 내부 컴포넌트)
@@ -58,7 +57,6 @@ function PostPageContent() {
     selectedPromptType,
     selectedFolder,
     selectedFolderId,
-    contestType,
   } = formState;
 
   const {
@@ -107,7 +105,7 @@ function PostPageContent() {
     setRemainingTokens,
   } = uiActions;
 
-  const spaceStore = useSpaceStore();
+
   const folderStore = useArchiveFolderStore();
   
   // 페이지 로드 시 토큰 잔량 조회
