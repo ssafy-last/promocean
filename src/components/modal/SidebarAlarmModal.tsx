@@ -6,8 +6,7 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import AlarmList from '../list/AlarmList';
 import AlarmModalHeader from '../layout/AlarmModalHeader';
 import AlarmModalSmallHeader from '../layout/AlarmModalSmallHeader';
-import { connectAlarmSSE, disconnectAlarmSSE, AlarmEvent } from '@/api/alarm';
-import { parseAlarmMessage } from '@/utils/alarmMessageParser';
+import { useAlarmSSE } from '@/hooks/useAlarmSSE';
 import {
   deleteSelectedAlarms,
   toggleAllAlarmSelection,
@@ -124,60 +123,7 @@ export default function SidebarAlarmModal({
   };
 
   // SSE 연결 설정
-  useEffect(() => {
-    let eventSource: EventSource | null = null;
-
-    const handleAlarmMessage = (event: AlarmEvent) => {
-      const result = parseAlarmMessage(event);
-
-      // 연결 확인 메시지는 무시
-      if (result.isConnectionMessage) {
-        return;
-      }
-
-      // 파싱 실패 시 무시
-      if (!result.success || !result.data) {
-        return;
-      }
-
-      const newAlarm = result.data;
-      console.log('➕ 알람 추가:', newAlarm);
-
-      // 알림함이 열려있다면 즉시 목록에 추가
-      setAlarmListState((prev: AlarmItemProps[]) => {
-        const updated = [newAlarm, ...prev];
-        console.log('📋 업데이트된 알람 목록:', updated);
-        return updated;
-      });
-
-      // 알림함이 닫혀있다면 뱃지 표시
-      if (!isAlarm) {
-        setHasNewAlarm(true);
-      }
-    };
-
-    const handleAlarmError = () => {
-      console.log('ℹ️ SSE 연결 상태 변경 (핸들러)');
-    };
-
-    try {
-      // SSE 연결 시작
-      eventSource = connectAlarmSSE(handleAlarmMessage, handleAlarmError);
-      console.log('🚀 알람 SSE 연결 시작');
-      console.log('📡 연결 상태:', eventSource.readyState);
-      console.log('🌐 연결 URL:', eventSource.url);
-    } catch (error) {
-      console.error('❌ SSE 연결 실패:', error);
-    }
-
-    // 컴포넌트 언마운트 시 연결 해제
-    return () => {
-      if (eventSource) {
-        console.log('🔌 알람 SSE 연결 해제');
-        disconnectAlarmSSE(eventSource);
-      }
-    };
-  }, [setAlarmListState, setHasNewAlarm, isAlarm]);
+  useAlarmSSE(setAlarmListState, setHasNewAlarm, isAlarm);
 
   // isAlarm 변경 시 텍스트 표시/숨김 처리
   useEffect(() => {

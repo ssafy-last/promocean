@@ -2,7 +2,7 @@
 
 import React from 'react';
 import PostingWriteSection from '@/components/section/PostingWriteSection';
-import ImageResultSection from './ImageResultSection';
+import ImageResultSection from '@/components/section/ImageResultSection';
 
 interface CommunityResultSectionProps {
   selectedPromptType: string;
