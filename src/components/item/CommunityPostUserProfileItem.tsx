@@ -19,7 +19,7 @@ export default function CommunityPostUserProfileItem({ profileUrl, author, creat
     <div className="flex flex-row items-end gap-4">
       {/* 프로필 이미지 */}
       {profileUrl ? (
-        <div className="relative w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
+        <div className="relative w-10 h-10 rounded-full overflow-hidden shrink-0">
           <Image
             src={profileUrl}
             alt={author}
@@ -29,7 +29,7 @@ export default function CommunityPostUserProfileItem({ profileUrl, author, creat
           />
         </div>
       ) : (
-        <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-xs flex-shrink-0">
+        <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-xs shrink-0">
           🐥
         </div>
       )}

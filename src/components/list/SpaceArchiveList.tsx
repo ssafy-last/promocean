@@ -4,7 +4,6 @@ import { useState } from "react";
 import SpaceArchiveItem from "../item/SpaceArchiveItem";
 import SpaceArchiveAddModal from "../modal/SpaceArchiveAddModal";
 import { SpaceArchiveData } from "@/app/my-space/page";
-import { useAuthStore } from "@/store/authStore";
 import { useSpaceStore } from "@/store/spaceStore";
 import { SpaceAPI } from "@/api/space";
 import { useRouter } from "next/navigation";

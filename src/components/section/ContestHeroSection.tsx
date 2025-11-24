@@ -7,7 +7,7 @@
  */
 export default function ContestHeroSection() {
   return (
-    <div className="h-[400px] bg-gradient-to-br from-primary/10 via-background to-secondary/10 flex items-center justify-center relative overflow-hidden">
+    <div className="h-[400px] bg-linear-to-br from-primary/10 via-background to-secondary/10 flex items-center justify-center relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-20 left-20 w-32 h-32 bg-primary rounded-full blur-3xl"></div>

@@ -28,7 +28,7 @@ export default function OngoingContestSection({
   const displayedContests = ongoingContests.slice(0, 4);
 
   return (
-    <section className="py-12 px-6 bg-gradient-to-b from-white to-gray-50">
+    <section className="py-12 px-6 bg-linear-to-b from-white to-gray-50">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="flex items-center justify-between mb-8">

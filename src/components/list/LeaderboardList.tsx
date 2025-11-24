@@ -18,16 +18,16 @@ export default function LeaderboardList({ leaderboardList }: LeaderboardListProp
       <table className="min-w-full bg-white">
         <thead className="bg-white">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-right">
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ">
               Rank
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               NickName
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-right">
-              Vote Count
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-right">
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Vote Count
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Last Submit
             </th>
           </tr>

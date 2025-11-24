@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import TitleInput from '@/components/editor/TitleInput';
 
 interface PostingMetaFormSectionProps {
   title: string;
@@ -14,7 +13,6 @@ interface PostingMetaFormSectionProps {
 
 export default function PostingMetaFormSection({
   category,
-  tags,
   onCategoryChange,
 }: PostingMetaFormSectionProps) {
   return (
