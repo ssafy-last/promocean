@@ -2,7 +2,6 @@
 
 // import ContestHeroSection from "@/components/section/ContestHeroSection";
 import ContestCardSection from "@/components/section/ContestCardSection";
-import ContestFooter from "@/components/layout/ContestFooter";
 import { ContestAPI } from "@/api/contest";
 
 interface ContestPageProps {
