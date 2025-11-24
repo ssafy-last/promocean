@@ -4,7 +4,7 @@ import React from 'react';
 import PostingWriteSection from '@/components/section/PostingWriteSection';
 import PostingFooter from '@/components/layout/PostingFooter';
 import PostingFloatingSection from '@/components/section/PostingFloatingSection';
-import SubmissionResultSection from '@/components/post/SubmissionResultSection';
+import SubmissionResultSection from '@/components/section/SubmissionResultSection';
 import { SubmissionPostFormProps } from '@/types/postFormTypes';
 import { PROMPT_TYPE_ITEMS } from '@/constants/postFormConstants';
 
