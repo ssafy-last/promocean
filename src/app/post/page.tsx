@@ -13,9 +13,12 @@ import { PostingFloatingItemProps } from "@/types/itemType";
 import TitleInput from "@/components/editor/TitleInput";
 import HashtagInput from "@/components/editor/HashtagInput";
 import { buildPromptFromLexical, extractTextFromLexical, convertLexicalToMarkdown } from "@/utils/lexicalUtils";
+import { textToLexicalJSON } from "@/utils/lexicalConverter";
+import { mapPromptType } from "@/utils/typeMapper";
+import { extractS3KeyFromUrl, s3KeyToCloudFrontUrl } from "@/utils/imageUtils";
+import { loadSubmissionData, loadCommunityPostData, loadArchiveArticleData } from "@/utils/articleLoader";
 import { PromptAPI } from "@/api/prompt";
 import { PostAPI, PostArticleRequest } from "@/api/post";
-import { PostAPI as CommunityPostAPI } from "@/api/community/post";
 import { categoryStringToEnum, promptTypeStringToEnum } from "@/types/postEnum";
 import { ContestAPI } from "@/api/contest/contest";
 import { SubmissionAPI } from "@/api/contest/submission";
@@ -44,17 +47,6 @@ function PostPageContent() {
 
   const isEditMode = mode === "edit" && (articleIdParam || postIdParam || submissionIdParam);
   const isSubmissionType = postType === 'submission';
-
-  // CloudFront URL에서 S3 key 추출 함수
-  const extractS3KeyFromUrl = (url: string): string => {
-    if (!url) return '';
-    const cloudfrontPrefix = 'https://d3qr7nnlhj7oex.cloudfront.net/';
-    if (url.startsWith(cloudfrontPrefix)) {
-      return url.replace(cloudfrontPrefix, '');
-    }
-    // 이미 key 형식이면 그대로 반환
-    return url;
-  };
 
   // 폼 상태 관리
   const [title, setTitle] = useState("");
@@ -133,23 +125,8 @@ function PostPageContent() {
         
         const { contestData } = await ContestAPI.getDetail(contestId);
         console.log('대회 정보 로드:', contestData.type, '전체 데이터:', contestData);
-        // 대회 타입을 promptType으로 설정 (다양한 형식 지원)
-        const typeMap: { [key: string]: string } = {
-          "TEXT": "text",
-          "IMAGE": "image",
-          "text": "text",
-          "image": "image",
-          "이미지": "image",
-          "텍스트": "text",
-          "1": "text",  // PromptType.TEXT = 1
-          "2": "image", // PromptType.IMAGE = 2
-        };
-        // 숫자 타입도 처리 (PromptType.TEXT = 1, PromptType.IMAGE = 2)
-        let mappedType = typeMap[contestData.type] || typeMap[String(contestData.type)] || typeMap[String(contestData.type).toUpperCase()];
-        if (!mappedType && typeof contestData.type === 'number') {
-          mappedType = contestData.type === 1 ? "text" : contestData.type === 2 ? "image" : "text";
-        }
-        mappedType = mappedType || "text";
+
+        const mappedType = mapPromptType(contestData.type);
         console.log('설정할 프롬프트 타입:', mappedType, '원본 타입:', contestData.type, '타입 체크:', typeof contestData.type);
         setSelectedPromptType(mappedType);
         setContestType(contestData.type);
@@ -225,116 +202,17 @@ function PostPageContent() {
             return;
           }
 
-          // 내 산출물 수정은 조회 기간과 관계없이 항상 가능해야 하므로 getMySubmission 사용
-          const { contestMySubmissionItem: submissionData } = await SubmissionAPI.getMySubmission(contestId);
-
-          if (!submissionData) {
-            alert('산출물을 찾을 수 없습니다.');
-            router.back();
-            return;
-          }
-          
-          // submissionId가 일치하는지 확인 (보안을 위해)
-          if (submissionData.submissionId !== submissionId) {
-            alert('본인의 산출물만 수정할 수 있습니다.');
-            router.back();
-            return;
-          }
-
-          // 대회 정보도 가져와서 타입 설정
-          const { contestData } = await ContestAPI.getDetail(contestId);
-          console.log('수정 모드 - 대회 정보 로드:', contestData.type, '전체 데이터:', contestData);
-          const typeMap: { [key: string]: string } = {
-            "TEXT": "text",
-            "IMAGE": "image",
-            "text": "text",
-            "image": "image",
-            "이미지": "image",
-            "텍스트": "text",
-            "1": "text",  // PromptType.TEXT = 1
-            "2": "image", // PromptType.IMAGE = 2
-          };
-          // 숫자 타입도 처리 (PromptType.TEXT = 1, PromptType.IMAGE = 2)
-          let mappedType = typeMap[contestData.type] || typeMap[String(contestData.type)] || typeMap[String(contestData.type).toUpperCase()];
-          if (!mappedType && typeof contestData.type === 'number') {
-            mappedType = contestData.type === 1 ? "text" : contestData.type === 2 ? "image" : "text";
-          }
-          mappedType = mappedType || "text";
-          console.log('수정 모드 - 설정할 프롬프트 타입:', mappedType, '원본 타입:', contestData.type, '타입 체크:', typeof contestData.type);
-          setSelectedPromptType(mappedType);
-          setContestType(contestData.type);
-
-          // Lexical JSON 형식으로 변환하는 헬퍼 함수
-          const textToLexicalJSON = (text: string) => {
-            return JSON.stringify({
-              root: {
-                children: [
-                  {
-                    children: [
-                      {
-                        detail: 0,
-                        format: 0,
-                        mode: 'normal',
-                        style: '',
-                        text: text,
-                        type: 'text',
-                        version: 1,
-                      },
-                    ],
-                    direction: null,
-                    format: '',
-                    indent: 0,
-                    type: 'paragraph',
-                    version: 1,
-                    textFormat: 0,
-                    textStyle: '',
-                  },
-                ],
-                direction: null,
-                format: '',
-                indent: 0,
-                type: 'root',
-                version: 1,
-              },
-            });
-          };
-
-          // 폼 데이터 채우기
-          setDescriptionState(textToLexicalJSON(submissionData.description));
-          setUsedPrompt(textToLexicalJSON(submissionData.prompt));
-          
-          // 결과 설정 (타입에 따라 다르게)
-          const submissionType = typeMap[submissionData.type] || "text";
-          if (submissionType === 'image' && submissionData.result) {
-            // 이미지 타입인 경우
-            const resultValue = submissionData.result;
-            console.log('수정 모드 - 이미지 결과:', resultValue);
-            
-            // CloudFront URL인지 S3 key인지 확인
-            let imageUrl: string;
-            let s3Key: string;
-            
-            if (resultValue.startsWith('http://') || resultValue.startsWith('https://')) {
-              // CloudFront URL인 경우
-              imageUrl = resultValue;
-              s3Key = extractS3KeyFromUrl(resultValue);
-            } else {
-              // S3 key인 경우
-              s3Key = resultValue;
-              imageUrl = `https://d3qr7nnlhj7oex.cloudfront.net/${resultValue}`;
-            }
-            
-            console.log('수정 모드 - 이미지 설정:', { imageUrl, s3Key });
-            
-            setAnswerPrompt('');
-            setUploadedImageUrl(imageUrl); // 렌더링용: 전체 URL
-            setUploadedImageKey(s3Key); // 전송용: S3 key만
-            setGeneratedImageUrl(imageUrl);
-            setGeneratedImageKey(s3Key);
-          } else {
-            // 텍스트 타입인 경우
-            setAnswerPrompt(textToLexicalJSON(submissionData.result));
-          }
+          await loadSubmissionData(contestId, submissionId, {
+            setSelectedPromptType,
+            setContestType,
+            setDescriptionState,
+            setUsedPrompt,
+            setAnswerPrompt,
+            setUploadedImageUrl,
+            setUploadedImageKey,
+            setGeneratedImageUrl,
+            setGeneratedImageKey,
+          });
 
           setIsLoadingArticle(false);
           return;
@@ -349,101 +227,18 @@ function PostPageContent() {
             return;
           }
 
-          const { communityPostDetailData } = await CommunityPostAPI.getDetail(postId);
-
-          if (!communityPostDetailData) {
-            alert('게시글을 찾을 수 없습니다.');
-            router.back();
-            return;
-          }
-
-          // Lexical JSON 형식으로 변환하는 헬퍼 함수
-          const textToLexicalJSON = (text: string) => {
-            return JSON.stringify({
-              root: {
-                children: [
-                  {
-                    children: [
-                      {
-                        detail: 0,
-                        format: 0,
-                        mode: 'normal',
-                        style: '',
-                        text: text,
-                        type: 'text',
-                        version: 1,
-                      },
-                    ],
-                    direction: null,
-                    format: '',
-                    indent: 0,
-                    type: 'paragraph',
-                    version: 1,
-                    textFormat: 0,
-                    textStyle: '',
-                  },
-                ],
-                direction: null,
-                format: '',
-                indent: 0,
-                type: 'root',
-                version: 1,
-              },
-            });
-          };
-
-          // 타입 변환
-          const promptTypeMap: { [key: string]: "text" | "image" } = {
-            "1": "text",
-            "2": "image",
-            "TEXT": "text",
-            "IMAGE": "image",
-            "text": "text",
-            "image": "image",
-            "텍스트": "text",
-            "이미지": "image"
-          };
-
-          console.log('커뮤니티 원본 타입:', communityPostDetailData.type, '타입:', typeof communityPostDetailData.type);
-          let mappedType = promptTypeMap[String(communityPostDetailData.type)] || "text";
-
-          // fileUrl이 있으면 이미지 타입으로 설정
-          if (communityPostDetailData.fileUrl) {
-            mappedType = "image";
-          }
-          console.log('커뮤니티 매핑된 타입:', mappedType);
-
-          // 카테고리 변환 (API 코드 -> 표시 이름)
-          const categoryMap: { [key: string]: string } = {
-            "WORK": "work",
-            "DEV": "dev",
-            "DESIGN": "design",
-            "JOB": "job",
-            "EDU": "edu",
-            "LIFE": "life",
-            "ETC": "etc",
-          };
-          const mappedCategory = categoryMap[communityPostDetailData.category] || "work";
-
-          // 프롬프트 타입과 카테고리 먼저 설정
-          setSelectedPromptType(mappedType);
-          setSelectedCategory(mappedCategory);
-
-          // 폼 데이터 채우기
-          setTitle(communityPostDetailData.title);
-          setTags(communityPostDetailData.tags);
-          setDescriptionState(textToLexicalJSON(communityPostDetailData.description));
-          setUsedPrompt(textToLexicalJSON(communityPostDetailData.prompt));
-          setExamplePrompt(textToLexicalJSON(communityPostDetailData.sampleQuestion));
-          setAnswerPrompt(textToLexicalJSON(communityPostDetailData.sampleAnswer || ''));
-
-          // fileUrl이 있으면 이미지 설정
-          if (communityPostDetailData.fileUrl) {
-            const imageUrl = communityPostDetailData.fileUrl;
-            const s3Key = extractS3KeyFromUrl(imageUrl);
-            setUploadedImageUrl(imageUrl); // 렌더링용: 전체 URL
-            setUploadedImageKey(s3Key); // 전송용: S3 key만
-          }
+          await loadCommunityPostData(postId, {
+            setSelectedPromptType,
+            setSelectedCategory,
+            setTitle,
+            setTags,
+            setDescriptionState,
+            setUsedPrompt,
+            setExamplePrompt,
+            setAnswerPrompt,
+            setUploadedImageUrl,
+            setUploadedImageKey,
+          });
 
           setIsLoadingArticle(false);
           return;
@@ -480,83 +275,17 @@ function PostPageContent() {
             return;
           }
 
-          const data = await SpaceAPI.getArchiveArticleDetail(spaceId, articleId);
-
-          if (!data) {
-            alert('게시글을 찾을 수 없습니다.');
-            router.back();
-            return;
-          }
-
-          // Lexical JSON 형식으로 변환하는 헬퍼 함수
-          const textToLexicalJSON = (text: string) => {
-          return JSON.stringify({
-            root: {
-              children: [
-                {
-                  children: [
-                    {
-                      detail: 0,
-                      format: 0,
-                      mode: 'normal',
-                      style: '',
-                      text: text,
-                      type: 'text',
-                      version: 1,
-                    },
-                  ],
-                  direction: null,
-                  format: '',
-                  indent: 0,
-                  type: 'paragraph',
-                  version: 1,
-                  textFormat: 0,
-                  textStyle: '',
-                },
-              ],
-              direction: null,
-              format: '',
-              indent: 0,
-              type: 'root',
-              version: 1,
-            },
+          await loadArchiveArticleData(spaceId, articleId, {
+            setSelectedPromptType,
+            setTitle,
+            setTags,
+            setDescriptionState,
+            setUsedPrompt,
+            setExamplePrompt,
+            setAnswerPrompt,
+            setUploadedImageUrl,
+            setUploadedImageKey,
           });
-        };
-
-          // 타입 변환: 숫자 -> 문자열
-          const promptTypeMap: { [key: string]: "text" | "image" } = {
-            "1": "text",
-            "2": "image",
-            "TEXT": "text",
-            "IMAGE": "image",
-            "text": "text",
-            "image": "image",
-            "텍스트": "text",
-            "이미지": "image"
-          };
-
-          console.log('아카이브 원본 타입:', data.type, '타입:', typeof data.type);
-          const mappedType = promptTypeMap[String(data.type)] || "text";
-          console.log('매핑된 타입:', mappedType);
-
-          // 프롬프트 타입 먼저 설정
-          setSelectedPromptType(mappedType);
-
-          // 폼 데이터 채우기
-          setTitle(data.title);
-          setTags(data.tags);
-          setDescriptionState(textToLexicalJSON(data.description));
-          setUsedPrompt(textToLexicalJSON(data.prompt));
-          setExamplePrompt(textToLexicalJSON(data.sampleQuestion));
-          setAnswerPrompt(textToLexicalJSON(data.sampleAnswer || ''));
-
-          // 이미지 타입인 경우 fileUrl 설정
-          if (mappedType === 'image' && data.fileUrl) {
-            const imageUrl = data.fileUrl;
-            const s3Key = extractS3KeyFromUrl(imageUrl);
-            setUploadedImageUrl(imageUrl); // 렌더링용: 전체 URL
-            setUploadedImageKey(s3Key); // 전송용: S3 key만
-          }
         }
       } catch (error) {
         console.error('게시글 로드 실패:', error);
@@ -977,12 +706,12 @@ function PostPageContent() {
 
       // 업로드된 이미지 정보 저장
       // CloudFront URL 생성 (key를 사용)
-      const cloudfrontUrl = `https://d3qr7nnlhj7oex.cloudfront.net/${uploadData.key}`;
-      
-      console.log('이미지 업로드 성공:', { 
-        key: uploadData.key, 
+      const cloudfrontUrl = s3KeyToCloudFrontUrl(uploadData.key);
+
+      console.log('이미지 업로드 성공:', {
+        key: uploadData.key,
         cloudfrontUrl,
-        uploadData 
+        uploadData
       });
       
       // 기존 AI 생성 이미지 제거 (단일 이미지만 허용)
