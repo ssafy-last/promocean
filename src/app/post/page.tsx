@@ -3,15 +3,15 @@
 // frontend/src/app/post/page.tsx
 
 import { useSearchParams, useRouter } from "next/navigation";
-import { useState, useEffect, Suspense } from "react";
-import Image from "next/image";
-import PostingFloatingSection from "@/components/section/PostingFloatingSection";
-import PostingWriteSection from "@/components/section/PostingWriteSection";
-import PostingFooter from "@/components/layout/PostingFooter";
-import PostingArchiveFolderSection from "@/components/section/PostingArchiveFolderSection";
+import { useEffect, Suspense } from "react";
 import { PostingFloatingItemProps } from "@/types/itemType";
-import TitleInput from "@/components/editor/TitleInput";
-import HashtagInput from "@/components/editor/HashtagInput";
+import TokenDisplay from "@/components/post/TokenDisplay";
+import SubmissionPostForm from "@/components/post/SubmissionPostForm";
+import CommunityPostForm from "@/components/post/CommunityPostForm";
+import ArchivePostForm from "@/components/post/ArchivePostForm";
+import { usePostForm } from "@/hooks/usePostForm";
+import { useImageManagement } from "@/hooks/useImageManagement";
+import { usePostUIState } from "@/hooks/usePostUIState";
 import { buildPromptFromLexical, extractTextFromLexical } from "@/utils/lexicalUtils";
 import { textToLexicalJSON } from "@/utils/lexicalConverter";
 import { mapPromptType } from "@/utils/typeMapper";
@@ -22,7 +22,6 @@ import { submitSubmission, submitCommunityPost, submitArchiveArticle } from "@/u
 import { PromptAPI } from "@/api/prompt";
 import { ContestAPI } from "@/api/contest/contest";
 import { UploadAPI } from "@/api/upload";
-import { Upload } from "lucide-react";
 import { useSpaceStore } from "@/store/spaceStore";
 import SpaceAPI from "@/api/space";
 import { useArchiveFolderStore } from "@/store/archiveFolderStore";
@@ -46,49 +45,76 @@ function PostPageContent() {
 
   const isEditMode = mode === "edit" && (articleIdParam || postIdParam || submissionIdParam);
   const isSubmissionType = postType === 'submission';
+  const isArchiveType = postType === 'my-space' || postType === 'team-space';
 
-  // 폼 상태 관리
-  const [title, setTitle] = useState("");
-  const [tags, setTags] = useState<string[]>([]); // 배열로 변경
-  const [descriptionState, setDescriptionState] = useState("");
-  const [usedPrompt, setUsedPrompt] = useState("");
-  const [examplePrompt, setExamplePrompt] = useState("");
-  const [answerPrompt, setAnswerPrompt] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("work");
-  const [selectedPromptType, setSelectedPromptType] = useState<string>("text");
-  const [selectedFolder, setSelectedFolder] = useState("");
-  const [selectedFolderId , setSelectedFolderId] = useState<number | null>(
-    folderIdParam ? parseInt(folderIdParam, 10) : null
-  );
-  const [isLoadingArticle, setIsLoadingArticle] = useState(false);
+  // 커스텀 훅으로 상태 관리
+  const { formState, actions: formActions } = usePostForm(folderIdParam);
+  const { imageState, actions: imageActions } = useImageManagement();
+  const { uiState, actions: uiActions } = usePostUIState();
+
+  // 편의를 위한 구조 분해
+  const {
+    title,
+    tags,
+    descriptionState,
+    usedPrompt,
+    examplePrompt,
+    answerPrompt,
+    selectedCategory,
+    selectedPromptType,
+    selectedFolder,
+    selectedFolderId,
+    contestType,
+  } = formState;
+
+  const {
+    generatedImageUrl,
+    generatedImageKey,
+    uploadedImageUrl,
+    uploadedImageKey,
+  } = imageState;
+
+  const {
+    isLoadingArticle,
+    isLoadingTokens,
+    isLoadingContest,
+    remainingTokens,
+  } = uiState;
+
+  // Setter 함수 추출
+  const {
+    setTitle,
+    setTags,
+    setDescriptionState,
+    setUsedPrompt,
+    setExamplePrompt,
+    setAnswerPrompt,
+    setSelectedCategory,
+    setSelectedPromptType,
+    setSelectedFolder,
+    setSelectedFolderId,
+    setContestType,
+  } = formActions;
+
+  const {
+    setGeneratedImageUrl,
+    setGeneratedImageKey,
+    setUploadedImageUrl,
+    setUploadedImageKey,
+  } = imageActions;
+
+  const {
+    setIsLoadingArticle,
+    setIsGeneratingAnswer,
+    setIsLoadingTokens,
+    setIsLoadingContest,
+    setPromptError,
+    setExamplePromptError,
+    setRemainingTokens,
+  } = uiActions;
 
   const spaceStore = useSpaceStore();
   const folderStore = useArchiveFolderStore();
-
-
-  // AI 답변 생성 로딩 상태
-  const [isGeneratingAnswer, setIsGeneratingAnswer] = useState(false);
-
-  // 이미지 프롬프트 결과 관련 상태
-  const [generatedImageUrl, setGeneratedImageUrl] = useState<string>("");
-  const [generatedImageKey, setGeneratedImageKey] = useState<string>("");
-  const [uploadedImageUrl, setUploadedImageUrl] = useState<string>("");
-  const [uploadedImageKey, setUploadedImageKey] = useState<string>("");
-
-  // 토큰 잔량 관련 상태
-  const [remainingTokens, setRemainingTokens] = useState<number | null>(null);
-  const [isLoadingTokens, setIsLoadingTokens] = useState(false);
-
-  // 에러 상태 관리
-  const [promptError, setPromptError] = useState(false);
-  const [examplePromptError, setExamplePromptError] = useState(false);
-
-  // 아카이브 타입인지 확인
-  const isArchiveType = postType === 'my-space' || postType === 'team-space';
-  
-  // 대회 정보 및 타입 상태
-  const [contestType, setContestType] = useState<string>("text");
-  const [isLoadingContest, setIsLoadingContest] = useState(false);
   
   // 페이지 로드 시 토큰 잔량 조회
   useEffect(() => {
@@ -106,7 +132,7 @@ function PostPageContent() {
     };
 
     fetchRemainingTokens();
-  }, []);
+  }, [setIsLoadingTokens, setRemainingTokens]);
 
   // 산출물 제출 모드일 때 대회 정보 로드
   useEffect(() => {
@@ -139,7 +165,7 @@ function PostPageContent() {
     };
     
     loadContestData();
-  }, [isSubmissionType, contestIdParam, router]);
+  }, [isSubmissionType, contestIdParam, router, setIsLoadingContest, setSelectedPromptType, setContestType]);
 
   // Zustand store에서 폴더 리스트 가져오기
   const allFolders = folderStore.allFolderList;
@@ -180,7 +206,7 @@ function PostPageContent() {
     if (folder) {
       setSelectedFolder(folder.name);
     }
-  }, [isArchiveType, selectedFolderId, allFolders]);
+  }, [isArchiveType, selectedFolderId, allFolders, setSelectedFolder]);
 
   // 수정 모드일 때 또는 아카이브로 이동할 때 기존 게시글 데이터 로드
   useEffect(() => {
@@ -296,7 +322,31 @@ function PostPageContent() {
     };
 
     loadArticleData();
-  }, [isEditMode, articleIdParam, postIdParam, submissionIdParam, contestIdParam, isSubmissionType, postType, spaceStore.currentSpace?.spaceId, router]);
+  }, [
+    isEditMode,
+    articleIdParam,
+    postIdParam,
+    submissionIdParam,
+    contestIdParam,
+    isSubmissionType,
+    postType,
+    spaceStore.currentSpace?.spaceId,
+    router,
+    setIsLoadingArticle,
+    setSelectedPromptType,
+    setContestType,
+    setDescriptionState,
+    setUsedPrompt,
+    setAnswerPrompt,
+    setUploadedImageUrl,
+    setUploadedImageKey,
+    setGeneratedImageUrl,
+    setGeneratedImageKey,
+    setSelectedCategory,
+    setTitle,
+    setTags,
+    setExamplePrompt,
+  ]);
 
   // 폴더 변경 시 쿼리 파라미터 업데이트
   const handleFolderChange = (newFolder: string, newFolderId : number) => {
@@ -754,403 +804,62 @@ function PostPageContent() {
     );
   }
 
+  // 공통 Props
+  const baseProps = {
+    formState,
+    imageState,
+    uiState,
+    onTitleChange: setTitle,
+    onTagsChange: setTags,
+    onDescriptionChange: setDescriptionState,
+    onUsedPromptChange: setUsedPrompt,
+    onExamplePromptChange: setExamplePrompt,
+    onAnswerPromptChange: setAnswerPrompt,
+    onCategoryChange: setSelectedCategory,
+    onPromptTypeChange: setSelectedPromptType,
+    onImageUpload: handleImageUpload,
+    onGeneratedImageRemove: () => {
+      setGeneratedImageUrl("");
+      setGeneratedImageKey("");
+    },
+    onUploadedImageRemove: () => {
+      setUploadedImageUrl("");
+      setUploadedImageKey("");
+    },
+    onAISubmit: handleAISubmit,
+    onSubmit: handleSubmit,
+    onPromptErrorChange: setPromptError,
+    onExamplePromptErrorChange: setExamplePromptError,
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       {/* 토큰 잔량 표시 - Sticky */}
-      <div className="sticky top-0 z-50 bg-gray-50 pt-4 pb-2">
-        <div className="max-w-7xl mx-auto px-4 flex justify-end">
-          <div className="inline-flex items-center gap-3 bg-white px-5 py-3 rounded-lg shadow-md border border-gray-200">
-            <div className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-              <span className="text-sm font-medium text-gray-700">AI 토큰</span>
-            </div>
-            <div className="h-5 w-px bg-gray-300"></div>
-            {isLoadingTokens ? (
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-                <span className="text-sm text-gray-500">로딩 중...</span>
-              </div>
-            ) : remainingTokens !== null ? (
-              <div className="flex items-center gap-1.5">
-                <span className="text-2xl font-bold text-primary">{remainingTokens.toLocaleString()}</span>
-                <span className="text-sm text-gray-500">개 남음</span>
-              </div>
-            ) : (
-              <span className="text-sm text-gray-500">조회 실패</span>
-            )}
-          </div>
-        </div>
-      </div>
+      <TokenDisplay remainingTokens={remainingTokens} isLoading={isLoadingTokens} />
 
       <div className="max-w-7xl mx-auto px-4">
-
-        {/* 페이지 제목 표시
-        {isEditMode && !isSubmissionType && (
-          <div className="mb-6">
-            <h1 className="text-2xl font-bold text-gray-800">게시글 수정</h1>
-            <p className="text-sm text-gray-600 mt-1">기존 내용을 수정한 후 저장하세요.</p>
-          </div>
-        )} */}
-
-        {isSubmissionType && (
-          <div className="mb-6">
-            <h1 className="text-2xl font-bold text-gray-800">산출물 제출</h1>
-            <p className="text-sm text-gray-600 mt-1">대회에 제출할 산출물을 작성해주세요.</p>
-          </div>
+        {/* 모드별 컴포넌트 렌더링 */}
+        {isSubmissionType ? (
+          <SubmissionPostForm
+            {...baseProps}
+            isLoadingContest={isLoadingContest}
+          />
+        ) : isArchiveType ? (
+          <ArchivePostForm
+            {...baseProps}
+            promptTypeItems={promptTypeItems}
+            selectedFolder={selectedFolder}
+            onFolderChange={handleFolderChange}
+            pinnedFolders={pinnedFolders}
+            normalFolders={normalFolders}
+          />
+        ) : (
+          <CommunityPostForm
+            {...baseProps}
+            categoryItems={categoryItems}
+            promptTypeItems={promptTypeItems}
+          />
         )}
-
-        {/* 제목과 해시태그는 submission 타입이 아닐 때만 표시 */}
-        {!isSubmissionType && (
-          <>
-            <div className="mb-4">
-              <TitleInput value={title} onChange={setTitle} placeholder="제목을 입력하세요"/>
-            </div>
-            <div className="mb-4">
-              <HashtagInput tags={tags} onTagsChange={setTags} />
-            </div>
-          </>
-        )}
-
-
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-
-          {/* 글 작성 컨테이너 (8 비율) */}
-          <div className="lg:col-span-4 space-y-4">
-            {/* 설명 */}
-            <PostingWriteSection
-              title="설명"
-              placeholder="텍스트를 입력하세요..."
-              onChange={setDescriptionState}
-              value={descriptionState}
-              isSubmitButton={false}
-            />
-
-            {/* 사용 프롬프트 */}
-            <PostingWriteSection
-              title="프롬프트"
-              placeholder="프롬프트를 입력하세요..."
-              onChange={(content) => {
-                setUsedPrompt(content);
-                setPromptError(false);
-              }}
-              value={usedPrompt}
-              isSubmitButton={selectedPromptType === 'image' || (isSubmissionType && selectedPromptType === 'text')}
-              onSubmit={handleAISubmit}
-              isLoading={isGeneratingAnswer}
-            />
-
-            {/* submission 타입일 때는 예시 질문 없이 바로 결과 표시 */}
-            {isSubmissionType ? (
-              selectedPromptType === 'text' ? (
-                <PostingWriteSection
-                  title="결과"
-                  placeholder="결과를 입력하세요..."
-                  onChange={setAnswerPrompt}
-                  value={answerPrompt}
-                  isSubmitButton={false}
-                />
-              ) : (
-                <div>
-                  {/* 결과 사진 업로드 섹션 */}
-                  <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-4">결과</h3>
-
-                    {/* AI 생성 이미지가 있는 경우 표시 */}
-                    {generatedImageUrl && (
-                      <div className="mb-4">
-                        <div className="flex items-center justify-between mb-2">
-                          <p className="text-sm font-medium text-gray-700">AI 생성 이미지</p>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setGeneratedImageUrl("");
-                              setGeneratedImageKey("");
-                            }}
-                            className="text-xs text-red-600 hover:text-red-700"
-                          >
-                            제거
-                          </button>
-                        </div>
-                        <div className="relative w-full h-64 rounded-lg overflow-hidden border border-gray-300">
-                          <Image
-                            src={generatedImageUrl}
-                            alt="AI 생성 이미지"
-                            fill
-                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 800px"
-                            className="object-contain"
-                          />
-                        </div>
-                      </div>
-                    )}
-
-                    {/* 업로드된 이미지가 있는 경우 표시 */}
-                    {uploadedImageUrl && (
-                      <div className="mb-4">
-                        <div className="flex items-center justify-between mb-2">
-                          <p className="text-sm font-medium text-gray-700">업로드된 이미지</p>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setUploadedImageUrl("");
-                              setUploadedImageKey("");
-                            }}
-                            className="text-xs text-red-600 hover:text-red-700"
-                          >
-                            제거
-                          </button>
-                        </div>
-                        <div className="relative w-full h-64 rounded-lg overflow-hidden border border-gray-300">
-                          <Image
-                            src={uploadedImageUrl}
-                            alt="업로드된 이미지"
-                            fill
-                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 800px"
-                            className="object-contain"
-                          />
-                        </div>
-                      </div>
-                    )}
-
-                    {/* 이미지가 없을 때만 텍스트 입력 또는 업로드 UI 표시 */}
-                    {!generatedImageUrl && !uploadedImageUrl && (
-                      <>
-                        {/* 텍스트 결과 입력 - title은 상위 h3에서 이미 표시되므로 제거 */}
-                        <PostingWriteSection
-                          title=""
-                          placeholder="결과를 텍스트로 입력하거나 이미지를 업로드하세요..."
-                          onChange={setAnswerPrompt}
-                          value={answerPrompt}
-                        />
-
-                        {/* 이미지 업로드 버튼 */}
-                        <label
-                          htmlFor="image-upload"
-                          className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors"
-                        >
-                          <Upload className="w-8 h-8 text-gray-400 mb-2" />
-                          <span className="text-sm text-gray-500">
-                            이미지를 업로드하거나
-                            <br />
-                            AI 생성 버튼을 눌러 이미지를 생성하세요
-                          </span>
-                          <input
-                            id="image-upload"
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImageUpload}
-                            className="hidden"
-                          />
-                        </label>
-                      </>
-                    )}
-
-                    {/* 이미지가 있을 때 추가 업로드 버튼 */}
-                    {(generatedImageUrl || uploadedImageUrl) && (
-                      <div className="mt-4">
-                        <label
-                          htmlFor="image-upload-replace"
-                          className="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-md cursor-pointer transition-colors"
-                        >
-                          <Upload className="w-4 h-4 mr-2" />
-                          이미지 변경
-                          <input
-                            id="image-upload-replace"
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImageUpload}
-                            className="hidden"
-                          />
-                        </label>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )
-            ) : (
-              selectedPromptType === 'text' ? (
-                <div>
-                      {/* 예시 질문 프롬프트 */}
-                      <PostingWriteSection
-                        title="예시 질문 프롬프트"
-                        placeholder="예시 질문을 입력하세요..."
-                        onChange={(content) => {
-                          setExamplePrompt(content);
-                          setExamplePromptError(false);
-                        }}
-                        value={examplePrompt}
-                        isSubmitButton={true}
-                        onSubmit={handleAISubmit}
-                        isLoading={isGeneratingAnswer}
-                        hasError={examplePromptError}
-                        errorMessage="예시 질문을 입력해주세요. AI 답변 생성을 위해 필수 항목입니다."
-                        dataField="example-prompt"
-                      />
-
-                      {/* 답변 프롬프트 */}
-                      <PostingWriteSection
-                        title="답변 프롬프트"
-                        placeholder="답변을 입력하세요..."
-                        onChange={setAnswerPrompt}
-                        value={answerPrompt}
-                      />
-                  </div>
-              ) : (
-                <div>
-                      {/* 결과 사진 업로드 섹션 */}
-                      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                        <h3 className="text-lg font-semibold text-gray-800 mb-4">결과 사진</h3>
-
-                        {/* AI 생성 이미지가 있는 경우 표시 */}
-                        {generatedImageUrl && (
-                          <div className="mb-4">
-                            <div className="flex items-center justify-between mb-2">
-                              <p className="text-sm font-medium text-gray-700">AI 생성 이미지</p>
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  setGeneratedImageUrl("");
-                                  setGeneratedImageKey("");
-                                }}
-                                className="text-xs text-red-600 hover:text-red-700"
-                              >
-                                제거
-                              </button>
-                            </div>
-                            <div className="relative w-full aspect-video bg-gray-100 rounded-lg overflow-hidden border border-gray-300">
-                              <Image
-                                src={generatedImageUrl}
-                                alt="AI 생성 이미지"
-                                fill
-                                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 800px"
-                                className="object-contain"
-                              />
-                            </div>
-                          </div>
-                        )}
-
-                        {/* 업로드된 이미지가 있는 경우 표시 */}
-                        {uploadedImageUrl && (
-                          <div className="mb-4">
-                            <div className="flex items-center justify-between mb-2">
-                              <p className="text-sm font-medium text-gray-700">업로드된 이미지</p>
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  setUploadedImageUrl("");
-                                  setUploadedImageKey("");
-                                }}
-                                className="text-xs text-red-600 hover:text-red-700"
-                              >
-                                제거
-                              </button>
-                            </div>
-                            <div className="relative w-full aspect-video bg-gray-100 rounded-lg overflow-hidden border border-gray-300">
-                              <Image
-                                src={uploadedImageUrl}
-                                alt="업로드된 이미지"
-                                fill
-                                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 800px"
-                                className="object-contain"
-                              />
-                            </div>
-                          </div>
-                        )}
-
-                        {/* 이미지가 없는 경우 업로드 UI */}
-                        {!generatedImageUrl && !uploadedImageUrl && (
-                          <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-                            <label
-                              htmlFor="image-upload"
-                              className="cursor-pointer flex flex-col items-center"
-                            >
-                              <Upload className="w-12 h-12 text-gray-400 mb-3" />
-                              <span className="text-sm font-medium text-gray-700 mb-1">
-                                이미지를 업로드하거나
-                              </span>
-                              <span className="text-xs text-gray-500">
-                                AI 생성 버튼을 눌러 이미지를 생성하세요
-                              </span>
-                              <input
-                                id="image-upload"
-                                type="file"
-                                accept="image/*"
-                                onChange={handleImageUpload}
-                                className="hidden"
-                              />
-                            </label>
-                          </div>
-                        )}
-
-                        {/* 이미지가 있을 때 추가 업로드 버튼 */}
-                        {(generatedImageUrl || uploadedImageUrl) && (
-                          <div className="mt-4">
-                            <label
-                              htmlFor="image-upload-additional"
-                              className="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-md cursor-pointer transition-colors"
-                            >
-                              <Upload className="w-4 h-4 mr-2" />
-                              다른 이미지 업로드
-                              <input
-                                id="image-upload-additional"
-                                type="file"
-                                accept="image/*"
-                                onChange={handleImageUpload}
-                                className="hidden"
-                              />
-                            </label>
-                          </div>
-                        )}
-                      </div>
-                  </div>
-              )
-            )}
-
-            {/* 프롬프트 작성 완료 버튼 */}
-            <PostingFooter onSubmit={handleSubmit} />
-          </div>
-
-          {/* 플로팅 컨테이너 (2 비율) */}
-          <div className="lg:col-span-1 space-y-4">
-
-            {/* 카테고리 선택 - 커뮤니티 글쓰기일 때만 표시 (submission 타입 제외) */}
-            {!isArchiveType && !isSubmissionType && (
-              <PostingFloatingSection
-                title="카테고리"
-                items={categoryItems}
-                selectedValue={selectedCategory}
-                onSelect={setSelectedCategory}
-                name="category"
-              />
-            )}
-
-            {/* 아카이브 폴더 선택 - 아카이브 타입일 때만 표시 */}
-            {isArchiveType && (
-              <PostingArchiveFolderSection
-                selectedFolder={selectedFolder}
-                onFolderChange={handleFolderChange}
-                pinnedFolders={pinnedFolders}
-                normalFolders={normalFolders}
-              />
-            )}
-
-            {/* 프롬프트 타입 - submission 타입일 때는 읽기 전용 */}
-            <PostingFloatingSection
-              title="프롬프트 타입"
-              items={promptTypeItems}
-              selectedValue={selectedPromptType}
-              onSelect={isSubmissionType ? undefined : setSelectedPromptType}
-              name="promptType"
-            />
-            {isSubmissionType && isLoadingContest && (
-              <div className="text-sm text-gray-500 mt-2">대회 정보를 불러오는 중...</div>
-            )}
-          </div>
-        </div>
-
-
-
       </div>
     </div>
   );
