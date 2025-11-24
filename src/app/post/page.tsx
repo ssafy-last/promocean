@@ -12,16 +12,15 @@ import PostingArchiveFolderSection from "@/components/section/PostingArchiveFold
 import { PostingFloatingItemProps } from "@/types/itemType";
 import TitleInput from "@/components/editor/TitleInput";
 import HashtagInput from "@/components/editor/HashtagInput";
-import { buildPromptFromLexical, extractTextFromLexical, convertLexicalToMarkdown } from "@/utils/lexicalUtils";
+import { buildPromptFromLexical, extractTextFromLexical } from "@/utils/lexicalUtils";
 import { textToLexicalJSON } from "@/utils/lexicalConverter";
 import { mapPromptType } from "@/utils/typeMapper";
-import { extractS3KeyFromUrl, s3KeyToCloudFrontUrl } from "@/utils/imageUtils";
+import { s3KeyToCloudFrontUrl } from "@/utils/imageUtils";
 import { loadSubmissionData, loadCommunityPostData, loadArchiveArticleData } from "@/utils/articleLoader";
+import { validateSubmission, validateArticle, validateArchiveFolder } from "@/utils/postValidator";
+import { submitSubmission, submitCommunityPost, submitArchiveArticle } from "@/utils/postSubmitter";
 import { PromptAPI } from "@/api/prompt";
-import { PostAPI, PostArticleRequest } from "@/api/post";
-import { categoryStringToEnum, promptTypeStringToEnum } from "@/types/postEnum";
 import { ContestAPI } from "@/api/contest/contest";
-import { SubmissionAPI } from "@/api/contest/submission";
 import { UploadAPI } from "@/api/upload";
 import { Upload } from "lucide-react";
 import { useSpaceStore } from "@/store/spaceStore";
@@ -319,37 +318,29 @@ function PostPageContent() {
   const handleSubmit = async () => {
     // 산출물 제출 모드일 때는 다른 검증
     if (isSubmissionType) {
-      if (!descriptionState.trim()) {
-        alert('설명을 입력해주세요.');
+      // 검증
+      const validation = validateSubmission({
+        descriptionState,
+        usedPrompt,
+        answerPrompt,
+        selectedPromptType,
+        generatedImageKey,
+        uploadedImageKey,
+      });
+
+      if (!validation.valid) {
+        alert(validation.error);
         return;
       }
 
-      if (!usedPrompt.trim()) {
-        alert('프롬프트를 입력해주세요.');
-        return;
-      }
-
-      // 결과 검증 (텍스트 타입은 answerPrompt, 이미지 타입은 이미지 키)
-      if (selectedPromptType === 'text') {
-        if (!answerPrompt.trim()) {
-          alert('결과를 입력해주세요.');
-          return;
-        }
-      } else if (selectedPromptType === 'image') {
-        // 이미지 키 상태 확인 (디버깅용)
-        console.log('제출 시 이미지 키 상태 확인:', {
-          generatedImageKey,
-          uploadedImageKey,
-          generatedImageUrl,
-          uploadedImageUrl,
-          answerPrompt: answerPrompt.trim()
-        });
-        
-        if (!generatedImageKey && !uploadedImageKey && !answerPrompt.trim()) {
-          alert('결과 이미지를 업로드하거나 AI로 생성하거나 텍스트로 입력해주세요.');
-          return;
-        }
-      }
+      // 이미지 키 상태 확인 (디버깅용)
+      console.log('제출 시 이미지 키 상태 확인:', {
+        generatedImageKey,
+        uploadedImageKey,
+        generatedImageUrl,
+        uploadedImageUrl,
+        answerPrompt: answerPrompt.trim()
+      });
 
       // 산출물 제출/수정 API 호출
       if (!contestIdParam) {
@@ -364,309 +355,109 @@ function PostPageContent() {
           return;
         }
 
-        const description = convertLexicalToMarkdown(descriptionState);
-        const prompt = convertLexicalToMarkdown(usedPrompt);
-        let result = '';
+        const submissionId = submissionIdParam ? parseInt(submissionIdParam, 10) : undefined;
 
-        if (selectedPromptType === 'text') {
-          result = convertLexicalToMarkdown(answerPrompt);
-        } else if (selectedPromptType === 'image') {
-          // 이미지 타입: 이미지 키 우선순위 (업로드 > AI 생성 > 텍스트)
-          // 상태 값을 직접 확인
-          const currentUploadedKey = uploadedImageKey;
-          const currentGeneratedKey = generatedImageKey;
-          
-          console.log('이미지 키 확인 (제출 시점):', {
-            currentUploadedKey,
-            currentGeneratedKey,
-            uploadedImageUrl,
-            generatedImageUrl
-          });
-          
-          if (currentUploadedKey && currentUploadedKey.trim()) {
-            result = currentUploadedKey.trim();
-          } else if (currentGeneratedKey && currentGeneratedKey.trim()) {
-            result = currentGeneratedKey.trim();
-          } else if (answerPrompt.trim()) {
-            // 텍스트로 입력된 경우 (S3 key 형식일 수도 있음)
-            const textResult = extractTextFromLexical(answerPrompt);
-            // 이미 CloudFront URL이면 키로 변환, 아니면 그대로 사용
-            result = extractS3KeyFromUrl(textResult) || textResult;
-          }
-          
-          console.log('이미지 제출 데이터:', { 
-            uploadedImageKey: currentUploadedKey, 
-            generatedImageKey: currentGeneratedKey, 
-            result,
-            resultLength: result?.length,
-            uploadedImageUrl,
-            generatedImageUrl,
-            selectedPromptType
-          });
-          
-          // 이미지 타입인데 result가 비어있으면 에러
-          if (!result || result.trim() === '') {
-            console.error('이미지 키가 비어있음:', {
-              uploadedImageKey: currentUploadedKey,
-              generatedImageKey: currentGeneratedKey,
-              answerPrompt: answerPrompt.trim(),
-              selectedPromptType,
-              uploadedImageUrl,
-              generatedImageUrl
-            });
-            alert('이미지를 업로드하거나 AI로 생성해주세요.');
-            return;
-          }
-          
-          // result가 제대로 설정되었는지 최종 확인
-          console.log('최종 result 값:', result, '타입:', typeof result, '길이:', result.length);
-        }
-
-        // API 호출 전 최종 확인
-        console.log('제출 전 최종 데이터:', {
+        await submitSubmission({
           contestId,
-          prompt,
-          description,
-          result,
           selectedPromptType,
-          isEditMode,
-          submissionIdParam
+          descriptionState,
+          usedPrompt,
+          answerPrompt,
+          uploadedImageKey,
+          generatedImageKey,
+          uploadedImageUrl,
+          generatedImageUrl,
+          isEditMode: !!isEditMode,
+          submissionId,
+          router,
         });
-
-        // 산출물 수정 모드
-        if (isEditMode && submissionIdParam) {
-          const submissionId = parseInt(submissionIdParam, 10);
-          if (isNaN(submissionId)) {
-            alert('잘못된 산출물 ID입니다.');
-            return;
-          }
-
-          console.log('수정 API 호출:', { contestId, submissionId, prompt, description, result });
-          await SubmissionAPI.update(contestId, submissionId, prompt, description, result);
-
-          console.log('산출물 수정 성공');
-          alert('산출물이 성공적으로 수정되었습니다!');
-
-          // 성공 후 대회 상세 페이지로 이동
-          router.push(`/contest/${contestId}`);
-        } else {
-          // 산출물 생성 모드
-          // API 요청 본문 확인
-          const requestBody = {
-            prompt,
-            description,
-            result,
-          };
-          console.log('생성 API 호출:', { contestId, ...requestBody });
-          console.log('요청 본문 (JSON):', JSON.stringify(requestBody));
-          const response = await SubmissionAPI.create(contestId, prompt, description, result);
-
-          console.log('산출물 제출 성공:', response);
-          alert('산출물이 성공적으로 제출되었습니다!');
-
-          // 성공 후 대회 상세 페이지로 이동
-          router.push(`/contest/${contestId}`);
-        }
       } catch (error) {
         console.error('산출물 제출/수정 실패:', error);
-        alert('산출물 제출/수정에 실패했습니다.');
+        alert(error instanceof Error ? error.message : '산출물 제출/수정에 실패했습니다.');
       }
       return;
     }
 
     // 기존 검증 (커뮤니티/아카이브 게시글)
-    if (!title.trim()) {
-      alert('제목을 입력해주세요.');
-      return;
-    }
+    const validation = validateArticle({
+      title,
+      descriptionState,
+      usedPrompt,
+      selectedPromptType,
+      generatedImageKey,
+      uploadedImageKey,
+    });
 
-    if (!descriptionState.trim()) {
-      alert('설명을 입력해주세요.');
+    if (!validation.valid) {
+      alert(validation.error);
       return;
-    }
-
-    if (!usedPrompt.trim()) {
-      alert('사용 프롬프트를 입력해주세요.');
-      return;
-    }
-
-    // 예시 질문과 답변은 선택 사항으로 변경 (필수 아님)
-    // 이미지 타입일 때만 이미지 검증
-    if (selectedPromptType === 'image') {
-      // 이미지 타입일 때는 AI 생성 이미지나 업로드된 이미지 중 하나는 있어야 함
-      if (!generatedImageKey && !uploadedImageKey) {
-        alert('결과 이미지를 업로드하거나 AI로 생성해주세요.');
-        return;
-      }
     }
 
     try {
-      // Lexical JSON에서 마크다운으로 변환
-      const description = convertLexicalToMarkdown(descriptionState);
-      const prompt = convertLexicalToMarkdown(usedPrompt);
-
-      // 길이 검증
-      if (title.length > 100) {
-        alert('제목은 100자 이하로 입력해주세요.');
-        return;
-      }
-
-      if (description.length > 300) {
-        alert('설명은 300자 이하로 입력해주세요.');
-        return;
-      }
-
-      // API 요청 데이터 구성 (기본 필드)
-      const requestData: PostArticleRequest = {
-        title: title.trim(),
-        description: description.trim(),
-        category: categoryStringToEnum(selectedCategory),
-        prompt: prompt.trim(),
-        promptType: promptTypeStringToEnum(selectedPromptType),
-        tags: tags,
-        sampleQuestion: '', // 기본값
-        sampleAnswer: '', // 기본값
-      };
-
-      // 프롬프트 타입에 따라 추가 필드 설정
-      if (selectedPromptType === 'text') {
-        // 예시 질문과 답변은 선택 사항
-        const sampleQuestion = examplePrompt.trim() ? convertLexicalToMarkdown(examplePrompt) : '';
-        const sampleAnswer = answerPrompt.trim() ? convertLexicalToMarkdown(answerPrompt) : '';
-
-        // 예시 질문이 있을 경우에만 길이 검증
-        if (sampleQuestion && sampleQuestion.length > 200) {
-          alert('예시 질문은 200자 이하로 입력해주세요.');
-          return;
-        }
-
-        requestData.sampleQuestion = sampleQuestion.trim();
-        requestData.sampleAnswer = sampleAnswer.trim();
-      } else if (selectedPromptType === 'image') {
-        // 이미지 타입: 업로드된 이미지 우선, 없으면 AI 생성 이미지
-        requestData.filePath = uploadedImageKey || generatedImageKey;
-      }
-
-      console.log('제출 데이터:', requestData);
-
       // API 호출
       // 일반 게시글 or 아카이브 게시글 분기
       if(!isArchiveType){
-        // 커뮤니티 게시글 수정 모드
-        if (isEditMode && postIdParam) {
-          const postId = parseInt(postIdParam, 10);
-          if (isNaN(postId)) {
-            alert('잘못된 게시글 ID입니다.');
-            return;
-          }
+        // 커뮤니티 게시글 제출
+        const postId = postIdParam ? parseInt(postIdParam, 10) : undefined;
 
-          const response = await PostAPI.putArticlePost(postId, requestData);
-
-          console.log('게시글 수정 성공:', response);
-          alert(`게시글이 성공적으로 수정되었습니다!`);
-
-          // 성공 후 상세 페이지로 이동
-          router.push(`/community/${postId}`);
-        } else {
-          // 커뮤니티 게시글 생성 모드
-          const response = await PostAPI.postArticlePost(requestData);
-
-          console.log('게시글 생성 성공:', response);
-          alert(`게시글이 성공적으로 등록되었습니다!\n게시글 ID: ${response.postId}`);
-
-          // 성공 후 이동 (커뮤니티 페이지 또는 상세 페이지로)
-          router.push(`/community/${response.postId}`);
-        }
+        await submitCommunityPost({
+          title,
+          descriptionState,
+          usedPrompt,
+          examplePrompt,
+          answerPrompt,
+          selectedCategory,
+          selectedPromptType,
+          tags,
+          uploadedImageKey,
+          generatedImageKey,
+          isEditMode: !!isEditMode,
+          postId,
+          router,
+        });
       }else{
         // 아카이브 게시글 생성/수정
-        if (!selectedFolderId) {
-          alert('폴더를 선택해주세요.');
+        const folderValidation = validateArchiveFolder(selectedFolderId);
+        if (!folderValidation.valid) {
+          alert(folderValidation.error);
           return;
         }
 
         // type에 따라 올바른 spaceId 가져오기
-        let spaceId: number;
+        let spaceId: number | undefined;
         if (postType === 'my-space') {
           // 내 스페이스일 때는 authStore에서 personalSpaceId 가져오기
           const { user } = useAuthStore.getState();
-          if (!user?.personalSpaceId) {
-            alert('내 스페이스 정보를 찾을 수 없습니다.');
-            return;
-          }
-          spaceId = user.personalSpaceId;
+          spaceId = user?.personalSpaceId;
         } else {
           // 팀 스페이스일 때는 spaceStore에서 가져오기
-          const teamSpaceId = spaceStore.currentSpace?.spaceId;
-          if (!teamSpaceId) {
-            alert('팀 스페이스 정보를 찾을 수 없습니다.');
-            return;
-          }
-          spaceId = teamSpaceId;
+          spaceId = spaceStore.currentSpace?.spaceId;
         }
 
-        const articlePayload = {
-          description : requestData.description,
-          title : requestData.title,
-          prompt : requestData.prompt,
-          type : requestData.promptType,
-          exampleQuestion : requestData.sampleQuestion,
-          exampleAnswer : requestData.sampleAnswer,
-          filePath : requestData.filePath || '',
-          tags : requestData.tags
-        };
+        const articleId = articleIdParam ? parseInt(articleIdParam, 10) : undefined;
 
-        if (isEditMode && articleIdParam) {
-          // 수정 모드
-          const articleId = parseInt(articleIdParam, 10);
-          console.log("아카이브 게시글 수정 로직 실행", { spaceId, folderId: selectedFolderId, articleId });
-
-          const response = await SpaceAPI.putArchiveArticle(
-            spaceId,
-            selectedFolderId,
-            articleId,
-            articlePayload
-          );
-
-          if (response) {
-            console.log('아카이브 게시글 수정 성공:', response);
-            alert('게시글이 성공적으로 수정되었습니다!');
-
-            // 성공 후 상세 페이지로 이동
-            if (postType === 'my-space') {
-              router.push(`/my-space/archive/${selectedFolderId}/${articleId}`);
-            } else if (postType === 'team-space') {
-              router.push(`/team-space/${spaceId}/${selectedFolderId}/${articleId}`);
-            }
-          }
-        } else {
-          // 생성 모드
-          console.log("아카이브 게시글 생성 로직 실행", { spaceId, folderId: selectedFolderId });
-
-          const response = await SpaceAPI.postArchiveArticleCreate(
-            spaceId,
-            selectedFolderId,
-            articlePayload
-          );
-
-          console.log('아카이브 게시글 생성 성공:', response);
-          alert(`아카이브 게시글이 성공적으로 등록되었습니다!\n게시글 ID: ${response?.articleId}`);
-
-          // 성공 후 상세 페이지로 이동
-          if (response?.articleId) {
-            if (postType === 'my-space') {
-              // 마이스페이스: /my-space/archive/[folderId]/[articleId]
-              router.push(`/my-space/archive/${selectedFolderId}/${response.articleId}`);
-            } else if (postType === 'team-space') {
-              // 팀스페이스: /team-space/[spaceId]/[folderId]/[articleId]
-              router.push(`/team-space/${spaceId}/${selectedFolderId}/${response.articleId}`);
-            }
-          }
-        }
+        await submitArchiveArticle({
+          title,
+          descriptionState,
+          usedPrompt,
+          examplePrompt,
+          answerPrompt,
+          selectedPromptType,
+          tags,
+          uploadedImageKey,
+          generatedImageKey,
+          selectedFolderId: selectedFolderId!,
+          postType,
+          spaceId,
+          isEditMode: !!isEditMode,
+          articleId,
+          router,
+        });
       }
 
     } catch (error) {
       console.error('게시글 등록 실패:', error);
-      alert('게시글 등록에 실패했습니다. 다시 시도해주세요.');
+      alert(error instanceof Error ? error.message : '게시글 등록에 실패했습니다. 다시 시도해주세요.');
     }
   };
 
