@@ -7,7 +7,7 @@ import PostingWriteSection from '@/components/section/PostingWriteSection';
 import PostingFooter from '@/components/layout/PostingFooter';
 import PostingFloatingSection from '@/components/section/PostingFloatingSection';
 import PostingArchiveFolderSection from '@/components/section/PostingArchiveFolderSection';
-import CommunityResultSection from '@/components/post/CommunityResultSection';
+import CommunityResultSection from '@/components/section/CommunityResultSection';
 import { ArchivePostFormProps } from '@/types/postFormTypes';
 
 /**

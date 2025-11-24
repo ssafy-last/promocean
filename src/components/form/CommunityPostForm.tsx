@@ -6,7 +6,7 @@ import HashtagInput from '@/components/editor/HashtagInput';
 import PostingWriteSection from '@/components/section/PostingWriteSection';
 import PostingFooter from '@/components/layout/PostingFooter';
 import PostingFloatingSection from '@/components/section/PostingFloatingSection';
-import CommunityResultSection from '@/components/post/CommunityResultSection';
+import CommunityResultSection from '@/components/section/CommunityResultSection';
 import { CommunityPostFormProps } from '@/types/postFormTypes';
 
 /**
