@@ -26,16 +26,16 @@ function LoginPageContent() {
   };
 
   return (
-    <div className="flex flex-col h-screen justify-center items-center bg-background" >
+    <div className="flex flex-col h-screen justify-center items-center bg-background overflow-hidden" >
       {/* 로그인 폼 컨테이너 */}
 
           {/* 탭 */}          
           <div className='flex flex-row gap-2 w-fit bg-[#FDFDFC] h-[560px] shadow-2xl p-2'>
-            <div className='relative flex  w-[560px] flex-wrap'>
-                <div className={`absolute inset-0 bg-[url('/assets/login_bg.png')] bg-cover saturate-150 bg-center rounded transition-[right] duration-300
-                  ${activeTab === 'login' ? 'right-0' : 'right-[560px]'}`}></div>
-                <div className={`absolute inset-0 bg-[url('/assets/signup_bg.png')] bg-cover saturate-150 bg-center rounded transition-[right] duration-300
-                  ${activeTab === 'signup' ? 'right-0' : 'right-[560px]'}`}></div>
+            <div className='relative flex  w-[560px] '>
+                <div className={`absolute inset-0 bg-[url('/assets/login_bg.png')] bg-cover saturate-150 bg-center rounded transition-all duration-300
+                  ${activeTab === 'login' ? 'opacity-100' : "opacity-0 -translate-x-full"}`}></div>
+                <div className={`absolute inset-0 bg-[url('/assets/signup_bg.png')] bg-cover saturate-150 bg-center rounded transition-all duration-300
+                  ${activeTab === 'signup' ? ' opacity-100' : "opacity-0 -translate-x-full"}`}></div>
             </div>
          
           {/* 폼 내용 */}
