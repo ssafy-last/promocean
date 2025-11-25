@@ -138,107 +138,111 @@ export default function SignUpForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      {/* 제목 */}
-      <h1 className="text-3xl font-bold text-text mb-8">회원가입</h1>
-      
-      {/* 이메일 입력 */}
-      <div>
-        <label className="block text-text text-sm font-medium mb-2">
-          이메일
-        </label>
-        <div className="flex gap-2">
-          <input
-            type="email"
-            value={email}
-            onChange={handleEmailChange}
-            placeholder="Email"
-            required
-            className="flex-1 px-4 py-3 rounded-lg bg-white text-text border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-          />
-          <button
-            type="button"
-            onClick={handleCheckEmail}
-            disabled={isCheckingEmail || !email}
-            className="px-4 py-3 bg-primary hover:bg-primary/90 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors whitespace-nowrap shadow-md hover:shadow-lg"
-          >
-            {isCheckingEmail ? '확인중...' : '중복확인'}
-          </button>
+    <form onSubmit={handleSubmit} className="h-full flex flex-col justify-between">
+      <div className="space-y-4">
+        {/* 제목 */}
+        <h1 className="text-2xl font-bold text-text">회원가입</h1>
+
+        {/* 이메일 입력 */}
+        <div className="w-full">
+          <label className="block text-text text-xs font-medium">
+            이메일
+          </label>
+          <div className="flex gap-2">
+            <input
+              type="email"
+              value={email}
+              onChange={handleEmailChange}
+              placeholder="Email"
+              required
+              className="flex-1 px-3 py-2 text-sm rounded-sm bg-white text-text border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+            />
+            <button
+              type="button"
+              onClick={handleCheckEmail}
+              disabled={isCheckingEmail || !email}
+              className="px-4 py-2 bg-primary hover:bg-primary/90 disabled:bg-gray-400 disabled:cursor-not-allowed text-xs text-white font-medium rounded-sm transition-colors whitespace-nowrap"
+            >
+              {isCheckingEmail ? '확인중...' : '중복확인'}
+            </button>
+          </div>
+          {emailChecked && emailAvailable !== null && (
+            <p className={`mt-1 text-xs ${emailAvailable ? 'text-green-600' : 'text-red-600'}`}>
+              {emailAvailable ? '✓ 사용 가능한 이메일입니다.' : '✗ 이미 사용 중인 이메일입니다.'}
+            </p>
+          )}
         </div>
-        {emailChecked && emailAvailable !== null && (
-          <p className={`mt-2 text-sm ${emailAvailable ? 'text-green-600' : 'text-red-600'}`}>
-            {emailAvailable ? '✓ 사용 가능한 이메일입니다.' : '✗ 이미 사용 중인 이메일입니다.'}
-          </p>
-        )}
-      </div>
 
-      {/* 비밀번호 입력 */}
-      <div>
-        <label className="block text-text text-sm font-medium mb-2">
-          비밀번호
-        </label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-          required
-          className="w-full px-4 py-3 rounded-lg bg-white text-text border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-        />
-      </div>
-
-      {/* 비밀번호 확인 입력 */}
-      <div>
-        <label className="block text-text text-sm font-medium mb-2">
-          비밀번호 확인
-        </label>
-        <input
-          type="password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          placeholder="Confirm password"
-          required
-          className="w-full px-4 py-3 rounded-lg bg-white text-text border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-        />
-      </div>
-
-      {/* 닉네임 입력 */}
-      <div>
-        <label className="block text-text text-sm font-medium mb-2">
-          닉네임
-        </label>
-        <div className="flex gap-2">
+        {/* 비밀번호 입력 */}
+        <div className="w-full">
+          <label className="block text-text text-xs font-medium mb-1">
+            비밀번호
+          </label>
           <input
-            type="text"
-            value={nickname}
-            onChange={handleNicknameChange}
-            placeholder="Nickname"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
             required
-            className="flex-1 px-4 py-3 rounded-lg bg-white text-text border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+            className="w-full px-3 py-2 text-sm rounded-sm bg-white text-text border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
           />
-          <button
-            type="button"
-            onClick={handleCheckNickname}
-            disabled={isCheckingNickname || !nickname}
-            className="px-4 py-3 bg-primary hover:bg-primary/90 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors whitespace-nowrap shadow-md hover:shadow-lg"
-          >
-            {isCheckingNickname ? '확인중...' : '중복확인'}
-          </button>
         </div>
-        {nicknameChecked && nicknameAvailable !== null && (
-          <p className={`mt-2 text-sm ${nicknameAvailable ? 'text-green-600' : 'text-red-600'}`}>
-            {nicknameAvailable ? '✓ 사용 가능한 닉네임입니다.' : '✗ 이미 사용 중인 닉네임입니다.'}
-          </p>
-        )}
-      </div>
+
+        {/* 비밀번호 확인 입력 */}
+        <div className="w-full">
+          <label className="block text-text text-xs font-medium mb-1">
+            비밀번호 확인
+          </label>
+          <input
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder="Confirm password"
+            required
+            className="w-full px-3 py-2 text-sm rounded-sm bg-white text-text border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+          />
+        </div>
+
+        {/* 닉네임 입력 */}
+        <div className="w-full">
+          <label className="block text-text text-xs font-medium mb-1">
+            닉네임
+          </label>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={nickname}
+              onChange={handleNicknameChange}
+              placeholder="Nickname"
+              required
+              className="flex-1 px-3 py-2 text-sm rounded-sm bg-white text-text border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+            />
+            <button
+              type="button"
+              onClick={handleCheckNickname}
+              disabled={isCheckingNickname || !nickname}
+              className="px-4 py-2 bg-primary hover:bg-primary/90 disabled:bg-gray-400 disabled:cursor-not-allowed text-xs text-white font-medium rounded-sm transition-colors whitespace-nowrap"
+            >
+              {isCheckingNickname ? '확인중...' : '중복확인'}
+            </button>
+          </div>
+          {nicknameChecked && nicknameAvailable !== null && (
+            <p className={`mt-1 text-xs ${nicknameAvailable ? 'text-green-600' : 'text-red-600'}`}>
+              {nicknameAvailable ? '✓ 사용 가능한 닉네임입니다.' : '✗ 이미 사용 중인 닉네임입니다.'}
+            </p>
+          )}
+        </div>
+
+      <div className ="h-2"/>
 
       {/* 회원가입 버튼 */}
-      <button 
+      <button
         type="submit"
-        className="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3 px-4 rounded-lg transition-colors shadow-md hover:shadow-lg"
+        className="w-full bg-primary hover:bg-primary/90 text-white font-medium py-2.5 px-4 rounded-sm transition-colors"
       >
         Sign Up
       </button>
+      </div>
     </form>
   );
 }

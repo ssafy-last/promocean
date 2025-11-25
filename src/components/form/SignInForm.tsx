@@ -48,9 +48,9 @@ export default function SignInForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-6">
       {/* 제목 */}
-      <h1 className="text-3xl font-bold text-text mb-8">로그인</h1>
+      <h1 className="text-3xl font-bold text-text">로그인</h1>
       
       {/* 에러 메시지 */}
       {error && (
@@ -74,7 +74,7 @@ export default function SignInForm() {
           placeholder="Username"
           required
           disabled={isLoading}
-          className="w-full px-4 py-3 rounded-lg bg-white text-text border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full h-10 px-4 rounded-sm bg-white text-text border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed"
         />
       </div>
 
@@ -93,7 +93,7 @@ export default function SignInForm() {
           placeholder="Password"
           required
           disabled={isLoading}
-          className="w-full px-4 py-3 rounded-lg bg-white text-text border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full h-10 px-4 rounded-sm bg-white text-text border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed"
         />
       </div>
 
@@ -104,11 +104,12 @@ export default function SignInForm() {
         </a>
       </div> */}
 
+        <div className ="h-2"></div>
       {/* 로그인 버튼 */}
       <button 
         type="submit"
         disabled={isLoading}
-        className="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3 px-4 rounded-lg transition-colors shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3 px-4 rounded-sm transition-colors shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isLoading ? '로그인 중...' : 'Log in'}
       </button>
