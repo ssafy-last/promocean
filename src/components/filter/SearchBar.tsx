@@ -23,7 +23,7 @@ export default function SearchBar() {
         placeholder="검색어 입력"
         value={keyword}
         onChange={(e) => setKeyword(e.target.value)}
-        className="flex-grow text-sm bg-transparent focus:outline-none"
+        className="grow text-sm bg-transparent focus:outline-none"
       />
     </form>
   );

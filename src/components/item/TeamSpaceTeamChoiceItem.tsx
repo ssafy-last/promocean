@@ -44,7 +44,7 @@ export default function TeamSpaceChoiceItem({
         console.log("role : ", userRole);
 
     return(
-           <button className="group relative flex flex-col h-64 rounded-xl bg-white shadow-sm hover:shadow-md overflow-hidden transition-all duration-300 ease-out border border-gray-100 hover:border-primary/30"
+           <button className="group relative flex flex-col h-64 rounded-xl bg-white shadow-sm hover:cursor-pointer hover:shadow-md overflow-hidden transition-all duration-300 ease-out border border-gray-100 hover:border-primary/30"
             onClick={handleClick}
             >
             {/* OWNER 배지 */}

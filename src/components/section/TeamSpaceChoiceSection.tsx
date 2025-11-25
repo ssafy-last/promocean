@@ -35,6 +35,7 @@ export default function TeamSpaceChoiceSection(){
         };
 
         fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
 
