@@ -61,7 +61,7 @@ export default function SignInForm() {
       
       {/* 이메일 입력 */}
       <div>
-        <label className="block text-text text-sm font-medium mb-2">
+        <label className="block text-text text-sm font-medium pb-2">
           이메일
         </label>
         <input
@@ -80,7 +80,7 @@ export default function SignInForm() {
 
       {/* 비밀번호 입력 */}
       <div>
-        <label className="block text-text text-sm font-medium mb-2">
+        <label className="block text-text text-sm font-medium pb-2">
           비밀번호
         </label>
         <input
