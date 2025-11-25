@@ -141,11 +141,11 @@ export default function SignUpForm() {
     <form onSubmit={handleSubmit} className="h-full flex flex-col justify-between">
       <div className="space-y-4">
         {/* 제목 */}
-        <h1 className="text-2xl font-bold text-text">회원가입</h1>
+        <h1 className="text-3xl font-bold text-text">회원가입</h1>
 
         {/* 이메일 입력 */}
         <div className="w-full">
-          <label className="block text-text text-xs font-medium">
+          <label className="flex text-text text-xs font-medium pb-2">
             이메일
           </label>
           <div className="flex gap-2">
@@ -155,7 +155,7 @@ export default function SignUpForm() {
               onChange={handleEmailChange}
               placeholder="Email"
               required
-              className="flex-1 px-3 py-2 text-sm rounded-sm bg-white text-text border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+              className="flex-1 px-4 h-10 text-sm rounded-sm bg-white text-text border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
             />
             <button
               type="button"
@@ -175,7 +175,7 @@ export default function SignUpForm() {
 
         {/* 비밀번호 입력 */}
         <div className="w-full">
-          <label className="block text-text text-xs font-medium mb-1">
+          <label className="block text-text text-xs font-medium pb-2">
             비밀번호
           </label>
           <input
@@ -184,13 +184,13 @@ export default function SignUpForm() {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
             required
-            className="w-full px-3 py-2 text-sm rounded-sm bg-white text-text border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+            className="w-full px-4 h-10 text-sm rounded-sm bg-white text-text border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
           />
         </div>
 
         {/* 비밀번호 확인 입력 */}
         <div className="w-full">
-          <label className="block text-text text-xs font-medium mb-1">
+          <label className="block text-text text-xs font-medium pb-2">
             비밀번호 확인
           </label>
           <input
@@ -199,13 +199,13 @@ export default function SignUpForm() {
             onChange={(e) => setConfirmPassword(e.target.value)}
             placeholder="Confirm password"
             required
-            className="w-full px-3 py-2 text-sm rounded-sm bg-white text-text border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+            className="w-full px-4 h-10 text-sm rounded-sm bg-white text-text border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
           />
         </div>
 
         {/* 닉네임 입력 */}
         <div className="w-full">
-          <label className="block text-text text-xs font-medium mb-1">
+          <label className="block text-text text-xs font-medium pb-2">
             닉네임
           </label>
           <div className="flex gap-2">
@@ -215,7 +215,7 @@ export default function SignUpForm() {
               onChange={handleNicknameChange}
               placeholder="Nickname"
               required
-              className="flex-1 px-3 py-2 text-sm rounded-sm bg-white text-text border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+              className="flex-1 px-4 h-10 text-sm rounded-sm bg-white text-text border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
             />
             <button
               type="button"
