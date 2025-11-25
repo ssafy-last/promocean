@@ -12,7 +12,7 @@ export default function LoginTabs({ activeTab, onTabChange }: LoginTabsProps) {
     <div className="flex space-x-8 mb-8">
       <button
         onClick={() => onTabChange('login')}
-        className={`text-lg font-medium transition-colors ${
+        className={`text-[16px] font-medium transition-colors ${
           activeTab === 'login'
             ? 'text-primary border-b-2 border-primary pb-2'
             : 'text-text/60 hover:text-primary'
