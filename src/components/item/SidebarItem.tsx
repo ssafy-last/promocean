@@ -37,7 +37,7 @@ export default function SidebarItem({ icon, title, href, onClick, showBadge, isA
         className={`${className} relative`}
         title={isCollapsed ? title : undefined}
       >
-        <span className="flex-shrink-0 relative w-4 h-4 flex items-center justify-center">
+        <span className="shrink-0 relative w-4 h-4 flex items-center justify-center">
           {icon}
           {showBadge && (
             <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
@@ -56,7 +56,7 @@ export default function SidebarItem({ icon, title, href, onClick, showBadge, isA
       className={`${className} relative`}
       title={isCollapsed ? title : undefined}
     >
-      <span className="flex-shrink-0 relative w-4 h-4 flex items-center justify-center">
+      <span className="shrink-0 relative w-4 h-4 flex items-center justify-center">
         {icon}
         {showBadge && (
           <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>

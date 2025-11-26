@@ -1,9 +1,8 @@
 'use client'
 
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import SpaceCardHeader from "@/components/layout/SpaceCardHeader";
 import SpaceArchiveList from "@/components/list/SpaceArchiveList";
-import MySpaceArchiveFilterSection from "@/components/section/MySpaceArchiveFilterSection";
 import { useAuthStore } from "@/store/authStore";
 import { SpaceAPI } from "@/api/space";
 import { useSpaceStore } from "@/store/spaceStore";
@@ -71,7 +70,7 @@ export default function MySpacePage() {
         setPinnedItemListState(newPinnedItemListState || []);
         setArchiveItemListState(newArchiveItemListState || []);
         setIsLoadingState(false);
-      } catch (error) {
+      } catch {
         setIsLoadingState(false);
       }
     };

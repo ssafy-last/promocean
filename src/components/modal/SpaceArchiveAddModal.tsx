@@ -1,10 +1,7 @@
-import { useEffect, useState } from "react"
-import { HexColorPicker } from "react-colorful";
+import { useState } from "react"
 import ColorPickerModal from "./ColorPickerModal";
 import { SpaceArchiveData } from "@/app/my-space/page";
-import { useAuthStore } from "@/store/authStore";
 import SpaceAPI from "@/api/space";
-import { Space } from "lucide-react";
 import { colorCodeBackToFront } from "@/utils/colorController";
 import { PostMySpaceArchiveFolderRequest } from "@/types/apiTypes/space";
 import { useArchiveFolderStore } from "@/store/archiveFolderStore";

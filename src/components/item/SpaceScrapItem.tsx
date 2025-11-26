@@ -3,9 +3,6 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { CommunityBoardItemProps } from "@/types/itemType";
-import Heart from "@/components/icon/Heart";
-import ChatBubbleBottomCenterText from "@/components/icon/ChatBubbleBottomCenterText";
 import { getPostImageUrl } from "@/utils/imageUtils";
 
 export interface SpaceScrapItemProps {
@@ -36,7 +33,7 @@ export default function SpaceScrapItem({
     onScrapToggle
 }: SpaceScrapItemProps) {
     const [isScrapped, setIsScrapped] = useState(true);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading] = useState(false);
 
     const handleScrapClick = (e: React.MouseEvent) => {
         e.preventDefault();
@@ -64,7 +61,7 @@ export default function SpaceScrapItem({
                     hover:-translate-y-1 active:translate-y-0"
             >
             {/* 썸네일 이미지 영역 */}
-            <div className="relative w-full h-36 bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
+            <div className="relative w-full h-36 bg-linear-to-br from-gray-100 to-gray-200 overflow-hidden">
                     <Image
                         src={fileUrl ? fileUrl : getPostImageUrl(fileUrl, postId)}
                         alt={title}
@@ -116,7 +113,7 @@ export default function SpaceScrapItem({
                             className="rounded-full object-cover"
                         />
                     ) : (
-                        <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary/20 to-primary/40 flex items-center justify-center">
+                        <div className="w-7 h-7 rounded-full bg-linear-to-br from-primary/20 to-primary/40 flex items-center justify-center">
                             <span className="text-sm">🐥</span>
                         </div>
                     )}

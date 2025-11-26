@@ -12,7 +12,6 @@ export interface ColorPickerModalProps{
 
 
 export default function ColorPickerModal({
-    parentSelectedColorState,
     parentSetSelectedColorState,
     onCloseColorPicker
 }:ColorPickerModalProps){

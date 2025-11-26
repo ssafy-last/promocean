@@ -8,7 +8,6 @@ import TeamSpaceMyMenuModal from "../modal/TeamSpaceMyMenuModal";
 import SpaceAPI, { SpaceParticipants } from "@/api/space";
 import { useAuthStore } from "@/store/authStore";
 import { useSpaceStore } from "@/store/spaceStore";
-import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 
 
@@ -56,16 +55,12 @@ export default function TeamSpaceHeader(
   const [memberListState, setMemberListState] = useState<SpaceParticipants[]>([]);
   const [ownerMemberState, setOwnerMemberState] = useState<SpaceParticipants | null>(null);
   const [currentUserSpaceNickname, setCurrentUserSpaceNickname] = useState<string>(nickname);
-  const username = authStore.user?.nickname;
   const userEmail = authStore.user?.email;
-  const userNickname = authStore.user?.nickname;
   const isFolderPage = Boolean(params['folderId']);
   console.log("isFolderPage:", isFolderPage);
 
   // 현재 사용자의 권한 가져오기
   const userRole = spaceStore.currentSpace?.userRole || currentSpace?.userRole;
-  const isOwner = userRole === "OWNER";
-  const isEditor = userRole === "EDITOR";
   const isReader = userRole === "READER";
 
   // 폴더 내부 페이지인지 확인
@@ -75,11 +70,6 @@ export default function TeamSpaceHeader(
   console.log("폴더 내부 페이지:", isInFolderPage);
   // console.log("params['folderId']", params['folderId']);
   // console.log("params['spaceId']", params['spaceId']);
-
-
-
-
-
   // console.log("spaceId in TeamSpaceHeader:", spaceId);
   const handleModalOpen = () => {
     setIsModalOpenState(!isModalOpenState);
@@ -137,7 +127,7 @@ export default function TeamSpaceHeader(
       <div className="absolute w-full h-full backdrop-blur-none group-hover:backdrop-blur-xs transition-all duration-300"/>
 
       {/* 어두운 그라데이션 오버레이 - 텍스트 가독성 향상 */}
-      <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/30 to-transparent pointer-events-none"></div>
+      <div className="absolute inset-0 bg-linear-to-r from-black/50 via-black/30 to-transparent pointer-events-none"></div>
 
       <div className={`relative flex flex-row justify-between items-center text-white w-full transition-all duration-300 ease-in-out ${
         isInFolderPage ? 'px-6 py-3.5' : 'px-8 py-15'

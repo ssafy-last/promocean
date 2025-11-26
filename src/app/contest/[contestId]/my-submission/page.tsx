@@ -9,7 +9,7 @@ import { ContestSubmissionDetailData } from "@/types/itemType";
 import CommunityPostUserProfileItem from "@/components/item/CommunityPostUserProfileItem";
 import { useAuthStore } from "@/store/authStore";
 import Image from "next/image";
-import { getContestImageUrl } from "@/utils/imageUtils";
+
 
 /**
  * 대회 내 산출물 페이지
@@ -62,7 +62,7 @@ export default function ContestMySubmissionPage() {
       alert('산출물이 삭제되었습니다.');
       router.push(`/contest/${contestId}`);
       router.refresh();
-    } catch (error) {
+    } catch {
       alert('산출물 삭제에 실패했습니다.');
     }
   };
@@ -70,7 +70,6 @@ export default function ContestMySubmissionPage() {
   const isAuthor = user && submissionDetailData && user.nickname === submissionDetailData.author;
   // 모달 페이지와 동일한 로직: "텍스트"가 아니면 이미지로 처리
   const isText = submissionDetailData?.type === "텍스트" ? true : false;
-  const isImageType = !isText;
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
