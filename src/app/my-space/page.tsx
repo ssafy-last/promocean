@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import SpaceCardHeader from "@/components/layout/SpaceCardHeader";
 import SpaceArchiveList from "@/components/list/SpaceArchiveList";
+import AuthGuard from "@/components/auth/AuthGuard";
 import { useAuthStore } from "@/store/authStore";
 import { SpaceAPI } from "@/api/space";
 import { useSpaceStore } from "@/store/spaceStore";
@@ -16,6 +17,14 @@ export interface SpaceArchiveData {
 }
 
 export default function MySpacePage() {
+  return (
+    <AuthGuard>
+      <MySpaceContent />
+    </AuthGuard>
+  );
+}
+
+function MySpaceContent() {
   const [archiveItemListState, setArchiveItemListState] = useState<SpaceArchiveData[]>([]);
   const [pinnedItemListState, setPinnedItemListState] = useState<SpaceArchiveData[]>([]);
   const [isLoadingState, setIsLoadingState] = useState(true);
@@ -36,12 +45,12 @@ export default function MySpacePage() {
       try {
         const res = await SpaceAPI.getSpaceArchiveFoldersData(personalSpaceId!);
 
-        if(!res){ 
+        if(!res){
           return;
         }
 
         if(personalSpaceId){
-          
+
         spaceStore.setCurrentSpace({
           spaceId: personalSpaceId!,
           name : name,
@@ -50,7 +59,7 @@ export default function MySpacePage() {
           userRole : "OWNER"
         });
         }
-        
+
         folderStore.setAllFolderList(res.folders);
 
         //TODO :  가져온 response 를 pinned 와 none pinned로 나누어 리스트를 연결해야 합니다.
@@ -87,42 +96,42 @@ export default function MySpacePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* <div className="flex justify-end-safe">
-        <div className="shrink-0 min-w-[380px]">
-          <MySpaceArchiveFilterSection buttonMode="search" />
-        </div>
-      </div> */}
+      <div className="min-h-screen bg-gray-50">
+        {/* <div className="flex justify-end-safe">
+          <div className="shrink-0 min-w-[380px]">
+            <MySpaceArchiveFilterSection buttonMode="search" />
+          </div>
+        </div> */}
 
-      <div className="flex justify-start px-6 pt-6 pb-2 w-full">
-        <div className="w-full">
-          <SpaceCardHeader title="Pinned" />
-          <SpaceArchiveList
-            isPinnedList={true}
-            isTeamSpace={false}
-            spaceId={personalSpaceId!}
-            archiveItemListState={archiveItemListState}
-            setArchiveItemListState={setArchiveItemListState}
-            pinnedItemListState={pinnedItemListState}
-            setPinnedItemListState={setPinnedItemListState}
-          />
+        <div className="flex justify-start px-6 pt-6 pb-2 w-full">
+          <div className="w-full">
+            <SpaceCardHeader title="Pinned" />
+            <SpaceArchiveList
+              isPinnedList={true}
+              isTeamSpace={false}
+              spaceId={personalSpaceId!}
+              archiveItemListState={archiveItemListState}
+              setArchiveItemListState={setArchiveItemListState}
+              pinnedItemListState={pinnedItemListState}
+              setPinnedItemListState={setPinnedItemListState}
+            />
+          </div>
+        </div>
+
+        <div className="flex justify-start px-6 pt-4 pb-6 w-full">
+          <div className="w-full">
+            <SpaceCardHeader title="Folder" />
+            <SpaceArchiveList
+              isPinnedList={false}
+              isTeamSpace={false}
+              spaceId={personalSpaceId!}
+              archiveItemListState={archiveItemListState}
+              setArchiveItemListState={setArchiveItemListState}
+              pinnedItemListState={pinnedItemListState}
+              setPinnedItemListState={setPinnedItemListState}
+            />
+          </div>
         </div>
       </div>
-
-      <div className="flex justify-start px-6 pt-4 pb-6 w-full">
-        <div className="w-full">
-          <SpaceCardHeader title="Folder" />
-          <SpaceArchiveList
-            isPinnedList={false}
-            isTeamSpace={false}
-            spaceId={personalSpaceId!}
-            archiveItemListState={archiveItemListState}
-            setArchiveItemListState={setArchiveItemListState}
-            pinnedItemListState={pinnedItemListState}
-            setPinnedItemListState={setPinnedItemListState}
-          />
-        </div>
-      </div>
-    </div>
   );
 }
