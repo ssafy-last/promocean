@@ -2,18 +2,13 @@
 
 // frontend/src/components/form/CommentForm.tsx
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { ReplyAPI } from '@/api/community';
+import EmoticonPicker, { type Emoticon } from '@/components/emoticon/EmoticonPicker';
 
 interface CommentFormProps {
   postId: number;
   onSuccess?: () => void;
-}
-
-interface Emoticon {
-  id: number;
-  name: string;
-  imageUrl: string;
 }
 
 /**
@@ -27,7 +22,6 @@ export default function CommentForm({ postId, onSuccess }: CommentFormProps) {
   const [showEmoticonPicker, setShowEmoticonPicker] = useState(false);
   const [selectedEmoticon, setSelectedEmoticon] = useState<Emoticon | null>(null);
   const emoticonButtonRef = useRef<HTMLButtonElement>(null);
-  const emoticonPickerRef = useRef<HTMLDivElement>(null);
 
   // 임시 이모티콘 데이터 (추후 사용자가 보유한 이모티콘 API로 대체)
   const availableEmoticons: Emoticon[] = [
@@ -42,26 +36,6 @@ export default function CommentForm({ postId, onSuccess }: CommentFormProps) {
     { id: 9, name: '파티', imageUrl: '🎉' },
     { id: 10, name: '왕관', imageUrl: '👑' },
   ];
-
-  // 모달 외부 클릭 감지
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        showEmoticonPicker &&
-        emoticonPickerRef.current &&
-        emoticonButtonRef.current &&
-        !emoticonPickerRef.current.contains(event.target as Node) &&
-        !emoticonButtonRef.current.contains(event.target as Node)
-      ) {
-        setShowEmoticonPicker(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [showEmoticonPicker]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -110,52 +84,14 @@ export default function CommentForm({ postId, onSuccess }: CommentFormProps) {
         </button>
 
         {/* 이모티콘 피커 모달 */}
-        {showEmoticonPicker && (
-          <div
-            ref={emoticonPickerRef}
-            className="absolute top-full right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-50 p-4 w-80"
-          >
-            <div className="mb-3">
-              <h3 className="text-sm font-semibold text-gray-900 mb-1">이모티콘 선택</h3>
-              <p className="text-xs text-gray-500">최대 1개까지 선택할 수 있습니다</p>
-            </div>
-
-            {availableEmoticons.length === 0 ? (
-              <div className="text-center py-8">
-                <p className="text-4xl mb-2">😢</p>
-                <p className="text-sm text-gray-500">보유한 이모티콘이 없습니다</p>
-                <a
-                  href="/auth/mypage/gacha"
-                  className="inline-block mt-3 text-xs text-primary hover:underline"
-                >
-                  가챠샵에서 이모티콘 획득하기 →
-                </a>
-              </div>
-            ) : (
-              <div className="grid grid-cols-5 gap-2 max-h-64 overflow-y-auto">
-                {availableEmoticons.map((emoticon) => (
-                  <button
-                    key={emoticon.id}
-                    type="button"
-                    onClick={() => handleEmoticonSelect(emoticon)}
-                    className={`
-                      aspect-square rounded-lg border-2 transition-all
-                      hover:bg-primary/10 hover:border-primary
-                      ${
-                        selectedEmoticon?.id === emoticon.id
-                          ? 'border-primary bg-primary/10'
-                          : 'border-gray-200'
-                      }
-                    `}
-                    title={emoticon.name}
-                  >
-                    <span className="text-2xl">{emoticon.imageUrl}</span>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
+        <EmoticonPicker
+          isOpen={showEmoticonPicker}
+          onClose={() => setShowEmoticonPicker(false)}
+          onSelect={handleEmoticonSelect}
+          selectedEmoticon={selectedEmoticon}
+          availableEmoticons={availableEmoticons}
+          buttonRef={emoticonButtonRef}
+        />
       </div>
 
       <form onSubmit={handleSubmit} >
