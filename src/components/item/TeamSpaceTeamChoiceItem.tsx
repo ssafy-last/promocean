@@ -1,7 +1,6 @@
 'use client';
 
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import UserGroup from "../icon/UserGroup";
 import { useSpaceStore } from "@/store/spaceStore";
@@ -36,7 +35,7 @@ export default function TeamSpaceChoiceItem({
           ,userRole: userRole
         })
         console.log("현재 스페이스 설정됨, 내 권한 ", userRole);
-        const res = await getTeamSpaceInfoToServer(spaceId, name, participantCnt, spaceCoverUrl);
+        await getTeamSpaceInfoToServer(spaceId, name, participantCnt, spaceCoverUrl);
         
         
         console.log("TeamSpaceTeamChoiceItem clicked");
@@ -45,7 +44,7 @@ export default function TeamSpaceChoiceItem({
         console.log("role : ", userRole);
 
     return(
-           <button className="group relative flex flex-col h-64 rounded-xl bg-white shadow-sm hover:shadow-md overflow-hidden transition-all duration-300 ease-out border border-gray-100 hover:border-primary/30"
+           <button className="group relative flex flex-col h-64 rounded-xl bg-white shadow-sm hover:cursor-pointer hover:shadow-md overflow-hidden transition-all duration-300 ease-out border border-gray-100 hover:border-primary/30"
             onClick={handleClick}
             >
             {/* OWNER 배지 */}
@@ -68,7 +67,7 @@ export default function TeamSpaceChoiceItem({
                 height={160}
                 >
                 </Image>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
+                <div className="absolute inset-0 bg-linear-to-t from-black/30 via-transparent to-transparent"></div>
             </div>
             {/* 텍스트 영역 */}
             <div className="flex flex-col text-left items-start px-5 py-4 gap-2 flex-1 min-w-0 overflow-hidden bg-white">

@@ -23,7 +23,7 @@ export default function MyPostBoardItem({ postId, title, category, tags, likeCnt
       className="flex items-start justify-between w-full bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 p-4 gap-4"
     >
       {/* 왼쪽 : 이미지 영역 */}
-      <div className="relative flex-shrink-0 w-16 h-16 rounded-md overflow-hidden bg-gray-100">
+      <div className="relative shrink-0 w-16 h-16 rounded-md overflow-hidden bg-gray-100">
 
           <Image
             src={fileUrl ? fileUrl : getPostImageUrl(fileUrl, postId)}
@@ -60,7 +60,7 @@ export default function MyPostBoardItem({ postId, title, category, tags, likeCnt
       </div>
 
       {/* 오른쪽 : 아이콘 영역 (프로필 정보 제외) */}
-      <div className="flex items-center gap-4 text-gray-600 flex-shrink-0 self-end">
+      <div className="flex items-center gap-4 text-gray-600 shrink-0 self-end">
         <div className="flex items-center gap-1 transition-colors">
           <Heart />
           <span className="text-sm">{likeCnt}</span>

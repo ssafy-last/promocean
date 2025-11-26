@@ -3,9 +3,7 @@
 // frontend/src/components/section/SidebarSection.tsx
 
 import React from 'react'
-import SidebarList from '@/components/list/SidebarList'
 import { SidebarItemProps } from '@/types/itemType'
-import { useSidebar } from '@/contexts/SidebarContext'
 import SidebarItem from '../item/SidebarItem';
 import { getAlarmList } from '@/api/alarm';
 import { AlarmItemProps } from '../item/AlarmItem';
@@ -27,8 +25,8 @@ interface SidebarSectionProps {
  * @param {SidebarSectionProps} props - The props for the SidebarSection component
  * @returns {React.ReactNode}
  */
-export default function SidebarSection({title, sidebarList, setAlarmList, isAlarm, setIsAlarm, hasNewAlarm, setHasNewAlarm, alarmButtonRef}: SidebarSectionProps) {
-  const { isCollapsed } = useSidebar();
+export default function SidebarSection({sidebarList, setAlarmList, isAlarm, setIsAlarm, hasNewAlarm, setHasNewAlarm, alarmButtonRef}: SidebarSectionProps) {
+
 
   const callback = async ()=>{
     setIsAlarm(!isAlarm);
