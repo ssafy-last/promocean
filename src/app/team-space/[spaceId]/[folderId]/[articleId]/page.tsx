@@ -24,7 +24,6 @@ export default function TeamSpaceArchiveArticlePage() {
   const [error, setError] = useState<string | null>(null);
 
   const spaceIdFromUrl = Number(params.spaceId);
-  const folderIdFromUrl = Number(params.folderId);
   const articleId = params.articleId as string;
 
   useEffect(() => {

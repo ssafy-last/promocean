@@ -7,17 +7,6 @@ import { useAuthStore } from "@/store/authStore";
 import { CommunityBoardItemProps } from "@/types/itemType";
 import MyPostBoardItem from "@/components/item/MyPostBoardItem";
 import MySpaceMyPostFilter from "@/components/filter/MySpaceMyPostFilter";
-
-interface MySpaceMyPostSectionProps {
-  page?: number;
-  size?: number;
-  author?: string;
-  sorter?: string;
-  title?: string;
-  tag?: string;
-  category?: string;
-}
-
 /**
  * MySpaceMyPostSection component
  * @description 내 글 목록을 보여주는 섹션 컴포넌트

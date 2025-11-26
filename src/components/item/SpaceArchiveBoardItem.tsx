@@ -2,7 +2,6 @@
 'use client';
 
 import { getPostImageUrl } from "@/utils/imageUtils";
-import { cookies } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -19,7 +18,7 @@ export interface SpaceArchiveBoardItemProps{
     fileUrl: string;
 }
 
-export default function SpaceArchiveBoardItem( { articleId, title, category, tags, fileUrl, folderName, folderId }: SpaceArchiveBoardItemProps) {
+export default function SpaceArchiveBoardItem( { articleId, title, category, tags, fileUrl, folderId }: SpaceArchiveBoardItemProps) {
   const pathname = usePathname();
   const [imageError, setImageError] = useState(false);
 

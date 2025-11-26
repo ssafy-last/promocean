@@ -11,7 +11,7 @@ import { useRouter, useParams } from "next/navigation";
  * @description 대회 공지사항 아이템 컴포넌트입니다.
  * @returns {React.ReactNode}
  */
-export default function ContestNoticeItem({ noticeId, title, createdAt, updatedAt }: ContestNoticeItemProps) {
+export default function ContestNoticeItem({ noticeId, title, createdAt  }: ContestNoticeItemProps) {
 
   // TODO : 업데이트 날짜는 필요 없을 것 같아서 일단 보류. 추후에 결정하기
   // const isUpdated = createdAt !== updatedAt;
@@ -31,7 +31,7 @@ export default function ContestNoticeItem({ noticeId, title, createdAt, updatedA
         <h3 className="font-semibold text-gray-900 text-base group-hover:text-primary transition-colors line-clamp-2">
           {title}
         </h3>
-        <span className="text-xs text-gray-500 flex-shrink-0">{formatKoreanDate(createdAt)}</span>
+        <span className="text-xs text-gray-500 shrink-0">{formatKoreanDate(createdAt)}</span>
       </div>
     </div>
   )

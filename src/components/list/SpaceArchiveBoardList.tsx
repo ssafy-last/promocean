@@ -1,5 +1,4 @@
 'use client';
-import { useAuthStore } from "@/store/authStore";
 import SpaceArchiveBoardItem, { SpaceArchiveBoardItemProps } from "../item/SpaceArchiveBoardItem"
 import { useEffect, useState } from "react";
 import SpaceAPI, { searchParamsType } from "@/api/space";
@@ -18,12 +17,9 @@ export default function SpaceArchiveBoardList(
         const [mySpaceBoardList, setMySpaceBoardList] =  useState<SpaceArchiveBoardItemProps[] | null>([]);
         const [totalPages, setTotalPages] = useState(1);
         const [isLoading, setIsLoading] = useState(true);
-        const authStore = useAuthStore();
         const spaceStore = useSpaceStore();
-        const user = authStore.user;
         const currentSpace = spaceStore.currentSpace;
         const spaceId = currentSpace?.spaceId;
-        const name = user?.nickname || "나의 스페이스";
         const folderStore = useArchiveFolderStore();
         const folderId = folderStore.currentFolder?.folderId;
         const folderName = folderStore.currentFolder?.name;

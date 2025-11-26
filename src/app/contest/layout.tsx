@@ -28,7 +28,7 @@ export default async function ContestLayout({ children }: { children: React.Reac
         </div>
 
         {/* 오른쪽: 플로팅 섹션 (인기글) */}
-        <aside className="hidden lg:block w-64 flex-shrink-0 sticky top-24 self-start">
+        <aside className="hidden lg:block w-64 shrink-0 sticky top-24 self-start">
           <CommunityFloatingSection popularPosts={popularPosts} />
         </aside>
       </div>

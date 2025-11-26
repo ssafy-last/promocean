@@ -12,7 +12,6 @@ export interface TeamSpaceMyMenuModalProps {
 
 export default function TeamSpaceMyMenuModal({
     spaceId,
-    isModalOpenState,
     handleModalClose,
     currentNickname,
     teamName = "팀 스페이스"

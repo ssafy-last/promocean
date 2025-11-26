@@ -19,7 +19,7 @@ export default function PostCardItem({ postId, title, tags, likeCnt, replyCnt, f
   const hiddenTagCount = tags.length - displayedTags.length
 
   return (
-    <Link href={`/community/${postId}`} className="group block w-[220px] sm:w-[240px] focus-visible:outline-none">
+    <Link href={`/community/${postId}`} className="group block w-[220px] sm:w-60 focus-visible:outline-none">
       <article className="flex h-full flex-col overflow-hidden rounded-xl border border-gray-100/80 bg-white/90 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-lg">
         {/* Image Section */}
         <div className="relative h-40 w-full overflow-hidden">
@@ -29,7 +29,7 @@ export default function PostCardItem({ postId, title, tags, likeCnt, replyCnt, f
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-110"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/10 to-black/60 opacity-0 transition-opacity duration-500 group-hover:opacity-60" />
+          <div className="absolute inset-0 bg-linear-to-b from-black/0 via-black/10 to-black/60 opacity-0 transition-opacity duration-500 group-hover:opacity-60" />
 
 
 

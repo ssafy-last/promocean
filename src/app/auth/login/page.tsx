@@ -26,17 +26,24 @@ function LoginPageContent() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background" >
+    <div className="flex flex-col h-screen justify-center items-center bg-background overflow-hidden" >
       {/* 로그인 폼 컨테이너 */}
-      <div className="relative z-10 w-full max-w-md mx-4">
-        <div className="bg-background/95 backdrop-blur-sm rounded-2xl p-8 shadow-2xl border border-primary/20">
-          {/* 탭 */}
-          <LoginTabs activeTab={activeTab} onTabChange={handleTabChange} />
-          
+
+          {/* 탭 */}          
+          <div className='flex flex-row gap-2 w-9/12 min-w-[800px] bg-[#FDFDFC] h-10/12 min-h-[600px] shadow-2xl p-2'>
+            <div className='relative flex  w-10/14 min-w-[440px]'>
+                <div className={`absolute inset-0 bg-[url('/assets/login_bg.png')] bg-cover saturate-150 bg-center rounded transition-all duration-300
+                  ${activeTab === 'login' ? 'opacity-100' : "opacity-0"}`}></div>
+                <div className={`absolute inset-0 bg-[url('/assets/signup_bg.png')] bg-cover saturate-150 bg-center rounded transition-all duration-300
+                  ${activeTab === 'signup' ? ' opacity-100' : "opacity-0"}`}></div>
+            </div>
+         
           {/* 폼 내용 */}
-          {activeTab === 'login' ? <SignInForm /> : <SignUpForm />}
-        </div>
-      </div>
+              <div className="w-4/14 min-w-[340px] px-8 py-12" >
+                <LoginTabs activeTab={activeTab} onTabChange={handleTabChange} />
+                {activeTab === 'login' ? <SignInForm /> : <SignUpForm />}
+              </div>
+          </div>
     </div>
   );
 }
