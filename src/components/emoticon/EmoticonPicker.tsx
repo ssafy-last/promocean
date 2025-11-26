@@ -74,7 +74,7 @@ export default function EmoticonPicker({
           <p className="text-4xl mb-2">😢</p>
           <p className="text-sm text-gray-500">보유한 이모티콘이 없습니다</p>
           <a
-            href="/auth/mypage/gacha"
+            href="/gacha"
             className="inline-block mt-3 text-xs text-primary hover:underline"
           >
             가챠샵에서 이모티콘 획득하기 →
