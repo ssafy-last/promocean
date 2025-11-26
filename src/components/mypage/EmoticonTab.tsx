@@ -159,7 +159,7 @@ export default function EmoticonTab() {
         <p className="text-lg font-semibold mb-2">🎰 새로운 이모티콘을 획득하세요!</p>
         <p className="text-sm opacity-90 mb-4">마일리지를 사용해서 랜덤 이모티콘을 뽑아보세요</p>
         <a
-          href="/auth/mypage/gacha"
+          href="/gacha"
           className="inline-block px-6 py-2 bg-white text-purple-600 font-semibold rounded-md hover:bg-gray-100 transition-colors"
         >
           가챠샵 가기
