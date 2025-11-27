@@ -1,5 +1,6 @@
 package com.ssafy.a208.domain.board.entity;
 
+import com.ssafy.a208.domain.gacha.entity.Emoji;
 import com.ssafy.a208.domain.member.entity.Member;
 import com.ssafy.a208.global.common.BaseEntity;
 import jakarta.persistence.Column;
@@ -26,7 +27,7 @@ public class Reply extends BaseEntity {
     private Long id;
 
     @Comment("내용")
-    @Column(nullable = false, length = 1000)
+    @Column(length = 1000)
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -36,6 +37,11 @@ public class Reply extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id", nullable = false)
     private Member author;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "emoji_id")
+    @Comment("댓글에 사용된 이모지")
+    private Emoji emoji;
 
     @Builder
     public Reply(String content, Post post, Member author) {
