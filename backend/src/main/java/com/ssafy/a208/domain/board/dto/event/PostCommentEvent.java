@@ -1,4 +1,4 @@
-package com.ssafy.a208.domain.board.dto;
+package com.ssafy.a208.domain.board.dto.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

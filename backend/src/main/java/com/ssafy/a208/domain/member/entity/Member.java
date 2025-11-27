@@ -1,6 +1,5 @@
 package com.ssafy.a208.domain.member.entity;
 
-import com.ssafy.a208.domain.member.exception.UsableCountExceededException;
 import com.ssafy.a208.domain.space.entity.Space;
 import com.ssafy.a208.global.common.BaseEntity;
 import com.ssafy.a208.global.common.enums.MemberRole;
@@ -20,6 +19,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
+import com.ssafy.a208.domain.gacha.exception.InsufficientMileageException;
 
 @Entity
 @Getter
@@ -54,6 +54,10 @@ public class Member extends BaseEntity {
     @Comment("알림 조회 시각")
     @Column(nullable = false)
     private LocalDateTime readTime;
+
+    @Comment("마일리지")
+    @Column(nullable = false)
+    private int mileage = 0;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "personal_space_id", nullable = false)
@@ -101,5 +105,16 @@ public class Member extends BaseEntity {
             return this.profile.getFilePath();
         }
         return null;
+    }
+
+    public void earnMileage(int amount) {
+        this.mileage += amount;
+    }
+
+    public void useMileage(int amount) {
+        if (this.mileage < amount) {
+            throw new InsufficientMileageException();
+        }
+        this.mileage -= amount;
     }
 }

@@ -1,4 +1,4 @@
-package com.ssafy.a208.domain.board.dto;
+package com.ssafy.a208.domain.board.dto.request;
 
 import com.ssafy.a208.domain.board.dto.validator.ValidPostUpdateRequest;
 import com.ssafy.a208.global.common.validation.AllowedValues;
