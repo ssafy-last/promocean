@@ -1,6 +1,6 @@
 package com.ssafy.a208.domain.board.dto.validator;
 
-import com.ssafy.a208.domain.board.dto.PostUpdateReq;
+import com.ssafy.a208.domain.board.dto.request.PostUpdateReq;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import java.util.Objects;

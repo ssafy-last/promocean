@@ -1,4 +1,4 @@
-package com.ssafy.a208.domain.board.dto;
+package com.ssafy.a208.domain.board.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -78,8 +78,14 @@ public record PostDetailRes(
             @Schema(description = "댓글 작성자 프로필 이미지 URL", example = "https://클라우드프론트url")
             String profileUrl,
 
-            @Schema(description = "댓글 내용", example = "우 진짜 최악")
+            @Schema(description = "댓글 내용 (이모지만 있을 경우 null)", example = "우 진짜 최악")
             String content,
+
+            @Schema(description = "이모지 ID", example = "1")
+            Long emojiId,
+
+            @Schema(description = "이모지 이미지 URL", example = "https://클라우드프론트url/emoji.png")
+            String emojiImageUrl,
 
             @Schema(description = "댓글 작성일시", example = "2025-11-07T11:11:11")
             LocalDateTime createdAt,

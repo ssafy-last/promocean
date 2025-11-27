@@ -1,6 +1,6 @@
 package com.ssafy.a208.domain.board.controller;
 
-import com.ssafy.a208.domain.board.dto.TrendingPostRes;
+import com.ssafy.a208.domain.board.dto.response.TrendingPostRes;
 import com.ssafy.a208.domain.board.service.TrendingPostService;
 import com.ssafy.a208.global.common.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;

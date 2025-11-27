@@ -1,7 +1,7 @@
 package com.ssafy.a208.domain.board.service;
 
-import com.ssafy.a208.domain.board.dto.PostCommentEvent;
-import com.ssafy.a208.domain.board.dto.PostLikeEvent;
+import com.ssafy.a208.domain.board.dto.event.PostCommentEvent;
+import com.ssafy.a208.domain.board.dto.event.PostLikeEvent;
 import com.ssafy.a208.domain.board.entity.Post;
 import com.ssafy.a208.domain.board.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
