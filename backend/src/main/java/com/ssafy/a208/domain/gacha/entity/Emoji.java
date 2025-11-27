@@ -18,10 +18,6 @@ public class Emoji extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Comment("이모지 이름")
-    @Column(nullable = false, length = 50)
-    private String name;
-
     @Comment("이모지 등급 (COMMON, RARE, EPIC, LEGENDARY)")
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -31,13 +27,26 @@ public class Emoji extends BaseEntity {
     @Column(nullable = false)
     private Double probability;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
+    @Comment("이모지 카테고리")
+    private EmojiCategory category;
+
     @OneToOne(mappedBy = "emoji", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private EmojiFile emojiFile;
 
     @Builder
-    public Emoji(String name, EmojiGrade grade, Double probability) {
-        this.name = name;
+    public Emoji(EmojiGrade grade, Double probability, EmojiCategory category) {
         this.grade = grade;
         this.probability = probability;
+        this.category = category;
+    }
+
+    public void updateProbability(Double probability) {
+        this.probability = probability;
+    }
+
+    public void deleteEmoji() {
+        this.delete();
     }
 }
