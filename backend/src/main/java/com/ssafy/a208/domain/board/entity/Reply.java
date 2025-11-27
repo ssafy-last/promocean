@@ -48,15 +48,18 @@ public class Reply extends BaseEntity {
         this.content = content;
         this.post = post;
         this.author = author;
+        this.emoji = emoji;
     }
 
     public boolean isAuthor(Long memberId) {
         return this.author.getId().equals(memberId);
     }
 
-    public void updateContent(String content) {
+    public void updateContentAndEmoji(String content, Emoji emoji) {
         this.content = content;
+        this.emoji = emoji;
     }
+
 
     public void deleteReply() {
         this.delete();
