@@ -44,7 +44,7 @@ public class Reply extends BaseEntity {
     private Emoji emoji;
 
     @Builder
-    public Reply(String content, Post post, Member author) {
+    public Reply(String content, Post post, Member author, Emoji emoji) {
         this.content = content;
         this.post = post;
         this.author = author;
