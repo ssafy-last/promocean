@@ -1,6 +1,12 @@
 package com.ssafy.a208.domain.board.controller;
 
 import com.ssafy.a208.domain.board.dto.*;
+import com.ssafy.a208.domain.board.dto.request.PostCreateReq;
+import com.ssafy.a208.domain.board.dto.request.PostUpdateReq;
+import com.ssafy.a208.domain.board.dto.response.PostCreateRes;
+import com.ssafy.a208.domain.board.dto.response.PostDetailRes;
+import com.ssafy.a208.domain.board.dto.response.PostListRes;
+import com.ssafy.a208.domain.board.dto.response.PostUpdateRes;
 import com.ssafy.a208.domain.board.service.PostService;
 import com.ssafy.a208.global.common.dto.ApiResponse;
 import com.ssafy.a208.global.security.dto.CustomUserDetails;

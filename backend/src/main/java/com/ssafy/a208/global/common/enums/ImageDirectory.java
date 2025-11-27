@@ -9,7 +9,8 @@ public enum ImageDirectory {
     PROFILES("profiles"),
     ARTICLES("articles"),
     SUBMISSIONS("submissions"),
-    SPACES("spaces");
+    SPACES("spaces"),
+    EMOJIS("emojis");
 
     private final String name;
 
