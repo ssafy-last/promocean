@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/admin/emojis")
 @RequiredArgsConstructor
-@Tag(name = "이모지 관리자", description = "이모지 관리 API (관리자 전용)")
+@Tag(name = "이모지 관리자", description = "이모지 관리 API (관리자 전용)가 담겨있어요")
 public class EmojiAdminRestController {
 
     private final EmojiAdminService emojiAdminService;
