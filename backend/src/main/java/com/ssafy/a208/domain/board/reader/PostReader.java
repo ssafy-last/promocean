@@ -1,9 +1,9 @@
 package com.ssafy.a208.domain.board.reader;
 
-import com.ssafy.a208.domain.board.dto.PostDetailProjection;
-import com.ssafy.a208.domain.board.dto.PostListItemProjection;
+import com.ssafy.a208.domain.board.dto.projection.PostDetailProjection;
+import com.ssafy.a208.domain.board.dto.projection.PostListItemProjection;
 import com.ssafy.a208.domain.board.dto.PostListQueryDto;
-import com.ssafy.a208.domain.board.dto.ReplyProjection;
+import com.ssafy.a208.domain.board.dto.projection.ReplyProjection;
 import com.ssafy.a208.domain.board.entity.Post;
 import com.ssafy.a208.domain.board.exception.PostNotFoundException;
 import com.ssafy.a208.domain.board.repository.PostRepository;

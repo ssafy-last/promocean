@@ -1,7 +1,7 @@
 package com.ssafy.a208.global.kafka.config;
 
-import com.ssafy.a208.domain.board.dto.PostCommentEvent;
-import com.ssafy.a208.domain.board.dto.PostLikeEvent;
+import com.ssafy.a208.domain.board.dto.event.PostCommentEvent;
+import com.ssafy.a208.domain.board.dto.event.PostLikeEvent;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
