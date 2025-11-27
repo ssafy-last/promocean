@@ -1,9 +1,9 @@
 package com.ssafy.a208.domain.board.service;
 
-import com.ssafy.a208.domain.board.dto.PostCommentEvent;
+import com.ssafy.a208.domain.board.dto.event.PostCommentEvent;
 import com.ssafy.a208.domain.alarm.dto.AlarmReq;
 import com.ssafy.a208.domain.alarm.service.AlarmService;
-import com.ssafy.a208.domain.board.dto.ReplyReq;
+import com.ssafy.a208.domain.board.dto.request.ReplyReq;
 import com.ssafy.a208.domain.board.entity.Post;
 import com.ssafy.a208.domain.board.entity.Reply;
 import com.ssafy.a208.domain.board.exception.ReplyAccessDeniedException;
@@ -16,6 +16,11 @@ import com.ssafy.a208.domain.member.entity.Member;
 import com.ssafy.a208.domain.member.reader.MemberReader;
 import com.ssafy.a208.global.common.enums.AlarmCategory;
 import com.ssafy.a208.global.security.dto.CustomUserDetails;
+import com.ssafy.a208.domain.gacha.entity.Emoji;
+import com.ssafy.a208.domain.gacha.exception.EmojiNotOwnedException;
+import com.ssafy.a208.domain.gacha.reader.EmojiReader;
+import com.ssafy.a208.domain.gacha.reader.MemberEmojiReader;
+import com.ssafy.a208.domain.gacha.service.MileageService;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +44,9 @@ public class ReplyService {
     private final PostReader postReader;
     private final ReplyReader replyReader;
     private final PostLikeReader postLikeReader;
+    private final EmojiReader emojiReader;
+    private final MemberEmojiReader memberEmojiReader;
+    private final MileageService mileageService;
     private final AlarmService alarmService;
     private final ReplyRepository replyRepository;
     private final PostIndexService postIndexService;
@@ -67,14 +75,29 @@ public class ReplyService {
         // 게시글 조회
         Post post = postReader.getPostById(postId);
 
+        // 이모지 검증
+        Emoji emoji = null;
+        if (req.emojiId() != null) {
+            emoji = emojiReader.getEmojiById(req.emojiId());
+
+            // 사용자가 해당 이모지를 보유하고 있는지 확인
+            if (!memberEmojiReader.hasEmoji(author, emoji)) {
+                throw new EmojiNotOwnedException();
+            }
+        }
+
         // 댓글 생성
         Reply reply = Reply.builder()
                 .content(req.content())
                 .post(post)
                 .author(author)
+                .emoji(emoji)
                 .build();
 
         replyRepository.save(reply);
+
+        // 마일리지 적립
+        mileageService.earnReplyMileage(author);
 
         //es 카운트 업데이트
         int likeCount = postLikeReader.countByPost(post);
@@ -83,8 +106,8 @@ public class ReplyService {
 
         // Kafka 이벤트 발행 (Redis용)
         publishCommentEvent(postId, reply.getId(), author.getId(), PostCommentEvent.CommentAction.CREATE);
-        log.info("댓글 생성 완료 - replyId: {}, postId: {}, authorId: {}",
-                reply.getId(), postId, author.getId());
+        log.info("댓글 생성 완료 - replyId: {}, postId: {}, authorId: {}, emojiId: {}",
+                reply.getId(), postId, author.getId(), req.emojiId());
 
         // 게시글 작성자에게 알림 전송(본인 게시물에 본인 댓글이면 제외)
         if(!Objects.equals(post.getAuthor(), author)) {
@@ -100,7 +123,6 @@ public class ReplyService {
             log.info("알림 전송 완료 - replyId: {}, postId: {}, authorId: {}",
                     reply.getId(), postId, author.getId());
         }
-
     }
 
     /**
@@ -132,10 +154,22 @@ public class ReplyService {
             throw new ReplyAccessDeniedException();
         }
 
-        // 댓글 내용 수정
-        reply.updateContent(req.content());
+        // 이모지 검증
+        Emoji emoji = null;
+        if (req.emojiId() != null) {
+            Member author = memberReader.getMemberById(userDetails.memberId());
+            emoji = emojiReader.getEmojiById(req.emojiId());
 
-        log.info("댓글 수정 완료 - replyId: {}, postId: {}", replyId, postId);
+            // 사용자가 해당 이모지를 보유하고 있는지 확인
+            if (!memberEmojiReader.hasEmoji(author, emoji)) {
+                throw new EmojiNotOwnedException();
+            }
+        }
+
+        // 댓글 내용 및 이모지 수정
+        reply.updateContentAndEmoji(req.content(), emoji);
+
+        log.info("댓글 수정 완료 - replyId: {}, postId: {}, emojiId: {}", replyId, postId, req.emojiId());
     }
 
     /**
@@ -168,7 +202,7 @@ public class ReplyService {
         // 댓글 소프트 딜리트
         reply.deleteReply();
 
-        // es 업데이트트
+        // es 업데이트
         int likeCount = postLikeReader.countByPost(post);
         int replyCount = replyReader.getRepliesByPost(post).size();
         postIndexService.updatePostCounts(postId, likeCount, replyCount);
