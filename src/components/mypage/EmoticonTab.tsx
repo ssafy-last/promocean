@@ -1,7 +1,10 @@
 'use client';
 
-import { emojiCategory, GachaAPI } from '@/api/gacha';
+import { EmojiCategory, GachaAPI, getGachaListResponse } from '@/api/gacha';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
+import EmoticonBadgeSection from '../section/EmoticonBadgeSection';
+import EmoticonMyHoldSection from '../section/EmoticonMyHoldSection';
 
 // 임시 데이터 타입
 type Badge = 'bronze' | 'silver' | 'gold' | 'platinum' | 'diamond';
@@ -17,19 +20,30 @@ export default function EmoticonTab() {
   // 임시 데이터 (추후 API로 대체)
   const [mileage] = useState(1500);
   const [currentBadge] = useState<Badge>('gold');
-  const [emoticonsState, setEmoticonsState] = useState<emojiCategory[]>([]);
+  const [emoticonsState, setEmoticonsState] = useState<getGachaListResponse>({
+    categories: [],
+    totalCount: 0,
+  });
+  const [currentEmojiCategoryState, setCurrentEmojiCategoryState] = useState<EmojiCategory | null>(null);
+
+
 
   useEffect(()=>{
     const fetchData = async () => {
       const res = await GachaAPI.getGachaList();
       console.log("res : ", res);
-      setEmoticonsState(res.categories);
+      setEmoticonsState(res);
     };
 
     fetchData();
   }, [])
 
-
+  //현재 선택된 카테고리에 따른 이모티콘만 가져옵니다.
+  const handleCategoryClick = (categoryId: number) => {
+    // 카테고리 클릭 시 동작 (필터링 등)
+    console.log('Clicked category ID:', categoryId);
+    setCurrentEmojiCategoryState(emoticonsState.categories[categoryId]);
+  }
 
   const badges = {
     bronze: { name: '브론즈', color: 'bg-amber-700', icon: '🥉', requirement: '0 활동' },
@@ -57,113 +71,16 @@ export default function EmoticonTab() {
         </p>
       </div>
 
-      {/* 뱃지 시스템 */}
-      <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">내 뱃지</h3>
-        <div className="bg-white border border-gray-200 rounded-lg p-6">
-          {/* 현재 뱃지 */}
-          <div className="text-center mb-6">
-            <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-linear-to-br from-yellow-400 to-yellow-600 shadow-lg mb-3">
-              <span className="text-5xl">{badges[currentBadge].icon}</span>
-            </div>
-            <h4 className="text-xl font-bold text-gray-900">{badges[currentBadge].name}</h4>
-            <p className="text-sm text-gray-500">현재 등급</p>
-          </div>
+      {/* 배지 정보 */}
+      {/* <EmoticonBadgeSection currentBadge={currentBadge} badges={badges} badgeOrder={badgeOrder} /> */}
 
-          {/* 모든 뱃지 진행도 */}
-          <div className="space-y-3">
-            {badgeOrder.map((badge, index) => {
-              const isAchieved = badgeOrder.indexOf(currentBadge) >= index;
-              const isCurrent = currentBadge === badge;
-
-              return (
-                <div
-                  key={badge}
-                  className={`
-                    flex items-center gap-3 p-3 rounded-lg transition-all
-                    ${isCurrent ? 'bg-primary/10 border-2 border-primary' : 'bg-gray-50'}
-                    ${!isAchieved && 'opacity-40'}
-                  `}
-                >
-                  <div className={`
-                    flex items-center justify-center w-12 h-12 rounded-full
-                    ${isAchieved ? badges[badge].color : 'bg-gray-300'}
-                  `}>
-                    <span className="text-2xl">{badges[badge].icon}</span>
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <p className="font-semibold text-gray-900">{badges[badge].name}</p>
-                      {isCurrent && (
-                        <span className="px-2 py-0.5 bg-primary text-white text-xs rounded-full">
-                          현재
-                        </span>
-                      )}
-                      {isAchieved && !isCurrent && (
-                        <span className="px-2 py-0.5 bg-green-500 text-white text-xs rounded-full">
-                          달성
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-xs text-gray-500">{badges[badge].requirement}</p>
-                  </div>
-                  {isAchieved && (
-                    <div className="text-green-500">
-                      <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
-      {/* 보유 이모티콘 */}
-      <div>
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-900">보유 이모티콘</h3>
-          <span className="text-sm text-gray-500">{emoticonsState.length}개 보유</span>
-        </div>
-          
-          {/*이모티콘 카테고리 탭바 */}
-            <div>
-
-
-            </div>
-        {emoticonsState.length === 0 ? (
-          <div className="bg-gray-50 border border-gray-200 rounded-lg p-12 text-center">
-            <p className="text-5xl mb-4">😢</p>
-            <p className="text-gray-500">아직 보유한 이모티콘이 없습니다</p>
-            <p className="text-sm text-gray-400 mt-2">마일리지로 이모티콘을 구매해보세요!</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {emoticonsState.map((category) => (
-              <div
-                key={category.categoryId}
-                className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer group"
-              >
-                <div className="aspect-square bg-gray-50 rounded-lg flex items-center justify-center mb-3 group-hover:bg-primary/5 transition-colors">
-                  <span className="text-5xl">{category.emojis[0].imageUrl}</span>
-                </div>
-                <p className="text-sm font-medium text-gray-900 text-center mb-1">
-                  {category.categoryName}
-                </p>
-                <p className="text-xs text-gray-500 text-center">
-                  {new Date(category.emojis[0].obtainedAt).toLocaleDateString('ko-KR', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
-                </p>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      {/* 보유 이모티콘 섹션 */}
+      <EmoticonMyHoldSection 
+        emoticonsState={emoticonsState} 
+        currentEmojiCategoryState={currentEmojiCategoryState}
+        handleCategoryClick={handleCategoryClick}
+      />
+      
 
       {/* 이모티콘 가챠샵 링크 */}
       <div className="bg-linear-to-r bg-primary rounded-lg p-6 text-white text-center">
