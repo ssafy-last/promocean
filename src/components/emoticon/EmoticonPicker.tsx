@@ -92,6 +92,7 @@ export default function EmoticonPicker({
         }
 
       </div>
+      <div className ="h-2"></div>
       {currentEmoticonsState.length === 0 ? (
         <div className="text-center py-8">
           <p className="text-4xl mb-2">😢</p>
@@ -104,7 +105,7 @@ export default function EmoticonPicker({
           </a>
         </div>
       ) : (
-        <div className="grid grid-cols-5 gap-2 max-h-64 overflow-y-auto">
+        <div className="grid grid-cols-8 gap-2 min-h-48 max-h-92 overflow-y-auto">
 
           {currentEmoticonsState.map((emoticon, index) => (
             <button
@@ -127,7 +128,7 @@ export default function EmoticonPicker({
                   alt={`Emoticon ${emoticon.emojiId}`}
                   width={48}
                   height={48}
-                  className="mx-auto mt-1 "
+                  className="mx-auto  "
                 />
               </button>
  

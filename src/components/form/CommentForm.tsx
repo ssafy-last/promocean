@@ -4,7 +4,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { ReplyAPI } from '@/api/community';
-import EmoticonPicker, { type Emoticon } from '@/components/emoticon/EmoticonPicker';
+import EmoticonPicker from '@/components/emoticon/EmoticonPicker';
 import { EmojiCategory, EmojiItem, GachaAPI } from '@/api/gacha';
 import Image from 'next/image';
 
@@ -26,7 +26,6 @@ export default function CommentForm({ postId, onSuccess }: CommentFormProps) {
   const emoticonButtonRef = useRef<HTMLButtonElement>(null);
 
   // 임시 이모티콘 데이터 (추후 사용자가 보유한 이모티콘 API로 대체)
-  const [availableEmoticons, setAvailableEmoticons] = useState<EmojiItem[]>([]);
   const [gachaList, setGachaList] = useState<EmojiCategory[]>([]);
 
   useEffect(() => {
