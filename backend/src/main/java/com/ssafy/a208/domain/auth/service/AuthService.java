@@ -48,6 +48,7 @@ public class AuthService {
                 .profileUrl(s3Service.getCloudFrontUrl(profile.getFilePath()))
                 .personalSpaceId(member.getPersonalSpace().getId())
                 .isRead(isAlarmRead(latestReadTime, member.getReadTime()))
+                .mileage(member.getMileage())
                 .build();
 
     }

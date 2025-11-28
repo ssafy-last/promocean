@@ -4,6 +4,7 @@ import com.ssafy.a208.domain.gacha.dto.response.GachaRes;
 import com.ssafy.a208.domain.gacha.dto.response.MyEmojiListRes;
 import com.ssafy.a208.domain.gacha.service.GachaService;
 import com.ssafy.a208.domain.gacha.service.MemberEmojiService;
+import com.ssafy.a208.domain.gacha.service.MileageService;
 import com.ssafy.a208.global.common.dto.ApiResponse;
 import com.ssafy.a208.global.security.dto.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,6 +24,7 @@ public class GachaRestController {
 
     private final GachaService gachaService;
     private final MemberEmojiService memberEmojiService;
+    private final MileageService mileageService;
 
     @PostMapping("/draw")
     @Operation(
@@ -46,5 +48,17 @@ public class GachaRestController {
     ) {
         MyEmojiListRes res = memberEmojiService.getMyEmojis(userDetails);
         return ApiResponse.ok(res);
+    }
+
+    @GetMapping("/mileage")
+    @Operation(
+            summary = "마일리지 조회 API",
+            description = "현재 사용자의 마일리지를 조회합니다."
+    )
+    public ResponseEntity<ApiResponse<Integer>> getMileage(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        Integer mileage = mileageService.getMileage(userDetails);
+        return ApiResponse.ok(mileage);
     }
 }
