@@ -1,4 +1,4 @@
-package com.ssafy.a208.domain.board.dto;
+package com.ssafy.a208.domain.board.dto.response;
 
 import lombok.Builder;
 

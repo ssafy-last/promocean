@@ -5,7 +5,6 @@ import com.ssafy.a208.domain.board.dto.PostListItemProjection;
 import com.ssafy.a208.domain.board.dto.PostListQueryDto;
 import com.ssafy.a208.domain.board.dto.ReplyProjection;
 import com.ssafy.a208.domain.board.entity.Post;
-import com.ssafy.a208.domain.board.entity.Reply;
 import com.ssafy.a208.domain.tag.entity.PostTag;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

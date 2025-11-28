@@ -1,6 +1,6 @@
 package com.ssafy.a208.domain.board.controller;
 
-import com.ssafy.a208.domain.board.dto.ReplyReq;
+import com.ssafy.a208.domain.board.dto.request.ReplyReq;
 import com.ssafy.a208.domain.board.service.ReplyService;
 import com.ssafy.a208.global.common.dto.ApiResponse;
 import com.ssafy.a208.global.security.dto.CustomUserDetails;

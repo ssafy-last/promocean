@@ -1,5 +1,6 @@
-package com.ssafy.a208.domain.board.dto;
+package com.ssafy.a208.domain.board.dto.response;
 
+import com.ssafy.a208.domain.board.dto.PostListItemDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
