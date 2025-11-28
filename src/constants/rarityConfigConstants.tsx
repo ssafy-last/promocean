@@ -8,6 +8,7 @@ export const rarityConfig : Record<GradeTranslationCode, GachaResultItemStyle> =
       borderColor: 'border-gray-300',
       color: 'text-gray-800',
       weight: 60,
+      hover : 'hover:shadow-md',
     },
     '레어': {
       gradeName: '희귀',
@@ -15,6 +16,7 @@ export const rarityConfig : Record<GradeTranslationCode, GachaResultItemStyle> =
       borderColor: 'border-blue-400',
       color: 'text-blue-800',
       weight: 25,
+      hover : 'hover:shadow-md',
     },
     '에픽': {
       gradeName: '에픽',
@@ -22,6 +24,7 @@ export const rarityConfig : Record<GradeTranslationCode, GachaResultItemStyle> =
       borderColor: 'border-purple-400',
       color: 'text-purple-800',
       weight: 10,
+        hover : 'hover:shadow-lg',
     },
     '레전더리': {
       gradeName: '전설',
@@ -29,5 +32,6 @@ export const rarityConfig : Record<GradeTranslationCode, GachaResultItemStyle> =
       borderColor: 'border-yellow-400',
       color: 'text-yellow-800',
       weight: 5,
+      hover : 'hover:shadow-xl',
     },
   };
