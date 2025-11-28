@@ -1,20 +1,21 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { EmojiCategory, EmojiItem } from '@/api/gacha';
+import Image from 'next/image';
+import { useRef, useEffect, useState } from 'react';
 
 export interface Emoticon {
   id: number;
-  name: string;
   imageUrl: string;
 }
 
 interface EmoticonPickerProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelect: (emoticon: Emoticon) => void;
-  selectedEmoticon: Emoticon | null;
-  availableEmoticons: Emoticon[];
+  onSelect: (emoticon: EmojiItem) => void;
+  selectedEmoticon: EmojiItem | null;
   buttonRef: React.RefObject<HTMLButtonElement | null>;
+  gachaList: EmojiCategory[];
 }
 
 /**
@@ -32,10 +33,24 @@ export default function EmoticonPicker({
   onClose,
   onSelect,
   selectedEmoticon,
-  availableEmoticons,
-  buttonRef,
+  buttonRef,  
+  gachaList,
 }: EmoticonPickerProps) {
   const pickerRef = useRef<HTMLDivElement>(null);
+  const [pickCategoryState, setPickCategoryState] = useState<number>(0);
+  const [currentEmoticonsState, setCurrentEmoticonsState] = useState<EmojiItem[]>( []);
+
+  useEffect(()=>{
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setCurrentEmoticonsState(gachaList[0]?.emojis || []);
+  },[gachaList])
+
+  const handleCategoryClick = (index: number) => {
+    setPickCategoryState(index);
+    setCurrentEmoticonsState(gachaList[index].emojis);
+  }
+
+
 
   // 모달 외부 클릭 감지
   useEffect(() => {
@@ -62,14 +77,22 @@ export default function EmoticonPicker({
   return (
     <div
       ref={pickerRef}
-      className="absolute top-full right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-50 p-4 w-80"
+      className="absolute top-full right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-50 p-4 w-140"
     >
       <div className="mb-3">
         <h3 className="text-sm font-semibold text-gray-900 mb-1">이모티콘 선택</h3>
         <p className="text-xs text-gray-500">최대 1개까지 선택할 수 있습니다</p>
       </div>
+      <div className ={`relative flex flex-row border-b  border-b-gray-300`}>
+        {
+          gachaList.map((category, index) => (
+                 <button key={index} className = "hover:bg-gray-200 py-1 px-2 w-24"
+                 onClick={()=>handleCategoryClick(index)}>{category.categoryName}</button>
+          ))
+        }
 
-      {availableEmoticons.length === 0 ? (
+      </div>
+      {currentEmoticonsState.length === 0 ? (
         <div className="text-center py-8">
           <p className="text-4xl mb-2">😢</p>
           <p className="text-sm text-gray-500">보유한 이모티콘이 없습니다</p>
@@ -82,25 +105,36 @@ export default function EmoticonPicker({
         </div>
       ) : (
         <div className="grid grid-cols-5 gap-2 max-h-64 overflow-y-auto">
-          {availableEmoticons.map((emoticon) => (
+
+          {currentEmoticonsState.map((emoticon, index) => (
             <button
-              key={emoticon.id}
+              key={index}
               type="button"
               onClick={() => onSelect(emoticon)}
               className={`
                 aspect-square rounded-lg border-2 transition-all
                 hover:bg-primary/10 hover:border-primary
                 ${
-                  selectedEmoticon?.id === emoticon.id
+                  selectedEmoticon?.emojiId === emoticon.emojiId
                     ? 'border-primary bg-primary/10'
                     : 'border-gray-200'
                 }
               `}
-              title={emoticon.name}
             >
-              <span className="text-2xl">{emoticon.imageUrl}</span>
-            </button>
+     
+                <Image
+                  src={emoticon.imageUrl}
+                  alt={`Emoticon ${emoticon.emojiId}`}
+                  width={48}
+                  height={48}
+                  className="mx-auto mt-1 "
+                />
+              </button>
+ 
+            
           ))}
+
+
         </div>
       )}
     </div>
