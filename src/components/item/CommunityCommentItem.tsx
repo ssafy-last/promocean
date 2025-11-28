@@ -20,7 +20,7 @@ interface CommunityCommentItemWithPostIdProps extends CommunityCommentItemProps 
  * @description 댓글 아이템 컴포넌트입니다. 작성자의 프로필 이미지, 이름, 작성 시간 및 댓글 내용을 표시합니다.
  * @returns {React.ReactNode}
  */
-export default function CommunityCommentItem({ replyId, author, profileUrl, content, createdAt, postId, onUpdate }: CommunityCommentItemWithPostIdProps) {
+export default function CommunityCommentItem({ replyId, author, profileUrl, content,emojiId, emojiImageUrl,updatedAt, createdAt, postId, onUpdate }: CommunityCommentItemWithPostIdProps) {
   const { isLoggedIn, user } = useAuthStore();
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
@@ -183,7 +183,13 @@ export default function CommunityCommentItem({ replyId, author, profileUrl, cont
               </div>
             </div>
           ) : (
+            <div>
+              {emojiImageUrl && (
+                <Image src={emojiImageUrl} alt="이모지" width={100} height={100} className="inline-block pt-1 pb-1" />
+              )}
             <p className="text-gray-700 text-sm whitespace-pre-wrap">{content}</p>
+            </div>
+          
           )}
         </div>
       </div>

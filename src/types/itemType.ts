@@ -186,6 +186,8 @@ export interface CommunityPostItemResponse {
     author: string
     profileUrl: string
     content: string
+    emojiId?:number,
+    emojiImageUrl?:string,
     createdAt: string
     updatedAt: string
   }[]
@@ -247,6 +249,8 @@ export interface CommunityCommentItemProps {
   author: string
   profileUrl: string
   content: string
+  emojiId?: number
+  emojiImageUrl?: string
   createdAt: string
   updatedAt?: string
 }
