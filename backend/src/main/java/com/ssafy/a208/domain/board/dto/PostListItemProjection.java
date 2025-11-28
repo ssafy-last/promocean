@@ -4,7 +4,6 @@ import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * QueryDSL Projection용 DTO

@@ -1,18 +1,15 @@
 package com.ssafy.a208.domain.board.repository;
 
 import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.a208.domain.board.dto.*;
+import com.ssafy.a208.domain.board.dto.PostDetailProjection;
+import com.ssafy.a208.domain.board.dto.PostListItemProjection;
+import com.ssafy.a208.domain.board.dto.ReplyProjection;
 import com.ssafy.a208.domain.board.entity.*;
-import com.ssafy.a208.domain.member.entity.QMember;
-import com.ssafy.a208.domain.member.entity.QProfile;
 import com.ssafy.a208.domain.tag.entity.PostTag;
-import com.ssafy.a208.domain.tag.entity.QPostTag;
-import com.ssafy.a208.domain.tag.entity.QTag;
 import com.ssafy.a208.global.common.enums.PostCategory;
 import com.ssafy.a208.global.common.enums.PromptType;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +29,8 @@ import static com.ssafy.a208.domain.member.entity.QMember.member;
 import static com.ssafy.a208.domain.member.entity.QProfile.profile;
 import static com.ssafy.a208.domain.tag.entity.QPostTag.postTag;
 import static com.ssafy.a208.domain.tag.entity.QTag.tag;
-
+import static com.ssafy.a208.domain.gacha.entity.QEmoji.emoji;
+import static com.ssafy.a208.domain.gacha.entity.QEmojiFile.emojiFile;
 /**
  * 게시글 Repository Custom 구현체
  * QueryDSL을 사용한 동적 쿼리 구현
@@ -102,12 +100,16 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                         member.nickname,
                         profile.filePath,
                         reply.content,
+                        emoji.id,
+                        emojiFile.filePath,
                         reply.createdAt,
                         reply.updatedAt
                 ))
                 .from(reply)
                 .join(reply.author, member)
                 .leftJoin(member.profile, profile)
+                .leftJoin(reply.emoji, emoji)
+                .leftJoin(emoji.emojiFile, emojiFile)
                 .where(
                         reply.post.id.eq(postId),
                         reply.deletedAt.isNull()

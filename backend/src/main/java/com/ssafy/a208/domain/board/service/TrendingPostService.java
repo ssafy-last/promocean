@@ -1,7 +1,7 @@
 package com.ssafy.a208.domain.board.service;
 
 import com.ssafy.a208.domain.board.dto.TrendingPostItemDto;
-import com.ssafy.a208.domain.board.dto.TrendingPostRes;
+import com.ssafy.a208.domain.board.dto.response.TrendingPostRes;
 import com.ssafy.a208.domain.board.entity.Post;
 import com.ssafy.a208.domain.board.repository.PostRepository;
 import com.ssafy.a208.global.image.service.S3Service;
