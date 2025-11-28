@@ -2,9 +2,9 @@ package com.ssafy.a208.domain.board.service;
 
 import com.ssafy.a208.domain.board.document.PostDocument;
 import com.ssafy.a208.domain.board.dto.*;
-import com.ssafy.a208.domain.board.dto.projection.PostDetailProjection;
-import com.ssafy.a208.domain.board.dto.projection.PostListItemProjection;
-import com.ssafy.a208.domain.board.dto.projection.ReplyProjection;
+import com.ssafy.a208.domain.board.dto.PostDetailProjection;
+import com.ssafy.a208.domain.board.dto.PostListItemProjection;
+import com.ssafy.a208.domain.board.dto.ReplyProjection;
 import com.ssafy.a208.domain.board.dto.request.PostCreateReq;
 import com.ssafy.a208.domain.board.dto.request.PostUpdateReq;
 import com.ssafy.a208.domain.board.dto.response.PostCreateRes;

@@ -1,4 +1,4 @@
-package com.ssafy.a208.domain.board.dto.projection;
+package com.ssafy.a208.domain.board.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
