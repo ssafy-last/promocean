@@ -51,6 +51,17 @@ public class S3Service {
         }
     }
 
+    public String copyObject(String filePath, ImageDirectory imageDirectory) {
+        try {
+            return s3Uploader.copyObject(filePath, imageDirectory.getName());
+        } catch (SdkClientException e) {
+            throw new S3OperationException();
+        } catch (AwsServiceException e) {
+            throw new S3OperationException(HttpStatus.valueOf(e.statusCode()));
+        }
+    }
+
+
     public FileMetaData getFileMetadata(String key) {
         try {
             HeadObjectResponse response = s3Uploader.getMetaData(key);

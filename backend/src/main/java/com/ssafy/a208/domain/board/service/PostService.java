@@ -2,6 +2,15 @@ package com.ssafy.a208.domain.board.service;
 
 import com.ssafy.a208.domain.board.document.PostDocument;
 import com.ssafy.a208.domain.board.dto.*;
+import com.ssafy.a208.domain.board.dto.PostDetailProjection;
+import com.ssafy.a208.domain.board.dto.PostListItemProjection;
+import com.ssafy.a208.domain.board.dto.ReplyProjection;
+import com.ssafy.a208.domain.board.dto.request.PostCreateReq;
+import com.ssafy.a208.domain.board.dto.request.PostUpdateReq;
+import com.ssafy.a208.domain.board.dto.response.PostCreateRes;
+import com.ssafy.a208.domain.board.dto.response.PostDetailRes;
+import com.ssafy.a208.domain.board.dto.response.PostListRes;
+import com.ssafy.a208.domain.board.dto.response.PostUpdateRes;
 import com.ssafy.a208.domain.board.entity.Post;
 import com.ssafy.a208.domain.board.exception.InvalidPostRequestException;
 import com.ssafy.a208.domain.board.exception.PostNotFoundException;
@@ -22,6 +31,7 @@ import com.ssafy.a208.global.common.enums.PostCategory;
 import com.ssafy.a208.global.common.enums.PromptType;
 import com.ssafy.a208.global.image.service.S3Service;
 import com.ssafy.a208.global.security.dto.CustomUserDetails;
+import com.ssafy.a208.domain.gacha.service.MileageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -56,6 +66,7 @@ public class PostService {
     private final PostLikeService postLikeService;
     private final ReplyService replyService;
     private final ScrapService scrapService;
+    private final MileageService mileageService;
     private final S3Service s3Service;
     private final PostIndexService postIndexService;
     private final PostElasticsearchRepositoryImpl postElasticsearchRepositoryImpl;
@@ -102,6 +113,8 @@ public class PostService {
         // ES 인덱싱 추가
         postIndexService.indexPost(post, filePath, req.tags());
 
+        // 마일리지 적립
+        mileageService.earnPostMileage(author);
 
         log.info("게시글 생성 완료 - postId: {}, type: {}", post.getId(), promptType);
 
@@ -290,11 +303,16 @@ public class PostService {
                     String replyProfileUrl = reply.getProfilePath() != null ?
                             s3Service.getCloudFrontUrl(reply.getProfilePath()) : null;
 
+                    String emojiImageUrl = reply.getEmojiImagePath() != null ?
+                            s3Service.getCloudFrontUrl(reply.getEmojiImagePath()) : null;
+
                     return PostDetailRes.ReplyDto.builder()
                             .replyId(reply.getReplyId())
                             .author(reply.getAuthorNickname())
                             .profileUrl(replyProfileUrl)
                             .content(reply.getContent())
+                            .emojiId(reply.getEmojiId())
+                            .emojiImageUrl(emojiImageUrl)
                             .createdAt(reply.getCreatedAt())
                             .updatedAt(reply.getUpdatedAt())
                             .build();
