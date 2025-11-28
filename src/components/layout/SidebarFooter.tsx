@@ -7,6 +7,7 @@ import SidebarItem from '../item/SidebarItem'
 import UserCircle from '../icon/UserCircle'
 import ArrowRightStartOnRectangle from '@/components/icon/ArrowRightStartOnRectangle'
 import ArrowRightEndOnRectangle from '@/components/icon/ArrowRightEndOnRectangle'
+import GachaSlot from '@/components/icon/GachaSlot'
 import { useAuthStore } from '@/store/authStore'
 import UserSimpleProfile from '@/components/etc/UserSimpleProfile'
 import { authAPI } from '@/api/auth'
@@ -77,8 +78,18 @@ export default function SidebarFooter({
   
   return (
     <div className="flex flex-col gap-0.5">
+      {/* 가챠샵 - 프로필 위 */}
       {isLoggedIn && (
-        <SidebarItem 
+        <SidebarItem
+          icon={<GachaSlot />}
+          title="이모티콘 가챠"
+          href="/gacha"
+          isActive={isActiveRoute('/gacha')}
+        />
+      )}
+
+      {isLoggedIn && (
+        <SidebarItem
           icon={avatarIcon}
           title={nickname}
           href="/auth/mypage"
