@@ -36,6 +36,7 @@ public class AuthController {
                 .profileUrl(loginRes.profileUrl())
                 .personalSpaceId(loginRes.personalSpaceId())
                 .isRead(loginRes.isRead())
+                .mileage(loginRes.mileage())
                 .build();
         return ApiResponse.ofToken(memberInfo, loginRes.accessToken());
     }
