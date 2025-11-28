@@ -14,15 +14,18 @@ type TabType = 'profile' | 'emoticon' | 'withdrawal';
 
 export default function MyPage() {
   const router = useRouter();
-  const { user, isLoggedIn } = useAuthStore();
+  const { user, isLoggedIn, hasHydrated } = useAuthStore();
   const [activeTab, setActiveTab] = useState<TabType>('profile');
 
   useEffect(() => {
-    if (!isLoggedIn || !user) {
+    if(!hasHydrated) {
+      return;
+    }
+    if (!isLoggedIn) {
       router.push('/auth/login?tab=login');
       return;
     }
-  }, [isLoggedIn, user, router]);
+  }, [isLoggedIn, user, router, hasHydrated]);
 
   if (!isLoggedIn || !user) {
     return null;
@@ -61,12 +64,16 @@ export default function MyPage() {
             </nav>
           </div>
 
-          {/* 탭 컨텐츠 */}
-          <div className="p-8">
-            {activeTab === 'profile' && <ProfileEditTab />}
-            {activeTab === 'emoticon' && <EmoticonTab />}
-            {activeTab === 'withdrawal' && <WithdrawalTab />}
-          </div>
+          {!hasHydrated ? (
+            <div className="p-8">
+              {activeTab === 'profile' && <ProfileEditTab />}
+              {activeTab === 'emoticon' && <EmoticonTab />}
+              {activeTab === 'withdrawal' && <WithdrawalTab />}
+            </div>
+          ) : (
+            <div className="p-8">로딩 중...</div>
+          )
+          }
         </div>
       </div>
     </div>

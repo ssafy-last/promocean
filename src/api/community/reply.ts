@@ -17,10 +17,10 @@ export class ReplyAPI {
    * @param {string} content - 댓글 내용
    * @returns {Promise<{ message: string | null, data: null }>}
    */
-  static async create(postId: number, content: string) {
+  static async create(postId: number,  content: string, emojiId?: number) {
     const response = await apiFetch<ApiResponse<null>>(`/api/v1/posts/${postId}/replies`, {
       method: 'POST',
-      body: JSON.stringify({ content }),
+      body: JSON.stringify({ "content" : content, "emojiId" :emojiId }),
     });
 
     return {
