@@ -22,12 +22,10 @@ public class MemberEmojiReader {
     }
 
     public Set<Long> getOwnedEmojiIdsByMember(Member member) {
-        return memberEmojiRepository.findByMemberAndDeletedAtIsNull(member).stream()
-                .map(me -> me.getEmoji().getId())
-                .collect(Collectors.toSet());
+        return memberEmojiRepository.findOwnedEmojiIdsByMember(member);
     }
 
     public List<MemberEmoji> getMemberEmojisByMember(Member member) {
-        return memberEmojiRepository.findByMemberAndDeletedAtIsNullOrderByObtainedAtDesc(member);
+        return memberEmojiRepository.findByMemberOrderByEmojiIdAsc(member);
     }
 }
