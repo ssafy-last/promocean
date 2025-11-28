@@ -33,6 +33,7 @@ export default function EmoticonTab() {
       const res = await GachaAPI.getGachaList();
       console.log("res : ", res);
       setEmoticonsState(res);
+      setCurrentEmojiCategoryState(res.categories[0] || null);
     };
 
     fetchData();
@@ -42,7 +43,7 @@ export default function EmoticonTab() {
   const handleCategoryClick = (categoryId: number) => {
     // 카테고리 클릭 시 동작 (필터링 등)
     console.log('Clicked category ID:', categoryId);
-    setCurrentEmojiCategoryState(emoticonsState.categories[categoryId]);
+    setCurrentEmojiCategoryState(emoticonsState.categories.find(category => category.categoryId === categoryId) || null);
   }
 
   const badges = {

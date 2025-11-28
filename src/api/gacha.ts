@@ -3,6 +3,7 @@ import { apiFetch } from "./fetcher";
 
 
 export type GradeCode = 'COMMON' | 'RARE' | 'EPIC' | 'LEGENDARY';
+export type GradeTranslationCode = '커먼' | '레어' | '에픽' | '레전더리';
 
 enum GradeProbability {
     COMMON = 50,
@@ -20,7 +21,7 @@ enum GradeProbability {
  */
 export interface EmojiItem {
     emojiId : number;
-    grade : GradeCode;
+    grade : GradeTranslationCode;
     imageUrl : string;
     obtainedAt : Date;
 }
