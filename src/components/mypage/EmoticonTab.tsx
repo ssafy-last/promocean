@@ -1,11 +1,7 @@
 'use client';
 
-<<<<<<< Updated upstream
-import { useState } from 'react';
-=======
-import { GachaAPI } from '@/api/gacha';
+import { emojiCategory, GachaAPI } from '@/api/gacha';
 import { useEffect, useState } from 'react';
->>>>>>> Stashed changes
 
 // 임시 데이터 타입
 type Badge = 'bronze' | 'silver' | 'gold' | 'platinum' | 'diamond';
@@ -21,30 +17,19 @@ export default function EmoticonTab() {
   // 임시 데이터 (추후 API로 대체)
   const [mileage] = useState(1500);
   const [currentBadge] = useState<Badge>('gold');
-<<<<<<< Updated upstream
-  const [emoticons] = useState<EmoticonItem[]>([
-    { id: 1, name: '웃는 얼굴', imageUrl: '😊', acquiredDate: '2024-01-15' },
-    { id: 2, name: '하트', imageUrl: '❤️', acquiredDate: '2024-01-20' },
-    { id: 3, name: '박수', imageUrl: '👏', acquiredDate: '2024-02-01' },
-    { id: 4, name: '별', imageUrl: '⭐', acquiredDate: '2024-02-10' },
-    { id: 5, name: '불', imageUrl: '🔥', acquiredDate: '2024-02-15' },
-    { id: 6, name: '트로피', imageUrl: '🏆', acquiredDate: '2024-03-01' },
-  ]);
-=======
-  const [emoticons] = useState<EmoticonItem[]>([]);
+  const [emoticonsState, setEmoticonsState] = useState<emojiCategory[]>([]);
 
   useEffect(()=>{
     const fetchData = async () => {
       const res = await GachaAPI.getGachaList();
       console.log("res : ", res);
-
+      setEmoticonsState(res.categories);
     };
 
     fetchData();
   }, [])
 
 
->>>>>>> Stashed changes
 
   const badges = {
     bronze: { name: '브론즈', color: 'bg-amber-700', icon: '🥉', requirement: '0 활동' },
@@ -59,11 +44,7 @@ export default function EmoticonTab() {
   return (
     <div className="space-y-8">
       {/* 마일리지 정보 */}
-<<<<<<< Updated upstream
-      <div className="bg-gradient-to-r from-primary to-primary/80 rounded-lg p-6 text-white shadow-lg">
-=======
       <div className="bg-linear-to-r from-primary to-primary/80 rounded-lg p-6 text-white shadow-lg">
->>>>>>> Stashed changes
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm opacity-90 mb-1">보유 마일리지</p>
@@ -82,11 +63,7 @@ export default function EmoticonTab() {
         <div className="bg-white border border-gray-200 rounded-lg p-6">
           {/* 현재 뱃지 */}
           <div className="text-center mb-6">
-<<<<<<< Updated upstream
-            <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 shadow-lg mb-3">
-=======
             <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-linear-to-br from-yellow-400 to-yellow-600 shadow-lg mb-3">
->>>>>>> Stashed changes
               <span className="text-5xl">{badges[currentBadge].icon}</span>
             </div>
             <h4 className="text-xl font-bold text-gray-900">{badges[currentBadge].name}</h4>
@@ -148,10 +125,15 @@ export default function EmoticonTab() {
       <div>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-gray-900">보유 이모티콘</h3>
-          <span className="text-sm text-gray-500">{emoticons.length}개 보유</span>
+          <span className="text-sm text-gray-500">{emoticonsState.length}개 보유</span>
         </div>
+          
+          {/*이모티콘 카테고리 탭바 */}
+            <div>
 
-        {emoticons.length === 0 ? (
+
+            </div>
+        {emoticonsState.length === 0 ? (
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-12 text-center">
             <p className="text-5xl mb-4">😢</p>
             <p className="text-gray-500">아직 보유한 이모티콘이 없습니다</p>
@@ -159,19 +141,19 @@ export default function EmoticonTab() {
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {emoticons.map((emoticon) => (
+            {emoticonsState.map((category) => (
               <div
-                key={emoticon.id}
+                key={category.categoryId}
                 className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer group"
               >
                 <div className="aspect-square bg-gray-50 rounded-lg flex items-center justify-center mb-3 group-hover:bg-primary/5 transition-colors">
-                  <span className="text-5xl">{emoticon.imageUrl}</span>
+                  <span className="text-5xl">{category.emojis[0].imageUrl}</span>
                 </div>
                 <p className="text-sm font-medium text-gray-900 text-center mb-1">
-                  {emoticon.name}
+                  {category.categoryName}
                 </p>
                 <p className="text-xs text-gray-500 text-center">
-                  {new Date(emoticon.acquiredDate).toLocaleDateString('ko-KR', {
+                  {new Date(category.emojis[0].obtainedAt).toLocaleDateString('ko-KR', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric',
@@ -184,16 +166,12 @@ export default function EmoticonTab() {
       </div>
 
       {/* 이모티콘 가챠샵 링크 */}
-<<<<<<< Updated upstream
-      <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg p-6 text-white text-center">
-=======
-      <div className="bg-linear-to-r from-purple-500 to-pink-500 rounded-lg p-6 text-white text-center">
->>>>>>> Stashed changes
+      <div className="bg-linear-to-r bg-primary rounded-lg p-6 text-white text-center">
         <p className="text-lg font-semibold mb-2">🎰 새로운 이모티콘을 획득하세요!</p>
         <p className="text-sm opacity-90 mb-4">마일리지를 사용해서 랜덤 이모티콘을 뽑아보세요</p>
         <a
           href="/gacha"
-          className="inline-block px-6 py-2 bg-white text-purple-600 font-semibold rounded-md hover:bg-gray-100 transition-colors"
+          className="inline-block px-6 py-2 bg-white text-primary font-semibold rounded-md hover:bg-gray-100 transition-colors"
         >
           가챠샵 가기
         </a>
