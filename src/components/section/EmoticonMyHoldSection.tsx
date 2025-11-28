@@ -12,6 +12,8 @@ export interface EmoticonMyHoldSectionProps {
 
 export default function EmoticonMyHoldSection({ emoticonsState, currentEmojiCategoryState, handleCategoryClick }: EmoticonMyHoldSectionProps) {
 
+  console.log("EmoticonMyHoldSection - emoticonsState : ", emoticonsState, " currentEmojiCategoryState : ", currentEmojiCategoryState);
+
   return (
           <section>
             <div className="flex items-center justify-between mb-4">
@@ -22,7 +24,7 @@ export default function EmoticonMyHoldSection({ emoticonsState, currentEmojiCate
             <div>
               
               { emoticonsState.totalCount > 0 ? (
-              <div className ="flex flex-row gap-2 rounded-t-lg whitespace-nowrap overflow-x-scroll bg-gray-200">
+              <div className ="flex flex-row gap-2 rounded-t-lg whitespace-nowrap overflow-auto bg-gray-200">
                 {/*이모티콘 카테고리 탭바 */}
                 {
                   emoticonsState.categories.map((item, idx)=>(

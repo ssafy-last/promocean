@@ -4,13 +4,13 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/authStore';
 import MypageHeader from '@/components/layout/MypageHeader';
-import { GachaAPI, GradeCode } from '@/api/gacha';
+import { GachaAPI, GradeCode, GradeTranslationCode } from '@/api/gacha';
 import Image from 'next/image';
 
 interface GachaResult {
   id: number;
   imageUrl: string;
-  grade: GradeCode;
+  grade: GradeTranslationCode;
 }
 
 interface GachaResultItemStyle{
@@ -45,29 +45,29 @@ export default function GachaPage() {
   }, [hasHydrated, isLoggedIn, user, router]);
 
 
-  const rarityConfig : Record<GradeCode, GachaResultItemStyle> = {
-    'COMMON': {
+  const rarityConfig : Record<GradeTranslationCode, GachaResultItemStyle> = {
+    '커먼': {
       gradeName: '일반',
       bgColor: 'bg-white',
       borderColor: 'border-gray-300',
       color: 'text-gray-800',
       weight: 60,
     },
-    'RARE': {
+    '레어': {
       gradeName: '희귀',
       bgColor: 'bg-blue-50',
       borderColor: 'border-blue-400',
       color: 'text-blue-800',
       weight: 25,
     },
-    'EPIC': {
+    '에픽': {
       gradeName: '에픽',
       bgColor: 'bg-purple-50',
       borderColor: 'border-purple-400',
       color: 'text-purple-800',
       weight: 10,
     },
-    'LEGENDARY': {
+    '레전더리': {
       gradeName: '전설',
       bgColor: 'bg-yellow-50',
       borderColor: 'border-yellow-400',
@@ -83,8 +83,8 @@ export default function GachaPage() {
        id: res.emojiId,
        grade:res.grade,
        imageUrl : res.imageUrl,
-  
     }
+
     return result;
   };
 
@@ -99,6 +99,7 @@ export default function GachaPage() {
     setGachaResult(null);
     const result = await getRandomEmoticon();
     setGachaResult(result);
+    console.log("Gacha Result : ", result);
     // 마일리지 차감
     setMileage(prev => prev - GACHA_COST);
 
@@ -137,7 +138,7 @@ export default function GachaPage() {
             </svg>
             뒤로 가기
           </button>
-          <h1 className="text-3xl font-bold text-gray-900">🎰 이모티콘 가챠</h1>
+          <h1 className="text-3xl font-bold text-gray-900">이모티콘 가챠</h1>
           <p className="text-gray-600 mt-2">마일리지를 사용해서 랜덤 이모티콘을 획득하세요!</p>
         </div>
 
@@ -181,7 +182,16 @@ export default function GachaPage() {
               `}>
                 {gachaResult && !isSpinning ? (
                   <div className="text-center">
-                    <div className="text-8xl mb-4 animate-bounce">{gachaResult.imageUrl}</div>
+                    <Image
+                      src={gachaResult.imageUrl}
+                      alt="획득한 이모티콘"
+                      width={140}
+                      height={140}
+                      className="mx-auto mb-4"
+                    />
+                    <p className={`text-xl font-bold ${rarityConfig[gachaResult.grade].color}`}>
+                      {rarityConfig[gachaResult.grade].gradeName}
+                    </p>
                   </div>
                 ) : (
                   <div className="text-8xl">
@@ -241,19 +251,15 @@ export default function GachaPage() {
             <div className="text-center">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">🎉 축하합니다!</h2>
 
-              <div className={`
-                ${rarityConfig[gachaResult.grade].bgColor}
-                ${rarityConfig[gachaResult.grade].borderColor}
-                border-4 rounded-2xl p-8 mb-4
-              `}>
+              <div className={`border-4 rounded-2xl p-8 mb-4`}>
                 <Image  
                   src={gachaResult.imageUrl}
                   alt="획득한 이모티콘"
-                  width={100}
-                  height={100}
+                  width={125}
+                  height={125}
                   className="mx-auto mb-4"
                 />
-                <p className={`text-xl font-bold ${rarityConfig[gachaResult.grade].color} mb-2`}>
+                <p className={`text-xl font-bold mb-2`}>
                   {rarityConfig[gachaResult.grade].gradeName}
                 </p>
               </div>
