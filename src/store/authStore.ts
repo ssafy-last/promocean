@@ -35,14 +35,18 @@ interface AuthState {
   token: string | null;
   login: (user: User, token: string) => void;
   logout: () => void;
+  hasHydrated : boolean;
+
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
+
     (set) => ({
       isLoggedIn: false,
       user: null,
       token: null,
+      hasHydrated: false,
 
       login: (user: User, token: string) => {
         setAuthToken(token);
@@ -69,6 +73,14 @@ export const useAuthStore = create<AuthState>()(
         isLoggedIn: state.isLoggedIn,
         user: state.user,
       }),
-    }
+
+      // hydration 완료 상태를 위한 콜백 설정
+      onRehydrateStorage: () => (state) => {
+          return  () => {
+            state!.hasHydrated = true;
+          }
+      }
+    },
+
   )
 );
