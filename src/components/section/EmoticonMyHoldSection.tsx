@@ -58,7 +58,7 @@ export default function EmoticonMyHoldSection({ emoticonsState, currentEmojiCate
                 <p className="text-sm text-gray-400 mt-2">마일리지로 이모티콘을 구매해보세요!</p>
               </div>
             ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 p-2 border border-gray-200">
                 {currentEmojiCategoryState && currentEmojiCategoryState.emojis.map((emoticon) => (
                   <div key={emoticon.emojiId} className="bg-white border border-gray-200 rounded-lg p-4 text-center">
                     <Image
