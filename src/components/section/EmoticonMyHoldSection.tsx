@@ -1,4 +1,5 @@
 import { getGachaListResponse } from "@/api/gacha";
+import { rarityConfig } from "@/constants/rarityConfigConstants";
 import Image from "next/image";
 
 
@@ -60,7 +61,7 @@ export default function EmoticonMyHoldSection({ emoticonsState, currentEmojiCate
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 p-2 border border-gray-200">
                 {currentEmojiCategoryState && currentEmojiCategoryState.emojis.map((emoticon) => (
-                  <div key={emoticon.emojiId} className="bg-white border border-gray-200 rounded-lg p-4 text-center">
+                  <div key={emoticon.emojiId} className={`${rarityConfig[emoticon.grade].bgColor} border ${rarityConfig[emoticon.grade].borderColor} rounded-lg p-4 text-center ${rarityConfig[emoticon.grade].hover}`}>
                     <Image
                       src={emoticon.imageUrl}
                       alt={emoticon.emojiId.toString()}

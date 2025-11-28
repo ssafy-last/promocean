@@ -20,6 +20,7 @@ export interface GachaResultItemStyle{
   borderColor: string;
   color: string;
   weight: number;
+  hover? : string;
 }
 
 
