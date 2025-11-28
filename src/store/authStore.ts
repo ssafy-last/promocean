@@ -74,7 +74,7 @@ export const useAuthStore = create<AuthState>()(
         user: state.user,
       }),
 
-
+      // hydration 완료 상태를 위한 콜백 설정
       onRehydrateStorage: () => (state) => {
           return  () => {
             state!.hasHydrated = true;
