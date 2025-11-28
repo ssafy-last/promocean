@@ -3,11 +3,8 @@
 import { EmojiCategory, GachaAPI, getGachaListResponse } from '@/api/gacha';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import EmoticonBadgeSection from '../section/EmoticonBadgeSection';
 import EmoticonMyHoldSection from '../section/EmoticonMyHoldSection';
 
-// 임시 데이터 타입
-type Badge = 'bronze' | 'silver' | 'gold' | 'platinum' | 'diamond';
 
 interface EmoticonItem {
   id: number;
@@ -19,7 +16,6 @@ interface EmoticonItem {
 export default function EmoticonTab() {
   // 임시 데이터 (추후 API로 대체)
   const [mileage] = useState(1500);
-  const [currentBadge] = useState<Badge>('gold');
   const [emoticonsState, setEmoticonsState] = useState<getGachaListResponse>({
     categories: [],
     totalCount: 0,
@@ -45,16 +41,6 @@ export default function EmoticonTab() {
     console.log('Clicked category ID:', categoryId);
     setCurrentEmojiCategoryState(emoticonsState.categories.find(category => category.categoryId === categoryId) || null);
   }
-
-  const badges = {
-    bronze: { name: '브론즈', color: 'bg-amber-700', icon: '🥉', requirement: '0 활동' },
-    silver: { name: '실버', color: 'bg-gray-400', icon: '🥈', requirement: '50 활동' },
-    gold: { name: '골드', color: 'bg-yellow-500', icon: '🥇', requirement: '100 활동' },
-    platinum: { name: '플래티넘', color: 'bg-cyan-400', icon: '💎', requirement: '200 활동' },
-    diamond: { name: '다이아', color: 'bg-blue-400', icon: '💠', requirement: '500 활동' },
-  };
-
-  const badgeOrder: Badge[] = ['bronze', 'silver', 'gold', 'platinum', 'diamond'];
 
   return (
     <div className="space-y-8">

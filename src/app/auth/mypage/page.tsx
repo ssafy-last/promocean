@@ -15,23 +15,17 @@ type TabType = 'profile' | 'emoticon' | 'withdrawal';
 export default function MyPage() {
   const router = useRouter();
   const { user, isLoggedIn, hasHydrated } = useAuthStore();
-  const store = useAuthStore();
   const [activeTab, setActiveTab] = useState<TabType>('profile');
 
   useEffect(() => {
-    console.log("store: ", store);
-    console.log("isLoggedIn: ", isLoggedIn, "user: ", user);
     if(!hasHydrated) {
       return;
     }
-
-
     if (!isLoggedIn) {
-
       router.push('/auth/login?tab=login');
       return;
     }
-  }, [isLoggedIn, user, router]);
+  }, [isLoggedIn, user, router, hasHydrated]);
 
   if (!isLoggedIn || !user) {
     return null;
