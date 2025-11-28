@@ -18,21 +18,21 @@ enum GradeProbability {
  * @property imageUrl 이모지 이미지 URL
  * @property obtainedAt 획득 일시
  */
-export interface emojiItem {
+export interface EmojiItem {
     emojiId : number;
     grade : GradeCode;
     imageUrl : string;
     obtainedAt : Date;
 }
 
-export interface emojiCategory{
+export interface EmojiCategory{
     categoryId : number;
     categoryName : string;
-    emojis : emojiItem[];
+    emojis : EmojiItem[];
 }
 
 export interface getGachaListResponse{
-    categories : emojiCategory[];
+    categories : EmojiCategory[];
     totalCount : number;
 }
 
@@ -57,8 +57,8 @@ export const GachaAPI = {
      * @slug /api/v1/gacha/draw
      * @method POST
      */
-    async drawGacha () : Promise<emojiItem> {
-        const res = await apiFetch<ApiResponse<emojiItem>>('/api/v1/gacha/draw', {
+    async drawGacha () : Promise<EmojiItem> {
+        const res = await apiFetch<ApiResponse<EmojiItem>>('/api/v1/gacha/draw', {
             method : 'POST',
         });
 
