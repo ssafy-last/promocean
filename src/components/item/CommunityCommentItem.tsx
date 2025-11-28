@@ -185,7 +185,7 @@ export default function CommunityCommentItem({ replyId, author, profileUrl, cont
           ) : (
             <div>
               {emojiImageUrl && (
-                <Image src={emojiImageUrl} alt="이모지" width={100} height={100} className="inline-block pb-2" />
+                <Image src={emojiImageUrl} alt="이모지" width={100} height={100} className="inline-block pt-1 pb-1" />
               )}
             <p className="text-gray-700 text-sm whitespace-pre-wrap">{content}</p>
             </div>
