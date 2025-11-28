@@ -8,7 +8,8 @@ public record MemberInfo(
         String email,
         String profileUrl,
         Long personalSpaceId,
-        boolean isRead
+        boolean isRead,
+        Integer mileage
 ) {
 
 }
