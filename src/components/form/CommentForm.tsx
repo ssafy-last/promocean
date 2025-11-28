@@ -50,7 +50,9 @@ export default function CommentForm({ postId, onSuccess }: CommentFormProps) {
     try {
       // TODO: 추후 이모티콘 ID도 함께 전송
       // await ReplyAPI.create(postId, comment.trim(), selectedEmoticon?.id);
-      await ReplyAPI.create(postId, comment.trim());
+
+      await ReplyAPI.create(postId,  comment.trim(), selectedEmoticon?.emojiId);
+      console.log('댓글 작성 성공');
       setComment('');
       setSelectedEmoticon(null);
       onSuccess?.();
