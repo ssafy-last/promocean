@@ -46,6 +46,16 @@ export default function GachaPage() {
     }
   }, [hasHydrated, isLoggedIn, user, router]);
 
+  //마일리지 초기화
+  useEffect(()=>{
+    const fetchMileage = async() =>{
+      const initialMileage = await GachaAPI.getGachaMileage();
+          console.log("Initial mileage fetched and set.", initialMileage);
+      setMileage(initialMileage);
+    }
+    fetchMileage();
+  },[])
+
 
   const getRandomEmoticon = async (): Promise<GachaResult> => {
     const res = await GachaAPI.drawGacha();
@@ -111,7 +121,7 @@ export default function GachaPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <MypageHeader />
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="max-w-12xl mx-auto px-4 py-8">
         {/* 헤더 */}
         <div className="mb-6">
           <button

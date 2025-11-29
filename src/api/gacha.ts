@@ -76,5 +76,23 @@ export const GachaAPI = {
         }
 
         return null;
+    },
+
+
+
+    async getGachaMileage() : Promise<number>{
+        try{
+            const res = await apiFetch<ApiResponse<number>>('/api/v1/gacha/mileage', {
+                method : 'GET',
+            });
+            console.log("Gacha mileage response: ", res);
+            return res.data;
+        }
+        catch(error){
+            console.error("Error fetching gacha mileage: ", error);
+        } 
+
+        return 0;
     }
+
 }
