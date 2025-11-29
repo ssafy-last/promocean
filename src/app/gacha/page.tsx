@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/authStore';
 import MypageHeader from '@/components/layout/MypageHeader';
-import { GachaAPI, GradeTranslationCode } from '@/api/gacha';
+import { EmojiItem, GachaAPI, GradeTranslationCode } from '@/api/gacha';
 import Image from 'next/image';
 import { rarityConfig } from '@/constants/rarityConfigConstants';
 
@@ -49,6 +49,11 @@ export default function GachaPage() {
 
   const getRandomEmoticon = async (): Promise<GachaResult> => {
     const res = await GachaAPI.drawGacha();
+    if(!res){
+      throw new Error("Failed to draw gacha");
+    }
+
+    console.log("Gacha API Response : ", res);
 
     const result: GachaResult = {
        id: res.emojiId,
@@ -68,11 +73,20 @@ export default function GachaPage() {
     setIsSpinning(true);
     setShowResult(false);
     setGachaResult(null);
-    const result = await getRandomEmoticon();
-    setGachaResult(result);
-    console.log("Gacha Result : ", result);
-    // 마일리지 차감
-    setMileage(prev => prev - GACHA_COST);
+
+    //성공한 경우
+    try{
+      const result = await getRandomEmoticon();
+      setGachaResult(result);
+      console.log("Gacha Result : ", result);
+      setMileage(prev => prev - GACHA_COST);
+    } 
+    //실패한 경우 (모든 이모티콘을 다 뽑은 경우 )
+    catch (error) {
+      console.error("Error during gacha draw: ", error);
+      alert("모든 이모티콘을 다 뽑았습니다. 이모티콘 업데이트를 기대해주세요!");
+      setIsSpinning(false);
+    }
 
     // 가챠 애니메이션 시뮬레이션 (2초)
     setTimeout(() => {
