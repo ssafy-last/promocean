@@ -137,6 +137,20 @@ export default function GachaPage() {
           <p className="text-gray-600 mt-2">마일리지를 사용해서 랜덤 이모티콘을 획득하세요!</p>
         </div>
 
+        <div>
+          <Image
+            src="/assets/sleeping_duck_apng.png"
+            alt="Gacha Banner"
+            width={200}
+            height={200}
+          />
+          <Image
+            src="/assets/surprise_duck_apng.png"
+            alt="Gacha Banner"
+            width={200}
+            height={200}
+          />
+        </div>
         {/* 마일리지 정보 */}
         <div className="bg-linear-to-r from-primary to-primary/80 rounded-lg p-6 text-white shadow-lg mb-6">
           <div className="flex items-center justify-between">
@@ -168,13 +182,8 @@ export default function GachaPage() {
         <div className="bg-white rounded-lg shadow-md p-8 mb-6">
           <div className="max-w-md mx-auto">
             {/* 가챠 디스플레이 */}
-            <div className="relative mb-8">
-              <div className={`
-                aspect-square bg-linear-to-br from-purple-100 to-pink-100 rounded-3xl
-                flex items-center justify-center border-8 border-purple-300 shadow-2xl
-                transition-all duration-500
-                ${isSpinning ? 'animate-spin' : ''}
-              `}>
+            <div className="relative mb-8 flex items-center justify-center">
+
                 {gachaResult && !isSpinning ? (
                   <div className="text-center">
                     <Image
@@ -190,10 +199,41 @@ export default function GachaPage() {
                   </div>
                 ) : (
                   <div className="text-8xl">
-                    {isSpinning ? '🎲' : '❓'}
+                    {isSpinning ? 
+                 ( <Image
+                      src="/assets/surprise_duck_apng.png"
+                      alt="Gacha Banner"
+                      width={300}
+                      height={300}
+                    />) : 
+                            (     
+                              
+                      <button className ="aspect-square rounded-3xl flex flex-col text-xl items-center justify-center border-8 
+                      border-primary shadow-2xl hover:scale-105 transition-all duration-500"
+                        onClick={handleGacha}
+                        disabled={isSpinning || mileage < GACHA_COST}>        
+
+                          <Image
+                          src="/assets/sleeping_duck_apng.png"
+                          alt="Gacha Banner"
+                          width={300}
+                          height={300}
+                          className="flex"
+                        />
+                          {isSpinning ? '뽑는 중...' : 
+                          mileage < GACHA_COST ? 
+                          <span >'마일리지 부족'</span> : 
+                          <span className="py-2">{`${GACHA_COST}M로 가챠 돌리기!`}</span>}
+                      </button>
+
+                    ) 
+
+
+
+                    }
                   </div>
                 )}
-              </div>
+      
 
               {/* 장식 효과 */}
               {isSpinning && (
@@ -203,22 +243,8 @@ export default function GachaPage() {
               )}
             </div>
 
-            {/* 가챠 버튼 */}
-            <button
-              onClick={handleGacha}
-              disabled={isSpinning || mileage < GACHA_COST}
-              className={`
-                w-full py-4 px-6 rounded-xl font-bold text-lg
-                transition-all duration-300 shadow-lg
-                ${isSpinning || mileage < GACHA_COST
-                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  : 'bg-linear-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 hover:shadow-xl transform hover:scale-105'
-                }
-              `}
-            >
-              {isSpinning ? '뽑는 중...' : mileage < GACHA_COST ? '마일리지 부족' : `${GACHA_COST}M로 가챠 돌리기!`}
-            </button>
 
+ 
             {mileage < GACHA_COST && (
               <p className="text-center text-sm text-red-500 mt-3">
                 마일리지가 부족합니다. ({mileage}M / {GACHA_COST}M)
